@@ -38,12 +38,11 @@ function coloured_blocks(canvasid) {
 }
 
 
-function random_gubbins_blocks(canvasid) {
-  var canvas = document.getElementById(canvasid);
-  var ctx = canvas.getContext('2d');
+function set_random_gubbins_blocks(canvasid) {
+  // var canvas = document.getElementById(canvasid);
+  // var ctx = canvas.getContext('2d');
 
   var bheight = 10;
-  ctx.fillStyle = "orange";
   var ystart = 10;
   var maxwidth = 700;
 
@@ -57,9 +56,12 @@ function random_gubbins_blocks(canvasid) {
     for (var blocknum=1;blocknum<20;blocknum++) {
       blocklen = Math.floor((Math.random() * 100) + 1);
 
-      ctx.fillStyle = cols[Math.floor((Math.random() * 4) )];
+      // ctx.fillStyle = cols[Math.floor((Math.random() * 4) )];
 
-      ctx.fillRect(xstart,ystart,blocklen,bheight);
+      addBlock(xstart,ystart,blocklen,bheight,cols[Math.floor((Math.random() * 4) )]);
+
+      // ctx.fillRect(xstart,ystart,blocklen,bheight);
+
       xstart += blocklen + Math.floor((Math.random() * 100) + 1);
       if (xstart > maxwidth) {
         console.log("max width reached at line "+linenum+" after "+blocknum+" blocks");
@@ -70,6 +72,67 @@ function random_gubbins_blocks(canvasid) {
   }
 }
 
+// holds all our tab parsed blocks
+var blocks = [];
 
-// function
-// someyhing
+// Box object to hold data for all drawn rects
+function Block() { this.x = 0; this.y = 0; this.w = 1; this.h = 1; this.fill = '#444444';}
+
+//Initialize a new Box, add it, and invalidate the canvas
+function addBlock(x, y, w, h, fill) {
+  var rect = new Block;
+  rect.x = x;
+  rect.y = y;
+  rect.w = w
+  rect.h = h;
+  rect.fill = fill;
+  blocks.push(rect);
+  invalidate();
+}
+
+
+function drawBlocks() {
+  console.log("drawBlocks outer called");
+  if (canvasValid == false) {
+    console.log("drawBlocks inner called");
+    clear(ctx);
+
+    // draw all boxes
+    var l = blocks.length;
+    for (var i = 0; i < l; i++) {
+      ctx.fillStyle = blocks[i].fill;
+      ctx.fillRect(blocks[i].x,blocks[i].y,blocks[i].w,blocks[i].h);
+    }
+    canvasValid = true;
+  }
+}
+
+function invalidate() {canvasValid = false}
+
+function clear(c) {c.clearRect(0, 0, WIDTH, HEIGHT);}
+
+////////////////////////////////////////////////////
+
+function init() {
+  console.log("init() called");
+  canvas = document.getElementById('canvasTab');
+  ctx = canvas.getContext('2d');
+  HEIGHT = canvas.height;
+  WIDTH = canvas.width;
+  canvasValid = false
+  var INTERVAL = 100;  // how often, in milliseconds, we check to see if a redraw is needed
+
+  set_random_gubbins_blocks(canvas)
+
+  // drawBlocks()
+  setInterval(drawBlocks, INTERVAL);
+}
+
+
+
+
+
+
+
+
+
