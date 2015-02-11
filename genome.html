@@ -35,6 +35,8 @@
 	var left_padding=50
 	var right_padding=50
 	var gap_to_scale=4
+	
+	var artemis_colours={0:"white", 1:"#707070", 2:"#C80000", 3:"#2C802D", 4:"#2A2C92", 5:"#22A5A3", 6:"#A61785", 7:"#E9E930", 8:"#19CE2E", 9:"#19ACCE", 10:"#ED961D", 11:"#6B4E25", 12:"#DB66D1", 13:"#AFADAF"}
 
 	
 	var scalepos=(genome_track_height+top_padding)/2
@@ -52,6 +54,15 @@
     }
     return -1;
 	}
+	
+	
+	Object.size = function(obj) {
+	    var size = 0, key;
+	    for (key in obj) {
+	        if (obj.hasOwnProperty(key)) size++;
+	    }
+	    return size;
+	};
 	
 	function drawScale(ctx, xstart, xend, numticks) {
 			
@@ -123,9 +134,39 @@
 		this.featurestart = featurestart || 0
 		this.featureend = featureend || 0
 		this.x = 0;
-		this.y = 150;
+		this.y = 250;
 		this.w = 1;
 		this.h = 30;
+		
+		
+		this.neg_log_likelihood = "";
+		this.snps="";
+		this.node="";
+		this.taxa="";
+		
+		var infoparts=this.info.split(";");
+		//console.log(this.info);
+		for (i=0; i<infoparts.length; i++){
+				var varval=infoparts[i].split("=");
+				if (varval.length<2) {
+					continue;
+				}
+				var variable=varval[0].replace(/(^"|"$)/g, '');
+				var value=varval[1].replace(/(^"|"$)/g, '')
+				if (variable=="neg_log_likelihood") {
+					 this.neg_log_likelihood=value;
+					 }
+				else if (variable=="snp_count") {
+					this.snp_count=value.replace(/(^"|"$)/g, '');
+					}
+				else if (variable=="node") {
+					this.node=value.replace(/(^"|"$)/g, '');
+					}
+				else if (variable=="taxa") {
+					this.taxa=value.replace(/(^"|"$)/g, '').match(/\S+/g);
+					}
+		}
+		//console.log(this.neg_log_likelihood, this.snp_count, this.node, this.taxa);
 	}
 	
 	
@@ -196,6 +237,75 @@
 			ctx.stroke();
 		}
 	}
+	
+	
+	// Draws this block to a given context
+	Block.prototype.draw_taxon = function(ctx, taxa_tracks, totaltaxa) {
+		
+		if ((this.featureend<start) || (this.featurestart>end)){
+			return;	
+		}
+		
+		ctx.fillStyle = this.fill;
+		ctx.strokeStyle = this.stroke;
+		ctx.lineWidth = this.strokeWidth;
+		var cutstart=false;
+		var cutend=false;
+		if (this.x<canvasstart){	
+			blockstart=canvasstart;
+			blocklength=this.w-(canvasstart-this.x)
+			cutstart=true;
+		}
+		else {	
+			blockstart=this.x
+			blocklength=this.w
+		}
+		if (this.x+this.w>canvasend){	
+			blocklength=canvasend-blockstart;
+			cutend=true;
+		}
+		else {	
+			blocklength=blocklength
+		}
+		
+		for (i=0; i<this.taxa.length; i++){
+		
+			taxoncount=taxa_tracks[this.taxa[i]];
+			//console.log(this.taxa[i], taxoncount, totaltaxa, this.x, this.w)
+			blocky=this.y+(taxoncount*((canvas.height-this.y)/totaltaxa))
+			blockh=((canvas.height-this.y)/totaltaxa)
+			ctx.beginPath();
+			ctx.rect(blockstart, blocky, blocklength, blockh)
+			ctx.closePath();
+			ctx.fill();
+			
+			
+			if (cutstart){
+				ctx.setLineDash([2,2])
+				ctx.beginPath();
+				
+				ctx.moveTo(canvasstart, blocky);
+				ctx.lineTo(canvasstart, blocky+blockh);
+				ctx.stroke();
+				ctx.setLineDash([])	
+			}
+			if (cutend){ctx.setLineDash([2,2])
+				ctx.beginPath();
+				ctx.moveTo(canvasend, blocky);
+				ctx.lineTo(canvasend, blocky+blockh);
+				ctx.stroke();
+				ctx.setLineDash([])
+			}
+			
+			
+			
+			if (this.strokeWidth>0){
+				ctx.stroke();
+			}
+		}
+	}
+
+	
 	
 	function sortarrayofarraysNumber(a,b)
 	{
@@ -324,12 +434,13 @@
 		
 		var maxdepth=0;
 		var plotheight=50
-		ctx.strokeStyle = "black";
-		ctx.fillStyle = "black";
+		ctx.strokeStyle = "#6F8899";
+		ctx.fillStyle = "#6F8899";
 		ctx.lineWidth = 1;
 		ctx.beginPath();
 		var startval=0;
 		var endval=0;
+		var y=180;
 		
 		for (i=0; i<drawpoints.length; i++){
 			
@@ -347,33 +458,36 @@
 			
 		}
 		
-		ctx.moveTo(canvasstart, 300);
-		ctx.lineTo(canvasstart, 300-((startval/maxdepth)*plotheight));
+		ctx.moveTo(canvasstart, y);
+		ctx.lineTo(canvasstart, y-((startval/maxdepth)*plotheight));
 		
 		for (i=0; i<drawpoints.length; i++){
 			
 			if (((drawpoints[i][0])>=start) && (drawpoints[i][0]<=end)){
 				
-				ctx.lineTo((xscalingfactor*(drawpoints[i][0]-start))+canvasstart, 300-((drawpoints[i][1]/maxdepth)*plotheight));
+				ctx.lineTo((xscalingfactor*(drawpoints[i][0]-start))+canvasstart, y-((drawpoints[i][1]/maxdepth)*plotheight));
 				endval=drawpoints[i][1];
 			}
 			
 		}
 		
 		if (endval!=0){
-			ctx.lineTo(canvasend, 300-((endval/maxdepth)*plotheight));
+			ctx.lineTo(canvasend, y-((endval/maxdepth)*plotheight));
 		}
-		ctx.lineTo(canvasend, 300);
+		ctx.lineTo(canvasend, y);
 		ctx.closePath();
 		ctx.stroke();
 		ctx.fill();
+		ctx.strokeStyle = "black";
+		ctx.fillStyle = "black";
 		ctx.beginPath();
-		ctx.moveTo(canvasstart, 300);
-		ctx.lineTo(canvasstart, 300-plotheight);
-		ctx.lineTo(canvasstart-2, 300-plotheight);
+		ctx.moveTo(canvasend, y);
+		ctx.lineTo(canvasstart, y);
+		ctx.lineTo(canvasstart, y-plotheight);
+		ctx.lineTo(canvasstart-2, y-plotheight);
 		ctx.stroke();
 		ctx.save();
-		ctx.translate( canvasstart+2, 300-plotheight);
+		ctx.translate( canvasstart+2, y-plotheight);
 		ctx.textAlign = "left";
 		ctx.textBaseline="middle";
 		ctx.font="12px Helvetica";
@@ -406,7 +520,6 @@
 		
 		this.ID = "";
 		this.product="";
-		this.locus_tag="";
 		
 		var infoparts=this.info.split(";");
 		//console.log(infoparts);
@@ -416,7 +529,8 @@
 					continue;
 				}
 				var variable=varval[0].replace(/(^"|"$)/g, '');
-				var value=varval[1].replace(/(^"|"$)/g, '')
+				var value=varval[1].replace(/(^"|"$)/g, '');
+				
 				if (variable=="ID") {
 					 this.ID=value;
 					 }
@@ -426,10 +540,20 @@
 				else if (variable=="locus_tag") {
 					this.locus_tag=value.replace(/(^"|"$)/g, '');
 					}
+				else if ((variable=="color") || (variable=="colour")) {
+					var colour_value=+value.replace(/(^"|"$)/g, '');
+					
+					if (!isNaN(colour_value)){
+						if (colour_value<14 && colour_value>-1){
+							this.fill=artemis_colours[colour_value];
+							//console.log(this.ID, this.product, this.fill, colour_value);
+						}
+					}
+				}
 		}
 		
 		
-	}
+	};
 		
 		
 	// Sets the coordinates of the arrow feature
@@ -591,6 +715,7 @@
 		this.valid = true; // when set to false, the canvas will redraw everything
 		this.arrows = []; // the collection of things to be drawn
 		this.blocks = []; // the collection of things to be drawn
+		this.taxa = {}
 		this.heatblocks = []; // the collection of things to be drawn
 		this.depths = []; // the collection of things to be drawn
 		this.dragging = false; // Keep track of when we are dragging
@@ -598,6 +723,8 @@
 		this.selection = [];
 		this.dragoffx = 0; // See mousedown and mousemove events for explanation
 		this.dragoffy = 0;
+		this.scrolltimeout=100;
+		this.timeoflastscroll=new Date().getTime();
 		// **** Then events! ****
 		// This is an example of a closure!
 		// Right here "this" means the CanvasState. But we are making events on the Canvas itself,
@@ -705,6 +832,8 @@
 				var my = mouse.y;
 				var dragOffsetx = mx - myState.dragoffx;
 				var dragOffsety = my - myState.dragoffy;
+				oldstart=start;
+				oldend=end;
 				
 				var length=end-start
 				
@@ -724,15 +853,26 @@
 				}
 			    myState.dragoffx = mx;
 				myState.dragoffy = my;
-				
-				myState.valid = false; // Something's dragging so we must redraw
+				if (oldstart!=start || oldend!=end){
+					myState.valid = false;
+				}
+				//myState.valid = false; // Something's dragging so we must redraw
 				return;
 			}
 		}, true);
 		
 		
 		function MouseScroll (e) {
+			var newtime = new Date().getTime();
 			
+			//console.log(myState.timeoflastscroll, newtime)
+			
+			if (newtime-myState.timeoflastscroll<myState.scrolltimeout){
+				return;
+			}
+			else {
+				myState.timeoflastscroll=newtime;
+			}
 			e.preventDefault();
 			var mouse = myState.getMouse(e);
 			var mx = mouse.x;
@@ -741,7 +881,8 @@
 		    var mousey = my - canvas.offsetTop;
 			
 			var delta = 0;
-			
+			var oldstart=start;
+			var oldend=end;
 			
 	        if (!e){ /* For IE. */
 	            e = window.event;
@@ -755,6 +896,8 @@
 	                 */
 	                delta = -e.detail/3;
 	        }
+			
+			//console.log(delta);
 			
 			if (delta>0){
 				delta=1;	
@@ -806,8 +949,9 @@
 			}
 		    
 		    xscalingfactor=canvaslength/(end-start)
-
-			myState.valid = false;
+			if (oldstart!=start || oldend!=end){
+				myState.valid = false;
+			}
 	
 		}
 		
@@ -824,84 +968,7 @@
            }
             
             
-        var reader = new FileReader();
-		reader.onload = function(event) {
-		    var contents = event.target.result;
-		    var lines = contents.split("\n");
-		    var data_start=0;
-		    var data_end=0;
-		    var gubbins_data=[]
-		    var reference_data=[]
-		    for (i=0; i<lines.length; i++){
-			    var words=lines[i].split("\t");
-			    if (words[0][0]=="#"){
-			    	var hwords=words[0].split(" ");
-			    	if (hwords[0]=="##sequence-region") {
-			    		data_start=parseInt(hwords[2])-1;
-			    		data_end=parseInt(hwords[3]);
-			    	}
-			    }
-			    else {
-			    	if (words[1]=="GUBBINS"){
-			    		gubbins_data.push([parseInt(words[3]),parseInt(words[4]), "red", 0.7, "red", 0, words[8]])	
-			    	}
-			    	else if (words[1]=="EMBL"){
-			    		if (words[2]=="CDS"){
-			    			reference_data.push([parseInt(words[3]),parseInt(words[4]), words[6], "#318DCC", "black", 1, words[8]])
-			    		}
-			    		else if (words[2]=="tRNA"){
-			    			reference_data.push([parseInt(words[3]),parseInt(words[4]), words[6], "#53FFE9", "black", 1, words[8]])
-			    		}
-			    		else if (words[2]=="rRNA"){
-			    			reference_data.push([parseInt(words[3]),parseInt(words[4]), words[6], "#6F8899", "black", 1, words[8]])
-			    		}
-			    		
-			    		
-			    		//featurestart, featureend, direction, fill, stroke, strokeWidth, name	
-			    	}
-			  	}
-			 }
-			 
-			 start=data_start;
-			 end=data_end;
-			 genomelength=data_end-data_start;
-			 xscalingfactor=canvaslength/(end-start)
-			 if (gubbins_data.length>0) {
-			 	recombinations=gubbins_data;
-				 
-				 myState.blocks = [];
-				 for(recombinationnum = 0; recombinationnum < recombinations.length; recombinationnum++) {
-					myState.blocks.push(new Block(recombinations[recombinationnum][0], recombinations[recombinationnum][1], recombinations[recombinationnum][2], recombinations[recombinationnum][3], recombinations[recombinationnum][4], recombinations[recombinationnum][5], recombinations[recombinationnum][6]));
-				 }
-				 
-				 heatmap_blocks=ConvertBlockstoHeat(recombinations);
-				 myState.heatblocks = [];
-				 for(recombinationnum = 0; recombinationnum < heatmap_blocks.length; recombinationnum++) {
-					myState.heatblocks.push(new Block(heatmap_blocks[recombinationnum][0],heatmap_blocks[recombinationnum][1],heatmap_blocks[recombinationnum][2]));
-					
-				}
-				myState.depths=calculateBlockDepthPlot(myState.blocks);
-			myState.valid = false;
-			}
-			
-			if (reference_data.length>0) {
-				 
-				 myState.arrows = [];
-				 for(recombinationnum = 0; recombinationnum < reference_data.length; recombinationnum++) {
-					myState.arrows.push(new Arrow(reference_data[recombinationnum][0], reference_data[recombinationnum][1], reference_data[recombinationnum][2], reference_data[recombinationnum][3], reference_data[recombinationnum][4], reference_data[recombinationnum][5], reference_data[recombinationnum][6]));
-					myState.valid = false;
-				 }
-			myState.valid = false;	 
-			}
-			
-			
-			
-		}
-		
-		
-		reader.onerror = function(event) {
-		    console.error("File could not be read! Code " + event.target.error.code);
-		};
+        
 		var target = document.getElementById("canvas");
 
 		target.addEventListener("dragover", function(event) {
@@ -915,18 +982,131 @@
 		
 		    files = event.dataTransfer.files;
 		    
-		    if (files.length>1){
-		    	alert("Error: Only one file can be uploaded at a time");
+		    if (files.length>2){
+		    	alert("Error: Only two files can be uploaded at a time");
 		    	return;	
 		    }
-			myfile=files[0]
-			
-		    console.log("Filename: " + myfile.name);
-		    console.log("Type: " + myfile.type);
-		    console.log("Size: " + myfile.size + " bytes");
-		    
-		    
-			reader.readAsText(myfile);
+		    else {
+		    	console.log(files);
+		    	for (i=0; i<files.length; i++){
+		    		
+					var myfile=files[i];
+					
+				    console.log("Filename: " + myfile.name);
+				    console.log("Type: " + myfile.type);
+				    console.log("Size: " + myfile.size + " bytes");
+				    
+				    //set up a file reader
+				    var reader = new FileReader();
+				    //onload read the file
+					reader.onload = function(event) {
+					    var contents = event.target.result;
+					    var lines = contents.split("\n");
+					    var data_start=0;
+					    var data_end=0;
+					    var gubbins_data=[]
+					    var reference_data=[]
+					    
+					    for (i=0; i<lines.length; i++){
+						    var words=lines[i].split("\t");
+						    if (words[0][0]=="#"){
+						    	var hwords=words[0].split(" ");
+						    	//Read the length of the regions in the file. At the moment this only handles one feature. Should really read each and add them togehter plus needs to take these into account when calculating positions of features in those sequenceregions
+						    	if (hwords[0]=="##sequence-region") {
+						    		data_start=parseInt(hwords[2])-1;
+						    		data_end=parseInt(hwords[3]);
+						    	}
+						    }
+						    else {
+						    	//read gubbins features from gubbins files
+						    	if (words[1]=="GUBBINS"){
+						    		gubbins_data.push([parseInt(words[3]),parseInt(words[4]), "red", 0.7, "red", 0, words[8]])	
+						    	}
+						    	//read EMBL features from reference gff files
+						    	else if (words[1]=="EMBL" || words[1]=="artemis"){
+						    		if (words[2]=="CDS"){
+						    			reference_data.push([parseInt(words[3]),parseInt(words[4]), words[6], "#318DCC", "black", 1, words[8]])
+						    		}
+						    		else if (words[2]=="tRNA"){
+						    			reference_data.push([parseInt(words[3]),parseInt(words[4]), words[6], "#53FFE9", "black", 1, words[8]])
+						    		}
+						    		else if (words[2]=="rRNA"){
+						    			reference_data.push([parseInt(words[3]),parseInt(words[4]), words[6], "#6F8899", "black", 1, words[8]])
+						    		}
+						    		
+						    		
+						    		//featurestart, featureend, direction, fill, stroke, strokeWidth, name	
+						    	}
+						  	}
+						 }
+						 
+						 if (data_start==0 && data_end==0){
+						 	alert("gff file lacks sequence-region information")
+						 	return;
+						 }
+						 
+						 start=data_start;
+						 end=data_end;
+						 genomelength=data_end-data_start;
+						 xscalingfactor=canvaslength/(end-start)
+						 
+						 //console.log(gubbins_data)
+						 
+						 if (gubbins_data.length>0) {
+						 	recombinations=gubbins_data;
+							 
+							 myState.blocks = [];
+							 for(recombinationnum = 0; recombinationnum < recombinations.length; recombinationnum++) {
+								myState.blocks.push(new Block(recombinations[recombinationnum][0], recombinations[recombinationnum][1], recombinations[recombinationnum][2], recombinations[recombinationnum][3], recombinations[recombinationnum][4], recombinations[recombinationnum][5], recombinations[recombinationnum][6]));
+							 }
+							 
+							 heatmap_blocks=ConvertBlockstoHeat(recombinations);
+							 myState.heatblocks = [];
+							 for(recombinationnum = 0; recombinationnum < heatmap_blocks.length; recombinationnum++) {
+								myState.heatblocks.push(new Block(heatmap_blocks[recombinationnum][0],heatmap_blocks[recombinationnum][1],heatmap_blocks[recombinationnum][2]));
+								
+							}
+							myState.depths=calculateBlockDepthPlot(myState.blocks);
+							myState.taxa={}
+							for (i=0; i<myState.blocks.length; i++){
+								for (j=0; j<myState.blocks[i].taxa.length; j++){
+									myState.taxa[myState.blocks[i].taxa[j]]=true;
+								}
+							}
+						//console.log(myState.taxa)
+						var i=0;
+						for (var taxon in myState.taxa){
+							 if (myState.taxa.hasOwnProperty(taxon)) {
+								myState.taxa[taxon]=i;
+								i++;
+							 }
+						}
+						myState.valid = false;
+						}
+						
+						if (reference_data.length>0) {
+							 
+							 myState.arrows = [];
+							 for(recombinationnum = 0; recombinationnum < reference_data.length; recombinationnum++) {
+								myState.arrows.push(new Arrow(reference_data[recombinationnum][0], reference_data[recombinationnum][1], reference_data[recombinationnum][2], reference_data[recombinationnum][3], reference_data[recombinationnum][4], reference_data[recombinationnum][5], reference_data[recombinationnum][6]));
+								myState.valid = false;
+							 }
+						//we've read some reference data, so tell the brower to redraw
+						myState.valid = false;	 
+						}
+						
+						
+						
+					}
+					
+					
+					reader.onerror = function(event) {
+					    console.error("File could not be read! Code " + event.target.error.code);
+					};
+				    
+					reader.readAsText(myfile);
+		    	}
+			}
 		
 		}, false);
             
@@ -935,7 +1115,7 @@
 		// **** Options! ****
 		this.selectionColor = '#CC302E';
 		this.selectionWidth = 2;
-		this.interval = 30;
+		this.interval = 10;
 		setInterval(function() { myState.draw(); }, myState.interval);
 		
 		
@@ -975,6 +1155,7 @@
 			var blocks = this.blocks;
 			var heatblocks = this.heatblocks;
 			var depths = this.depths;
+			var taxa=this.taxa;
 			this.clear();
 			// ** Add stuff you want drawn in the background all the time here **
 			
@@ -1024,18 +1205,30 @@
 			}
 			
 			var l = blocks.length;
+			
+			ctx.save();
+			//changing globalApha changes the transparency of fills
+			ctx.globalAlpha = 0.7;
+			
+			var taxoncount=Object.size(taxa);
+			
 			for (var i = 0; i < l; i++) {
+				
 				blocks[i].set_xw()
 				var block = blocks[i];
+				//console.log(block)
 				// We can skip the drawing of elements that have moved off the screen:
 				if (block.x > this.width || block.y > this.height ||
 				block.x + block.w < 0 || block.y + block.h < 0) continue;
-				ctx.save();
-			    ctx.globalAlpha = block.fillAlpha;
-				blocks[i].draw(ctx);
-				ctx.restore();
+				
+				
+				blocks[i].draw_taxon(ctx, taxa, taxoncount);
+			    
+				
+				
 			}
-			
+			//restore the context so the alpha goes back to 1
+			ctx.restore();
 			var l = heatblocks.length;
 			for (var i = 0; i < l; i++) {
 				heatblocks[i].set_xw()
@@ -1057,7 +1250,7 @@
 				imageObj.onload = function() {
 					s.ctx.drawImage(imageObj, canvas.width/2-imageObj.width/2, canvas.height/2-imageObj.height/2);
 				};
-				imageObj.src = "/Users/sh16/Desktop/canvas/Upload-Folder-Ash-icon.png"
+				imageObj.src = "Upload-Folder-Ash-icon.png"
 			}
 			
 			if (blocks.length>0){
@@ -1103,7 +1296,7 @@
 		imageObj.onload = function() {
 			s.ctx.drawImage(imageObj, canvas.width/2-imageObj.width/2, canvas.height/2-imageObj.height/2);
 		};
-		imageObj.src = "/Users/sh16/Desktop/canvas/Upload-Folder-Ash-icon.png"
+		imageObj.src = "Upload-Folder-Ash-icon.png"
 		
 		//var features = [[50, 60, "f", "red", "black", 1, "gene1"], [150, 300, "f", "red", "black", 1, "gene2"], [400, 700, "f", "cyan", "black", 1, "gene3"],[900,1700, "r", "blue", "black", 1, "gene4"],[3000,4500, "none", "green", "black", 1, "misc_feature1"], [2000,2900, "f", "yellow", "black", 1, "gene5"], [20000,29000, "f", "yellow", "black", 1, "gene6"], [18000,19000, "f", "yellow", "black", 1, "gene7"]]	;
 		//for(featurenum = 0; featurenum < features.length; featurenum++) {
