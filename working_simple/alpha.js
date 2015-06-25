@@ -63,184 +63,39 @@
 //   }
 // }
 
-// function create_blocks_for_an_id(name) {
-//   var bheight = 10
-//   var xstart = Math.floor((Math.random() * 30) + 1);;
-//   var maxwidth = 700;
-//   for (var blocknum=1;blocknum<20;blocknum++) {
-//      blocklen = Math.floor((Math.random() * 100) + 1);
-//      addBlock(xstart,0,blocklen,bheight,1,name);
-//       xstart += blocklen + Math.floor((Math.random() * 100) + 1);
-//       if (xstart > maxwidth) {
-//         break
-//       }
-//   }
-// }
+function create_blocks_for_an_id(name) {
+  var bheight = 10
+  var xstart = Math.floor((Math.random() * 30) + 1);;
+  var maxwidth = 700;
+  for (var blocknum=1;blocknum<20;blocknum++) {
+     blocklen = Math.floor((Math.random() * 100) + 1);
+     addBlock(xstart,0,blocklen,bheight,1,name);
+      xstart += blocklen + Math.floor((Math.random() * 100) + 1);
+      if (xstart > maxwidth) {
+        break
+      }
+  }
+}
 
 // holds all our tab parsed blocks
 var blocks = [];
 
-// // Box object to hold data for all drawn rects
-// function Block() { this.x = 0; this.y = 0; this.w = 1; this.h = 1; this.fill = '#444444'; this.id=""}
+// Box object to hold data for all drawn rects
+function Block() { this.x = 0; this.y = 0; this.w = 1; this.h = 1; this.fill = '#444444'; this.id=""}
 
-// //Initialize a new Box, add it, and invalidate the canvas
-// function addBlock(x, y, w, h, fill, id) {
-//   var rect = new Block;
-//   rect.x = x;
-//   rect.y = y;
-//   rect.w = w
-//   rect.h = h;
-//   rect.fill = fill;
-//   rect.id = id || "unknown";
-//   blocks.push(rect);
-//   invalidate();
-// }
-
-function Block(featurestart, featureend, fill, fillAlpha, stroke, strokeWidth, info, taxa){
-    // This is a very simple and unsafe constructor.
-    // All we're doing is checking if the values exist.
-    // "x || 0" just means "if there is a value for x, use that. Otherwise use 0."
-    this.fill = fill || '#AAAAAA';
-    this.fillAlpha = fillAlpha || 1;
-    this.stroke = stroke || 'black';
-    this.strokeWidth = strokeWidth || 0;
-    this.info = info || '';
-    this.featurestart = featurestart || 0
-    this.featureend = featureend || 0
-    this.taxa = taxa || 'unknown'
-    this.x = 0;
-    this.y = 150;
-    this.w = 1;
-    this.h = 5;
+//Initialize a new Box, add it, and invalidate the canvas
+function addBlock(x, y, w, h, fill, id) {
+  var rect = new Block;
+  rect.x = x;
+  rect.y = y;
+  rect.w = w
+  rect.h = h;
+  rect.fill = fill;
+  rect.id = id || "unknown";
+  blocks.push(rect);
+  invalidate();
 }
 
-  // Sets the x and w of the block feature
-  Block.prototype.set_xw = function() {
-    this.x=viewport.xscalingfactor*(this.featurestart-viewport.start)+viewport.canvasstart;
-    this.w=viewport.xscalingfactor*(this.featureend-this.featurestart);
-  }
-
-  Block.prototype.set_yh = function() {
-    var fixit = 200
-    this.y=phylocanvas.branches[this.taxa].starty + phylocanvas.offsety + fixit; //- phylocanvas.canvas.canvas.height / 2;
-
-  }
-
-  // Draws this block to a given context
-  Block.prototype.draw = function(ctx) {
-
-    if (((this.featureend)<viewport.start) || (this.featurestart>viewport.end)){
-      return;
-    }
-    else
-    ctx.beginPath();
-    ctx.fillStyle = this.fill;
-    ctx.strokeStyle = this.stroke;
-    ctx.lineWidth = this.strokeWidth;
-
-    var cutstart=false;
-    var cutend=false;
-
-    if (this.x<viewport.canvasstart){
-      blockstart=viewport.canvasstart;
-      blocklength=this.w-(viewport.canvasstart-this.x)
-      cutstart=true;
-    }
-    else {
-      blockstart=this.x
-      blocklength=this.w
-    }
-    if (this.x+this.w>viewport.canvasend){
-      blocklength=viewport.canvasend-blockstart;
-      cutend=true;
-    }
-    else {
-      blocklength=blocklength
-    }
-
-    ctx.rect(blockstart, this.y, blocklength, this.h)
-    ctx.closePath();
-    ctx.fill();
-
-    ctx.setLineDash([2,2])
-    if (cutstart){
-      ctx.beginPath();
-
-      ctx.moveTo(viewport.canvasstart, this.y);
-      ctx.lineTo(viewport.canvasstart, this.y+this.h);
-      ctx.stroke();
-    }
-    if (cutend){
-      ctx.beginPath();
-      ctx.moveTo(viewport.canvasend, this.y);
-      ctx.lineTo(viewport.canvasend, this.y+this.h);
-      ctx.stroke();
-    }
-    ctx.setLineDash([])
-
-
-    if (this.strokeWidth>0){
-      ctx.stroke();
-    }
-  }
-
-
-function drawScale(ctx, xstart, xend, numticks) {
-
-  numticks = numticks || 6;
-
-  ctx.strokeStyle="black";
-  ctx.lineWidth=1;
-  ctx.beginPath();
-  var scalepos = 10
-  ctx.moveTo(xstart, scalepos);
-  ctx.lineTo(xend, scalepos);
-  ctx.stroke();
-
-  var tickdistance=((viewport.end-viewport.start)/(numticks-1));
-
-  for(ticknum= 0; ticknum < numticks; ticknum++){
-    var tickpos=((xend-xstart)/(numticks-1))*ticknum;
-    var tickval=(((viewport.end-viewport.start)/(numticks-1))*ticknum)+viewport.start;
-    if (tickval>=1000000) {
-
-      tickval=tickval/1000000
-
-      var tmptickdistance=tickdistance/1000000;
-      var roundto=2
-
-      while (tmptickdistance<0.01) {
-        roundto+=1
-        tmptickdistance=10*tmptickdistance
-      }
-      tickval=String(+ tickval.toFixed(roundto))+"M";
-
-      }
-    else if (tickval>=1000) {
-
-      tickval=tickval/1000
-      tickval=String(+ tickval.toFixed(2))+"k";
-      }
-    else {
-      tickval=String(+ tickval.toFixed(2));
-      }
-
-    ctx.beginPath();
-    ctx.moveTo(xstart+tickpos, scalepos);
-    ctx.lineTo(xstart+tickpos, scalepos+10);
-    ctx.stroke();
-    ctx.save();
-    ctx.translate( xstart+tickpos, scalepos+10 );
-    ctx.fillStyle = "black";
-    ctx.textBaseline="middle";
-    ctx.textAlign = "left";
-    ctx.rotate(Math.PI*0.5);
-    ctx.font="12px Helvetica";
-      ctx.fillText(tickval, 0, 0);
-      ctx.restore();
-
-  }
-}
 
 function drawBlocks() {
   // console.log("drawBlocks outer called");
@@ -273,42 +128,15 @@ function tree_stuff() {
 
 }
 
-function redraw_things(thiscanvas,ctx) {
-  if (global_tree_redrawn==true || viewport.somethings_changed==true) {
+function redraw_things() {
+  if (global_tree_redrawn==true) {
     console.log("hey... i should redraw things...")
-    console.log("viewport start: "+viewport.start+" end:"+viewport.end)
-    clear(ctx)
-    var l = gubbins.blocks_by_id.length;
-    for (var i = 0; i < l; i++) {
-      gubbins.blocks_by_id[i].set_xw()
-      gubbins.blocks_by_id[i].set_yh()
-      var block = gubbins.blocks_by_id[i];
-        // We can skip the drawing of elements that have moved off the screen:
-        if (block.x > thiscanvas.width || block.y > thiscanvas.height ||
-          block.x + block.w < 0 || block.y + block.h < 0) continue;
-          ctx.save();
-        ctx.globalAlpha = block.fillAlpha;
-        try {
-          block.draw(ctx);
-        }
-        catch (e) {
-          console.log(e)
-          console.log(block)
-        }
-        ctx.restore();
-      }
-
-   if (blocks.length>0){
-
-    drawBlockDepthPlot(ctx, gubbins.depths)
-   }
 
 
-    global_tree_redrawn=false;
-    viewport.somethings_changed=false;
-    // update_y_values_for_blocks()
-    // canvasValid=false // need to get rid of this
-    // drawBlocks()
+    global_tree_redrawn=false
+    update_y_values_for_blocks()
+    canvasValid=false // need to get rid of this
+    drawBlocks()
 
   }
 
@@ -350,21 +178,17 @@ function init() {
   // drawBlocks()
   // setInterval(drawBlocks, INTERVAL);
 
-  viewport = new interaction(canvas)
 
-  gubbins = new parse_gubbins()
+  // gubbins = new parse_gubbins()
   // xscalingfactor=canvas.width/(gubbins.end-gubbins.start)
-  // xscalingfactor = 0.00047579496576388356;
 
-  // create_blocks_for_an_id('Paris')
+  create_blocks_for_an_id('Paris')
 
   tree_stuff()
 
-  drawScale(ctx, viewport.canvasstart, viewport.canvasend);
+  setInterval(redraw_things,INTERVAL)
 
-  setInterval( function() {redraw_things(canvas,ctx); },INTERVAL)
-
-  drawBlocks()
+  // drawBlocks()
 
 
 }

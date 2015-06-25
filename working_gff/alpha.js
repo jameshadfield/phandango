@@ -116,23 +116,24 @@ function Block(featurestart, featureend, fill, fillAlpha, stroke, strokeWidth, i
 
   // Sets the x and w of the block feature
   Block.prototype.set_xw = function() {
-    this.x=viewport.xscalingfactor*(this.featurestart-viewport.start)+viewport.canvasstart;
-    this.w=viewport.xscalingfactor*(this.featureend-this.featurestart);
+    var start=0;
+    var canvasstart = 0;
+    this.x=xscalingfactor*(this.featurestart-start)+canvasstart;
+    this.w=xscalingfactor*(this.featureend-this.featurestart);
   }
 
   Block.prototype.set_yh = function() {
-    var fixit = 200
-    this.y=phylocanvas.branches[this.taxa].starty + phylocanvas.offsety + fixit; //- phylocanvas.canvas.canvas.height / 2;
+    this.y=phylocanvas.branches[this.taxa].starty + phylocanvas.offsety; //- phylocanvas.canvas.canvas.height / 2;
 
   }
 
   // Draws this block to a given context
   Block.prototype.draw = function(ctx) {
 
-    if (((this.featureend)<viewport.start) || (this.featurestart>viewport.end)){
-      return;
-    }
-    else
+    // if (((this.featureend)<start) || (this.featurestart>end)){
+    //   return;
+    // }
+    // else
     ctx.beginPath();
     ctx.fillStyle = this.fill;
     ctx.strokeStyle = this.stroke;
@@ -140,18 +141,20 @@ function Block(featurestart, featureend, fill, fillAlpha, stroke, strokeWidth, i
 
     var cutstart=false;
     var cutend=false;
+    var canvasstart=0
+    var canvasend=1200
 
-    if (this.x<viewport.canvasstart){
-      blockstart=viewport.canvasstart;
-      blocklength=this.w-(viewport.canvasstart-this.x)
+    if (this.x<canvasstart){
+      blockstart=canvasstart;
+      blocklength=this.w-(canvasstart-this.x)
       cutstart=true;
     }
     else {
       blockstart=this.x
       blocklength=this.w
     }
-    if (this.x+this.w>viewport.canvasend){
-      blocklength=viewport.canvasend-blockstart;
+    if (this.x+this.w>canvasend){
+      blocklength=canvasend-blockstart;
       cutend=true;
     }
     else {
@@ -166,14 +169,14 @@ function Block(featurestart, featureend, fill, fillAlpha, stroke, strokeWidth, i
     if (cutstart){
       ctx.beginPath();
 
-      ctx.moveTo(viewport.canvasstart, this.y);
-      ctx.lineTo(viewport.canvasstart, this.y+this.h);
+      ctx.moveTo(canvasstart, this.y);
+      ctx.lineTo(canvasstart, this.y+this.h);
       ctx.stroke();
     }
     if (cutend){
       ctx.beginPath();
-      ctx.moveTo(viewport.canvasend, this.y);
-      ctx.lineTo(viewport.canvasend, this.y+this.h);
+      ctx.moveTo(canvasend, this.y);
+      ctx.lineTo(canvasend, this.y+this.h);
       ctx.stroke();
     }
     ctx.setLineDash([])
@@ -184,63 +187,6 @@ function Block(featurestart, featureend, fill, fillAlpha, stroke, strokeWidth, i
     }
   }
 
-
-function drawScale(ctx, xstart, xend, numticks) {
-
-  numticks = numticks || 6;
-
-  ctx.strokeStyle="black";
-  ctx.lineWidth=1;
-  ctx.beginPath();
-  var scalepos = 10
-  ctx.moveTo(xstart, scalepos);
-  ctx.lineTo(xend, scalepos);
-  ctx.stroke();
-
-  var tickdistance=((viewport.end-viewport.start)/(numticks-1));
-
-  for(ticknum= 0; ticknum < numticks; ticknum++){
-    var tickpos=((xend-xstart)/(numticks-1))*ticknum;
-    var tickval=(((viewport.end-viewport.start)/(numticks-1))*ticknum)+viewport.start;
-    if (tickval>=1000000) {
-
-      tickval=tickval/1000000
-
-      var tmptickdistance=tickdistance/1000000;
-      var roundto=2
-
-      while (tmptickdistance<0.01) {
-        roundto+=1
-        tmptickdistance=10*tmptickdistance
-      }
-      tickval=String(+ tickval.toFixed(roundto))+"M";
-
-      }
-    else if (tickval>=1000) {
-
-      tickval=tickval/1000
-      tickval=String(+ tickval.toFixed(2))+"k";
-      }
-    else {
-      tickval=String(+ tickval.toFixed(2));
-      }
-
-    ctx.beginPath();
-    ctx.moveTo(xstart+tickpos, scalepos);
-    ctx.lineTo(xstart+tickpos, scalepos+10);
-    ctx.stroke();
-    ctx.save();
-    ctx.translate( xstart+tickpos, scalepos+10 );
-    ctx.fillStyle = "black";
-    ctx.textBaseline="middle";
-    ctx.textAlign = "left";
-    ctx.rotate(Math.PI*0.5);
-    ctx.font="12px Helvetica";
-      ctx.fillText(tickval, 0, 0);
-      ctx.restore();
-
-  }
-}
 
 function drawBlocks() {
   // console.log("drawBlocks outer called");
@@ -274,9 +220,8 @@ function tree_stuff() {
 }
 
 function redraw_things(thiscanvas,ctx) {
-  if (global_tree_redrawn==true || viewport.somethings_changed==true) {
+  if (global_tree_redrawn==true) {
     console.log("hey... i should redraw things...")
-    console.log("viewport start: "+viewport.start+" end:"+viewport.end)
     clear(ctx)
     var l = gubbins.blocks_by_id.length;
     for (var i = 0; i < l; i++) {
@@ -298,14 +243,10 @@ function redraw_things(thiscanvas,ctx) {
         ctx.restore();
       }
 
-   if (blocks.length>0){
-
-    drawBlockDepthPlot(ctx, gubbins.depths)
-   }
 
 
-    global_tree_redrawn=false;
-    viewport.somethings_changed=false;
+
+    global_tree_redrawn=false
     // update_y_values_for_blocks()
     // canvasValid=false // need to get rid of this
     // drawBlocks()
@@ -350,17 +291,14 @@ function init() {
   // drawBlocks()
   // setInterval(drawBlocks, INTERVAL);
 
-  viewport = new interaction(canvas)
 
   gubbins = new parse_gubbins()
   // xscalingfactor=canvas.width/(gubbins.end-gubbins.start)
-  // xscalingfactor = 0.00047579496576388356;
+  xscalingfactor = 0.00047579496576388356;
 
   // create_blocks_for_an_id('Paris')
 
   tree_stuff()
-
-  drawScale(ctx, viewport.canvasstart, viewport.canvasend);
 
   setInterval( function() {redraw_things(canvas,ctx); },INTERVAL)
 
