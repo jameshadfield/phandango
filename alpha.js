@@ -121,13 +121,22 @@ function Block(featurestart, featureend, fill, fillAlpha, stroke, strokeWidth, i
   }
 
   Block.prototype.set_yh = function() {
-    var fixit = 200
-    this.y=phylocanvas.branches[this.taxa].starty + phylocanvas.offsety + fixit; //- phylocanvas.canvas.canvas.height / 2;
+    var fixit = 300
+    try {
+      this.y=(phylocanvas.branches[this.taxa].starty + phylocanvas.offsety + fixit ) * phylocanvas.zoom; //- phylocanvas.canvas.canvas.height / 2;
+    }
+    catch(e) { // if the branch is no longer in the tree -- subtree for instance
+      this.y=0.9*HEIGHT
+    }
+
+
 
   }
 
   // Draws this block to a given context
   Block.prototype.draw = function(ctx) {
+
+    // console.log("viewport start:"+viewport.start+" end: "+viewport.end)
 
     if (((this.featureend)<viewport.start) || (this.featurestart>viewport.end)){
       return;
@@ -276,12 +285,18 @@ function tree_stuff() {
 function redraw_things(thiscanvas,ctx) {
   if (global_tree_redrawn==true || viewport.somethings_changed==true) {
     console.log("hey... i should redraw things...")
-    console.log("viewport start: "+viewport.start+" end:"+viewport.end)
+    // console.log("viewport start: "+viewport.start+" end:"+viewport.end)
+
     clear(ctx)
+
+    drawScale(ctx, viewport.canvasstart, viewport.canvasend);
+
+    drawBlockDepthPlot(ctx,gubbins.depths)
+
     var l = gubbins.blocks_by_id.length;
     for (var i = 0; i < l; i++) {
       gubbins.blocks_by_id[i].set_xw()
-      gubbins.blocks_by_id[i].set_yh()
+      gubbins.blocks_by_id[i].set_yh() // update them according to tree!
       var block = gubbins.blocks_by_id[i];
         // We can skip the drawing of elements that have moved off the screen:
         if (block.x > thiscanvas.width || block.y > thiscanvas.height ||
@@ -314,20 +329,20 @@ function redraw_things(thiscanvas,ctx) {
 
 }
 
-function update_y_values_for_blocks() {
-  var l = blocks.length;
-  for (var i = 0; i < l; i++) {
-    // debugger;
-    console.log("block y value changed from "+blocks[i].y+" to "+phylocanvas.branches[blocks[i].id].starty)
-    blocks[i].y = phylocanvas.branches[blocks[i].id].starty + phylocanvas.offsety; //- phylocanvas.canvas.canvas.height / 2;
+// function update_y_values_for_blocks() {
+//   var l = blocks.length;
+//   for (var i = 0; i < l; i++) {
+//     // debugger;
+//     // console.log("block y value changed from "+blocks[i].y+" to "+phylocanvas.branches[blocks[i].id].starty)
+//     blocks[i].y = phylocanvas.branches[blocks[i].id].starty + phylocanvas.offsety; //- phylocanvas.canvas.canvas.height / 2;
 
-      // in phylocanvas i think they do the following
-      // account for positioning and scroll
-      // y -= this.canvas.canvas.height / 2;
-      // y -= this.offsety;
+//       // in phylocanvas i think they do the following
+//       // account for positioning and scroll
+//       // y -= this.canvas.canvas.height / 2;
+//       // y -= this.offsety;
 
-  }
-}
+//   }
+// }
 
 
 
@@ -359,8 +374,6 @@ function init() {
   // create_blocks_for_an_id('Paris')
 
   tree_stuff()
-
-  drawScale(ctx, viewport.canvasstart, viewport.canvasend);
 
   setInterval( function() {redraw_things(canvas,ctx); },INTERVAL)
 

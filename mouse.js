@@ -16,7 +16,7 @@ function interaction(canvas) {
 		myState.canvasstart=canvas.width/50
 		myState.canvasend=canvas.width-(canvas.width/50)
 	}
-	var genomelength=3000000
+	var genomelength=6000000
 	var canvaslength=myState.canvasend-myState.canvasstart
 	var scale=1
 	myState.start=0
@@ -67,9 +67,9 @@ function interaction(canvas) {
 
 
 		// var arrows = myState.arrows;
-		// myState.dragoffx = mx;
-		// myState.dragoffy = my;
-		// myState.dragging = true;
+		myState.dragoffx = mx;
+		myState.dragoffy = my;
+		myState.dragging = true;
 		// var l = arrows.length;
 		// for (var i = l-1; i >= 0; i--) {
 		// 	var mySel = arrows[i];
@@ -117,6 +117,7 @@ function interaction(canvas) {
 
 	canvas.addEventListener('mousemove', function(e) {
 		if (myState.dragging){
+			// console.log("DRAGGING")
 			var mouse = myState.getMouse(e);
 			// We don't want to drag the object by its top-left corner, we want to drag it
 			// from where we clicked. Thats why we saved the offset and use it here
@@ -127,20 +128,29 @@ function interaction(canvas) {
 
 			var length=myState.end-myState.start
 
-			var dragproportionx=(dragOffsetx/canvaslength)*length
+			var dragproportionx=(dragOffsetx/canvaslength)*length // the fraction of the canvas moved by the mouse in this capture scaled by the length of the observed region (in genome co-ords)
+			// so in otherwords, the number of bases to shift things!
 
-			if (((myState.start-dragproportionx)>0) && ((end-dragproportionx)<genomelength)) {
-				myState.start=(myState.start-dragproportionx);
-				myState.end=(myState.end-dragproportionx);
-			}
-			else if ((end-dragproportionx)<genomelength) {
-				myState.start=0;
-				myState.end=myState.start+length;
-			}
-			else if ((myState.start-dragproportionx)>0) {
-				myState.end=genomelength;
-				myState.start=myState.end-length;
-			}
+			// console.log("moved "+dragOffsetx+" "+dragOffsety+" dragproportionx: "+dragproportionx)
+			myState.start=(myState.start-dragproportionx);
+			myState.end=(myState.end-dragproportionx);
+
+
+			// if (((myState.start-dragproportionx)>0) && ((myState.end-dragproportionx)<genomelength)) {
+			// 	// console.log("111")
+			// 	myState.start=(myState.start-dragproportionx);
+			// 	myState.end=(myState.end-dragproportionx);
+			// }
+			// else if ((myState.end-dragproportionx)<genomelength) {
+			// 	// console.log("222")
+			// 	myState.start=0;
+			// 	myState.end=myState.start+length;
+			// }
+			// else if ((myState.start-dragproportionx)>0) {
+			// 	// console.log("333")
+			// 	myState.end=genomelength;
+			// 	myState.start=myState.end-length;
+			// }
 		    myState.dragoffx = mx;
 			myState.dragoffy = my;
 
@@ -264,7 +274,16 @@ interaction.prototype.getMouse = function(e) {
 	mx = e.pageX - offsetX;
 	my = e.pageY - offsetY;
 	// We return a simple javascript object (a hash) with x and y defined
-	console.log("got mouse position x: "+mx+" y: "+my)
+	// console.log("got mouse position x: "+mx+" y: "+my)
+
+
+
+	// draw blue dot on mouse hit
+	ctx.beginPath();
+    ctx.arc(mx, my, 5, 0, 2 * Math.PI, false);
+    ctx.fillStyle = 'blue';
+    ctx.fill();
+    ctx.closePath();
 	return {x: mx, y: my};
 }
 
