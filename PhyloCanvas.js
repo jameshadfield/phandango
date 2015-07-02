@@ -1868,8 +1868,8 @@
      * Draw the frame
      */
     draw: function (forceRedraw) {
-      console.log("[Phylocanvas] function \"draw\" called with "+forceRedraw);
-      console.log("offsety is "+this.offsety+", canvas height is "+this.canvas.canvas.height)
+      // console.log("[Phylocanvas] function \"draw\" called with "+forceRedraw);
+      // console.log("offsety is "+this.offsety+", canvas height is "+this.canvas.canvas.height)
       global_tree_redrawn = true
       this.selectedNodes = [];
 
@@ -2492,6 +2492,9 @@
       }
     },
     scroll: function (e) {
+      // if(phylocanvas.leaves[0] e.offsetY)
+      // console.log(this.offsety, this.leaves[0].starty)
+
       var z = Math.log(this.zoom) / Math.log(10);
       this.setZoom(z + (e.detail < 0 || e.wheelDelta > 0 ? 0.12 : -0.12));
       e.preventDefault();
