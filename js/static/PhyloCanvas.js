@@ -1601,7 +1601,11 @@
         } else {
           node.canvas.fillStyle = node.colour;
         }
-
+        // console.log("Branch renderers called on node")
+        // console.log(node)
+        // console.log("Branch renderers called on canvas")
+        // console.log(node.canvas)
+        // console.log("starting at x: "+node.startx+" y: "+node.starty)
         node.canvas.strokeStyle = node.getColour();
         node.canvas.beginPath();
 
@@ -1868,8 +1872,8 @@
      * Draw the frame
      */
     draw: function (forceRedraw) {
-      console.log("[Phylocanvas] function \"draw\" called with "+forceRedraw);
-      console.log("offsety is "+this.offsety+", canvas height is "+this.canvas.canvas.height)
+      // console.log("[Phylocanvas] function \"draw\" called with "+forceRedraw);
+      // console.log("offsety is "+this.offsety+", canvas height is "+this.canvas.canvas.height)
       global_tree_redrawn = true
       this.selectedNodes = [];
 
@@ -1971,6 +1975,7 @@
           this.parseNwk(tree, name);
           this.draw();
           this.loadCompleted();
+          console.log("Tree loaded, all good")
         } else {
           this.loadError('PhyloCanvas did not recognise the string as a file or a newick or Nexus format string');
         }
