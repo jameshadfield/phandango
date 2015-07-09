@@ -13,9 +13,9 @@
 
 // following http://www.jackcallister.com/2015/02/26/the-flux-quick-start-guide.html
 
-var count = 0;
+var active_canvases = {gubbins:false, phylo:false};
 
-var SimpleStore = objectAssign({}, EventEmitter.prototype, {
+var CanvasOracle = objectAssign({}, EventEmitter.prototype, {
 	emitChange: function() {
 		this.emit('change');
 	},
@@ -29,24 +29,39 @@ var SimpleStore = objectAssign({}, EventEmitter.prototype, {
 	},
 
 	getAll: function() {
-		return count;
+		return active_canvases;
 
 	}
 
 })
 
-function _increment_count() {
-	count = count+1
+function _turn_on_canvas(canvasName) {
+	active_canvases[canvasName] = true;
 }
-
+function _turn_off_canvas(canvasName) {
+	active_canvases[canvasName] = false;
+}
+function _toggle_canvas(canvasName) {
+	if (active_canvases[canvasName]) {
+		active_canvases[canvasName] = false
+	} else {
+		active_canvases[canvasName] = true
+	}
+}
 // register this store with the dispatcher (here, not in actions)
 
 dispatcher.register(function(payload) {
-  if (payload.actionType === 'counter-increment') {
-    // simple_store.increment_current_count()
-    _increment_count();
-    SimpleStore.emitChange();
+  if (payload.actionType === 'turn-on-canvas') {
+    _turn_on_canvas(payload.canvasName);
+    CanvasOracle.emitChange();
   }
-
+  else if (payload.actionType === 'turn-off-canvas') {
+    _turn_off_canvas(payload.canvasName);
+    CanvasOracle.emitChange();
+  }
+  else if (payload.actionType === 'toggle-canvas') {
+    _toggle_canvas(payload.canvasName);
+    CanvasOracle.emitChange();
+  }
 })
 
