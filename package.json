@@ -1,0 +1,24 @@
+{
+  "_comment": "http://browsenpm.org/package.json",
+  "name": "JScandy",
+  "version": "0.1.0",
+  "scripts": {
+    "build": "./node_modules/.bin/browserify js/app.js -o js/bundle.js",
+    "start": "./node_modules/.bin/watchify js/app.js -o js/bundle.js"
+  },
+  "main": "lib/foo.js",
+  "repository": {
+  	"type": "git",
+  	"url": "https://github.com/jameshadfield/JScandy"
+  },
+  "bugs": {
+  	"url": "https://github.com/jameshadfield/JScandy/issues"
+  },
+  "dependencies": {
+    "browserify": "*",
+    "watchify": "*"
+  },
+  "preferGlobal": false,
+  "private": true,
+  "license": "MIT"
+}

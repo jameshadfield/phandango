@@ -1,11 +1,10 @@
 // canvas stuff here: http://jsfiddle.net/JMZc5/1/
 
-
-function getCountState() {
-	return {
-		count: SimpleStore.getAll()
-	};
-}
+var React = require('react');
+var GubbinsCanvas = require('./gubbins.react.js');
+var CanvasOracle = require('../stores/CanvasOracle.js');
+var PhyloReact = require('./phylo.react.js');
+var ButtonPanel = require('./ui.react.js');
 
 
 var Main_React_Element = React.createClass({displayName: "Main_React_Element",
@@ -53,7 +52,7 @@ var React_Live_Canvases = React.createClass({
 
 
 
-
+module.exports = Main_React_Element;
 
 React.render(React.createElement(Main_React_Element, null), document.getElementById('react') );
 

@@ -1,4 +1,7 @@
 
+var React = require('react');
+var SimpleStore = require('../stores/simple_counter.js');
+var Actions = require('../actions/actions.js');
 
 var ButtonPanel = React.createClass({
 	getInitialState: function() {
@@ -30,6 +33,11 @@ var ButtonPanel = React.createClass({
 });
 
 
+function getCountState() {
+	return {
+		count: SimpleStore.getAll()
+	};
+}
 
 var ButtonToPress = React.createClass({
 	handleClick: function() {
@@ -63,3 +71,5 @@ var LaunchPhyloCanvasButton = React.createClass({
 		);
 	}
 });
+
+module.exports = ButtonPanel;

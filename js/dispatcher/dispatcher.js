@@ -1,3 +1,5 @@
+
+
 /*
  * Copyright (c) 2014, Facebook, Inc.
  * All rights reserved.
@@ -12,6 +14,12 @@
  * https://facebook.github.io/flux/docs/dispatcher.html
  *
  */
+
+// could just use:
+// var Dispatcher = require('flux').Dispatcher;
+// module.exports = new Dispatcher();
+
+
 
 "use strict";
 
@@ -187,4 +195,4 @@ var _prefix = 'ID_';
   };
 
 
-// module.exports = Dispatcher;
+module.exports = new Dispatcher;

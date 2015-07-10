@@ -13,9 +13,13 @@
 
 // following http://www.jackcallister.com/2015/02/26/the-flux-quick-start-guide.html
 
-var count = 0;
+var EventEmitter = require('events').EventEmitter;
+var assign = require('object-assign');
+var Dispatcher = require('../dispatcher/dispatcher');
 
-var SimpleStore = objectAssign({}, EventEmitter.prototype, {
+var _count = 0;
+
+var SimpleStore = assign({}, EventEmitter.prototype, {
 	emitChange: function() {
 		this.emit('change');
 	},
@@ -29,19 +33,19 @@ var SimpleStore = objectAssign({}, EventEmitter.prototype, {
 	},
 
 	getAll: function() {
-		return count;
+		return _count;
 
 	}
 
 })
 
 function _increment_count() {
-	count = count+1
+	_count = _count+1
 }
 
 // register this store with the dispatcher (here, not in actions)
 
-dispatcher.register(function(payload) {
+Dispatcher.register(function(payload) {
   if (payload.actionType === 'counter-increment') {
     // simple_store.increment_current_count()
     _increment_count();
@@ -50,3 +54,4 @@ dispatcher.register(function(payload) {
 
 })
 
+module.exports = SimpleStore;

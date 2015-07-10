@@ -13,9 +13,13 @@
 
 // following http://www.jackcallister.com/2015/02/26/the-flux-quick-start-guide.html
 
+var EventEmitter = require('events').EventEmitter;
+var assign = require('object-assign');
+var Dispatcher = require('../dispatcher/dispatcher');
+console.log(Dispatcher)
 var active_canvases = {gubbins:false, phylo:false};
 
-var CanvasOracle = objectAssign({}, EventEmitter.prototype, {
+var CanvasOracle = assign({}, EventEmitter.prototype, {
 	emitChange: function() {
 		this.emit('change');
 	},
@@ -50,7 +54,7 @@ function _toggle_canvas(canvasName) {
 }
 // register this store with the dispatcher (here, not in actions)
 
-dispatcher.register(function(payload) {
+Dispatcher.register(function(payload) {
   if (payload.actionType === 'turn-on-canvas') {
     _turn_on_canvas(payload.canvasName);
     CanvasOracle.emitChange();
@@ -65,3 +69,4 @@ dispatcher.register(function(payload) {
   }
 })
 
+module.exports = CanvasOracle;

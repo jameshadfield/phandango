@@ -1,5 +1,5 @@
-
-
+var React = require('react');
+var CanvasOracle = require('../stores/CanvasOracle.js');
 
 var GubbinsCanvas = React.createClass({displayName: "displayName",
 
@@ -46,3 +46,4 @@ var GubbinsCanvas = React.createClass({displayName: "displayName",
 });
 
 
+module.exports = GubbinsCanvas;

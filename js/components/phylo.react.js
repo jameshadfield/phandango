@@ -1,13 +1,17 @@
 
+var React = require('react');
+var PhyloStore = require('../stores/Phylo.js');
+var PhyloCanvas = require('../static/PhyloCanvas.js');
+
 var PhyloReact = React.createClass({displayName: "displayName",
 	getInitialState: function() {
 		return {tree_string : PhyloStore.getAll()};
 	},
 
  componentDidMount: function() { // Invoked once, immediately after the initial rendering
-	PhyloStore.addChangeListener(this._onChange_phylo_react);
-  this._start_phylocanvas()
-},
+ 	PhyloStore.addChangeListener(this._onChange_phylo_react);
+ 	this._start_phylocanvas()
+ },
 
  _start_phylocanvas: function() {
     // global_div_object = this.getDOMNode();
@@ -16,15 +20,17 @@ var PhyloReact = React.createClass({displayName: "displayName",
 		phylocanvas.setTreeType('rectangular')
 		phylocanvas.nodeAlign = true;
 		console.log("phylocanvas should be live on div... ")
-    console.log(this.getDOMNode())
-    console.log(phylocanvas)
- },
+		console.log(this.getDOMNode())
+		console.log(phylocanvas)
+	},
 
- _onChange_phylo_react: function() {
+	_onChange_phylo_react: function() {
 	 null; // nothing yet
- },
+	},
 
- render: function() {
+	render: function() {
 		return React.createElement("div", {width:400, height: 800,id: "phyloDiv"});
 	}
 });
+
+module.exports = PhyloReact;
