@@ -54,5 +54,5 @@ var React_Live_Canvases = React.createClass({
 
 module.exports = Main_React_Element;
 
-React.render(React.createElement(Main_React_Element, null), document.getElementById('react') );
+// React.render(React.createElement(Main_React_Element, null), document.getElementById('react') );
 

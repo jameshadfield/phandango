@@ -4,22 +4,26 @@
   <meta charset="utf-8">
   <title>JScandy</title>
   <link href="http://fonts.googleapis.com/css?family=Muli" rel="stylesheet" type="text/css">
+  <!-- READ THIS RE: SIZING OF CANVASES -->
+  <!-- http://stackoverflow.com/questions/5034529/size-of-html5-canvas-via-css-versus-element-attributes -->
   <style type="text/css">
     canvas { border: 1px solid black; }
     #phyloDiv {
-      height: 800px;
-      width: 490px;
+      height: 600px;
+      width: 300px;
       float: left;
     },
+    /* why does the next line not work?*/
     #gubbinsCanvas {
-      height: 800px;
-      width: 800px;
+      height: 100px;
+      width: 100px;
       float: right;
     };
   </style>
   <!-- <link rel="stylesheet" href="css/chatapp.css"> -->
 </head>
 <body>
+
   <section id="react"></section>
 
   <!-- the following should not be scripts but just a bundle build with webpack or browserify (with watchify for dev) or something-->
