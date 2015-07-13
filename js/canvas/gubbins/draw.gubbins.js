@@ -22,3 +22,6 @@ function draw(canvas, context, blocks) {
 }
 
 module.exports = draw;
+
+
+

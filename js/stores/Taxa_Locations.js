@@ -2,6 +2,13 @@ var EventEmitter = require('events').EventEmitter;
 var assign = require('object-assign');
 var Dispatcher = require('../dispatcher/dispatcher');
 
+// there is a bug in this file -- taxa_positions changes
+// between redraws
+// to recreate: comment out set_y_values() from payload.actionType === 'phylocanvas_changed'
+// and when gubbins zooms / pans, the y-values get all screwd up
+// i've had to hack it to update the y-values every time gubbins pans and zooms
+// but clearly this shouldn't be necessary
+
 var taxa_positions = [];
 
 var Taxa_Locations = assign({}, EventEmitter.prototype, {
@@ -51,6 +58,7 @@ var Taxa_Locations = assign({}, EventEmitter.prototype, {
 
 })
 
+
 function set_y_values() {
 	console.log('[DEV] nodes selected --> set_y_values() in Taxa_Loactions store');
 	var dummy_list_of_taxa = []; // dev only
@@ -66,6 +74,7 @@ function set_y_values() {
 		y += phylocanvas.canvas.canvas.height / 2;
 		// y = y / phylocanvas. WHAT IS PIXELRATIO???? TO DO
 		// y += // y = (y - getY(this.canvas.canvas) + window.pageYOffset); // account for positioning and scroll
+		y = y / 2; // RETINA PIXEL RATIO
 		return y;
 	};
 
@@ -83,11 +92,12 @@ Dispatcher.register(function(payload) {
     get_taxa_and_y_coord();
     Taxa_Locations.emitChange();
   }
-})
-
-// TESTING ONLY
-Dispatcher.register(function(payload) {
-  if (payload.actionType === 'phylocanvas_nodes_selected') {
+  // TESTING ONLY
+  else if (payload.actionType === 'phylocanvas_nodes_selected') {
+    set_y_values();
+    Taxa_Locations.emitChange();
+  }
+  else if (payload.actionType === 'phylocanvas_changed') {
     set_y_values();
     Taxa_Locations.emitChange();
   }

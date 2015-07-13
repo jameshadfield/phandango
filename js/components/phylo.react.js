@@ -11,7 +11,7 @@ var PhyloReact = React.createClass({displayName: "displayName",
 
 	componentDidMount: function() { // Invoked once, immediately after the initial rendering
 		// if anything ever changed in PhyloStore then we could make it do something...
-		PhyloStore.addChangeListener(this._onChange_phylo_react);
+		// PhyloStore.addChangeListener(this._onChange_phylo_react);
 		this._start_phylocanvas()
 
 	},
@@ -38,12 +38,21 @@ var PhyloReact = React.createClass({displayName: "displayName",
 
 		document.getElementById("phyloDiv").addEventListener('subtree', function(e){Actions.phylocanvas_subtree_drawn(e.node)}, false);
 
+		// the following is not ideal
+		// following commit 835228f222e2917d22b31ade17b6ccc79cd1721f
+		// phylocanvas should trigger an event when it actually redraws something
+		phylocanvas.on('mousewheel', function(){
+			Actions.phylocanvas_changed()
+		})
+		phylocanvas.on('mousemove', function(){
+			Actions.phylocanvas_changed()
+		})
 
 	},
 
-	_onChange_phylo_react: function() {
-	 null; // nothing yet
-	},
+	// _onChange_phylo_react: function() {
+	//  null; // nothing yet
+	// },
 
 	render: function() {
 		return React.createElement("div", {id: "phyloDiv"});

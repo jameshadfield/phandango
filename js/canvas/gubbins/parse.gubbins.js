@@ -1,4 +1,4 @@
-// does not require anything I don't think.
+ // does not require anything I don't think.
 // This module exports the parse_gff function
 // at the moment it reads a hardcoded gff
 
@@ -20,7 +20,7 @@ function Block(start_base, end_base, taxa, node, nll, snps){
     	this.fill = "blue";
     }
     this.fillAlpha = 1;
-    // the following are measured in pixels (and therefore unknown at the moment)
+    // the following are measured in pixels relative to the canvas (and therefore unknown at the moment)
     this.x1 = 0;
     this.x2 = 0;
     this.y1 = 0;
