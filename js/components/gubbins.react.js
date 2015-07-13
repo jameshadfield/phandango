@@ -3,7 +3,6 @@
 var React = require('react');
 var CanvasOracle = require('../stores/CanvasOracle.js');
 var gubbins = require('../canvas/gubbins/main.gubbins.js');
-console.log("require(main.gubbins.js) returns: ",gubbins);
 var GubbinsCanvas = React.createClass({displayName: "displayName",
 
   getInitialState: function() {
@@ -17,10 +16,9 @@ var GubbinsCanvas = React.createClass({displayName: "displayName",
   //Invoked immediately after the component's updates are flushed to the DOM. This method is not called for the initial render.
   componentDidUpdate: function() {
   	if (this.state.on) {
-
-
-	    var context = this.getDOMNode().getContext('2d');
-	    gubbins(context);
+	    // var context = this.getDOMNode().getContext('2d');
+      var canvas = this.getDOMNode();
+	    gubbinsInstance = new gubbins(canvas);
 	   }
   },
 
@@ -38,7 +36,7 @@ var GubbinsCanvas = React.createClass({displayName: "displayName",
   render: function() {
   	// console.log("Rendering GubbinsCanvas. ON??? "+this.state.on)
   	if (this.state.on) {
-  		return React.createElement("canvas", {width: 400, height: 600, id:"gubbinsCanvas"}); //
+  		return React.createElement("canvas", {width: 800, height: 800, id:"gubbinsCanvas"}); //
   	}
   	else {
   		return null

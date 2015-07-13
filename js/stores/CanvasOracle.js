@@ -17,7 +17,7 @@ var EventEmitter = require('events').EventEmitter;
 var assign = require('object-assign');
 var Dispatcher = require('../dispatcher/dispatcher');
 console.log(Dispatcher)
-var active_canvases = {gubbins:false, phylo:false};
+var active_canvases = {gubbins:true, phylo:true};
 
 var CanvasOracle = assign({}, EventEmitter.prototype, {
 	emitChange: function() {

@@ -39,7 +39,24 @@ module.exports = {
       actionType: 'loadTree'
       // tree file? tree string? pass this information through the Dispatcher and to a store
     })
+  },
+
+  phylocanvas_subtree_drawn: function(nodeID) {
+    console.log('[Action triggered] Subtree drawn from node '+nodeID+' and (but no store attached)');
+    Dispatcher.dispatch({
+      actionType: 'phylocanvas_subtree_drawn',
+      nodeID: nodeID
+    });
+  },
+
+  phylocanvas_nodes_selected: function(taxa) {
+    console.log('[Action triggered] Nodes '+taxa+' selected (but no store attached)');
+    Dispatcher.dispatch({
+      actionType: 'phylocanvas_nodes_selected',
+      taxa: taxa
+    });
   }
+
 
 
 };

@@ -7,7 +7,10 @@
 // then this method just calls blocks[i].draw()
 // but this would put the draw method inside parser.gubbins.js which is bad
 
-function draw(context, blocks) {
+function draw(canvas, context, blocks) {
+	// clear the canvas
+	context.clearRect(0, 0, canvas.width, canvas.height);
+
 	for (i=0; i<blocks.length; i++) {
 		context.save();
 		// context.beginPath() // does what?
