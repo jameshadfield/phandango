@@ -7,43 +7,33 @@
   <!-- READ THIS RE: SIZING OF CANVASES -->
   <!-- http://stackoverflow.com/questions/5034529/size-of-html5-canvas-via-css-versus-element-attributes -->
   <style type="text/css">
-    canvas { border: 1px solid black; }
+    /* canvas { border: 1px solid black; } */
     #phyloDiv {
-      height: 600px;
-      width: 300px;
+      height: 500px;
+      width: 30%;
       float: left;
-    },
-    /* why does the next line not work?*/
-    #gubbinsCanvas {
+    }
+    #BlankDivAboveTree {
       height: 100px;
-      width: 100px;
+      width: 30%;
+      float: left;
+    }
+    #GenomeAnnotation {
+      height: 100px;
+      width: 69%;
       float: right;
-    };
+    }
+    #gubbinsCanvas {
+      height: 500px;
+      width: 69%;
+      float: right;
+    }
   </style>
   <!-- <link rel="stylesheet" href="css/chatapp.css"> -->
 </head>
 <body>
 
   <section id="react"></section>
-
-  <!-- the following should not be scripts but just a bundle build with webpack or browserify (with watchify for dev) or something-->
-  <!--
-  <script src="js/static/objectAssign.js"></script>
-  <script src="js/static/react.0.13.3.js"></script>
-  <script src="js/static/EventEmitter.js"></script>
-  <script src="js/static/PhyloCanvas.js"></script>
-  <script src="js/dispatcher/dispatcher.js"></script>
-  <script src="js/app.js"></script>
-  <script src="js/stores/simple_counter.js"></script>
-  <script src="js/stores/CanvasOracle.js"></script>
-  <script src="js/stores/Phylo.js"></script>
-  <script src="js/components/ui.react.js"></script>
-  <script src="js/components/phylo.react.js"></script>
-  <script src="js/components/gubbins.react.js"></script>
-  <script src="js/components/main.react.js"></script>
-  <script src="js/actions/actions.js"></script>
-  -->
-
   <script src="js/bundle.js"></script>
 
 </body>

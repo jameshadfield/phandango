@@ -46,7 +46,7 @@ mouse_moves = function(canvas) {
 			// all we have to tell it is what % of the viewport (the canvas)
 			// we've just moved, and it will scale accordingly
 
-			Actions.genome_pan(dragOffsetx / canvas.width);
+			Actions.genome_pan(-dragOffsetx / canvas.width);
 			// WHY IS THE FOLLOWING NECESSARY????
 			Actions.phylocanvas_changed();
 

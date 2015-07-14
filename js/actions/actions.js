@@ -7,12 +7,6 @@ var Dispatcher = require('../dispatcher/dispatcher');
 
 
 module.exports = {
-  increase: function() {
-    Dispatcher.dispatch({
-      actionType: 'counter-increment'
-    });
-  },
-
   startCanvas: function(canvasName) {
     Dispatcher.dispatch({
       actionType: 'turn-on-canvas',
@@ -83,6 +77,15 @@ module.exports = {
   phylocanvas_changed: function(x) {
     Dispatcher.dispatch({
       actionType: 'phylocanvas_changed'
+    });
+  },
+
+  annotation_click: function(x,y) {
+    // console.log("action triggered")
+    Dispatcher.dispatch({
+      actionType: 'annotation_click',
+      mx: x,
+      my: y
     });
   }
 

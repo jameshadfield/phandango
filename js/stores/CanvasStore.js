@@ -16,9 +16,9 @@
 var EventEmitter = require('events').EventEmitter;
 var assign = require('object-assign');
 var Dispatcher = require('../dispatcher/dispatcher');
-var active_canvases = {gubbins:true, phylo:true};
+var active_canvases = {gubbins:true, phylo:true, annotation:true};
 
-var CanvasOracle = assign({}, EventEmitter.prototype, {
+var CanvasStore = assign({}, EventEmitter.prototype, {
 	emitChange: function() {
 		this.emit('change');
 	},
@@ -56,16 +56,16 @@ function _toggle_canvas(canvasName) {
 Dispatcher.register(function(payload) {
   if (payload.actionType === 'turn-on-canvas') {
     _turn_on_canvas(payload.canvasName);
-    CanvasOracle.emitChange();
+    CanvasStore.emitChange();
   }
   else if (payload.actionType === 'turn-off-canvas') {
     _turn_off_canvas(payload.canvasName);
-    CanvasOracle.emitChange();
+    CanvasStore.emitChange();
   }
   else if (payload.actionType === 'toggle-canvas') {
     _toggle_canvas(payload.canvasName);
-    CanvasOracle.emitChange();
+    CanvasStore.emitChange();
   }
 })
 
-module.exports = CanvasOracle;
+module.exports = CanvasStore;

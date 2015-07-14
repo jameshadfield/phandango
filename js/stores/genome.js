@@ -44,7 +44,7 @@ function pan(fracCanvasPan) {
 }
 function zoom(delta, fracInCanvas) {
 	var multiplier = 1.1; 	// each zoom shows X times as much / half as much of the viewport
-	console.log('ZOOM delta '+delta+' fracInCanvas '+fracInCanvas)
+	// console.log('ZOOM delta '+delta+' fracInCanvas '+fracInCanvas)
 	var bp_left_of_mx = fracInCanvas * (visible_genome[1] - visible_genome[0]);
 	var bp_right_of_mx = (visible_genome[1] - visible_genome[0]) - bp_left_of_mx;
 	var base_at_mx = bp_left_of_mx + visible_genome[0];

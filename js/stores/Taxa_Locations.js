@@ -60,7 +60,7 @@ var Taxa_Locations = assign({}, EventEmitter.prototype, {
 
 
 function set_y_values() {
-	console.log('[DEV] nodes selected --> set_y_values() in Taxa_Loactions store');
+	// console.log('[DEV] nodes selected --> set_y_values() in Taxa_Loactions store');
 	var dummy_list_of_taxa = []; // dev only
 	for (i=0; i<phylocanvas.leaves.length; i++) {
 		dummy_list_of_taxa.push( phylocanvas.leaves[i].id );

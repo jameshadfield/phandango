@@ -21,8 +21,10 @@ function gubbins(canvas) {
 
 	this.redraw = function() {
 		// trim_blocks() will limit blocks to our viewport and also associate the x and y values in pixels
-		var blocks = trim_blocks(raw_blocks, GenomeStore.getVisible(), myState.canvas)
-		draw(myState.canvas, myState.context, blocks);
+		var visible_genome = GenomeStore.getVisible()
+		var blocks = trim_blocks(raw_blocks, visible_genome, myState.canvas)
+		draw.clearCanvas(myState.canvas)
+		draw.drawBlocks(myState.context, blocks);
 	}
 
 	// whenever the Taxa_locations store changes (e.g. someones done something to the tree)
