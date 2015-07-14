@@ -10,6 +10,7 @@ var Dispatcher = require('../dispatcher/dispatcher');
 // but clearly this shouldn't be necessary
 
 var taxa_positions = [];
+var activeTaxa = [];
 
 var Taxa_Locations = assign({}, EventEmitter.prototype, {
 	emitChange: function() {
@@ -28,7 +29,20 @@ var Taxa_Locations = assign({}, EventEmitter.prototype, {
 		return taxa_positions;
 	},
 
-	getTaxaY: function(listOfTaxa) {
+	getTaxaY: function(listOfTaxaUnchecked) {
+		// var listOfTaxa = listOfTaxaUnchecked;
+		// the taxa coming in might be a subset of what's displayed by the tree
+		// or they might be nothing!
+		var listOfTaxa = []
+		for (var i=0; i<listOfTaxaUnchecked.length; i++) {
+			if (activeTaxa.indexOf(listOfTaxaUnchecked[i]) >= 0) {
+				listOfTaxa.push(listOfTaxaUnchecked[i]);
+			}
+		}
+		if (listOfTaxa.length===0) {
+			return null; // DONT DISPLAY ANYTHING
+		}
+
 		if (listOfTaxa.length===1) {
 			// blue
 			return (taxa_positions[listOfTaxa[0]]);
@@ -61,10 +75,12 @@ var Taxa_Locations = assign({}, EventEmitter.prototype, {
 
 function set_y_values() {
 	// console.log('[DEV] nodes selected --> set_y_values() in Taxa_Loactions store');
+
 	var dummy_list_of_taxa = []; // dev only
 	for (i=0; i<phylocanvas.leaves.length; i++) {
 		dummy_list_of_taxa.push( phylocanvas.leaves[i].id );
 	}
+	activeTaxa = dummy_list_of_taxa;
 	taxa_positions = []; // declared above. closure
 	var translate = function(y) {
 		// this. is. complicated.

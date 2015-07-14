@@ -62,6 +62,9 @@ function trim_blocks(raw_blocks, visible_genome_coords, canvas) {
 		// calculate the y-values
 		if (is_phylotree_active) {
 			var tmp = Taxa_Locations.getTaxaY(new_block.taxa)
+			if (tmp===null) {
+				continue;
+			}
 			new_block.y1 = tmp[0];
 			new_block.y2 = tmp[1];
 		}
