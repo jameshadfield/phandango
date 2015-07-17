@@ -19,13 +19,14 @@ var PhyloReact = React.createClass({displayName: "displayName",
 	_start_phylocanvas: function() {
 		// global_div_object = this.getDOMNode();
 		phylocanvas = new PhyloCanvas.Tree(this.getDOMNode()) //GLOBAL
-		phylocanvas.load(this.state.tree_string);
 		phylocanvas.setTreeType('rectangular')
 		phylocanvas.nodeAlign = true;
 		// console.log("phylocanvas should be live on div... ")
 		// console.log(this.getDOMNode())
 		// console.log(phylocanvas)
 		this.attachListenersToPhylocanvas()
+		phylocanvas.load(this.state.tree_string);
+
 	},
 
 
@@ -37,6 +38,9 @@ var PhyloReact = React.createClass({displayName: "displayName",
 		document.getElementById("phyloDiv").addEventListener('selected', function(e){Actions.phylocanvas_nodes_selected(e.nodeIds)}, false);
 
 		document.getElementById("phyloDiv").addEventListener('subtree', function(e){Actions.phylocanvas_subtree_drawn(e.node)}, false);
+
+		document.getElementById("phyloDiv").addEventListener('loaded', function(e){Actions.phylocanvas_loaded()}, false);
+
 
 		// the following is not ideal
 		// following commit 835228f222e2917d22b31ade17b6ccc79cd1721f

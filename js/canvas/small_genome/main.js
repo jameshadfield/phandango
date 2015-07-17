@@ -33,6 +33,10 @@ function draw(canvas, genome_length, visible_genome) {
 	var xLineLength = parseInt(canvas.width*(1 - 2*horBufferFrac))
 	var xViewStart = parseInt(visible_genome[0]/genome_length*xLineLength + xStartLine);
 	var xViewLength = parseInt((visible_genome[1]-visible_genome[0])/genome_length*xLineLength);
+	if (xViewLength<1) {
+		xViewLength = 1
+	}
+
 
 	// draw a horisontal line
 	context.strokeStyle="black";

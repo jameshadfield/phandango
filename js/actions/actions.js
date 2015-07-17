@@ -79,7 +79,11 @@ module.exports = {
       actionType: 'phylocanvas_changed'
     });
   },
-
+  phylocanvas_loaded: function(x) {
+    Dispatcher.dispatch({
+      actionType: 'phylocanvas_loaded'
+    });
+  },
   annotation_click: function(x,y) {
     // console.log("action triggered")
     Dispatcher.dispatch({

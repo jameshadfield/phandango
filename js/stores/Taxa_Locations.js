@@ -90,13 +90,15 @@ function set_y_values() {
 		y += phylocanvas.canvas.canvas.height / 2;
 		// y = y / phylocanvas. WHAT IS PIXELRATIO???? TO DO
 		// y += // y = (y - getY(this.canvas.canvas) + window.pageYOffset); // account for positioning and scroll
-		y = y / 2; // RETINA PIXEL RATIO
+		// y = y / 2; // RETINA PIXEL RATIO
 		return y;
 	};
 
-
+	// var height_half = translate(phylocanvas.textSize/2);
 
 	for (i=0; i<dummy_list_of_taxa.length; i++) {
+		// var centery = translate(phylocanvas.branches[dummy_list_of_taxa[i]].centery);
+		// taxa_positions[dummy_list_of_taxa[i]] = [centery-height_half, centery+height_half];
 		taxa_positions[dummy_list_of_taxa[i]] = [translate(phylocanvas.branches[dummy_list_of_taxa[i]].miny), translate(phylocanvas.branches[dummy_list_of_taxa[i]].maxy)]
 	}
 };
@@ -114,6 +116,10 @@ Dispatcher.register(function(payload) {
     Taxa_Locations.emitChange();
   }
   else if (payload.actionType === 'phylocanvas_changed') {
+    set_y_values();
+    Taxa_Locations.emitChange();
+  }
+  else if (payload.actionType === 'phylocanvas_loaded') {
     set_y_values();
     Taxa_Locations.emitChange();
   }
