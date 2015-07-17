@@ -1,6 +1,7 @@
 var EventEmitter = require('events').EventEmitter;
 var assign = require('object-assign');
 var Dispatcher = require('../dispatcher/dispatcher');
+var Taxa_Locations = require('./Taxa_Locations.js')
 
 // this store is simple
 // it contains the length of the genome
@@ -8,6 +9,8 @@ var Dispatcher = require('../dispatcher/dispatcher');
 
 genome_length = undefined;
 visible_genome = [0,0];
+selected_taxa_y_coords = undefined;
+
 
 var GenomeStore = assign({}, EventEmitter.prototype, {
 	emitChange: function() {
@@ -24,6 +27,9 @@ var GenomeStore = assign({}, EventEmitter.prototype, {
 	},
 	getGenomeLength: function() {
 		return genome_length;
+	},
+	getSelectedTaxaY: function() {
+		return selected_taxa_y_coords;
 	}
 })
 
@@ -67,6 +73,27 @@ function zoom(delta, fracInCanvas) {
 }
 
 
+function set_min_max_of_selected_taxa(taxa) {
+	// console.log(taxa)
+	if (taxa===undefined) {
+		if (selected_taxa_y_coords===undefined) {
+			// do nothing
+		}
+		else {
+			selected_taxa_y_coords = undefined;
+			GenomeStore.emitChange()
+		}
+
+	} else {
+		var new_selected_taxa_y_coords = Taxa_Locations.getTaxaY(taxa)
+		if (selected_taxa_y_coords===undefined || new_selected_taxa_y_coords[0]!==selected_taxa_y_coords[0] && new_selected_taxa_y_coords[1]!==selected_taxa_y_coords[1]) {
+			selected_taxa_y_coords = new_selected_taxa_y_coords
+			GenomeStore.emitChange()
+		}
+	}
+}
+
+
 // register this store with the dispatcher (here, not in actions)
 
 Dispatcher.register(function(payload) {
@@ -81,6 +108,16 @@ Dispatcher.register(function(payload) {
   else if (payload.actionType === 'genome_zoom') {
   	zoom(payload.delta,payload.fracInCanvas)
   	GenomeStore.emitChange()
+  }
+  else if (payload.actionType === 'phylocanvas_nodes_selected') {
+  	// WAIT FOR TAXA_LOCATIONS TO UPDATE FIRST
+  	Dispatcher.waitFor([Taxa_Locations.dispatchToken]);
+  	set_min_max_of_selected_taxa(Taxa_Locations.getSelectedTaxa())
+  	// changes emitted in above fn
+  }
+  else if (payload.actionType === 'phylocanvas_changed') {
+	set_min_max_of_selected_taxa(Taxa_Locations.getSelectedTaxa())
+	// changes emitted in above fn
   }
 })
 

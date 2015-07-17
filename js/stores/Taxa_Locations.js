@@ -11,6 +11,7 @@ var Dispatcher = require('../dispatcher/dispatcher');
 
 var taxa_positions = [];
 var activeTaxa = [];
+var selectedTaxa = undefined;
 
 var Taxa_Locations = assign({}, EventEmitter.prototype, {
 	emitChange: function() {
@@ -27,6 +28,10 @@ var Taxa_Locations = assign({}, EventEmitter.prototype, {
 
 	getAll: function() {
 		return taxa_positions;
+	},
+
+	getSelectedTaxa: function() {
+		return selectedTaxa;
 	},
 
 	getTaxaY: function(listOfTaxaUnchecked) {
@@ -105,16 +110,13 @@ function set_y_values() {
 
 // register this store with the dispatcher (here, not in actions)
 
-Dispatcher.register(function(payload) {
+Taxa_Locations.dispatchToken = Dispatcher.register(function(payload) {
+// Dispatcher.register(function(payload) {
   if (payload.actionType === 'phylo_taxa_change') {
     get_taxa_and_y_coord();
     Taxa_Locations.emitChange();
   }
   // TESTING ONLY
-  else if (payload.actionType === 'phylocanvas_nodes_selected') {
-    set_y_values();
-    Taxa_Locations.emitChange();
-  }
   else if (payload.actionType === 'phylocanvas_changed') {
     set_y_values();
     Taxa_Locations.emitChange();
@@ -122,6 +124,11 @@ Dispatcher.register(function(payload) {
   else if (payload.actionType === 'phylocanvas_loaded') {
     set_y_values();
     Taxa_Locations.emitChange();
+  }
+  else if (payload.actionType === 'phylocanvas_nodes_selected') {
+  	selectedTaxa = payload.taxa.length===0 ? undefined : payload.taxa;
+  	// console.log("Taxa_Loactions store: selected taxa: "+selectedTaxa)
+  	// no need to emit a change, no view looks for this!
   }
 })
 

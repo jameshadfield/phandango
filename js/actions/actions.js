@@ -36,7 +36,7 @@ module.exports = {
   },
 
   phylocanvas_subtree_drawn: function(nodeID) {
-    console.log('[Action triggered] Subtree drawn from node '+nodeID+' and (but no store attached)');
+    // console.log('[Action triggered] Subtree drawn from node '+nodeID+'');
     Dispatcher.dispatch({
       actionType: 'phylocanvas_subtree_drawn',
       nodeID: nodeID
@@ -44,7 +44,7 @@ module.exports = {
   },
 
   phylocanvas_nodes_selected: function(taxa) {
-    console.log('[Action triggered] Nodes '+taxa+' selected (but no store attached)');
+    console.log('[Action triggered] Nodes '+taxa+' selected');
     Dispatcher.dispatch({
       actionType: 'phylocanvas_nodes_selected',
       taxa: taxa
@@ -91,7 +91,12 @@ module.exports = {
       mx: x,
       my: y
     });
-  }
+  },
+  selected_taxa_updated: function() {
+    Dispatcher.dispatch({
+      actionType: 'selected_taxa_updated'
+    });
+  },
 
 
 };

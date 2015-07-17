@@ -22,8 +22,17 @@ function drawBlocks(context, blocks) {
 
 }
 
+function highlightSelectedNodes(canvas,context,Yvalues) {
+	if (Yvalues!==undefined) {
+		context.save();
+		context.fillStyle = "#E0E0E0";
+		context.fillRect(0, Yvalues[0], canvas.width, Yvalues[1]-Yvalues[0]);
+		context.restore();
+	}
+}
 
-module.exports = {'drawBlocks': drawBlocks, 'clearCanvas': clearCanvas};
+
+module.exports = {'drawBlocks': drawBlocks, 'clearCanvas': clearCanvas, 'highlightSelectedNodes': highlightSelectedNodes};
 
 
 
