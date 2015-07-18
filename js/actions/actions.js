@@ -84,10 +84,19 @@ module.exports = {
       actionType: 'phylocanvas_loaded'
     });
   },
-  annotation_click: function(x,y) {
+  // annotation_click: function(x,y) {
+  //   // console.log("action triggered")
+  //   Dispatcher.dispatch({
+  //     actionType: 'annotation_click',
+  //     mx: x,
+  //     my: y
+  //   });
+  // },
+  click: function(id, x, y) {
     // console.log("action triggered")
     Dispatcher.dispatch({
-      actionType: 'annotation_click',
+      actionType: 'click',
+      id: id,
       mx: x,
       my: y
     });

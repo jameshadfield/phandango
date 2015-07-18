@@ -8,9 +8,8 @@ mouse_moves = function(canvas) {
 	canvas.addEventListener('mousedown', function(e) {
 		// console.log("MOUSE DOWN")
 		var mouse = myState.getMouse(e, canvas);
-		Actions.annotation_click(mouse.x, mouse.y);
+		Actions.click(canvas.id, mouse.x, mouse.y);
 	}, true);
-
 
 }
 
