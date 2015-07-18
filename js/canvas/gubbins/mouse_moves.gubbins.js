@@ -9,15 +9,15 @@ mouse_moves = function(canvas) {
 
 	canvas.addEventListener('mousedown', function(e) {
 		// console.log("MOUSE DOWN")
-	    var dragStart = e.clientX; // relative to window, not canvas!
+	    // var dragStart = e.clientX; // relative to window, not canvas!
 	    var mouse = myState.getMouse(e, canvas);
-	    // mx and my are in pixels relative to the canvas
-		var mx = mouse.x;
-		var my = mouse.y;
+	    // mouse.x and mouse.y are in pixels relative to the canvas
 
-		myState.dragoffx = mx;
-		myState.dragoffy = my;
+		myState.dragoffx = mouse.x;
+		myState.dragoffy = mouse.y;
 		myState.dragging = true;
+		Actions.click(canvas.id, mouse.x, mouse.y);
+
 	}, true);
 
 	canvas.addEventListener('mouseup', function(e) {
@@ -27,6 +27,7 @@ mouse_moves = function(canvas) {
 	canvas.addEventListener ("mouseout", function(e) {
 		myState.dragging = false;
 	}, true);
+
 
 	canvas.addEventListener('mousemove', function(e) {
 		if (myState.dragging){

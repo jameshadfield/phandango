@@ -30,6 +30,10 @@ function annotationTrack(canvas) {
 
 
 	this.checkForClick = function() {
+		if (RegionSelectedStore.getID()!==canvas.id) {
+			return;
+		}
+		console.log("Click taken by annotations")
 		var mouse = RegionSelectedStore.getClickXY()
 		// console.log("RegionSelectedStore change detected. Mouse x: "+mouse[0]+" y: "+mouse[1])
 		var visible_genome = GenomeStore.getVisible()

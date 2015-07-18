@@ -6,6 +6,7 @@ var GenomeStore = require('../../stores/genome.js')
 var trim_blocks = require('./trim_blocks.gubbins.js')
 var mouse_moves = require('./mouse_moves.gubbins.js')
 var Actions = require('../../actions/actions.js')
+var RegionSelectedStore = require('../../stores/RegionSelectedStore.js')
 
 
 function gubbins(canvas) {
@@ -18,14 +19,27 @@ function gubbins(canvas) {
 	// var genome_coords = gff_returned[0];
 	Actions.set_genome_length(gff_returned[0][1]);
 	var raw_blocks = gff_returned[1];
+	var blocks;
 
 	this.redraw = function() {
 		// trim_blocks() will limit blocks to our viewport and also associate the x and y values in pixels
 		var visible_genome = GenomeStore.getVisible()
-		var blocks = trim_blocks(raw_blocks, visible_genome, myState.canvas)
+		blocks = trim_blocks(raw_blocks, visible_genome, myState.canvas)
 		draw.clearCanvas(myState.canvas)
 		draw.highlightSelectedNodes(myState.canvas, myState.context, GenomeStore.getSelectedTaxaY())
 		draw.drawBlocks(myState.context, blocks);
+	}
+
+	this.checkForClick = function() {
+		if (RegionSelectedStore.getID()===canvas.id) {
+			// console.log("Click taken by gubbins")
+			var block = getSelectedBlock(blocks,RegionSelectedStore.getClickXY())
+			if (block!==undefined) {
+				myState.redraw()
+				draw.displayBlockInfo(myState.context, block);
+				// console.log("HIT")
+			}
+		}
 	}
 
 	// whenever the Taxa_locations store changes (e.g. someones done something to the tree)
@@ -35,10 +49,22 @@ function gubbins(canvas) {
 	// likewise, whenever anybody changes the genome-position of the viewport, we should re-draw
 	GenomeStore.addChangeListener(this.redraw);
 
+	// clicks
+	RegionSelectedStore.addChangeListener(this.checkForClick);
 
 	this.redraw();
 }
 
+function getSelectedBlock(blocks, mouse) {
+	// console.log(mouse)
+	for (i=0; i<blocks.length; i++) {
+		// console.log(blocks[i])
+		if ( mouse[0] >= blocks[i].x1 && mouse[0] <= blocks[i].x2 && mouse[1] >= blocks[i].y1 && mouse[1] <= blocks[i].y2) {
+			return blocks[i];
+		}
+	}
+	return undefined;
+}
 
 module.exports = gubbins;
 

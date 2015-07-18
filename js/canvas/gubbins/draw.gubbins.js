@@ -31,8 +31,34 @@ function highlightSelectedNodes(canvas,context,Yvalues) {
 	}
 }
 
+function displayBlockInfo(context, block) {
+	var hLine = 12; // http://stackoverflow.com/questions/5026961/html5-canvas-ctx-filltext-wont-do-line-breaks
+	var yDispPos = block.y1>50 ? block.y1-3*hLine : 50;
+	var xDispPos = parseInt(block.x1 + (block.x2-block.x1)/2)
+	context.fillStyle = "black";
+	context.textBaseline="middle";
+	context.textAlign = "center";
+	context.font="12px Helvetica";
+	var text = "SNPs: "+block.snps
+	context.fillText(text, xDispPos, yDispPos);
+	// var text = "Neg Log Likelihood: "+block.nll
+	var len = block.end_base - block.start_base
+	if (len>=1000) { 	// kb?
+		len=len/1000
+		len=String(+ len.toFixed(2))+"kb";
+	}
+	else {
+		len=String(+ len.toFixed(2))+"bp";
+	}
+	var text = "length: "+len
+	context.fillText(text, xDispPos, yDispPos+hLine);
+	var text = "n(taxa): "+block.taxa.length
+	context.fillText(text, xDispPos, yDispPos+2*hLine);
 
-module.exports = {'drawBlocks': drawBlocks, 'clearCanvas': clearCanvas, 'highlightSelectedNodes': highlightSelectedNodes};
+}
+
+
+module.exports = {'drawBlocks': drawBlocks, 'clearCanvas': clearCanvas, 'highlightSelectedNodes': highlightSelectedNodes, 'displayBlockInfo': displayBlockInfo};
 
 
 
