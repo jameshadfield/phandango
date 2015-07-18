@@ -12,16 +12,23 @@ mouse_moves = function(canvas) {
 	    // var dragStart = e.clientX; // relative to window, not canvas!
 	    var mouse = myState.getMouse(e, canvas);
 	    // mouse.x and mouse.y are in pixels relative to the canvas
-
-		myState.dragoffx = mouse.x;
+		myState.clickPositionX = mouse.x; // used to work out if a click should be fired
+		myState.dragoffx = mouse.x; // constantly updated under mousemove
 		myState.dragoffy = mouse.y;
 		myState.dragging = true;
-		Actions.click(canvas.id, mouse.x, mouse.y);
 
 	}, true);
 
 	canvas.addEventListener('mouseup', function(e) {
 		myState.dragging = false;
+		// how far have we moved? if it's within delta (i.e. )
+		// then consider it not to be a drag event (even tho it may have dragged)
+		var mouse = myState.getMouse(e, canvas);
+		console.log("original x: "+myState.clickPositionX+" now: "+mouse.x)
+		if (Math.abs(mouse.x - myState.clickPositionX)<5) {
+			Actions.click(canvas.id, mouse.x, mouse.y);
+		}
+		// console.log("UP")
 	}, true);
 
 	canvas.addEventListener ("mouseout", function(e) {
@@ -41,7 +48,7 @@ mouse_moves = function(canvas) {
 			var dragOffsety = my - myState.dragoffy;
 
 			// only go further if we're dragging more than 3 pixels!
-			// if (dragOffsetx>3) {return}
+			// if (dragOffsetx<3) {return} // DOESN'T WORK!
 
 			// we modify the genome store
 			// all we have to tell it is what % of the viewport (the canvas)

@@ -15,6 +15,7 @@ function annotationTrack(canvas) {
 	this.mouse_moves = new mouse_moves(canvas); // set up listeners
 
 	var arrows = parser.parse_gff();
+	this.currently_selected = undefined;
 
 	this.redraw = function() {
 		// trim_blocks() will limit blocks to our viewport and also associate the x and y values in pixels
@@ -25,7 +26,11 @@ function annotationTrack(canvas) {
 		draw.clearCanvas(myState.canvas);
 		draw.drawArrows(myState.context, current_arrows);
 		draw.drawScale(myState.context, myState.canvas.width, visible_genome, parseInt(myState.canvas.height/2));
-
+		if (myState.currently_selected!==undefined) {
+			// check it hasn't gone off the screen!
+			// draw
+			draw.drawBorderAndText(myState.context, myState.currently_selected, parseInt(myState.canvas.width/2), parseInt(myState.canvas.height/2));
+		}
 	}
 
 
@@ -33,18 +38,22 @@ function annotationTrack(canvas) {
 		if (RegionSelectedStore.getID()!==canvas.id) {
 			return;
 		}
-		console.log("Click taken by annotations")
+		// console.log("Click taken by annotations")
 		var mouse = RegionSelectedStore.getClickXY()
 		// console.log("RegionSelectedStore change detected. Mouse x: "+mouse[0]+" y: "+mouse[1])
 		var visible_genome = GenomeStore.getVisible()
 		var current_arrows = draw.get_arrows_in_scope(arrows, visible_genome, myState.canvas)
 		for (var i=0; i<current_arrows.length; i++) {
 			if ( mouse[0] >= current_arrows[i].x && mouse[0] <= (current_arrows[i].x + current_arrows[i].w) && mouse[1] >= current_arrows[i].y && mouse[1] <= (current_arrows[i].y + current_arrows[i].h)) {
+				myState.currently_selected = current_arrows[i];
 				myState.redraw();
-				draw.drawBorderAndText(myState.context, current_arrows[i], parseInt(myState.canvas.width/2), parseInt(myState.canvas.height/2));
+				// draw.drawBorderAndText(myState.context, current_arrows[i], parseInt(myState.canvas.width/2), parseInt(myState.canvas.height/2));
 				// console.log(current_arrows[i]);
 				break;
 			}
+			// nothing selected!
+			myState.currently_selected =  undefined;
+			myState.redraw();
 		}
 	}
 

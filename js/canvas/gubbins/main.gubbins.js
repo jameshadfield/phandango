@@ -20,25 +20,34 @@ function gubbins(canvas) {
 	Actions.set_genome_length(gff_returned[0][1]);
 	var raw_blocks = gff_returned[1];
 	var blocks;
+	this.selected_block = undefined;
 
 	this.redraw = function() {
 		// trim_blocks() will limit blocks to our viewport and also associate the x and y values in pixels
 		var visible_genome = GenomeStore.getVisible()
+		// we should work out if anything has actually changed -- kind of similar to react
+		// i.e. store the values of visible_genome and selected_block and,
+		// if they haven't changed, there's no need to redraw
+
 		blocks = trim_blocks(raw_blocks, visible_genome, myState.canvas)
 		draw.clearCanvas(myState.canvas)
 		draw.highlightSelectedNodes(myState.canvas, myState.context, GenomeStore.getSelectedTaxaY())
 		draw.drawBlocks(myState.context, blocks);
+		// console.log(blocks)
+		if (myState.selected_block!==undefined) {
+			// why does this not update? It should be a reference to the block, not a copy?
+			// because the block (inside )
+			draw.displayBlockInfo(myState.context, myState.selected_block);
+		}
 	}
 
 	this.checkForClick = function() {
 		if (RegionSelectedStore.getID()===canvas.id) {
 			// console.log("Click taken by gubbins")
-			var block = getSelectedBlock(blocks,RegionSelectedStore.getClickXY())
-			if (block!==undefined) {
-				myState.redraw()
-				draw.displayBlockInfo(myState.context, block);
-				// console.log("HIT")
-			}
+			myState.selected_block = getSelectedBlock(blocks,RegionSelectedStore.getClickXY())
+			// myState.selected_block.fill="orange";
+			// console.log(myState.selected_block)
+			myState.redraw() // will pick up the block :)
 		}
 	}
 

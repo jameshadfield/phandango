@@ -53,9 +53,11 @@ function trim_blocks(raw_blocks, visible_genome_coords, canvas) {
 		if (any_taxa_in_view===false) {continue};
 
 		// this is fucking stupid -- we need to clone the object instead
-		var new_block = new parser.Block( //start_base, end_base, taxa, node, nll, snps
-				raw_blocks[i].start_base, raw_blocks[i].end_base, raw_blocks[i].taxa, raw_blocks[i].node, raw_blocks[i].nll, raw_blocks[i].snps
-				)
+		// var new_block = new parser.Block( //start_base, end_base, taxa, node, nll, snps
+		// 		raw_blocks[i].start_base, raw_blocks[i].end_base, raw_blocks[i].taxa, raw_blocks[i].node, raw_blocks[i].nll, raw_blocks[i].snps
+		// 		)
+
+		var new_block = raw_blocks[i] // pass by reference
 		new_block.x1 = parseInt( (new_block.start_base - visible_genome_coords[0]) / bases_visible * canvas.width );
 		new_block.x2 = parseInt( (new_block.end_base - visible_genome_coords[0])  / bases_visible * canvas.width );
 
