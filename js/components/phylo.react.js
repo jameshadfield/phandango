@@ -1,34 +1,27 @@
 
 var React = require('react');
-var PhyloStore = require('../stores/Phylo.js');
+var RawDataStore = require('../stores/RawDataStore.js');
 var PhyloCanvas = require('../static/PhyloCanvas.js');
 var Actions = require('../actions/actions.js');
 
 var PhyloReact = React.createClass({displayName: "displayName",
-	getInitialState: function() {
-		return {tree_string : PhyloStore.getAll()};
-	},
 
 	componentDidMount: function() { // Invoked once, immediately after the initial rendering
-		// if anything ever changed in PhyloStore then we could make it do something...
-		// PhyloStore.addChangeListener(this._onChange_phylo_react);
-		this._start_phylocanvas()
-
-	},
-
-	_start_phylocanvas: function() {
-		// global_div_object = this.getDOMNode();
+		// initialise phylocanvas and basic info about how we want the tree to look
 		phylocanvas = new PhyloCanvas.Tree(this.getDOMNode()) //GLOBAL
 		phylocanvas.setTreeType('rectangular')
 		phylocanvas.nodeAlign = true;
-		// console.log("phylocanvas should be live on div... ")
-		// console.log(this.getDOMNode())
-		// console.log(phylocanvas)
 		this.attachListenersToPhylocanvas()
-		phylocanvas.load(this.state.tree_string);
-
+		// at the moment no tree is "loaded"
+		// we listen for an event from RawDataStore (i.e. tree file dropped)
+		RawDataStore.addChangeListener(function() {
+			console.log('phylo.react responding to store emission')
+			// the following is added to the event loop else we get Dispatch errors
+			setTimeout(function() {phylocanvas.load(RawDataStore.getTrees()[0]);},0);
+		});
 	},
 
+	shouldComponentUpdate: function() {return false},
 
 	attachListenersToPhylocanvas: function () {
 		// once phylocanvas is live we want to have a bunch of listeners which, when subtrees e.t.c. are selected they will update the store Taxa_Locations
@@ -40,7 +33,6 @@ var PhyloReact = React.createClass({displayName: "displayName",
 		document.getElementById("phyloDiv").addEventListener('subtree', function(e){Actions.phylocanvas_subtree_drawn(e.node)}, false);
 
 		document.getElementById("phyloDiv").addEventListener('loaded', function(e){Actions.phylocanvas_loaded()}, false);
-
 
 		// the following is not ideal
 		// following commit 835228f222e2917d22b31ade17b6ccc79cd1721f
@@ -54,11 +46,8 @@ var PhyloReact = React.createClass({displayName: "displayName",
 
 	},
 
-	// _onChange_phylo_react: function() {
-	//  null; // nothing yet
-	// },
-
 	render: function() {
+		console.log("RENDER")
 		return React.createElement("div", {id: "phyloDiv"});
 	}
 });

@@ -6,6 +6,7 @@ var CanvasStore = require('../stores/CanvasStore.js');
 var PhyloReact = require('./phylo.react.js');
 var ButtonPanel = require('./ui.react.js');
 var Extras = require('./extras.react.js');
+var Actions = require('../actions/actions.js')
 
 
 var Main_React_Element = React.createClass({displayName: "Main_React_Element",

@@ -34,6 +34,9 @@ var GenomeStore = assign({}, EventEmitter.prototype, {
 })
 
 function set_genome_length(x) {
+	if (genome_length!==undefined) {
+		console.error('warning: genome length changed from '+genome_length+'bp to '+x+'bp');
+	}
 	genome_length = x;
 	visible_genome = [0,x]; // to start with!
 }

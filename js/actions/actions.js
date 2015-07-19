@@ -101,11 +101,18 @@ module.exports = {
       my: y
     });
   },
+
   selected_taxa_updated: function() {
     Dispatcher.dispatch({
       actionType: 'selected_taxa_updated'
     });
   },
+
+  loadDefaultData: function() {
+    Dispatcher.dispatch({
+      actionType: 'loadDefaultData'
+    });
+  }
 
 
 };

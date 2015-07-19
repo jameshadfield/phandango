@@ -10,6 +10,7 @@ var ButtonPanel = React.createClass({
 				React.createElement(LaunchGubbinsCanvasButton, null),
 				React.createElement(LaunchPhyloCanvasButton, null),
 				React.createElement(LaunchAnnotationButton, null),
+				React.createElement(LoadDefaults, null),
 				React.createElement("h1",null,"")
 			)
 		)
@@ -49,5 +50,17 @@ var LaunchAnnotationButton = React.createClass({
 		);
 	}
 });
+
+var LoadDefaults = React.createClass({
+	handleClick: function() {
+		Actions.loadDefaultData();
+	},
+	render: function() {
+		return (
+			React.createElement("button", {onClick: this.handleClick}, "LOAD DEFAULT DATA")
+		);
+	}
+});
+
 
 module.exports = ButtonPanel;
