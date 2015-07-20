@@ -14,22 +14,31 @@ function annotationTrack(canvas) {
 	this.context = this.canvas.getContext('2d');
 	var myState = this;
 	this.mouse_moves = new mouse_moves(canvas); // set up listeners
-	var arrows
+	var arrows = undefined;
 	// var arrows = parser.parse_gff();
 	this.currently_selected = undefined;
 
 	this.load = function(gff_string) {
+		// console.log("annotations load running")
 		var parsed = parser.parse_gff(gff_string);
 		// this may well FAIL and, if so, we should return false or something
-		if (parsed===false) {return false}
-		console.log(parsed[0])
+		if (parsed===false) {
+			// console.log("annotation parsing failed")
+			return false
+		}
+		// console.log('annotation parsing successful')
 		arrows = parsed[1]
 		Actions.set_genome_length(parsed[0][1])
 		// this action will cause another redraw!
-		// this.redraw()
+		this.redraw()
 	}
 
 	this.redraw = function() {
+		// is anything loaded (else we can't redraw!)
+		if (arrows===undefined) {
+			return
+		}
+
 		// trim_blocks() will limit blocks to our viewport and also associate the x and y values in pixels
 		var visible_genome = GenomeStore.getVisible()
 		// console.log(arrows)

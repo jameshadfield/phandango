@@ -27,8 +27,11 @@ function gubbins(canvas) {
 	this.load = function(gff_string) {
 		var parsed = parser.parse_gff(gff_string);
 		// this may well FAIL and, if so, we should return false or something
-		if (parsed===false) {return false}
-		console.log(parsed[0])
+		if (parsed===false) {
+			// console.log("gubbins parsing failed")
+			return false
+		}
+		// console.log(parsed[0])
 		raw_blocks = parsed[1]
 		Actions.set_genome_length(parsed[0][1])
 		this.redraw()

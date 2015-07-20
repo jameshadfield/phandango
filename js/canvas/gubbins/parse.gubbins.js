@@ -33,7 +33,7 @@ function Block(start_base, end_base, taxa, node, nll, snps){
 // if we make this a bunch of call-backs, can we stop the browser from blocking?
 // Or is this so fast that we don't need to bother?
 function parse_gff(gff_string) {
-	console.log("*** parse_gff called ****")
+	console.log("*** gubbins gff parser called ****")
 	var genome_coords = null;
 	var lines = gff_string.split("\n") // TO DO
 	var blocks=[];
@@ -65,7 +65,12 @@ function parse_gff(gff_string) {
 	    	}
     	}
     }
-    return([genome_coords, blocks]);
+    if (blocks.length>0) {
+	    return([genome_coords, blocks]);
+	}
+	else {
+		return false;
+	}
 }
 
 // return_gubbins_string moved to DefaultData

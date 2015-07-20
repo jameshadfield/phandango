@@ -44,7 +44,7 @@ module.exports = {
   },
 
   phylocanvas_nodes_selected: function(taxa) {
-    console.log('[Action triggered] Nodes '+taxa+' selected');
+    // console.log('[Action triggered] Nodes '+taxa+' selected');
     Dispatcher.dispatch({
       actionType: 'phylocanvas_nodes_selected',
       taxa: taxa
@@ -112,8 +112,14 @@ module.exports = {
     Dispatcher.dispatch({
       actionType: 'loadDefaultData'
     });
-  }
+  },
 
+  files_dropped: function(files) {
+    Dispatcher.dispatch({
+      actionType: 'files_dropped',
+      files: files
+    });
+  }
 
 };
 

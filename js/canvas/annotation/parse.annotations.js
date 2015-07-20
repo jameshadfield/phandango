@@ -56,7 +56,7 @@ function Arrow(featurestart, featureend, direction, fill, stroke, strokeWidth, i
 }
 
 function parse_gff(gff_string) {
-	console.log("*** parse_gff called ****")
+	console.log("*** annotation gff parser called ****")
 	var genome_coords = null;
 	var lines = gff_string.split("\n")
 	// console.log(lines[0],lines[1],lines[10])
@@ -97,8 +97,12 @@ function parse_gff(gff_string) {
 			}
     	}
     }
-	// console.log(arrows)
-	return([genome_coords, arrows])
+    if (arrows.length>0) {
+		return([genome_coords, arrows])
+    }
+    else {
+    	return false
+    }
 }
 
 

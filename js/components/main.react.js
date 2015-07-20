@@ -17,6 +17,18 @@ var Main_React_Element = React.createClass({displayName: "Main_React_Element",
 	// Invoked once, immediately after the initial rendering
 	componentDidMount: function() {
 		CanvasStore.addChangeListener(this.blah);
+		console.log(this.getDOMNode())
+
+		this.getDOMNode().addEventListener("dragover", function(event) {
+		    event.preventDefault();
+		}, false);
+		this.getDOMNode().addEventListener("drop", function(event) {
+		    event.preventDefault();
+			var files = event.dataTransfer.files;
+			// if files.length>1 then do some carny
+			// apply trick to call multiple actions
+			Actions.files_dropped(files)
+		}, false);
 	},
 
 	blah: function() {
