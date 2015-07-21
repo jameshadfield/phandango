@@ -44,6 +44,7 @@ var Taxa_Locations = assign({}, EventEmitter.prototype, {
 				listOfTaxa.push(listOfTaxaUnchecked[i]);
 			}
 		}
+		// console.log(listOfTaxa)
 		if (listOfTaxa.length===0) {
 			return null; // DONT DISPLAY ANYTHING
 		}
@@ -55,6 +56,7 @@ var Taxa_Locations = assign({}, EventEmitter.prototype, {
 			// red
 			var minmax = taxa_positions[listOfTaxa[0]];
 			for (var i=1; i<listOfTaxa.length; i++) {
+				// console.log(taxa_positions[listOfTaxa[i]][0]+" -- "+taxa_positions[listOfTaxa[i]][1])
 				if (taxa_positions[listOfTaxa[i]][1] > minmax[1]) {
 					minmax[1] = taxa_positions[listOfTaxa[i]][1]
 				}
@@ -99,12 +101,11 @@ function set_y_values() {
 		return y;
 	};
 
-	// var height_half = translate(phylocanvas.textSize/2);
-
+	var height_half = phylocanvas.textSize/2 * phylocanvas.zoom;
 	for (i=0; i<dummy_list_of_taxa.length; i++) {
-		// var centery = translate(phylocanvas.branches[dummy_list_of_taxa[i]].centery);
-		// taxa_positions[dummy_list_of_taxa[i]] = [centery-height_half, centery+height_half];
-		taxa_positions[dummy_list_of_taxa[i]] = [translate(phylocanvas.branches[dummy_list_of_taxa[i]].miny), translate(phylocanvas.branches[dummy_list_of_taxa[i]].maxy)]
+		var centery = translate(phylocanvas.branches[dummy_list_of_taxa[i]].centery);
+		taxa_positions[dummy_list_of_taxa[i]] = [centery-height_half, centery+height_half];
+		// taxa_positions[dummy_list_of_taxa[i]] = [translate(phylocanvas.branches[dummy_list_of_taxa[i]].miny), translate(phylocanvas.branches[dummy_list_of_taxa[i]].maxy)]
 	}
 };
 
