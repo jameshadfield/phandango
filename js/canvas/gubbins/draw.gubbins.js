@@ -24,6 +24,8 @@ function drawBlocks(context, blocks) {
 
 function highlightSelectedNodes(canvas,context,Yvalues) {
 	if (Yvalues!==undefined) {
+		// console.log("gubbins background Y values")
+		// console.log(Yvalues)
 		context.save();
 		context.fillStyle = "#E0E0E0";
 		context.fillRect(0, Yvalues[0], canvas.width, Yvalues[1]-Yvalues[0]);

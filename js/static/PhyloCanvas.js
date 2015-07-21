@@ -2723,12 +2723,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      this.createContent(node);
 
-	      this.element.style.top = y + 'px';
-	      this.element.style.left = x + 'px';
+	      this.element.style.top = y + 12 + 'px';
+	      this.element.style.left = x + 5 + 'px';
 
 	      this.element.style.zIndex = 2000;
 	      this.element.style.display = 'block';
-	      this.element.style.backgroundColor = '#FFFFFF';
+	      this.element.style.backgroundColor = '#ddd';
+	      this.element.style.border = '1px solid #aaa';
 
 	      this.closed = false;
 	    }
