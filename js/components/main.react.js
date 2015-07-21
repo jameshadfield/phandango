@@ -6,8 +6,7 @@ var CanvasStore = require('../stores/CanvasStore.js');
 var PhyloReact = require('./phylo.react.js');
 var ButtonPanel = require('./ui.react.js');
 var Extras = require('./extras.react.js');
-var Actions = require('../actions/actions.js')
-
+var Actions = require('../actions/actions.js');
 
 var Main_React_Element = React.createClass({displayName: "Main_React_Element",
 	getInitialState: function() {
@@ -49,6 +48,29 @@ var Main_React_Element = React.createClass({displayName: "Main_React_Element",
 	}
 });
 
+window.onload = function() {
+	Actions.loadDefaultData();
+}
 
+window.onresize = function() {
+	var canvas = new Array();
+	canvas[0] = document.getElementById('GenomeAnnotation'),
+	canvas[1] = document.getElementById('gubbinsCanvas'),
+	canvas[2] = document.getElementById('BlankDivAboveTree');
+
+	for (var i = canvas.length - 1; i >= 0; i--) {
+		var width = canvas[i].clientWidth;
+		var height = canvas[i].clientHeight;
+		if (canvas[i].width != width ||
+		   canvas[i].height != height) {
+		 // Change the size of the canvas to match the size it's being displayed
+		 canvas[i].width = width;
+		 canvas[i].height = height;
+		 console.log(canvas[i].id, ' resized');
+		 // Trigger a change so that all the canvas is rendered
+		 Actions.phylocanvas_changed();
+		}
+	};
+}
 
 module.exports = Main_React_Element;
