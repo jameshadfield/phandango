@@ -95,7 +95,7 @@ function set_y_values() {
 		y += phylocanvas.canvas.canvas.height / 2;
 		// y = y / phylocanvas. WHAT IS PIXELRATIO???? TO DO
 		// y += // y = (y - getY(this.canvas.canvas) + window.pageYOffset); // account for positioning and scroll
-		y = y / 2; // RETINA PIXEL RATIO
+		// y = y / 2; // RETINA PIXEL RATIO
 		return y;
 	};
 

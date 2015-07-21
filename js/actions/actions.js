@@ -44,7 +44,7 @@ module.exports = {
   },
 
   phylocanvas_nodes_selected: function(taxa) {
-    console.log('[Action triggered] Nodes '+taxa+' selected');
+    // console.log('[Action triggered] Nodes '+taxa+' selected');
     Dispatcher.dispatch({
       actionType: 'phylocanvas_nodes_selected',
       taxa: taxa
@@ -101,12 +101,25 @@ module.exports = {
       my: y
     });
   },
+
   selected_taxa_updated: function() {
     Dispatcher.dispatch({
       actionType: 'selected_taxa_updated'
     });
   },
 
+  loadDefaultData: function() {
+    Dispatcher.dispatch({
+      actionType: 'loadDefaultData'
+    });
+  },
+
+  files_dropped: function(files) {
+    Dispatcher.dispatch({
+      actionType: 'files_dropped',
+      files: files
+    });
+  }
 
 };
 

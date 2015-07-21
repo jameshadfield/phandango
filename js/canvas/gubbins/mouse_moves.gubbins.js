@@ -24,7 +24,7 @@ mouse_moves = function(canvas) {
 		// how far have we moved? if it's within delta (i.e. )
 		// then consider it not to be a drag event (even tho it may have dragged)
 		var mouse = myState.getMouse(e, canvas);
-		console.log("original x: "+myState.clickPositionX+" now: "+mouse.x)
+		// console.log("original x: "+myState.clickPositionX+" now: "+mouse.x)
 		if (Math.abs(mouse.x - myState.clickPositionX)<5) {
 			Actions.click(canvas.id, mouse.x, mouse.y);
 		}

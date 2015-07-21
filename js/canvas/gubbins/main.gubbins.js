@@ -15,14 +15,32 @@ function gubbins(canvas) {
 	var myState = this;
 	this.mouse_moves = new mouse_moves(canvas); // set up listeners
 
-	var gff_returned = parser.parse_gff(); // tmp value as cant allocate array return in a single go :(
+	// var gff_returned = parser.parse_gff(); // tmp value as cant allocate array return in a single go :(
 	// var genome_coords = gff_returned[0];
-	Actions.set_genome_length(gff_returned[0][1]);
-	var raw_blocks = gff_returned[1];
+	// Actions.set_genome_length(gff_returned[0][1]);
+	// var raw_blocks = gff_returned[1];
+	var raw_blocks=undefined;
 	var blocks;
 	this.selected_block = undefined;
 
+
+	this.load = function(gff_string) {
+		var parsed = parser.parse_gff(gff_string);
+		// this may well FAIL and, if so, we should return false or something
+		if (parsed===false) {
+			// console.log("gubbins parsing failed")
+			return false
+		}
+		// console.log(parsed[0])
+		raw_blocks = parsed[1]
+		Actions.set_genome_length(parsed[0][1])
+		this.redraw()
+		// this action will cause a redraw!
+	}
+
 	this.redraw = function() {
+		// is anything actually loaded?
+		if (raw_blocks===undefined) {return false}
 		// trim_blocks() will limit blocks to our viewport and also associate the x and y values in pixels
 		var visible_genome = GenomeStore.getVisible()
 		// we should work out if anything has actually changed -- kind of similar to react
