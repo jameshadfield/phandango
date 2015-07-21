@@ -41,7 +41,8 @@ function set_genome_length(x) {
 	visible_genome = [0,x]; // to start with!
 }
 function pan(fracCanvasPan) {
-	if (visible_genome[0]===0 && visible_genome[1]===genome_length) {console.log("no pan (whole genome visible)"); return false}; //
+	if (visible_genome[0]===0 && visible_genome[1]===genome_length) {
+	console.log("no pan (whole genome visible)"); return false}; //
 	var bp_to_move = (visible_genome[1]-visible_genome[0]) * fracCanvasPan;
 	var newLeft = visible_genome[0] + bp_to_move;
 	var newRight = visible_genome[1] + bp_to_move;
@@ -77,7 +78,6 @@ function zoom(delta, fracInCanvas) {
 
 
 function set_min_max_of_selected_taxa(taxa) {
-	// console.log(taxa)
 	if (taxa===undefined) {
 		if (selected_taxa_y_coords===undefined) {
 			// do nothing
@@ -86,10 +86,10 @@ function set_min_max_of_selected_taxa(taxa) {
 			selected_taxa_y_coords = undefined;
 			GenomeStore.emitChange()
 		}
-
 	} else {
-		var new_selected_taxa_y_coords = Taxa_Locations.getTaxaY(taxa)
-		if (selected_taxa_y_coords===undefined || new_selected_taxa_y_coords[0]!==selected_taxa_y_coords[0] && new_selected_taxa_y_coords[1]!==selected_taxa_y_coords[1]) {
+		var new_selected_taxa_y_coords = [];
+		new_selected_taxa_y_coords = Taxa_Locations.getTaxaY(taxa)
+		if (selected_taxa_y_coords===undefined || (new_selected_taxa_y_coords[0]!==selected_taxa_y_coords[0] || new_selected_taxa_y_coords[1]!==selected_taxa_y_coords[1])) {
 			selected_taxa_y_coords = new_selected_taxa_y_coords
 			GenomeStore.emitChange()
 		}

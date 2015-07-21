@@ -66,7 +66,7 @@ window.onresize = function() {
 		 // Change the size of the canvas to match the size it's being displayed
 		 canvas[i].width = width;
 		 canvas[i].height = height;
-		 console.log(canvas[i].id, ' resized');
+		 // console.log(canvas[i].id, ' resized');
 		 // Trigger a change so that all the canvas is rendered
 		 Actions.phylocanvas_changed();
 		}

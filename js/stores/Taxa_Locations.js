@@ -9,7 +9,7 @@ var Dispatcher = require('../dispatcher/dispatcher');
 // i've had to hack it to update the y-values every time gubbins pans and zooms
 // but clearly this shouldn't be necessary
 
-var taxa_positions = [];
+var taxa_positions = {};
 var activeTaxa = [];
 var selectedTaxa = undefined;
 
@@ -44,6 +44,7 @@ var Taxa_Locations = assign({}, EventEmitter.prototype, {
 				listOfTaxa.push(listOfTaxaUnchecked[i]);
 			}
 		}
+
 		// console.log(listOfTaxa)
 		if (listOfTaxa.length===0) {
 			return null; // DONT DISPLAY ANYTHING
@@ -54,7 +55,10 @@ var Taxa_Locations = assign({}, EventEmitter.prototype, {
 			return (taxa_positions[listOfTaxa[0]]);
 		} else {
 			// red
-			var minmax = taxa_positions[listOfTaxa[0]];
+			var minmax = [];
+			minmax[0] = taxa_positions[listOfTaxa[0]][0];
+			minmax[1] = taxa_positions[listOfTaxa[0]][1];
+			// console.log('minmax', taxa_positions)
 			for (var i=1; i<listOfTaxa.length; i++) {
 				// console.log(taxa_positions[listOfTaxa[i]][0]+" -- "+taxa_positions[listOfTaxa[i]][1])
 				if (taxa_positions[listOfTaxa[i]][1] > minmax[1]) {
@@ -64,6 +68,7 @@ var Taxa_Locations = assign({}, EventEmitter.prototype, {
 					minmax[0] = taxa_positions[listOfTaxa[i]][0]
 				}
 			}
+			// console.log(minmax)
 			return minmax
 		}
 	},
@@ -81,14 +86,11 @@ var Taxa_Locations = assign({}, EventEmitter.prototype, {
 
 
 function set_y_values() {
-	// console.log('[DEV] nodes selected --> set_y_values() in Taxa_Loactions store');
-
-	var dummy_list_of_taxa = []; // dev only
-	for (i=0; i<phylocanvas.leaves.length; i++) {
-		dummy_list_of_taxa.push( phylocanvas.leaves[i].id );
+	activeTaxa = new Array(); // dev only
+	for (var i=0; i<phylocanvas.leaves.length; i++) {
+		activeTaxa.push( phylocanvas.leaves[i].id );
 	}
-	activeTaxa = dummy_list_of_taxa;
-	taxa_positions = []; // declared above. closure
+	taxa_positions = {}; // declared above. closure
 	var translate = function(y) {
 		// this. is. complicated.
 		// i'm sort of undoing the translateClick function really
@@ -98,14 +100,14 @@ function set_y_values() {
 		// y = y / phylocanvas. WHAT IS PIXELRATIO???? TO DO
 		// y += // y = (y - getY(this.canvas.canvas) + window.pageYOffset); // account for positioning and scroll
 		// y = y / 2; // RETINA PIXEL RATIO
-		return y;
+		return parseFloat(y);
 	};
 
-	var height_half = phylocanvas.textSize/2 * phylocanvas.zoom;
-	for (i=0; i<dummy_list_of_taxa.length; i++) {
-		var centery = translate(phylocanvas.branches[dummy_list_of_taxa[i]].centery);
-		taxa_positions[dummy_list_of_taxa[i]] = [centery-height_half, centery+height_half];
-		// taxa_positions[dummy_list_of_taxa[i]] = [translate(phylocanvas.branches[dummy_list_of_taxa[i]].miny), translate(phylocanvas.branches[dummy_list_of_taxa[i]].maxy)]
+	var height_half = parseFloat(phylocanvas.textSize)/2 * parseFloat(phylocanvas.zoom);
+	for (var i=0; i<activeTaxa.length; i++) {
+		var centery = translate(phylocanvas.branches[activeTaxa[i]].centery);
+		taxa_positions[activeTaxa[i]] = [centery-height_half, centery+height_half];
+		// taxa_positions[activeTaxa[i]] = [translate(phylocanvas.branches[activeTaxa[i]].miny), translate(phylocanvas.branches[dummy_list_of_taxa[i]].maxy)]
 	}
 };
 
@@ -130,6 +132,8 @@ Taxa_Locations.dispatchToken = Dispatcher.register(function(payload) {
   	selectedTaxa = payload.taxa.length===0 ? undefined : payload.taxa;
   	// console.log("Taxa_Loactions store: selected taxa: "+selectedTaxa)
   	// no need to emit a change, no view looks for this!
+    Taxa_Locations.emitChange();
+
   }
 })
 

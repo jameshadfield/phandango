@@ -49,6 +49,7 @@ function gubbins(canvas) {
 
 		blocks = trim_blocks(raw_blocks, visible_genome, myState.canvas)
 		draw.clearCanvas(myState.canvas)
+		// console.log(GenomeStore.getSelectedTaxaY())
 		draw.highlightSelectedNodes(myState.canvas, myState.context, GenomeStore.getSelectedTaxaY())
 		draw.drawBlocks(myState.context, blocks);
 		// console.log(blocks)
