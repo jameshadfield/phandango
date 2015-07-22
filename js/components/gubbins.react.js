@@ -1,10 +1,11 @@
 
 var React = require('react');
 var gubbins = require('../canvas/gubbins/main.gubbins.js');
+var graph = require('../canvas/plots/main.plot.js');
 var RawDataStore = require('../stores/RawDataStore.js');
 
 
-var GubbinsCanvas = React.createClass({displayName: "displayName",
+var GubbinsCanvasClass = React.createClass({displayName: "displayName",
 
 	componentDidMount: function() { // Invoked once, immediately after the initial rendering
 		// Canvas grid is set here, and we want this to be the same as the CSS...
@@ -36,9 +37,30 @@ var GubbinsCanvas = React.createClass({displayName: "displayName",
 	},
 
 	render: function() {
+
+
 		return React.createElement("canvas", {id:"gubbinsCanvas"}); //
 	}
 });
 
+var RecombGraphClass = React.createClass({displayName: "displayName",
 
-module.exports = GubbinsCanvas;
+    componentDidMount: function() { // Invoked once, immediately after the initial rendering
+        // Canvas grid is set here, and we want this to be the same as the CSS...
+        // the CSS scales the canvas, but we have to set the correct width and height here as well
+        // see
+        this.getDOMNode().setAttribute('width', window.getComputedStyle(this.getDOMNode()).width)
+        this.getDOMNode().setAttribute('height', window.getComputedStyle(this.getDOMNode()).height)
+        var recombGraph = new graph(this.getDOMNode(), "recombGraph");
+
+    },
+
+    render: function() {
+        return React.createElement("canvas", {id:"recombGraphDiv"}); //
+    }
+});
+
+
+module.exports = {'RecombGraphClass': RecombGraphClass, 'GubbinsCanvasClass': GubbinsCanvasClass};
+
+

@@ -1,4 +1,4 @@
- // does not require anything I don't think.
+var Actions = require('../../actions/actions.js')
 // This module exports the parse_gff function
 // at the moment it reads a hardcoded gff
 
@@ -66,6 +66,29 @@ function parse_gff(gff_string) {
 	    	}
     	}
     }
+
+    // the following can be a setTimeout i think...
+    if (blocks.length>0) {
+    	// console.log("STARTING PLOT CALC")
+    	// initialise array the correct length
+    	var plotYvalues = [];
+		for(var i = 0; i < genome_coords[1]; i++){
+		    plotYvalues.push(0);
+		}
+    	// var plotYvalues = Array.apply(null, Array(genome_coords[1])).map(Number.prototype.valueOf,0);
+
+    	// each block change plotYvalues :)
+    	for (var i=0; i<blocks.length; i++) {
+    		for (var j=blocks[i].start_base; j<=blocks[i].end_base; j++) {
+    			plotYvalues[j] += 1
+    		}
+    	}
+    	// console.log("FINISHED PLOT CALC")
+    	Actions.save_plotYvalues(plotYvalues, "recombGraph")
+
+    }
+
+
     if (blocks.length>0) {
 	    return([genome_coords, blocks]);
 	}

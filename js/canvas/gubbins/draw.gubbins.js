@@ -16,6 +16,7 @@ function drawBlocks(context, blocks) {
 		context.save();
 		// context.beginPath() // does what?
 		context.fillStyle = blocks[i].fill;
+		context.globalAlpha=0.3;
 		context.fillRect(blocks[i].x1, blocks[i].y1, blocks[i].x2-blocks[i].x1, blocks[i].y2-blocks[i].y1);
 		context.restore();
 	}
@@ -26,7 +27,7 @@ function highlightSelectedNodes(canvas,context,Yvalues) {
 	if (Yvalues!==undefined) {
 		// console.log("gubbins background Y values")
 		// console.log(Yvalues)
-		context.save();
+		context.save(); // http://html5.litten.com/understanding-save-and-restore-for-the-canvas-context/
 		context.fillStyle = "#E0E0E0";
 		context.fillRect(0, Yvalues[0], canvas.width, Yvalues[1]-Yvalues[0]);
 		context.restore();

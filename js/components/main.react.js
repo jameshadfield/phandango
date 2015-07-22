@@ -42,8 +42,13 @@ var Main_React_Element = React.createClass({displayName: "Main_React_Element",
 			react_elements.push( React.createElement(Extras.GenomeAnnotation, null) );
 		}
 		if (this.state.canvas_on_off.phylo)   { react_elements.push( React.createElement(PhyloReact,null) ) }
- 		if (this.state.canvas_on_off.gubbins) { react_elements.push( React.createElement(GubbinsCanvas,null) ) }
-		// console.log(react_elements)
+ 		if (this.state.canvas_on_off.gubbins) { react_elements.push( React.createElement(GubbinsCanvas.GubbinsCanvasClass,null) ) }
+
+ 		// gubbins / recombination line plot
+	 	// wrapped in a div
+ 		react_elements.push( React.createElement("div", {className: "graph_div"}, React.createElement(GubbinsCanvas.RecombGraphClass, null)) )
+
+		console.log(react_elements)
 		return ( React.createElement.apply(this, react_elements) )
 	}
 });
@@ -57,6 +62,7 @@ window.onresize = function() {
 	canvas[0] = document.getElementById('GenomeAnnotation'),
 	canvas[1] = document.getElementById('gubbinsCanvas'),
 	canvas[2] = document.getElementById('BlankDivAboveTree');
+	// canvas[3] = document.getElementById('recombGraphDiv');
 
 	for (var i = canvas.length - 1; i >= 0; i--) {
 		var width = canvas[i].clientWidth;
