@@ -3,7 +3,7 @@
 // at the moment it reads a hardcoded gff
 
 // Block: this is an object / container contstructor
-function Block(start_base, end_base, taxa, node, nll, snps){
+function Block(start_base, end_base, taxa, node, nll, snps, id){
     // This is a very simple and unsafe constructor.
     // All we're doing is checking if the values exist.
     // if this.node is false then it's a leaf (croucher's version would display blue)
@@ -25,6 +25,7 @@ function Block(start_base, end_base, taxa, node, nll, snps){
     this.x2 = 0;
     this.y1 = 0;
     this.y2 = 0;
+    this.id = id; // unique ID
 }
 
 
@@ -33,12 +34,12 @@ function Block(start_base, end_base, taxa, node, nll, snps){
 // if we make this a bunch of call-backs, can we stop the browser from blocking?
 // Or is this so fast that we don't need to bother?
 function parse_gff(gff_string) {
-	console.log("*** gubbins gff parser called ****")
+	// console.log("*** gubbins gff parser called ****")
 	var genome_coords = null;
 	var lines = gff_string.split("\n") // TO DO
 	var blocks=[];
 
-	for (i=0; i<lines.length; i++){
+	for (var i=0; i<lines.length; i++){
 		var words=lines[i].split("\t");
 		if (words[0][0]=="#"){
 			var hwords=words[0].split(" ");
@@ -58,8 +59,8 @@ function parse_gff(gff_string) {
 	    		var nll = lines[i].split("neg_log_likelihood=\"")[1].split("\"")[0];
 	    		var num_snps =  lines[i].split("snp_count=\"")[1].split("\"")[0];
 	    		blocks.push(
-	    			new Block( //start_base, end_base, taxa, node, nll, snps
-	    				words[3], words[4], taxa, node, nll, num_snps
+	    			new Block( //start_base, end_base, taxa, node, nll, snps, uniq_ID
+	    				words[3], words[4], taxa, node, nll, num_snps, i
 	    				)
 	    			)
 	    	}

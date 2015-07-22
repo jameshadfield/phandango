@@ -7,6 +7,7 @@ function small_genome(canvas) {
 	var myState = this;
 
 	this.redraw = function() {
+		// console.log("SMALL GENOME REDRAW")
 		var genome_length = GenomeStore.getGenomeLength();
 		var visible_genome = GenomeStore.getVisible()
 		clearCanvas(myState.canvas);

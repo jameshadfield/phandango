@@ -18,6 +18,7 @@ var data = {};
 
 var RawDataStore = assign({}, EventEmitter.prototype, {
 	emitChange: function() {
+		// console.log("raw data store store emission")
 		this.emit('change');
 	},
 	addChangeListener: function(callback) {

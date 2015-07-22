@@ -14,6 +14,7 @@ selected_taxa_y_coords = undefined;
 
 var GenomeStore = assign({}, EventEmitter.prototype, {
 	emitChange: function() {
+		// console.log("genome store emission")
 		this.emit('change');
 	},
 	addChangeListener: function(callback) {
@@ -34,12 +35,16 @@ var GenomeStore = assign({}, EventEmitter.prototype, {
 })
 
 function set_genome_length(x) {
-	if (genome_length!==undefined) {
-		console.error('warning: genome length changed from '+genome_length+'bp to '+x+'bp');
+	if (x!==genome_length) { //note that genome length may be currently undefined
+		if (genome_length!==undefined) {
+			console.error('warning: genome length changed from '+genome_length+'bp to '+x+'bp');
+		}
+		genome_length = x;
+		visible_genome = [0,x]; // any change resets this...
+	  	GenomeStore.emitChange()
 	}
-	genome_length = x;
-	visible_genome = [0,x]; // to start with!
 }
+
 function pan(fracCanvasPan) {
 	if (visible_genome[0]===0 && visible_genome[1]===genome_length) {
 	console.log("no pan (whole genome visible)"); return false}; //
@@ -52,8 +57,9 @@ function pan(fracCanvasPan) {
 	visible_genome = [newLeft, newRight];
 	return true;
 }
+
 function zoom(delta, fracInCanvas) {
-	var multiplier = 1.1; 	// each zoom shows X times as much / half as much of the viewport
+	var multiplier = 2; 	// each zoom shows X times as much / half as much of the viewport
 	// console.log('ZOOM delta '+delta+' fracInCanvas '+fracInCanvas)
 	var bp_left_of_mx = fracInCanvas * (visible_genome[1] - visible_genome[0]);
 	var bp_right_of_mx = (visible_genome[1] - visible_genome[0]) - bp_left_of_mx;

@@ -26,7 +26,7 @@ function annotationTrack(canvas) {
 			// console.log("annotation parsing failed")
 			return false
 		}
-		// console.log('annotation parsing successful')
+		console.log('annotation parsing successful')
 		arrows = parsed[1]
 		Actions.set_genome_length(parsed[0][1])
 		// this action will cause another redraw!
@@ -38,12 +38,12 @@ function annotationTrack(canvas) {
 		if (arrows===undefined) {
 			return
 		}
-
 		// trim_blocks() will limit blocks to our viewport and also associate the x and y values in pixels
 		var visible_genome = GenomeStore.getVisible()
 		// console.log(arrows)
 		var current_arrows = draw.get_arrows_in_scope(arrows, visible_genome, myState.canvas)
 		// console.log(current_arrows)
+		// console.log("DRAW ANNOTATION")
 		draw.clearCanvas(myState.canvas);
 		draw.drawArrows(myState.context, current_arrows);
 		draw.drawScale(myState.context, myState.canvas.width, visible_genome, parseInt(myState.canvas.height/2));
@@ -70,17 +70,17 @@ function annotationTrack(canvas) {
 				myState.redraw();
 				// draw.drawBorderAndText(myState.context, current_arrows[i], parseInt(myState.canvas.width/2), parseInt(myState.canvas.height/2));
 				// console.log(current_arrows[i]);
-				break;
+				return;
 			}
-			// nothing selected!
-			myState.currently_selected =  undefined;
-			myState.redraw();
 		}
+		// nothing selected! (fallthrough)
+		myState.currently_selected =  undefined;
+		myState.redraw();
 	}
 
 	// whenever the Taxa_locations store changes (e.g. someones done something to the tree)
-	// we should re-draw
-	Taxa_Locations.addChangeListener(this.redraw);
+	// we should re-draw. umm no, we shouldnt
+	// Taxa_Locations.addChangeListener(this.redraw);
 
 	// likewise, whenever anybody changes the genome-position of the viewport, we should re-draw
 	GenomeStore.addChangeListener(this.redraw);

@@ -7,6 +7,7 @@ var canvas_id = undefined;
 
 var RegionSelectedStore = assign({}, EventEmitter.prototype, {
 	emitChange: function() {
+		// console.log("regions selected store store emission")
 		this.emit('change');
 	},
 	addChangeListener: function(callback) {

@@ -32,6 +32,7 @@ function gubbins(canvas) {
 			return false
 		}
 		// console.log(parsed[0])
+		console.log("gubbins parsing successful")
 		raw_blocks = parsed[1]
 		Actions.set_genome_length(parsed[0][1])
 		this.redraw()
@@ -39,14 +40,15 @@ function gubbins(canvas) {
 	}
 
 	this.redraw = function() {
+ 		// redraws are expensive. We need to work out if we redraw.
+ 		// we only redraw if 	* viewport (visible_genome) has changed <- taken care of in the store
+ 		// 						* click has selected / deseleced a block (myState.selected_block) <-
+ 		//						* Taxa_Locations have changed (i.e. y values are different) <-- this is taken care of in the store
 		// is anything actually loaded?
 		if (raw_blocks===undefined) {return false}
 		// trim_blocks() will limit blocks to our viewport and also associate the x and y values in pixels
 		var visible_genome = GenomeStore.getVisible()
-		// we should work out if anything has actually changed -- kind of similar to react
-		// i.e. store the values of visible_genome and selected_block and,
-		// if they haven't changed, there's no need to redraw
-
+		// console.log("DRAW GUBBINS")
 		blocks = trim_blocks(raw_blocks, visible_genome, myState.canvas)
 		draw.clearCanvas(myState.canvas)
 		// console.log(GenomeStore.getSelectedTaxaY())
@@ -63,10 +65,15 @@ function gubbins(canvas) {
 	this.checkForClick = function() {
 		if (RegionSelectedStore.getID()===canvas.id) {
 			// console.log("Click taken by gubbins")
-			myState.selected_block = getSelectedBlock(blocks,RegionSelectedStore.getClickXY())
-			// myState.selected_block.fill="orange";
-			// console.log(myState.selected_block)
-			myState.redraw() // will pick up the block :)
+			var new_selected_block = getSelectedBlock(blocks,RegionSelectedStore.getClickXY())
+			if (
+				(myState.selected_block===undefined && new_selected_block!==undefined ) ||
+				(myState.selected_block!==undefined && new_selected_block===undefined ) ||
+				((myState.selected_block!==undefined && new_selected_block!==undefined) && myState.selected_block.id!==new_selected_block.id )
+				) {
+				myState.selected_block = new_selected_block
+				myState.redraw() // will pick up the block :)
+			}
 		}
 	}
 

@@ -56,7 +56,7 @@ function Arrow(featurestart, featureend, direction, fill, stroke, strokeWidth, i
 }
 
 function parse_gff(gff_string) {
-	console.log("*** annotation gff parser called ****")
+	// console.log("*** annotation gff parser called ****")
 	var genome_coords = null;
 	var lines = gff_string.split("\n")
 	// console.log(lines[0],lines[1],lines[10])

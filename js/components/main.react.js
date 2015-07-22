@@ -71,6 +71,7 @@ window.onresize = function() {
 		 Actions.phylocanvas_changed();
 		}
 	};
+	phylocanvas.fitInPanel();
 }
 
 module.exports = Main_React_Element;

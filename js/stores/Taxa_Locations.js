@@ -15,6 +15,7 @@ var selectedTaxa = undefined;
 
 var Taxa_Locations = assign({}, EventEmitter.prototype, {
 	emitChange: function() {
+		// console.log("taxa locations store emission")
 		this.emit('change');
 	},
 
@@ -100,10 +101,10 @@ function set_y_values() {
 		// y = y / phylocanvas. WHAT IS PIXELRATIO???? TO DO
 		// y += // y = (y - getY(this.canvas.canvas) + window.pageYOffset); // account for positioning and scroll
 		// y = y / 2; // RETINA PIXEL RATIO
-		return parseFloat(y);
+		return y;
 	};
 
-	var height_half = parseFloat(phylocanvas.textSize)/2 * parseFloat(phylocanvas.zoom);
+	var height_half = phylocanvas.textSize/2 * phylocanvas.zoom;
 	for (var i=0; i<activeTaxa.length; i++) {
 		var centery = translate(phylocanvas.branches[activeTaxa[i]].centery);
 		taxa_positions[activeTaxa[i]] = [centery-height_half, centery+height_half];
@@ -119,10 +120,33 @@ Taxa_Locations.dispatchToken = Dispatcher.register(function(payload) {
     get_taxa_and_y_coord();
     Taxa_Locations.emitChange();
   }
-  // TESTING ONLY
   else if (payload.actionType === 'phylocanvas_changed') {
+  	// a lot of this block is only necessary as phylocanvas has an action every fucking time
+  	// we want to check if anything's actually changed
+  	var old_activeTaxa = [] // old_activeTaxa is not a reference, it is a true copy
+  	var old_minYvalues = []
+  	for (var i=0; i<activeTaxa.length; i++) {
+  		old_activeTaxa.push(activeTaxa[i])
+  		old_minYvalues.push(taxa_positions[activeTaxa[i]][0])
+  	}
+
     set_y_values();
-    Taxa_Locations.emitChange();
+    // Taxa_Locations.emitChange(); // now conditionally triggered -- see below
+
+    // has the length of activeTaxa changed?
+    if (old_activeTaxa.length!==activeTaxa.length) {
+    	Taxa_Locations.emitChange();
+    	return
+    }
+   	for (var i=0; i<old_activeTaxa.length; i++) {
+   		// if new minY of taxaX != old minY then emit
+   		if (taxa_positions[old_activeTaxa[i]][0] !== old_minYvalues[i] ) {
+   			// console.log("taxa ",old_activeTaxa[i],old_minYvalues[i]," -> ",taxa_positions[old_activeTaxa[i]][0]," (i: ",i,")")
+	    	Taxa_Locations.emitChange();
+	    	return
+   		}
+  	}
+
   }
   else if (payload.actionType === 'phylocanvas_loaded') {
     set_y_values();
@@ -131,7 +155,6 @@ Taxa_Locations.dispatchToken = Dispatcher.register(function(payload) {
   else if (payload.actionType === 'phylocanvas_nodes_selected') {
   	selectedTaxa = payload.taxa.length===0 ? undefined : payload.taxa;
   	// console.log("Taxa_Loactions store: selected taxa: "+selectedTaxa)
-  	// no need to emit a change, no view looks for this!
     Taxa_Locations.emitChange();
 
   }

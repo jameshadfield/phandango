@@ -1,4 +1,7 @@
 
+// the following just for development //
+globalLog = {'redraw_gubbins':0, 'redraw_annotation':0, 'redraw_small_genome':0, 'redraw_phylocanvas':0}
+
 
 // This file bootstraps the entire application.
 
@@ -11,3 +14,5 @@ var Taxa_Locations = require('./stores/Taxa_Locations.js')
 
 React.render(React.createElement(Main_React_Element, null), document.getElementById('react') );
 
+// developent only // see above //
+// setInterval
