@@ -120,6 +120,16 @@ module.exports = {
       actionType: 'files_dropped',
       files: files
     });
+  },
+
+
+  save_plotYvalues: function(plotYvalues,plotName) {
+    console.log("saving plot values. Length: ",plotYvalues.length)
+    Dispatcher.dispatch({
+      actionType: 'save_plotYvalues',
+      plotYvalues: plotYvalues,
+      plotName: plotName
+    });
   }
 
 };
