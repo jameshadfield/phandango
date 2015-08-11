@@ -35,6 +35,10 @@ var Taxa_Locations = assign({}, EventEmitter.prototype, {
 		return selectedTaxa;
 	},
 
+	getActiveTaxa: function() {
+		return activeTaxa
+	},
+
 	getTaxaY: function(listOfTaxaUnchecked) {
 		// var listOfTaxa = listOfTaxaUnchecked;
 		// the taxa coming in might be a subset of what's displayed by the tree

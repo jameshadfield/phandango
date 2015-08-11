@@ -130,6 +130,13 @@ module.exports = {
       plotYvalues: plotYvalues,
       plotName: plotName
     });
+  },
+
+  csvStringReceived: function(csvString) {
+    Dispatcher.dispatch({
+      actionType: 'csvStringReceived',
+      csvString: csvString
+    });
   }
 
 };
