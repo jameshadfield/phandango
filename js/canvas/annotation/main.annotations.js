@@ -4,7 +4,7 @@ var parser = require('./parse.annotations.js');
 var draw = require('./draw.annotations.js')
 var Taxa_Locations = require('../../stores/Taxa_Locations.js')
 var GenomeStore = require('../../stores/genome.js')
-var mouse_moves = require('./mouse_moves.annotations.js')
+var mouse_moves = require('../gubbins/mouse_moves.gubbins.js')
 var RegionSelectedStore = require('../../stores/RegionSelectedStore.js')
 var Actions = require('../../actions/actions.js');
 
