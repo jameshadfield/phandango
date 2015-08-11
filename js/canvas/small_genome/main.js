@@ -1,10 +1,11 @@
-
+var mouse_moves = require('../gubbins/mouse_moves.gubbins.js')
 var GenomeStore = require('../../stores/genome.js')
 
 
 function small_genome(canvas) {
 	this.canvas = canvas;
 	var myState = this;
+	this.mouse_moves = new mouse_moves(canvas); // set up listeners
 
 	this.redraw = function() {
 		// console.log("SMALL GENOME REDRAW")
