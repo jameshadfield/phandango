@@ -2,11 +2,15 @@
 
 var React = require('react');
 var GubbinsCanvas = require('./gubbins.react.js');
+var MetaReact = require('./meta.react.js');
 var CanvasStore = require('../stores/CanvasStore.js');
 var PhyloReact = require('./phylo.react.js');
 var ButtonPanel = require('./ui.react.js');
 var Extras = require('./extras.react.js');
 var Actions = require('../actions/actions.js');
+
+
+
 
 var Main_React_Element = React.createClass({displayName: "Main_React_Element",
 	getInitialState: function() {
@@ -37,11 +41,19 @@ var Main_React_Element = React.createClass({displayName: "Main_React_Element",
 	render: function() {
 		// which components are live?
 		var react_elements = ["div", {className: "main_react_element"}, React.createElement(ButtonPanel, null)];
-		if (this.state.canvas_on_off.annotation) {
-			react_elements.push( React.createElement(Extras.BlankDivAboveTree, null) );
-			react_elements.push( React.createElement(Extras.GenomeAnnotation, null) );
-		}
+
+		react_elements.push( React.createElement( "div", {className: "something"}, React.createElement(Extras.BlankDivAboveTree, null), React.createElement(Extras.GenomeAnnotation, null) ) )
+
+		// if (this.state.canvas_on_off.annotation) {
+		// 	react_elements.push( React.createElement(Extras.BlankDivAboveTree, null) );
+		// 	react_elements.push( React.createElement(Extras.GenomeAnnotation, null) );
+		// }
 		if (this.state.canvas_on_off.phylo)   { react_elements.push( React.createElement(PhyloReact,null) ) }
+
+		// META DATA
+		react_elements.push( React.createElement('canvas', {className: "blankDivAboveMeta", id: "blankDivAboveMeta"} ) )
+		react_elements.push( React.createElement(MetaReact.MetaCanvasClass,null) )
+
  		if (this.state.canvas_on_off.gubbins) { react_elements.push( React.createElement(GubbinsCanvas.GubbinsCanvasClass,null) ) }
 
  		// gubbins / recombination line plot
@@ -62,7 +74,8 @@ window.onresize = function() {
 	canvas[0] = document.getElementById('GenomeAnnotation'),
 	canvas[1] = document.getElementById('gubbinsCanvas'),
 	canvas[2] = document.getElementById('BlankDivAboveTree');
-	// canvas[3] = document.getElementById('recombGraphDiv');
+	canvas[3] = document.getElementById('recombGraphDiv');
+	canvas[4] = document.getElementById('metaCanvas');
 
 	for (var i = canvas.length - 1; i >= 0; i--) {
 		var width = canvas[i].clientWidth;

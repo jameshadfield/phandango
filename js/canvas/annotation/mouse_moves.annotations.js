@@ -38,12 +38,12 @@ mouse_moves.prototype.getMouse = function(e, canvas) {
 	// console.log("got mouse position x: "+mx+" y: "+my)
 
 	// draw green dot on mouse hit
-	ctx = canvas.getContext('2d');
-	ctx.beginPath();
-    ctx.arc(mx, my, 5, 0, 2 * Math.PI, false);
-    ctx.fillStyle = 'green';
-    ctx.fill();
-    ctx.closePath();
+	// ctx = canvas.getContext('2d');
+	// ctx.beginPath();
+ //    ctx.arc(mx, my, 5, 0, 2 * Math.PI, false);
+ //    ctx.fillStyle = 'green';
+ //    ctx.fill();
+ //    ctx.closePath();
 	return {x: mx, y: my};
 }
 
