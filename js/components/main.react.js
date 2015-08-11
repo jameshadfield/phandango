@@ -65,9 +65,9 @@ var Main_React_Element = React.createClass({displayName: "Main_React_Element",
 	}
 });
 
-window.onload = function() {
-	Actions.loadDefaultData();
-}
+// window.onload = function() {
+// 	Actions.loadDefaultData();
+// }
 
 window.onresize = function() {
 	var canvas = new Array();

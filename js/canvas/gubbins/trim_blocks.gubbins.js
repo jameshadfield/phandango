@@ -33,7 +33,9 @@ function trim_blocks(raw_blocks, visible_genome_coords, canvas) {
 	if (is_phylotree_active===false) {
 		// console.log('[BUG] phylocanvas not initialised and we\'re trying to start up gubbins. Problems to follow...')
 		// create a dummy mapping. This should be a call to the store to do this but oh well.
-		var taxa_y_value = associate_taxa_with_dummy_y_values(raw_blocks, canvas.height);
+		console.log("not drawing gubbins blocks without tree!")
+		return []
+		// var taxa_y_value = associate_taxa_with_dummy_y_values(raw_blocks, canvas.height);
 		// console.log(taxa_y_value)
 	}
 
