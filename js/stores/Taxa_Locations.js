@@ -89,6 +89,22 @@ var Taxa_Locations = assign({}, EventEmitter.prototype, {
 
 })
 
+function getBackingStorePixelRatio(context) { // PhyloCanvas code
+  return (
+    context.backingStorePixelRatio ||
+    context.webkitBackingStorePixelRatio ||
+    context.mozBackingStorePixelRatio ||
+    context.msBackingStorePixelRatio ||
+    context.oBackingStorePixelRatio ||
+    1
+  );
+}
+
+function getPixelRatio(canvas) { // PhyloCanvas code
+  return (window.devicePixelRatio || 1) / getBackingStorePixelRatio(canvas);
+}
+
+
 
 function set_y_values() {
 	activeTaxa = new Array(); // dev only
@@ -96,15 +112,14 @@ function set_y_values() {
 		activeTaxa.push( phylocanvas.leaves[i].id );
 	}
 	taxa_positions = {}; // declared above. closure
+	var pixelRatio = getPixelRatio(phylocanvas.canvas.canvas)
 	var translate = function(y) {
 		// this. is. complicated.
 		// i'm sort of undoing the translateClick function really
 		y *= phylocanvas.zoom;
 		y += phylocanvas.offsety;
 		y += phylocanvas.canvas.canvas.height / 2;
-		// y = y / phylocanvas. WHAT IS PIXELRATIO???? TO DO
-		// y += // y = (y - getY(this.canvas.canvas) + window.pageYOffset); // account for positioning and scroll
-		// y = y / 2; // RETINA PIXEL RATIO
+		y  = y / pixelRatio;
 		return y;
 	};
 
