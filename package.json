@@ -3,10 +3,13 @@
   "name": "JScandy",
   "version": "0.1.0",
   "scripts": {
-    "build": "browserify js/app.js -o js/bundle.js",
-    "start": "watchify js/app.js -o js/bundle.js"
+    "build": "browserify -t reactify --debug js/app.js -o js/bundle.js",
+    "start": "watchify -t reactify --debug  js/app.js -o js/bundle.js"
   },
-  "main": "lib/foo.js",
+  "main": "js/app.js",
+  "browserify": {
+    "transform": [ "reactify" ]
+  },
   "repository": {
   	"type": "git",
   	"url": "https://github.com/jameshadfield/JScandy"
@@ -16,6 +19,7 @@
   },
   "dependencies": {
     "browserify": "10.2.4",
+    "reactify": "1.1.1",
     "watchify": "3.2.3",
     "react": "0.13.3",
     "events": "1.0.2",

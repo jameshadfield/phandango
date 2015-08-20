@@ -1,0 +1,63 @@
+/*
+resizing of canvases is tricky -- read this:
+http://stackoverflow.com/questions/5034529/size-of-html5-canvas-via-css-versus-element-attributes
+*/
+
+canvas { border: 1px solid black; }
+/*#phyloDiv {
+  height: 500px;
+  width: 30%;
+  float: left;
+}
+#BlankDivAboveTree {
+  height: 100px;
+  width: 30%;
+  float: left;
+}
+#GenomeAnnotation {
+  height: 100px;
+  width: 59%;
+  float: right;
+}
+#gubbinsCanvas {
+  height: 500px;
+  width: 59%;
+  float: right;
+}
+#metaCanvas {
+  height: 500px;
+  width: 10%;
+}
+#recombGraphDiv {
+  height: 100px;
+  width: 59%;
+  float: right;
+}
+#blankDivAboveMeta {
+  height: 100px;
+  width: 10%;
+}
+*/
+/*
+SIMPLE GRID SYSTEM
+https://css-tricks.com/dont-overthink-it-grids/
+*/
+.col-1 {
+  width: 30%;
+  float: left;
+}
+.col-2 {
+  width: 10%;
+}
+.col-3 {
+  width: 59%;
+}
+.row-1 {
+  height:100px;
+}
+.row-2 {
+  height:500px;
+}
+.row-3 {
+  height:100px;
+}

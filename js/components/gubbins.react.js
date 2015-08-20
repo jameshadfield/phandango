@@ -39,7 +39,7 @@ var GubbinsCanvasClass = React.createClass({displayName: "displayName",
 	render: function() {
 
 
-		return React.createElement("canvas", {id:"gubbinsCanvas"}); //
+		return React.createElement("canvas", {id:"gubbinsCanvas", className: "col-3 row-2"}); //
 	}
 });
 
@@ -56,7 +56,7 @@ var RecombGraphClass = React.createClass({displayName: "displayName",
     },
 
     render: function() {
-        return React.createElement("canvas", {id:"recombGraphDiv"}); //
+        return React.createElement("canvas", {id:"recombGraphDiv", className: "col-3 row-3"}); //
     }
 });
 

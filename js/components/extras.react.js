@@ -12,7 +12,7 @@ var BlankDivAboveTree = React.createClass({displayName: "displayName",
 	},
 
 	render: function() {
-		return React.createElement("canvas", {id:"BlankDivAboveTree"}); //
+		return React.createElement("canvas", {id:"BlankDivAboveTree", className:"col-1 row-1"}); //
 	}
 });
 
@@ -46,7 +46,7 @@ var GenomeAnnotation = React.createClass({displayName: "displayName",
 	},
 
 	render: function() {
-		return React.createElement("canvas", {id:"GenomeAnnotation"}); //
+		return React.createElement("canvas", {id:"GenomeAnnotation", className:"col-3 row-1"}); //
 	}
 });
 

@@ -38,36 +38,38 @@ var Main_React_Element = React.createClass({displayName: "Main_React_Element",
 		this.setState({canvas_on_off: CanvasStore.getAll()})
 	},
 
+
 	render: function() {
-		// which components are live?
-		var react_elements = ["div", {className: "main_react_element"}, React.createElement(ButtonPanel, null)];
+		return(
 
-		react_elements.push( React.createElement( "div", {className: "something"}, React.createElement(Extras.BlankDivAboveTree, null), React.createElement(Extras.GenomeAnnotation, null) ) )
+			<div id="mainDiv">
+				<ButtonPanel/>
+				{/* TOP ROW */}
+				<div>
+					<Extras.BlankDivAboveTree/>
+					{/* <canvas id="blankDivAboveMeta"></canvas> */}
+					<canvas className="row-1 col-2"></canvas>
+					<Extras.GenomeAnnotation/>
+				</div>
+				{/* MAIN ROW */}
+				<div>
+					<PhyloReact/>
+					<MetaReact.MetaCanvasClass/>
+					<GubbinsCanvas.GubbinsCanvasClass/>
+				</div>
+				{/* BOTTOM ROW */}
+				<GubbinsCanvas.RecombGraphClass/>
 
-		// if (this.state.canvas_on_off.annotation) {
-		// 	react_elements.push( React.createElement(Extras.BlankDivAboveTree, null) );
-		// 	react_elements.push( React.createElement(Extras.GenomeAnnotation, null) );
-		// }
-		if (this.state.canvas_on_off.phylo)   { react_elements.push( React.createElement(PhyloReact,null) ) }
+			</div>
 
-		// META DATA
-		react_elements.push( React.createElement('canvas', {className: "blankDivAboveMeta", id: "blankDivAboveMeta"} ) )
-		react_elements.push( React.createElement(MetaReact.MetaCanvasClass,null) )
-
- 		if (this.state.canvas_on_off.gubbins) { react_elements.push( React.createElement(GubbinsCanvas.GubbinsCanvasClass,null) ) }
-
- 		// gubbins / recombination line plot
-	 	// wrapped in a div
- 		react_elements.push( React.createElement("div", {className: "graph_div"}, React.createElement(GubbinsCanvas.RecombGraphClass, null)) )
-
-		console.log(react_elements)
-		return ( React.createElement.apply(this, react_elements) )
+			);
 	}
 });
 
 // window.onload = function() {
 // 	Actions.loadDefaultData();
 // }
+
 
 window.onresize = function() {
 	var canvas = new Array();
