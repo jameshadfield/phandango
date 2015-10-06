@@ -7,27 +7,6 @@ var Dispatcher = require('../dispatcher/dispatcher');
 
 
 module.exports = {
-  startCanvas: function(canvasName) {
-    Dispatcher.dispatch({
-      actionType: 'turn-on-canvas',
-      canvasName: canvasName
-    });
-  },
-
-  stopCanvas: function(canvasName) {
-    Dispatcher.dispatch({
-      actionType: 'turn-off-canvas',
-      canvasName: canvasName
-    });
-  },
-
-  toggleCanvas: function(canvasName) {
-    Dispatcher.dispatch({
-      actionType: 'toggle-canvas',
-      canvasName: canvasName
-    });
-  },
-
   loadTree: function(not_sure) {
     Dispatcher.dispatch({
       actionType: 'loadTree'

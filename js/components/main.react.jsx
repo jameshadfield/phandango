@@ -3,7 +3,6 @@
 var React = require('react');
 var GubbinsCanvas = require('./gubbins.react.jsx');
 var MetaReact = require('./meta.react.jsx');
-var CanvasStore = require('../stores/CanvasStore.js');
 var PhyloReact = require('./phylo.react.jsx');
 var Extras = require('./extras.react.jsx');
 var Actions = require('../actions/actions.js');
@@ -12,15 +11,9 @@ var Actions = require('../actions/actions.js');
 
 
 var Main_React_Element = React.createClass({displayName: "Main_React_Element",
-	getInitialState: function() {
-		return {canvas_on_off: CanvasStore.getAll()}
-	},
 
 	// Invoked once, immediately after the initial rendering
 	componentDidMount: function() {
-		CanvasStore.addChangeListener(this.blah);
-		console.log(this.getDOMNode())
-
 		this.getDOMNode().addEventListener("dragover", function(event) {
 		    event.preventDefault();
 		}, false);
@@ -32,11 +25,6 @@ var Main_React_Element = React.createClass({displayName: "Main_React_Element",
 			Actions.files_dropped(files)
 		}, false);
 	},
-
-	blah: function() {
-		this.setState({canvas_on_off: CanvasStore.getAll()})
-	},
-
 
 	render: function() {
 		return(
