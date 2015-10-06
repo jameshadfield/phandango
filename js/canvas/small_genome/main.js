@@ -6,6 +6,7 @@ function small_genome(canvas) {
 	this.canvas = canvas;
 	var myState = this;
 	this.mouse_moves = new mouse_moves(canvas); // set up listeners
+	window.addEventListener('resize', function(){myState.redraw()}, true);
 
 	this.redraw = function() {
 		// console.log("SMALL GENOME REDRAW")

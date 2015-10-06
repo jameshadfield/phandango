@@ -18,6 +18,8 @@ function annotationTrack(canvas) {
 	// var arrows = parser.parse_gff();
 	this.currently_selected = undefined;
 
+	window.addEventListener('resize', function(){myState.redraw()}, true);
+
 	this.load = function(gff_string) {
 		// console.log("annotations load running")
 		var parsed = parser.parse_gff(gff_string);

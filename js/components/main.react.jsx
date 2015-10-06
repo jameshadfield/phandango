@@ -42,7 +42,7 @@ var Main_React_Element = React.createClass({displayName: "Main_React_Element",
 	render: function() {
 		return(
 
-			<div id="mainDiv">
+			<div className="mainDiv">
 				<ButtonPanel/>
 				{/* TOP ROW */}
 				<div>
@@ -51,13 +51,14 @@ var Main_React_Element = React.createClass({displayName: "Main_React_Element",
 					<canvas className="row-1 col-2"></canvas>
 					<Extras.GenomeAnnotation/>
 				</div>
-				{/* MAIN ROW */}
+				{/* MIDDLE ROW (TREE / GUBBINS) */}
 				<div>
 					<PhyloReact/>
 					<MetaReact.MetaCanvasClass/>
 					<GubbinsCanvas.GubbinsCanvasClass/>
 				</div>
 				{/* BOTTOM ROW */}
+				<div className="newline"></div>
 				<GubbinsCanvas.RecombGraphClass/>
 
 			</div>
@@ -71,28 +72,30 @@ var Main_React_Element = React.createClass({displayName: "Main_React_Element",
 // }
 
 
-window.onresize = function() {
-	var canvas = new Array();
-	canvas[0] = document.getElementById('GenomeAnnotation'),
-	canvas[1] = document.getElementById('gubbinsCanvas'),
-	canvas[2] = document.getElementById('BlankDivAboveTree');
-	canvas[3] = document.getElementById('recombGraphDiv');
-	canvas[4] = document.getElementById('metaCanvas');
 
-	for (var i = canvas.length - 1; i >= 0; i--) {
-		var width = canvas[i].clientWidth;
-		var height = canvas[i].clientHeight;
-		if (canvas[i].width != width ||
-		   canvas[i].height != height) {
-		 // Change the size of the canvas to match the size it's being displayed
-		 canvas[i].width = width;
-		 canvas[i].height = height;
-		 // console.log(canvas[i].id, ' resized');
-		 // Trigger a change so that all the canvas is rendered
-		 Actions.phylocanvas_changed();
-		}
-	};
-	phylocanvas.fitInPanel();
+window.onresize = function() {
+	// console.log("window.onresize");
+	// var canvas = new Array();
+	// canvas[0] = document.getElementById('GenomeAnnotation'),
+	// canvas[1] = document.getElementById('gubbinsCanvas'),
+	// canvas[2] = document.getElementById('BlankDivAboveTree');
+	// canvas[3] = document.getElementById('recombGraphDiv');
+	// canvas[4] = document.getElementById('metaCanvas');
+
+	// for (var i = canvas.length - 1; i >= 0; i--) {
+	// 	var width = canvas[i].clientWidth;
+	// 	var height = canvas[i].clientHeight;
+	// 	if (canvas[i].width != width ||
+	// 	   canvas[i].height != height) {
+	// 	 // Change the size of the canvas to match the size it's being displayed
+	// 	 canvas[i].width = width;
+	// 	 canvas[i].height = height;
+	// 	 // console.log(canvas[i].id, ' resized');
+	// 	 // Trigger a change so that all the canvas is rendered
+	// 	 Actions.phylocanvas_changed();
+	// 	}
+	// };
+	// phylocanvas.fitInPanel();
 }
 
 module.exports = Main_React_Element;

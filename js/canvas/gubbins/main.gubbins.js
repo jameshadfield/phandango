@@ -23,6 +23,14 @@ function gubbins(canvas) {
 	var blocks;
 	this.selected_block = undefined;
 
+	window.addEventListener('resize', function(){myState.redraw()}, true);
+
+	// this.canvas.addEventListener("onresize", function() {
+	// 		console.log("resize detected")
+	// 	    this.redraw()
+	// 	}, false
+	// );
+
 
 	this.load = function(gff_string) {
 		var parsed = parser.parse_gff(gff_string);

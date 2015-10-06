@@ -5,7 +5,7 @@ var Actions = require('../actions/actions.js');
 var ButtonPanel = React.createClass({
 	render: function() {
 		return (
-			React.createElement("div", null,
+			React.createElement("div", {className: "row-0"},
 				React.createElement("h1",null,""),
 				React.createElement(LaunchGubbinsCanvasButton, null),
 				React.createElement(LaunchPhyloCanvasButton, null),

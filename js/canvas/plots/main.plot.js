@@ -10,6 +10,8 @@ function plotter(canvas, plotName) {
 	this.context = canvas.getContext('2d');
 	var myState = this;
 
+	window.addEventListener('resize', function(){myState.redraw()}, true); // don;t forget teardown
+
 	this.redraw = function() {
 		// console.log("PLOT REDRAW")
 		var genome_length = GenomeStore.getGenomeLength();
@@ -53,7 +55,7 @@ function plotter(canvas, plotName) {
 		myState.context.textAlign = "left";
 		myState.context.font="12px Helvetica";
 		myState.context.fillText(maximumYvalue.toString() , 5, 5);
-		myState.context.fillText((maximumYvalue/2).toString() , 5, canvas.height/2);
+		myState.context.fillText((maximumYvalue/2).toString() , 5, parseInt(canvas.height/2));
 
 	}
 

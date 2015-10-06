@@ -4,60 +4,50 @@ http://stackoverflow.com/questions/5034529/size-of-html5-canvas-via-css-versus-e
 */
 
 canvas { border: 1px solid black; }
-/*#phyloDiv {
-  height: 500px;
-  width: 30%;
-  float: left;
-}
-#BlankDivAboveTree {
-  height: 100px;
-  width: 30%;
-  float: left;
-}
-#GenomeAnnotation {
-  height: 100px;
-  width: 59%;
-  float: right;
-}
-#gubbinsCanvas {
-  height: 500px;
-  width: 59%;
-  float: right;
-}
-#metaCanvas {
-  height: 500px;
-  width: 10%;
-}
-#recombGraphDiv {
-  height: 100px;
-  width: 59%;
-  float: right;
-}
-#blankDivAboveMeta {
-  height: 100px;
-  width: 10%;
-}
-*/
 /*
 SIMPLE GRID SYSTEM
 https://css-tricks.com/dont-overthink-it-grids/
 */
 .col-1 {
-  width: 30%;
+  position: relative;
+  width: 20%;
   float: left;
 }
 .col-2 {
+  position: relative;
   width: 10%;
 }
 .col-3 {
-  width: 59%;
+  position: relative;
+  width: 69%;
+  float:right;
+}
+.row-0 {
+  height:5vh;
 }
 .row-1 {
-  height:100px;
+  height:15vh;
 }
 .row-2 {
-  height:500px;
+  height:60vh;
 }
 .row-3 {
-  height:100px;
+  height:13vh;
 }
+.newline {
+  clear: both;
+}
+.inside {
+  z-index: 10;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/*http://stackoverflow.com/questions/5657964/css-why-doesn-t-percentage-height-work*/
+/*.main {
+  width:600px;
+  height:800px;
+}*

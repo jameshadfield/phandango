@@ -60,6 +60,7 @@ function meta(canvas) {
     var myState = this;
 
     this.mouse_moves = new mouse_moves(this.canvas);
+    window.addEventListener('resize', function(){myState.redraw()}, true);
 
     this.y_to_taxa = function(y) {
         // given an X position what taxa are we in? return undefined if no taxa
