@@ -54,6 +54,13 @@ https://css-tricks.com/dont-overthink-it-grids/
   justify-content: center;
 }
 
+#landing {
+  z-index: 100;
+  position: absolute;
+  width: 100%;
+  height: 100vh;
+}
+
 .red {background: #FAAC58;}
 .red:hover {background: #DF0101;}
 
