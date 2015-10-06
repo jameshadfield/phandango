@@ -44,10 +44,11 @@ var MetaCanvasClass = React.createClass({displayName: "displayName",
         });
 
 	},
-
-	render: function() {
-		return React.createElement("canvas", {id:"metaCanvas", className:"col-2 row-2"}); //
-	}
+    render: function() {
+        return(
+            <canvas id="metaCanvas" className="inContainer"></canvas>
+        );
+    }
 });
 
 

@@ -23,9 +23,9 @@ var LaunchGubbinsCanvasButton = React.createClass({
 		Actions.toggleCanvas('gubbins');
 	},
 	render: function() {
-		return (
-			React.createElement("button", {onClick: this.handleClick}, "TOGGLE GUBBINS CANVAS")
-		);
+        return(
+        	<input type="button" onClick={this.handleClick} value="toggle gubbins"/>
+        );
 	}
 });
 
@@ -34,9 +34,9 @@ var LaunchPhyloCanvasButton = React.createClass({
 		Actions.toggleCanvas('phylo');
 	},
 	render: function() {
-		return (
-			React.createElement("button", {onClick: this.handleClick}, "TOGGLE PHYLOCANVAS")
-		);
+        return(
+        	<input type="button" onClick={this.handleClick} value="toggle phylocanvas"/>
+        );
 	}
 });
 
@@ -45,9 +45,9 @@ var LaunchAnnotationButton = React.createClass({
 		Actions.toggleCanvas('annotation');
 	},
 	render: function() {
-		return (
-			React.createElement("button", {onClick: this.handleClick}, "TOGGLE ANNOTATION")
-		);
+        return(
+        	<input type="button" onClick={this.handleClick} value="toggle annotation"/>
+        );
 	}
 });
 
@@ -56,9 +56,9 @@ var LoadDefaults = React.createClass({
 		Actions.loadDefaultData();
 	},
 	render: function() {
-		return (
-			React.createElement("button", {onClick: this.handleClick}, "LOAD DEFAULT DATA")
-		);
+        return(
+        	<input type="button" onClick={this.handleClick} value="load default data"/>
+        );
 	}
 });
 

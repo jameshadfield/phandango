@@ -4,17 +4,18 @@ var annotationTrack = require('../canvas/annotation/main.annotations.js');
 var small_genome = require('../canvas/small_genome/main.js');
 var RawDataStore = require('../stores/RawDataStore.js');
 
-var BlankDivAboveTree = React.createClass({displayName: "displayName",
+var SmallGenome = React.createClass({displayName: "displayName",
 	componentDidMount: function() { // Invoked once, immediately after the initial rendering
 		this.getDOMNode().setAttribute('width', window.getComputedStyle(this.getDOMNode()).width)
 		this.getDOMNode().setAttribute('height', window.getComputedStyle(this.getDOMNode()).height)
 		console.log("small: width:",window.getComputedStyle(this.getDOMNode()).width,"height:",window.getComputedStyle(this.getDOMNode()).height)
 		smallGenomeInstance = new small_genome(this.getDOMNode());
 	},
-
-	render: function() {
-		return React.createElement("canvas", {id:"BlankDivAboveTree", className:"col-1 row-1"}); //
-	}
+    render: function() {
+        return (
+            <canvas id="SmallGenome"  className="inContainer"></canvas>
+        );
+    }
 });
 
 
@@ -45,11 +46,13 @@ var GenomeAnnotation = React.createClass({displayName: "displayName",
 			}
 		});
 	},
+    render: function() {
+        return (
+            <canvas id="GenomeAnnotation"  className="inContainer"></canvas>
+        );
+    }
 
-	render: function() {
-		return React.createElement("canvas", {id:"GenomeAnnotation", className:"col-3 row-1"}); //
-	}
 });
 
 
-module.exports = {'GenomeAnnotation': GenomeAnnotation, 'BlankDivAboveTree': BlankDivAboveTree};
+module.exports = {'GenomeAnnotation': GenomeAnnotation, 'SmallGenome': SmallGenome};

@@ -13,6 +13,9 @@ var GubbinsCanvasClass = React.createClass({displayName: "displayName",
 		// see
 		this.getDOMNode().setAttribute('width', window.getComputedStyle(this.getDOMNode()).width)
 		this.getDOMNode().setAttribute('height', window.getComputedStyle(this.getDOMNode()).height)
+
+        console.log("gubbins node set to w: ",window.getComputedStyle(this.getDOMNode()).width,"h:",window.getComputedStyle(this.getDOMNode()).height)
+
 		gubbinsInstance = new gubbins(this.getDOMNode());
 
         RawDataStore.addChangeListener(function() {
@@ -37,9 +40,9 @@ var GubbinsCanvasClass = React.createClass({displayName: "displayName",
 	},
 
 	render: function() {
-
-
-		return React.createElement("canvas", {id:"gubbinsCanvas", className: "col-3 row-2"}); //
+        return(
+            <canvas id="gubbinsCanvas" className="inContainer"/>
+        );
 	}
 });
 
@@ -51,15 +54,21 @@ var RecombGraphClass = React.createClass({displayName: "displayName",
         // see
         this.getDOMNode().setAttribute('width', window.getComputedStyle(this.getDOMNode()).width)
         this.getDOMNode().setAttribute('height', window.getComputedStyle(this.getDOMNode()).height)
+        console.log("graph DOM node:",this.getDOMNode())
         var recombGraph = new graph(this.getDOMNode(), "recombGraph");
 
     },
 
     render: function() {
-        return React.createElement("canvas", {id:"recombGraphDiv", className: "col-3 row-3"}); //
+        return (
+            <canvas id="recombGraphDiv" className="inContainer"></canvas>
+        );
     }
 });
 
+// this was the prev graph JSX
+// <canvas id="recombGraphDiv"  className="col-3 row-3 blue"></canvas>
+//             <div id="insideGraph" className="inside red">ASBXKJSAB</div>
 
 module.exports = {'RecombGraphClass': RecombGraphClass, 'GubbinsCanvasClass': GubbinsCanvasClass};
 

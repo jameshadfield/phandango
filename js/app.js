@@ -14,5 +14,16 @@ var Taxa_Locations = require('./stores/Taxa_Locations.js')
 
 React.render(React.createElement(Main_React_Element, null), document.getElementById('react') );
 
+
+// should be moved somewhere
+
+
+
+
+
+
 // developent only // see above //
 // setInterval
+
+
+

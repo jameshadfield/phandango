@@ -54,9 +54,10 @@ var PhyloReact = React.createClass({displayName: "displayName",
 		})
 
 	},
-
 	render: function() {
-		return React.createElement("div", {id: "phyloDiv", className:"col-1 row-2"});
+        return(
+            <div id="phyloDiv" className="inContainer"></div>
+        );
 	}
 });
 
