@@ -6,7 +6,8 @@ var MetaReact = require('./meta.react.jsx');
 var PhyloReact = require('./phylo.react.jsx');
 var Extras = require('./extras.react.jsx');
 var Actions = require('../actions/actions.js');
-
+var Landing = require('./landing.react.jsx');
+// don't need settings its taken care of in keystrokes.jsx
 var keystrokes = require('./keystrokes.jsx');
 
 
@@ -30,6 +31,9 @@ var Main_React_Element = React.createClass({displayName: "Main_React_Element",
 	render: function() {
 		return(
 			<div id="mainDiv" className="mainDiv">
+
+				{/* landing page injected here onLoad and then controlled by keystrokes.jsx */}
+				<div id="landingContainer"/>
 
 				{/* settings are injected here via keystrokes.jsx */}
 				<div id="settingsContainer"/>
@@ -80,6 +84,7 @@ var Main_React_Element = React.createClass({displayName: "Main_React_Element",
 });
 
 window.onload = function() {
+	React.render(<Landing />, document.getElementById('landingContainer'))
 	// Actions.loadDefaultData();
 	// document.getElementById('landing').style.display="none";
 

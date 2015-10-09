@@ -107,10 +107,10 @@ function meta(canvas) {
     }, true);
 
     this.redraw = function() {
+        myState.context.clearRect(0, 0, myState.canvas.width, myState.canvas.height);
         if (! MetadataStore.shouldWeDisplay()) {
             return
         }
-        myState.context.clearRect(0, 0, myState.canvas.width, myState.canvas.height);
         /* redraws are expensive. We need to work out if we redraw.
         we only redraw if   * Taxa_Locations have changed (i.e. y values are different) <-- this is taken care of in the store
                             * Click in this region
