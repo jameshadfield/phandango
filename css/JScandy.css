@@ -47,12 +47,6 @@ https://css-tricks.com/dont-overthink-it-grids/
   left: 0;
 }
 
-.settings {
-  z-index:10;
-  background:#BDBDBD;
-  align-items: center;
-  justify-content: center;
-}
 
 #landing {
   z-index: 100;
@@ -75,3 +69,72 @@ https://css-tricks.com/dont-overthink-it-grids/
   width:600px;
   height:800px;
 }*
+
+
+/*  S E T T I N G S */
+
+.fullpage {
+  z-index:1000;
+  position: absolute;
+  width: 100%;
+  height: 100vh;
+  background: white;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-bottom: 10px;
+  padding-top: 10px
+}
+
+.border { border: 1px solid gray;}
+
+div.horizontalgap{padding-left: 10px; display: inline}
+
+/* using google materialise */
+
+.settings-col {
+  position: relative;
+  width: 20%;
+  float: left;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-bottom: 10px
+}
+
+.hidden { display:none; }
+/*
+.settings {
+  position: absolute;
+  width: 100%;
+  height: 100vh;
+  z-index:10;
+  background:#BDBDBD;
+  align-items: center;
+  justify-content: center;
+  padding-left: 100px;
+  padding-right: 100px;
+  padding-bottom: 100px;
+  padding-top: 100px
+}
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -7,6 +7,7 @@ var PhyloReact = require('./phylo.react.jsx');
 var Extras = require('./extras.react.jsx');
 var Actions = require('../actions/actions.js');
 
+var keystrokes = require('./keystrokes.jsx');
 
 
 
@@ -28,24 +29,20 @@ var Main_React_Element = React.createClass({displayName: "Main_React_Element",
 
 	render: function() {
 		return(
-			<div className="mainDiv">
+			<div id="mainDiv" className="mainDiv">
 
-				<div id="landing" className="red">
-					landing page;
-				</div>
-
+				{/* settings are injected here via keystrokes.jsx */}
+				<div id="settingsContainer"/>
 
 				{/* TOP ROW */}
 				<div className="newline">
 
 					<div id="smallGenomeContainer" className="col-1 row-1 red">
 						<Extras.SmallGenome/>
-						<div id="settingsSmall" className="inContainer settings">main settings here</div>
 					</div>
 
 					<div id="annotationContainer" className="col-3 row-1 blue">
 						<Extras.GenomeAnnotation/>
-						<div id="settingsAnnotation" className="inContainer settings">GFF settings here</div>
 					</div>
 
 				</div>
@@ -55,18 +52,15 @@ var Main_React_Element = React.createClass({displayName: "Main_React_Element",
 
 					<div id="gubbinsContainer" className="col-1 row-2 green">
 						<PhyloReact/>
-						<div id="settingsPhylo" className="inContainer settings">phylocanvas settings here</div>
 					</div>
 
 					<div id="gubbinsContainer" className="col-2 row-2 red">
 						<MetaReact.MetaCanvasClass/>
-						<div id="settingsMeta" className="inContainer settings">meta settings here</div>
 					</div>
 
 
 					<div id="gubbinsContainer" className="col-3 row-2 green">
 						<GubbinsCanvas.GubbinsCanvasClass/>
-	                	<div id="settingsGubbins" className="inContainer settings">gubbins settings here</div>
 					</div>
 
 
@@ -76,7 +70,6 @@ var Main_React_Element = React.createClass({displayName: "Main_React_Element",
 
 		            <div id="graphContainer" className="col-3 row-3 blue">
 		                <GubbinsCanvas.RecombGraphClass/>
-		                <div id="settingsGraph" className="inContainer settings">graph settings here</div>
 		            </div>
 	            </div>
 
@@ -87,44 +80,23 @@ var Main_React_Element = React.createClass({displayName: "Main_React_Element",
 });
 
 window.onload = function() {
-	Actions.loadDefaultData();
-	document.getElementById('landing').style.display="none";
+	// Actions.loadDefaultData();
+	// document.getElementById('landing').style.display="none";
 
 }
 
 
-// LISTEN FOR SHIFT KEY AND TOGGLE SETTINGS DIV
-// http://stackoverflow.com/questions/11101364/javascript-detect-shift-key-down-within-another-function
-// http://www.cambiaresearch.com/articles/15/javascript-char-codes-key-codes
-// these should all be actions, but why should a store carry this out? i guess that could store state
-var setShiftDown = function(event){
-    if(event.keyCode === 16 || event.charCode === 16){
-        // console.log("SHIFT DOWN")
-        var settingsPanels = document.getElementsByClassName('settings'), i;
-		for (var i = 0; i < settingsPanels.length; i ++) {
-		    settingsPanels[i].style.display = 'flex';
-		}
-    }
-    // load default data with the 'd' key
-    else if (event.keyCode === 68 || event.charCode === 68){
-    	Actions.loadDefaultData();
-    }
-    else if (event.keyCode === 13 || event.charCode === 13){
-    	// console.log("ENTER")
-    	document.getElementById('landing').style.display="none";
-    }
-};
-var setShiftUp = function(event){
-    if(event.keyCode === 16 || event.charCode === 16){
-        // console.log("SHIFT UP")
-        var settingsPanels = document.getElementsByClassName('settings'), i;
-		for (var i = 0; i < settingsPanels.length; i ++) {
-		    settingsPanels[i].style.display = 'none';
-		}
-    }
-};
-window.addEventListener ? document.addEventListener('keydown', setShiftDown) : document.attachEvent('keydown', setShiftDown);
-window.addEventListener ? document.addEventListener('keyup', setShiftUp) : document.attachEvent('keyup', setShiftUp);
+// React.renderComponent(<SampleComponent />, document.getElementById('container'));
+
+// setTimeout(function() {
+// 	console.log("RENDERING SETTINGS");
+//     React.render(<Settings />, document.getElementById('settingsContainer'));
+// }, 1000);
+
+// setTimeout(function() {
+// 	console.log("REMOVING SETTINGS");
+//     React.unmountComponentAtNode(document.getElementById('settingsContainer'));
+// }, 3000);
 
 
 // a function to scale the canvas' on a resize

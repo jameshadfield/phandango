@@ -107,7 +107,7 @@ function meta(canvas) {
     }, true);
 
     this.redraw = function() {
-        if (! MetadataStore.isLoaded()) {
+        if (! MetadataStore.shouldWeDisplay()) {
             return
         }
         myState.context.clearRect(0, 0, myState.canvas.width, myState.canvas.height);

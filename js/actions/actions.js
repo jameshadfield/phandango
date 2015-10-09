@@ -116,7 +116,24 @@ module.exports = {
       actionType: 'csvStringReceived',
       csvString: csvString
     });
+  },
+
+  toggleMetadataColumn: function(i) {
+    // console.log("action picked up to toggle column, ", i)
+    Dispatcher.dispatch({
+      actionType: 'toggleMetadataColumn',
+      colNumToToggle: i
+    });
+  },
+
+  toggleMetaDisplay: function(i) {
+    // console.log("action picked up to toggle metadata display to ", i)
+    Dispatcher.dispatch({
+      actionType: 'toggleMetaDisplay',
+      newDisplayBool: i
+    });
   }
+
 
 };
 

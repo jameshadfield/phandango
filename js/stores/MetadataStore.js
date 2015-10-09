@@ -305,12 +305,15 @@ var colorbrewer = {YlGn: {
 		12: ["#8dd3c7","#ffffb3","#bebada","#fb8072","#80b1d3","#fdb462","#b3de69","#fccde5","#d9d9d9","#bc80bd","#ccebc5","#ffed6f"]
 }};
 
+
+// HERE IS THE "STATE"
 var header = [];
-var columns_on_off = [];
+var columns_on_off = []; // isn't used except to set active_indexes
 var active_indexes = [];
 var metaNamesByTaxa = {};
 var metadata = {}; // metadata -> taxaName -> headerPosition -> {value: Paris, 'colour': #121212}
-var loaded = false;
+var loaded = false; // used by settings
+var display = false; // used by settings & meta.react.jsx
 
 var MetadataStore = assign({}, EventEmitter.prototype, {
 	emitChange: function() {
@@ -329,6 +332,19 @@ var MetadataStore = assign({}, EventEmitter.prototype, {
 			ret.push(header[active_indexes[i]])
 		}
 		return(ret)
+	},
+
+
+	shouldWeDisplay: function() {
+		return(display)
+	},
+
+	getDataForSettings: function() {
+		var ret = []
+		for (var i=0; i<columns_on_off.length; i++) {
+			ret.push({header:header[i], isChecked:Boolean(columns_on_off[i]), id:i});
+		}
+		return(ret);
 	},
 
 	isLoaded: function() {
@@ -439,22 +455,62 @@ function set_colours(header,metadata) {
 	return metadata
 }
 
+function set_active_indicies() {
+	//http://stackoverflow.com/questions/20798477/how-to-find-index-of-all-occurrences-of-an-element-in-array
+	active_indexes = columns_on_off.reduce(function(a,e,i) {if (e===1) {a.push(i)}; return(a)},[])
+}
+
+
 Dispatcher.register(function(payload) {
 	switch(payload.actionType) {
+		case 'toggleMetaDisplay':
+			var oldVal = display;
+			display = payload.newDisplayBool;
+			if (display===oldVal) {
+				console.log("we tried to toggle meta display but the value hasn't changed!!!!!")
+			}
+			MetadataStore.emitChange();
+			break;
+		//case
+		case 'toggleMetadataColumn':
+			// console.log("current cols on off: ",columns_on_off)
+			columns_on_off[payload.colNumToToggle] = columns_on_off[payload.colNumToToggle] ? 0 : 1;
+			set_active_indicies()
+			// console.log("new cols on off: ",columns_on_off)
+			MetadataStore.emitChange();
+			break;
 		case 'csvStringReceived':
-		var blah = parse_csv(payload.csvString)
+			var blah = parse_csv(payload.csvString)
 			// check if parsing successful
 			header = blah[0]
 			columns_on_off = blah[1]
+			set_active_indicies() // uses the now updated columns_on_off
 			// metadata = blah[2]
 			// console.log(header)
 			metadata = set_colours(header,blah[2]) // modifies metadata
-			active_indexes = columns_on_off.reduce(function(a,e,i) {if (e===1) {a.push(i)}; return(a)},[]) //http://stackoverflow.com/questions/20798477/how-to-find-index-of-all-occurrences-of-an-element-in-array
+
 			loaded = true;
+			display = true;
 			// console.log(metadata)
+
+
+			console.log("header")
+			console.log(header)
+			console.log("columns_on_off")
+			console.log(columns_on_off)
+			console.log("active_indexes")
+			console.log(active_indexes)
+			console.log("metaNamesByTaxa")
+			console.log(metaNamesByTaxa)
+			console.log("metadata")
+			console.log(metadata)
+			console.log("loaded")
+			console.log(loaded)
+
 			MetadataStore.emitChange();
 			break;
-		// case
+
+		//case
 		default:
 			// do nothing
 		}
@@ -464,6 +520,7 @@ Dispatcher.register(function(payload) {
 
 
 module.exports = MetadataStore;
+
 
 
 
