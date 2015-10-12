@@ -99,7 +99,12 @@ div.horizontalgap{padding-left: 10px; display: inline}
 .hidden { display:none; }
 
 
-
+img.frontpage{
+    width:100%;
+    max-width:150px;
+    display: block;
+    margin: 0 auto;
+}
 
 
 
