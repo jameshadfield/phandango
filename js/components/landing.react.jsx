@@ -11,7 +11,7 @@ var Landing = React.createClass({displayName: "displayName",
 					<div className="col s6">
 						<h5>Introduction</h5>
 						<p className="light">JScandy is an interactive viewer for populations of bacterial genomes connected by a tree. It allows visualisation of recombination breakpoints, genome annotations all connected by a phylogenetic tree.</p>
-						<p className="light">Designed and coded by James Hadfield & Simon Harris. (c) <a href="www.sanger.ac.uk/">Wellcome Trust Sanger Institute</a> 2016.</p>
+						<p className="light">Designed and coded by James Hadfield & Simon Harris. (c) <a href="www.sanger.ac.uk/">Wellcome Trust Sanger Institute</a> 2015-.</p>
 						<p className="light">Built using <a href="https://facebook.github.io/react/">React</a> and <a href="www.materializecss.com">Materialize</a>. Rendered with HTML canvas.</p>
 						<p className="light">Version: 1.0 (internal testing)</p>
 						<p className="light">Bug reports either via <a href="mailto:jh22@sanger.ac.uk">email</a> or via <a href="https://github.com/jameshadfield/JScandy/">github</a></p>

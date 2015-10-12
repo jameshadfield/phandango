@@ -91,19 +91,6 @@ window.onload = function() {
 }
 
 
-// React.renderComponent(<SampleComponent />, document.getElementById('container'));
-
-// setTimeout(function() {
-// 	console.log("RENDERING SETTINGS");
-//     React.render(<Settings />, document.getElementById('settingsContainer'));
-// }, 1000);
-
-// setTimeout(function() {
-// 	console.log("REMOVING SETTINGS");
-//     React.unmountComponentAtNode(document.getElementById('settingsContainer'));
-// }, 3000);
-
-
 // a function to scale the canvas' on a resize
 window.onresize = function() {
 	console.log("RESIZE DETECTED");
@@ -121,7 +108,7 @@ window.onresize = function() {
 			Actions.phylocanvas_changed();
 		}
 	};
-	phylocanvas.fitInPanel();
+	// phylocanvas.fitInPanel();
 }
 
 module.exports = Main_React_Element;
