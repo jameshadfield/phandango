@@ -3,7 +3,6 @@ resizing of canvases is tricky -- read this:
 http://stackoverflow.com/questions/5034529/size-of-html5-canvas-via-css-versus-element-attributes
 */
 
-canvas { border: 1px solid black; z-index: 1;}
 /*
 SIMPLE GRID SYSTEM
 https://css-tricks.com/dont-overthink-it-grids/
@@ -55,6 +54,11 @@ https://css-tricks.com/dont-overthink-it-grids/
   height: 100vh;
 }
 
+
+/* D E VE E L O P M E N T */
+/*
+canvas { border: 1px solid black; z-index: 1;}
+
 .red {background: #FAAC58;}
 .red:hover {background: #DF0101;}
 
@@ -62,13 +66,7 @@ https://css-tricks.com/dont-overthink-it-grids/
 .green:hover {background: #A5DF00;}
 
 .blue {background: #80d8e9;}
-.blue:hover {background: #013ADF}
-
-/*http://stackoverflow.com/questions/5657964/css-why-doesn-t-percentage-height-work*/
-/*.main {
-  width:600px;
-  height:800px;
-}*
+.blue:hover {background: #013ADF}*/
 
 
 /*  S E T T I N G S */
@@ -89,8 +87,6 @@ https://css-tricks.com/dont-overthink-it-grids/
 
 div.horizontalgap{padding-left: 10px; display: inline}
 
-/* using google materialise */
-
 .settings-col {
   position: relative;
   width: 20%;
@@ -101,23 +97,6 @@ div.horizontalgap{padding-left: 10px; display: inline}
 }
 
 .hidden { display:none; }
-/*
-.settings {
-  position: absolute;
-  width: 100%;
-  height: 100vh;
-  z-index:10;
-  background:#BDBDBD;
-  align-items: center;
-  justify-content: center;
-  padding-left: 100px;
-  padding-right: 100px;
-  padding-bottom: 100px;
-  padding-top: 100px
-}
-*/
-
-
 
 
 
