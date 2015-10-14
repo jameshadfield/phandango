@@ -31,7 +31,7 @@ dist
 
 
 # the bundle -- make this yourself!
-js/bundle.js
+#js/bundle.js
 
 # eventually this should be committed, but becaues
 # jyo is using webpack and james is using browserify
