@@ -40,7 +40,7 @@ function annotationTrack(canvas) {
 		if (arrows===undefined) {
 			return
 		}
-		console.log("GFF REDRAW GOOD?")
+		// console.log("GFF REDRAW GOOD?")
 		// trim_blocks() will limit blocks to our viewport and also associate the x and y values in pixels
 		var visible_genome = GenomeStore.getVisible()
 		// console.log(arrows)

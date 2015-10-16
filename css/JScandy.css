@@ -15,11 +15,17 @@ http://stackoverflow.com/questions/5034529/size-of-html5-canvas-via-css-versus-e
   left: 0;
 }
 
+/*#canvassesDiv {
+  padding: 10px 10px 10px 10px;
+}
+*/
+
+
 /* D E VE E L O P M E N T */
 
-/*canvas { border: 1px solid black; z-index: 1;}
+/*canvas { border: 1px solid black}*/
 
-.red {background: #FAAC58;}
+/*.red {background: #FAAC58;}
 .red:hover {background: #DF0101;}
 
 .green {background: #D8F781;}

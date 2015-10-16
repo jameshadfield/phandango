@@ -36,7 +36,7 @@ var CanvasDivs = React.createClass({displayName: "Main_React_Element",
 		}
 		// console.log("RENDER:",this.props.divPerc.col[0],this.props.divPerc.col[1],this.props.divPerc.col[2])
 		return(
-			<div id="mainDiv" className="mainDiv">
+			<div id="canvassesDiv">
 
 				{/* TOP ROW (annotation etc) */}
 				<div className="newline"/>
@@ -47,7 +47,7 @@ var CanvasDivs = React.createClass({displayName: "Main_React_Element",
 				{/* MIDDLE ROW (tree & gubbins & meta) */}
 				<div className="newline"/>
 				<div className="green" style={this.styleize(1,2)}><PhyloReact/></div>
-				<div className="blue" style={this.styleize(2,2)}><MetaReact.MetaCanvasClass/></div>
+				<div className="blue" style={this.styleize(2,2)}><MetaReact.MetaCanvasClass on={this.props.elementsOn.col[1]}/></div>
 				<div className="green" style={this.styleize(3,2)}><GubbinsCanvas.GubbinsCanvasClass/></div>
 
 				{/* BOTTOM ROW (only plot at the moment) */}
@@ -89,62 +89,3 @@ module.exports = CanvasDivs;
 
 
 
-
-
-
-
-
-// 	render: function() {
-// 		return(
-// 			<div id="mainDiv" className="mainDiv">
-
-// 				{/* landing page injected here onLoad and then controlled by keystrokes.jsx */}
-// 				<div id="landingContainer"/>
-
-// 				{/* settings are injected here via keystrokes.jsx */}
-// 				<div id="settingsContainer"/>
-
-// 				{/* TOP ROW */}
-// 				<div className="newline">
-
-// 					<div id="smallGenomeContainer" className="col-1 row-1 red">
-// 						<Extras.SmallGenome/>
-// 					</div>
-
-// 					<div id="annotationContainer" className="col-3 row-1 blue">
-// 						<Extras.GenomeAnnotation/>
-// 					</div>
-
-// 				</div>
-// 				{/* MIDDLE ROW (TREE / GUBBINS) */}
-
-// 				<div className="newline">
-
-// 					<div id="gubbinsContainer" className="col-1 row-2 green">
-// 						<PhyloReact/>
-// 					</div>
-
-// 					<div id="gubbinsContainer" className="col-2 row-2 red">
-// 						<MetaReact.MetaCanvasClass/>
-// 					</div>
-
-
-// 					<div id="gubbinsContainer" className="col-3 row-2 green">
-// 						<GubbinsCanvas.GubbinsCanvasClass/>
-// 					</div>
-
-
-// 				</div>
-// 				{/* BOTTOM ROW */}
-// 				<div className="newline">
-
-// 		            <div id="graphContainer" className="col-3 row-3 blue">
-// 		                <GubbinsCanvas.RecombGraphClass/>
-// 		            </div>
-// 	            </div>
-
-// 			</div>
-
-// 			);
-// 	}
-// });

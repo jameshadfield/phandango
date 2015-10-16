@@ -16,30 +16,31 @@ var Main_React_Element = React.createClass({displayName: "Main_React_Element",
 	getInitialState: function() {
 		// initial values
 		var divPerc = {col:[20,11,69],row:[15,70,15]};
-		var router = 'settings'; // what page do we start with?
+		var router = 'landing'; // what page do we start with?
+		// console.log("ROUTER:",router)
 		var elementsOn = {col:[true,true,true],row:[true,true,true]}
 		return({divPerc: divPerc, router:router,elementsOn:elementsOn});
 	},
 	keyIncoming: function(key){
+		// http://www.cambiaresearch.com/articles/15/javascript-char-codes-key-codes
+		// console.log("incoming key stroke",event.keyCode)
 		if (event.keyCode === 83 || event.charCode === 83){ // 's'
-			var pageName = this.state.router=="settings" ? 'main' : 'settings';
+			this.setState({router: this.state.router=="settings" ? 'main' : 'settings'});
 		}
-		else if (event.keyCode === 68 || event.charCode === 68){ // 's'
-			var pageName = 'main';
+		else if (event.keyCode === 68 || event.charCode === 68){ // 'd'
+			this.setState({router: 'main'});
 			Actions.loadDefaultData();
 		}
-		else if (event.keyCode === 76 || event.charCode === 76){ // 's'
-			var pageName = this.state.router=="landing" ? 'main' : 'landing';
+		else if (event.keyCode === 76 || event.charCode === 76){ // 'l'
+			this.setState({router: this.state.router=="landing" ? 'main' : 'landing'});
 		}
-		this.setState({router:pageName});
-		if (pageName=='main') {this.recomputeAndDrawCanvases()}
 	},
 	toggleColRow: function(colRow,num){
-		console.log("params:",colRow,num)
+		// console.log("params:",colRow,num)
 		// this is a callback from settings
 		var elementsOn = {col:this.state.elementsOn.col.slice(),row:this.state.elementsOn.row.slice()};
 		elementsOn[colRow][num-1] = !this.state.elementsOn[colRow][num-1];
-		console.log("elementsOn (columns) were:",this.state.elementsOn.col,"are now",elementsOn.col)
+		// console.log("elementsOn (columns) were:",this.state.elementsOn.col,"are now",elementsOn.col)
 		this.setState({elementsOn:elementsOn});
 		elementsOn[colRow][num-1] ? this.newDivPerc(colRow,num,11) : this.newDivPerc(colRow,num,0);
 	},
@@ -73,11 +74,16 @@ var Main_React_Element = React.createClass({displayName: "Main_React_Element",
 			console.log("percentages don't add to 100%",colRow,"=",divPerc[colRow])
 		}
 		this.setState({divPerc:divPerc});
+
+		// console.log("phylocanvas div is w:",parseInt(divPerc.col[0]/100*document.documentElement.clientWidth),"px & h:",parseInt(divPerc.row[1]/100*document.documentElement.clientHeight),"px")
+		// console.log("gubbins div is w:",parseInt(divPerc.col[2]/100*document.documentElement.clientWidth),"px & h:",parseInt(divPerc.row[1]/100*document.documentElement.clientHeight),"px")
+
 		this.recomputeAndDrawCanvases();
+
 	},
 
 	recomputeAndDrawCanvases: function(){
-		console.log("recomputing canvases");
+		// console.log("recomputing canvases");
 		var canvases = document.getElementsByTagName("canvas");
 		for (var i = canvases.length - 1; i >= 0; i--) {
 			var width = canvases[i].clientWidth;
@@ -97,6 +103,7 @@ var Main_React_Element = React.createClass({displayName: "Main_React_Element",
 		phylocanvas.draw(true); // forces phylocanvas.fitInPanel()
 	},
 	componentDidMount: function() {
+		var myState = this;
 		document.addEventListener('keyup', this.keyIncoming);
 		window.onresize = this.recomputeAndDrawCanvases;
 		this.getDOMNode().addEventListener("dragover", function(event) {
@@ -107,7 +114,7 @@ var Main_React_Element = React.createClass({displayName: "Main_React_Element",
 			var files = event.dataTransfer.files;
 			// if files.length>1 then do some carny apply trick to call multiple actions
 			Actions.files_dropped(files)
-			this.setState({router:'main'});
+			myState.setState({router:'main'});
 		}, false);
 	},
 	render: function() {
@@ -116,60 +123,12 @@ var Main_React_Element = React.createClass({displayName: "Main_React_Element",
 				<Landing on={this.state.router=='landing' ? true : false}/>
 
 				<Settings on={this.state.router=='settings' ? true : false} divPerc={this.state.divPerc} newDivPerc={this.newDivPerc} topState={this} toggleColRow={this.toggleColRow} elementsOn={this.state.elementsOn}/>
-				<CanvasDivs divPerc={this.state.divPerc} on={true} /> {/* always on to keep components alive */}
+				<CanvasDivs divPerc={this.state.divPerc} on={true} elementsOn={this.state.elementsOn}/> {/* always on to keep components alive */}
 			</div>
 		)
 	},
 });
 
 
-
-
-
-
-// var Main_React_Element = React.createClass({displayName: "Main_React_Element",
-
-// 	// Invoked once, immediately after the initial rendering
-// 	componentDidMount: function() {
-// 		this.getDOMNode().addEventListener("dragover", function(event) {
-// 		    event.preventDefault();
-// 		}, false);
-// 		this.getDOMNode().addEventListener("drop", function(event) {
-// 		    event.preventDefault();
-// 			var files = event.dataTransfer.files;
-// 			// if files.length>1 then do some carny
-// 			// apply trick to call multiple actions
-// 			Actions.files_dropped(files)
-// 		}, false);
-// 	},
-
-
-// window.onload = function() {
-// 	React.render(<Landing />, document.getElementById('landingContainer'))
-// 	// Actions.loadDefaultData();
-// 	// document.getElementById('landing').style.display="none";
-
-// }
-
-
-// // a function to scale the canvas' on a resize
-// window.onresize = function() {
-// 	console.log("RESIZE DETECTED");
-// 	var canvases = document.getElementsByTagName("canvas");
-// 	for (var i = canvases.length - 1; i >= 0; i--) {
-// 		var width = canvases[i].clientWidth;
-// 		var height = canvases[i].clientHeight;
-// 		if (canvases[i].width != width || canvases[i].height != height) {
-// 		 	// Change the size of the canvas to match the size it's being displayed
-// 		 	canvases[i].width = width;
-// 		 	canvases[i].height = height;
-// 		 	console.log("\t", canvases[i].id, ' resized');
-// 		 	// now we need to redraw the canvas
-// 		 	// hack: fake a phylocanvas change --> cause a redraw nearly everywhere
-// 			Actions.phylocanvas_changed();
-// 		}
-// 	};
-// 	// phylocanvas.fitInPanel();
-// }
 
 module.exports = Main_React_Element;

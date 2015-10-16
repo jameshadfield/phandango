@@ -24,6 +24,7 @@ This is currently a self contained thing, but we should really make it part of r
 var MetaCanvasClass = React.createClass({displayName: "displayName",
 
 	componentDidMount: function() { // Invoked once, immediately after the initial rendering
+        // console.log("META COMPONENET DID MOUNT")
 		// Canvas grid is set here, and we want this to be the same as the CSS...
 		// the CSS scales the canvas, but we have to set the correct width and height here as well
 		// see
@@ -46,6 +47,10 @@ var MetaCanvasClass = React.createClass({displayName: "displayName",
 
 	},
     render: function() {
+        // console.log("meta props on:",this.props.on)
+        if (!this.props.on) {
+            return null
+        }
         return(
             <canvas id="metaCanvas" className="inContainer"></canvas>
         );
@@ -108,6 +113,8 @@ function meta(canvas) {
     }, true);
 
     this.redraw = function() {
+        // console.log("myState:",myState)
+        // console.log("myState.context",myState.context)
         myState.context.clearRect(0, 0, myState.canvas.width, myState.canvas.height);
         if (! MetadataStore.shouldWeDisplay()) {
             return
