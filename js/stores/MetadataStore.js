@@ -494,18 +494,18 @@ Dispatcher.register(function(payload) {
 			// console.log(metadata)
 
 
-			console.log("header")
-			console.log(header)
-			console.log("columns_on_off")
-			console.log(columns_on_off)
-			console.log("active_indexes")
-			console.log(active_indexes)
-			console.log("metaNamesByTaxa")
-			console.log(metaNamesByTaxa)
-			console.log("metadata")
-			console.log(metadata)
-			console.log("loaded")
-			console.log(loaded)
+			// console.log("header")
+			// console.log(header)
+			// console.log("columns_on_off")
+			// console.log(columns_on_off)
+			// console.log("active_indexes")
+			// console.log(active_indexes)
+			// console.log("metaNamesByTaxa")
+			// console.log(metaNamesByTaxa)
+			// console.log("metadata")
+			// console.log(metadata)
+			// console.log("loaded")
+			// console.log(loaded)
 
 			MetadataStore.emitChange();
 			break;

@@ -14,7 +14,7 @@ var GubbinsCanvasClass = React.createClass({displayName: "displayName",
 		this.getDOMNode().setAttribute('width', window.getComputedStyle(this.getDOMNode()).width)
 		this.getDOMNode().setAttribute('height', window.getComputedStyle(this.getDOMNode()).height)
 
-        console.log("gubbins node set to w: ",window.getComputedStyle(this.getDOMNode()).width,"h:",window.getComputedStyle(this.getDOMNode()).height)
+        // console.log("gubbins node set to w: ",window.getComputedStyle(this.getDOMNode()).width,"h:",window.getComputedStyle(this.getDOMNode()).height)
 
 		gubbinsInstance = new gubbins(this.getDOMNode());
 
@@ -54,7 +54,7 @@ var RecombGraphClass = React.createClass({displayName: "displayName",
         // see
         this.getDOMNode().setAttribute('width', window.getComputedStyle(this.getDOMNode()).width)
         this.getDOMNode().setAttribute('height', window.getComputedStyle(this.getDOMNode()).height)
-        console.log("graph DOM node:",this.getDOMNode())
+        // console.log("graph DOM node:",this.getDOMNode())
         var recombGraph = new graph(this.getDOMNode(), "recombGraph");
 
     },

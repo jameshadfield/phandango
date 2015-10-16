@@ -8,7 +8,7 @@ var SmallGenome = React.createClass({displayName: "displayName",
 	componentDidMount: function() { // Invoked once, immediately after the initial rendering
 		this.getDOMNode().setAttribute('width', window.getComputedStyle(this.getDOMNode()).width)
 		this.getDOMNode().setAttribute('height', window.getComputedStyle(this.getDOMNode()).height)
-		console.log("small: width:",window.getComputedStyle(this.getDOMNode()).width,"height:",window.getComputedStyle(this.getDOMNode()).height)
+		// console.log("small: width:",window.getComputedStyle(this.getDOMNode()).width,"height:",window.getComputedStyle(this.getDOMNode()).height)
 		smallGenomeInstance = new small_genome(this.getDOMNode());
 	},
     render: function() {

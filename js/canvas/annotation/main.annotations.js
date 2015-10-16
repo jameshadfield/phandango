@@ -7,7 +7,7 @@ var GenomeStore = require('../../stores/genome.js')
 var mouse_moves = require('../gubbins/mouse_moves.gubbins.js')
 var RegionSelectedStore = require('../../stores/RegionSelectedStore.js')
 var Actions = require('../../actions/actions.js');
-
+var MiscStore = require('../../stores/misc.Store.js');
 
 function annotationTrack(canvas) {
 	this.canvas = canvas;
@@ -40,6 +40,7 @@ function annotationTrack(canvas) {
 		if (arrows===undefined) {
 			return
 		}
+		// console.log("GFF REDRAW GOOD?")
 		// trim_blocks() will limit blocks to our viewport and also associate the x and y values in pixels
 		var visible_genome = GenomeStore.getVisible()
 		// console.log(arrows)
@@ -89,6 +90,7 @@ function annotationTrack(canvas) {
 
 	RegionSelectedStore.addChangeListener(this.checkForClick);
 
+	MiscStore.addChangeListener(this.redraw);
 
 }
 
