@@ -132,6 +132,13 @@ module.exports = {
       actionType: 'toggleMetaDisplay',
       newDisplayBool: i
     });
+  },
+
+  redrawAll: function() {
+    console.log("ACTION");
+    Dispatcher.dispatch({
+      actionType: 'redrawAll'
+    });
   }
 
 

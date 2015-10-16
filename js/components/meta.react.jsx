@@ -4,6 +4,7 @@ var RawDataStore = require('../stores/RawDataStore.js');
 var Actions = require('../actions/actions.js');
 var MetadataStore = require('../stores/MetadataStore.js');
 var Taxa_Locations = require('../stores/Taxa_Locations.js')
+var MiscStore = require('../stores/misc.Store.js');
 
 
 /*
@@ -186,6 +187,9 @@ function meta(canvas) {
 
     // whenever the MetadataStore store changes we should re-draw
     MetadataStore.addChangeListener(this.redraw);
+
+    MiscStore.addChangeListener(this.redraw);
+
 }
 
 

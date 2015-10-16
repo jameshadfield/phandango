@@ -56,7 +56,7 @@ https://css-tricks.com/dont-overthink-it-grids/
 
 
 /* D E VE E L O P M E N T */
-/*
+
 canvas { border: 1px solid black; z-index: 1;}
 
 .red {background: #FAAC58;}
@@ -66,7 +66,7 @@ canvas { border: 1px solid black; z-index: 1;}
 .green:hover {background: #A5DF00;}
 
 .blue {background: #80d8e9;}
-.blue:hover {background: #013ADF}*/
+.blue:hover {background: #013ADF}
 
 
 /*  S E T T I N G S */
@@ -76,12 +76,21 @@ canvas { border: 1px solid black; z-index: 1;}
   position: absolute;
   width: 100%;
   height: 100vh;
-  background: white;
+  /*background: white;*/
   padding-left: 10px;
   padding-right: 10px;
   padding-bottom: 10px;
   padding-top: 10px
 }
+
+.bgwhite-alpha {
+  background: rgba(255,255,255,0.8);
+}
+
+.bgwhite {
+  background: white;
+}
+
 
 .border { border: 1px solid gray;}
 
@@ -107,6 +116,10 @@ img.frontpage{
 }
 
 
+input[type=range]{
+  float: right;
+  margin: 0 0 0 0 !important;
+}
 
 
 

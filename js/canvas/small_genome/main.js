@@ -1,5 +1,6 @@
 var mouse_moves = require('../gubbins/mouse_moves.gubbins.js')
 var GenomeStore = require('../../stores/genome.js')
+var MiscStore = require('../../stores/misc.Store.js');
 
 
 function small_genome(canvas) {
@@ -18,6 +19,7 @@ function small_genome(canvas) {
 
 	// whenever anybody changes the genome-position of the viewport, we should re-draw
 	GenomeStore.addChangeListener(this.redraw);
+	MiscStore.addChangeListener(this.redraw);
 
 }
 

@@ -2,8 +2,11 @@ var React = require('react');
 
 var Landing = React.createClass({displayName: "displayName",
 	render: function() {
+		if (!this.props.on) {
+			return null
+		}
 		return (
-			<div className="fullpage">
+			<div className="fullpage bgwhite">
 				<div className="divider"></div>
 				<h1 className="center-align">JScandy</h1>
 				<div className="divider"></div>

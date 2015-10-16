@@ -7,6 +7,7 @@ var trim_blocks = require('./trim_blocks.gubbins.js')
 var mouse_moves = require('./mouse_moves.gubbins.js')
 var Actions = require('../../actions/actions.js')
 var RegionSelectedStore = require('../../stores/RegionSelectedStore.js')
+var MiscStore = require('../../stores/misc.Store.js');
 
 
 function gubbins(canvas) {
@@ -94,6 +95,9 @@ function gubbins(canvas) {
 
 	// clicks
 	RegionSelectedStore.addChangeListener(this.checkForClick);
+
+	MiscStore.addChangeListener(this.redraw);
+
 
 	this.redraw();
 }

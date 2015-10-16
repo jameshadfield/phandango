@@ -1,5 +1,6 @@
 var PlotStore = require('../../stores/PlotStore.js')
 var GenomeStore = require('../../stores/genome.js')
+var MiscStore = require('../../stores/misc.Store.js');
 
 
 
@@ -61,6 +62,7 @@ function plotter(canvas, plotName) {
 
 	GenomeStore.addChangeListener(this.redraw);
 	PlotStore.addChangeListener(this.redraw);
+	MiscStore.addChangeListener(this.redraw);
 
 }
 
