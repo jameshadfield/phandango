@@ -1,13 +1,19 @@
 
 var parser = require('./parse.gubbins.js');
-var draw = require('./draw.gubbins.js')
+var draw = require('./draw.js')
 var Taxa_Locations = require('../../stores/Taxa_Locations.js')
 var GenomeStore = require('../../stores/genome.js')
-var trim_blocks = require('./trim_blocks.gubbins.js')
-var mouse_moves = require('./mouse_moves.gubbins.js')
+var trim_blocks = require('./trim_blocks.js')
+var mouse_moves = require('../mouse_moves.js')
 var Actions = require('../../actions/actions.js')
 var RegionSelectedStore = require('../../stores/RegionSelectedStore.js')
 var MiscStore = require('../../stores/misc.Store.js');
+
+
+
+
+
+
 
 
 function gubbins(canvas) {
@@ -24,7 +30,7 @@ function gubbins(canvas) {
 	var blocks;
 	this.selected_block = undefined;
 
-	window.addEventListener('resize', function(){myState.redraw()}, true);
+	// window.addEventListener('resize', function(){myState.redraw()}, true);
 
 	// this.canvas.addEventListener("onresize", function() {
 	// 		console.log("resize detected")

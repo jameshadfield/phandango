@@ -1,11 +1,11 @@
 
 var React = require('react');
-var gubbins = require('../canvas/gubbins/main.gubbins.js');
-var graph = require('../canvas/plots/main.plot.js');
-var RawDataStore = require('../stores/RawDataStore.js');
+var gubbins = require('./genomic.canvas.js');
+var graph = require('../../canvas/plots/main.plot.js');
+var RawDataStore = require('../../stores/RawDataStore.js');
 
 
-var GubbinsCanvasClass = React.createClass({displayName: "displayName",
+var GenomicCanvasClass = React.createClass({displayName: "displayName",
 
 	componentDidMount: function() { // Invoked once, immediately after the initial rendering
 		// Canvas grid is set here, and we want this to be the same as the CSS...
@@ -70,6 +70,6 @@ var RecombGraphClass = React.createClass({displayName: "displayName",
 // <canvas id="recombGraphDiv"  className="col-3 row-3 blue"></canvas>
 //             <div id="insideGraph" className="inside red">ASBXKJSAB</div>
 
-module.exports = {'RecombGraphClass': RecombGraphClass, 'GubbinsCanvasClass': GubbinsCanvasClass};
+module.exports = {'RecombGraphClass': RecombGraphClass, 'GenomicCanvasClass': GenomicCanvasClass};
 
 

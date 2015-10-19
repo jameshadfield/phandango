@@ -1,4 +1,4 @@
-var mouse_moves = require('../gubbins/mouse_moves.gubbins.js')
+var mouse_moves = require('../../components/mouse_moves.js')
 var GenomeStore = require('../../stores/genome.js')
 var MiscStore = require('../../stores/misc.Store.js');
 

@@ -1,5 +1,5 @@
 var React = require('react/addons');
-var GubbinsCanvas = require('./gubbins.react.jsx');
+var GenomicCanvas = require('./genomic/genomic.react.jsx');
 var MetaReact = require('./meta.react.jsx');
 var PhyloReact = require('./phylo.react.jsx');
 var Extras = require('./extras.react.jsx');
@@ -48,13 +48,13 @@ var CanvasDivs = React.createClass({displayName: "Main_React_Element",
 				<div className="newline"/>
 				<div className="green" style={this.styleize(1,2)}><PhyloReact/></div>
 				<div className="blue" style={this.styleize(2,2)}><MetaReact.MetaCanvasClass on={this.props.elementsOn.col[1]}/></div>
-				<div className="green" style={this.styleize(3,2)}><GubbinsCanvas.GubbinsCanvasClass/></div>
+				<div className="green" style={this.styleize(3,2)}><GenomicCanvas.GenomicCanvasClass/></div>
 
 				{/* BOTTOM ROW (only plot at the moment) */}
 				<div className="newline"/>
 				<div style={this.styleize(1,3)}></div>
 				<div style={this.styleize(2,3)}></div>
-				<div className="blue" style={this.styleize(3,3)}><GubbinsCanvas.RecombGraphClass/></div>
+				<div className="blue" style={this.styleize(3,3)}><GenomicCanvas.RecombGraphClass/></div>
 
 			</div>
 		)
