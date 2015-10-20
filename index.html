@@ -82,6 +82,7 @@
   <li><a href="https://nodejs.org/en/">Node</a> and <a href"https://www.npmjs.com/">Node Package manager</a> (npm) are needed to build the javascript bundles. On OS X I recommend following <a href="http://stackoverflow.com/questions/28017374/what-is-the-suggested-way-to-install-brew-node-js-io-js-nvm-npm-on-os-x">this guide</a> which uses homebrew and nvm.</li>
   <li>Clone the github repo (<a href="https://help.github.com/articles/cloning-a-repository/">what is cloning?</a>) or download the zip files via <a href="https://github.com/jameshadfield/JScandy">github.com/jameshadfield/JScandy</a></li>
   <li>install the required packages by running <code>npm install</code> in the JScandy directory.</li>
+  <li>Currently <a href="https://github.com/PhyloCanvas/PhyloCanvas/tree/release/2.0.0">PhyloCanvas2.0</a> is linked in, so you'll have to clone that repo (branch release/2.0) and then link that with these commands <code>npm link</code> (in the PhyloCanvas directory) and <code>npm link PhyloCanvas</code> (in the JScandy directory)</li>
   <li>run <code>npm run build</code> to build the javascript files into a single bundle.</li>
   <li>open index.html in google chrome</li>
 </ol>
