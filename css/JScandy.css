@@ -57,18 +57,33 @@ http://stackoverflow.com/questions/5034529/size-of-html5-canvas-via-css-versus-e
   background: white;
 }
 
-.border { border: 1px solid gray;} /* settings panels */
+.border { border: 2px solid gray;} /* settings panels */
 
 div.horizontalgap{padding-left: 10px; display: inline}
 
 .settings-col {
   position: relative;
-  width: 20%;
+  /*width: 22%;*/
   float: left;
   padding-left: 10px;
   padding-right: 10px;
-  padding-bottom: 10px
+  padding-bottom: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  margin-top: 10px
 }
+@media (max-width: 1000px) {
+  .settings-col{
+    width: calc(50% - 20px);
+  }
+}
+@media (min-width: 1000px) {
+  .settings-col{
+    width: calc(25% - 20px);
+  }
+}
+
 
 .hidden { display:none; }
 
