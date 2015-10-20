@@ -96,11 +96,13 @@ var Main_React_Element = React.createClass({displayName: "Main_React_Element",
 			 	// now we need to redraw the canvas
 			}
 		};
-		Actions.redrawAll();
 
 		// phylocanvas is a black box
 		phylocanvas.resizeToContainer();
 		phylocanvas.draw(true); // forces phylocanvas.fitInPanel()
+
+		Actions.phylocanvas_changed()
+		Actions.redrawAll();
 	},
 	componentDidMount: function() {
 		var myState = this;
