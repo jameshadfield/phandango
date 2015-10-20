@@ -20,7 +20,7 @@ var CanvasDivs = React.createClass({displayName: "Main_React_Element",
 	styleize: function(colNum,rowNum) {
 		var sty = {
 			width: this.percentize(this.props.divPerc.col[colNum-1]),
-			height: this.makeVh(this.props.divPerc.row[rowNum-1]),
+			height: 'calc('+this.makeVh(this.props.divPerc.row[rowNum-1])+' - 7px)',
 			position: 'relative'
 		};
 		if (colNum<3) {

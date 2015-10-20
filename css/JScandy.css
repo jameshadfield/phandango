@@ -1,8 +1,3 @@
-/*
-resizing of canvases is tricky -- read this:
-http://stackoverflow.com/questions/5034529/size-of-html5-canvas-via-css-versus-element-attributes
-*/
-
 .newline {
   clear: both;
 }
@@ -15,15 +10,16 @@ http://stackoverflow.com/questions/5034529/size-of-html5-canvas-via-css-versus-e
   left: 0;
 }
 
-/*#canvassesDiv {
+
+#canvassesDiv {
   padding: 10px 10px 10px 10px;
 }
-*/
+
 
 
 /* D E VE E L O P M E N T */
 
-/*canvas { border: 1px solid black}*/
+/*canvas { border: 3px solid black}*/
 
 /*.red {background: #FAAC58;}
 .red:hover {background: #DF0101;}
@@ -57,18 +53,33 @@ http://stackoverflow.com/questions/5034529/size-of-html5-canvas-via-css-versus-e
   background: white;
 }
 
-.border { border: 1px solid gray;} /* settings panels */
+.border { border: 2px solid gray;} /* settings panels */
 
 div.horizontalgap{padding-left: 10px; display: inline}
 
 .settings-col {
   position: relative;
-  width: 20%;
+  /*width: 22%;*/
   float: left;
   padding-left: 10px;
   padding-right: 10px;
-  padding-bottom: 10px
+  padding-bottom: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  margin-top: 10px
 }
+@media (max-width: 1000px) {
+  .settings-col{
+    width: calc(50% - 20px);
+  }
+}
+@media (min-width: 1000px) {
+  .settings-col{
+    width: calc(25% - 20px);
+  }
+}
+
 
 .hidden { display:none; }
 
