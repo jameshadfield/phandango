@@ -1,13 +1,15 @@
 
 var parser = require('./parse.gubbins.js');
-var draw = require('./draw.gubbins.js')
+var draw = require('./draw.js')
 var Taxa_Locations = require('../../stores/Taxa_Locations.js')
 var GenomeStore = require('../../stores/genome.js')
-var trim_blocks = require('./trim_blocks.gubbins.js')
-var mouse_moves = require('./mouse_moves.gubbins.js')
+var trim_blocks = require('./trim_blocks.js')
+var mouse_moves = require('../mouse_moves.js')
 var Actions = require('../../actions/actions.js')
 var RegionSelectedStore = require('../../stores/RegionSelectedStore.js')
 var MiscStore = require('../../stores/misc.Store.js');
+var RawDataStore = require('../../stores/RawDataStore.js');
+
 
 
 function gubbins(canvas) {
@@ -20,11 +22,18 @@ function gubbins(canvas) {
 	// var genome_coords = gff_returned[0];
 	// Actions.set_genome_length(gff_returned[0][1]);
 	// var raw_blocks = gff_returned[1];
-	var raw_blocks=undefined;
+
+	// var raw_blocks = RawDataStore.getParsedData('genomic')[1]
+	var raw_blocks;
 	var blocks;
 	this.selected_block = undefined;
 
-	window.addEventListener('resize', function(){myState.redraw()}, true);
+	this.loadRawData = function() {
+		myState.raw_blocks = RawDataStore.getParsedData('genomic')[1];
+		myState.redraw();
+	}
+
+	// window.addEventListener('resize', function(){myState.redraw()}, true);
 
 	// this.canvas.addEventListener("onresize", function() {
 	// 		console.log("resize detected")
@@ -32,21 +41,23 @@ function gubbins(canvas) {
 	// 	}, false
 	// );
 
+	Actions.set_genome_length(RawDataStore.getParsedData('genomic')[0][1])
 
-	this.load = function(gff_string) {
-		var parsed = parser.parse_gff(gff_string);
-		// this may well FAIL and, if so, we should return false or something
-		if (parsed===false) {
-			// console.log("gubbins parsing failed")
-			return false
-		}
-		// console.log(parsed[0])
-		console.log("gubbins parsing successful")
-		raw_blocks = parsed[1]
-		Actions.set_genome_length(parsed[0][1])
-		this.redraw()
-		// this action will cause a redraw!
-	}
+
+	// this.load = function(gff_string) {
+	// 	var parsed = parser.parse_gff(gff_string);
+	// 	// this may well FAIL and, if so, we should return false or something
+	// 	if (parsed===false) {
+	// 		// console.log("gubbins parsing failed")
+	// 		return false
+	// 	}
+	// 	// console.log(parsed[0])
+	// 	console.log("gubbins parsing successful")
+	// 	raw_blocks = parsed[1]
+	// 	Actions.set_genome_length(parsed[0][1])
+	// 	this.redraw()
+	// 	// this action will cause a redraw!
+	// }
 
 	this.redraw = function() {
  		// redraws are expensive. We need to work out if we redraw.
@@ -54,11 +65,11 @@ function gubbins(canvas) {
  		// 						* click has selected / deseleced a block (myState.selected_block) <-
  		//						* Taxa_Locations have changed (i.e. y values are different) <-- this is taken care of in the store
 		// is anything actually loaded?
-		if (raw_blocks===undefined) {return false}
+		if (myState.raw_blocks===undefined) {return false}
 		// trim_blocks() will limit blocks to our viewport and also associate the x and y values in pixels
 		var visible_genome = GenomeStore.getVisible()
-		// console.log("DRAW GUBBINS")
-		blocks = trim_blocks(raw_blocks, visible_genome, myState.canvas)
+		// console.log("DRAW GUBBINS over visible_genome",visible_genome)
+		blocks = trim_blocks(myState.raw_blocks, visible_genome, myState.canvas)
 		draw.clearCanvas(myState.canvas)
 		// console.log(GenomeStore.getSelectedTaxaY())
 		draw.highlightSelectedNodes(myState.canvas, myState.context, GenomeStore.getSelectedTaxaY())
@@ -98,8 +109,9 @@ function gubbins(canvas) {
 
 	MiscStore.addChangeListener(this.redraw);
 
+	RawDataStore.addChangeListener(this.loadRawData);
 
-	this.redraw();
+	this.loadRawData(); // forces this.redraw()
 }
 
 function getSelectedBlock(blocks, mouse) {

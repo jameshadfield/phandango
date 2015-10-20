@@ -5,6 +5,8 @@ var Landing = require('./landing.react.jsx');
 var CanvasDivs = require('./canvases.react.jsx');
 var Settings = require('./settings.react.jsx');
 var Actions = require('../actions/actions.js');
+var RawDataStore = require('../stores/RawDataStore.js');
+
 
 function add(a, b) {return a+b}; // http://stackoverflow.com/questions/1230233/how-to-find-the-sum-of-an-array-of-numbers
 
@@ -19,7 +21,8 @@ var Main_React_Element = React.createClass({displayName: "Main_React_Element",
 		var router = 'landing'; // what page do we start with?
 		// console.log("ROUTER:",router)
 		var elementsOn = {col:[true,true,true],row:[true,true,true]}
-		return({divPerc: divPerc, router:router,elementsOn:elementsOn});
+		var componentsLoaded = RawDataStore.getLoadedStatus();
+		return({divPerc: divPerc, router:router,elementsOn:elementsOn,componentsLoaded:componentsLoaded});
 	},
 	keyIncoming: function(key){
 		// http://www.cambiaresearch.com/articles/15/javascript-char-codes-key-codes
@@ -118,14 +121,17 @@ var Main_React_Element = React.createClass({displayName: "Main_React_Element",
 			Actions.files_dropped(files)
 			myState.setState({router:'main'});
 		}, false);
+		RawDataStore.addChangeListener(function() {
+			myState.setState({'componentsLoaded' : RawDataStore.getLoadedStatus()});
+		})
 	},
 	render: function() {
 		return(
 			<div id="mainDiv">
 				<Landing on={this.state.router=='landing' ? true : false}/>
 
-				<Settings on={this.state.router=='settings' ? true : false} divPerc={this.state.divPerc} newDivPerc={this.newDivPerc} topState={this} toggleColRow={this.toggleColRow} elementsOn={this.state.elementsOn}/>
-				<CanvasDivs divPerc={this.state.divPerc} on={true} elementsOn={this.state.elementsOn}/> {/* always on to keep components alive */}
+				<Settings on={this.state.router=='settings' ? true : false} divPerc={this.state.divPerc} newDivPerc={this.newDivPerc} topState={this} toggleColRow={this.toggleColRow} elementsOn={this.state.elementsOn} componentsLoaded={this.state.componentsLoaded}/>
+				<CanvasDivs divPerc={this.state.divPerc} on={true} elementsOn={this.state.elementsOn} componentsLoaded={this.state.componentsLoaded}/> {/* always on to keep components alive */}
 			</div>
 		)
 	},

@@ -2,23 +2,24 @@ var EventEmitter = require('events').EventEmitter;
 var assign = require('object-assign');
 var Dispatcher = require('../dispatcher/dispatcher');
 var DefaultData = require('../static/DefaultData.js');
+var Actions = require('../actions/actions.js');
 
-// the idea is that we store the files here as strings e.t.c.
+// P A R S E R S
+// all parsers return null / false upon failure
+var gubbinsParser = require('../components/genomic/parse.gubbins.js');
+var metaParser = require('../components/meta/parse.csv.js');
+var annotationParser = require('../components/annotation/parse.annotations.js');
+var roaryParser = require('../components/genomic/roary.parser.js');
 
-// when this store updates, if (e.g.) the tree file hasn't changed, we want
-// the phylocanvas updater (which listens for emissions here) to know
-// that it doesn't need to change... can this be done with custom emissions?
 
+var loaded = {'genomic':false, 'tree':false, 'meta':false, 'annotaion':false, 'roary':false, 'SNPs':false, 'gubbins':false};
+var parsed = {};
+var rawData = {}; // internal ONLY
+var misc = {'roarySortCode':'asIs'};
 
-// var gffs = [];
-// var trees = [];
-// var plots = [];
-
-var data = {};
 
 var RawDataStore = assign({}, EventEmitter.prototype, {
 	emitChange: function() {
-		// console.log("raw data store store emission")
 		this.emit('change');
 	},
 	addChangeListener: function(callback) {
@@ -27,19 +28,21 @@ var RawDataStore = assign({}, EventEmitter.prototype, {
 	removeChangeListener: function(callback) {
 		this.removeListener('change', callback);
 	},
-	// getTrees: function() {
-	// 	return trees; // reference (to array)
-	// },
-	// getGFFs: function() {
-	// 	return gffs; // reference
-	// }
 	getData: function() {
 		return data; // reference
+	},
+	getLoadedStatus: function(name) {
+		return name ? loaded[name] : loaded;
+	},
+	getParsedData: function(name) {
+		return parsed[name];
+	},
+	getRoarySortCode: function(name) {
+		return misc.roarySortCode;
 	}
 })
 
 function incomingData(files) {
-	data = {}; // clear cache
 	// using the idea of a barrier from
 	// http://stackoverflow.com/questions/7957952/detecting-when-javascript-is-done-executing
 	// to know when all the IO is done!
@@ -56,7 +59,6 @@ function incomingData(files) {
 		}
 		this.done = function() {
 			console.log("all IO done")
-			// console.log(data)
 			RawDataStore.emitChange();
 		}
 	}
@@ -73,11 +75,72 @@ function incomingData(files) {
 			return function(event) {
 				// console.log("reader.onload started (new tick?)")
 				// console.log("file extension: "+file_extension)
-				if (file_extension in data) {
-					data[file_extension].unshift(event.target.result)
-				}
-				else {
-					data[file_extension] = [event.target.result];
+				switch(file_extension) {
+
+
+					case 'gff':
+						// could be gubbins OR annotation
+						console.log("trying gubbins parsing")
+						var gubbins = gubbinsParser.parse_gff(event.target.result);
+						if (gubbins===false) {
+							console.log("gubbins parsing failed")
+						}
+						else{
+							console.log("gubbins parsing success")
+							loaded.genomic = true;
+							parsed['genomic'] = gubbins;
+							break;
+						}
+
+						// try annotation now
+						console.log("trying annotation parsing")
+						var res = annotationParser.parse_gff(event.target.result);
+						if (res===false) {
+							console.log("annotation parsing failed")
+						} else {
+							console.log("annotation parsing success")
+							Actions.set_genome_length(res[0][1]);
+							parsed['annotation'] = res[1];
+							loaded.annotation = true;
+						}
+						break;
+
+
+					case 'tre':
+						// basically palm this off to PhyloCanvas
+						loaded.tree = true;
+						parsed['tree'] = event.target.result;
+						break;
+
+
+					case 'csv':
+						// could be roary OR metadata
+						console.log("trying metadata parsing")
+						var res = metaParser(event.target.result);
+						if (res===false) {
+							console.log("metadata parsing failed")
+						}
+						else{
+							console.log("metadata parsing success")
+							loaded.meta = true;
+							Actions.hereIsMetadata(res)
+							break;
+						}
+
+						// try ROARY now
+						console.log("trying ROARY parsing")
+						var res = roaryParser.parseCSV(event.target.result);
+						if (res===false) {
+							console.log("ROARY parsing failed")
+						}
+						else{
+							console.log("ROARY parsing success")
+							rawData['roary'] = res;
+							saveRoaryAsData(rawData['roary'][0],rawData['roary'][1],100,misc.roarySortCode)
+						}
+						break;
+
+
 				}
 				emitWhenIOFinished.IOdone();
 			};
@@ -90,6 +153,25 @@ function incomingData(files) {
 	}
 }
 
+function saveRoaryAsData(headerData,roaryData,geneLen,sortCode) {
+	var roaryObjs = roaryParser.generateRoary(headerData,roaryData,geneLen,sortCode)
+	if (!roaryObjs) {
+		console.log("roary data conversion failed!")
+		return;
+	}
+	parsed['genomic'] = [[0,roaryObjs[2]],roaryObjs[0]]; // FIX
+	parsed['annotation'] = roaryObjs[1];
+	loaded.genomic = true;
+	loaded.roary = true;
+	loaded.annotation = true;
+	setTimeout(function() {
+		Actions.set_genome_length(roaryObjs[2])},0);
+	setTimeout(function() {
+		Actions.save_plotYvalues(roaryObjs[3], "recombGraph")},0);
+	setTimeout(function() {
+		RawDataStore.emitChange()},0);
+}
+
 
 Dispatcher.register(function(payload) {
   	// useful for debugging
@@ -99,10 +181,21 @@ Dispatcher.register(function(payload) {
 		incomingData(payload.files);
 	}
 	else if (payload.actionType === 'loadDefaultData') {
-		data = {}
-		data["gff"] = [DefaultData.return_annotation_string(), DefaultData.return_gubbins_string()];
-		data["tre"] = [DefaultData.return_newick_string()];
-		RawDataStore.emitChange();
+		console.log("default data broken")
+		// loaded.tree = true;
+		// parsed['tree'] = DefaultData.return_newick_string();
+		// loaded.genomic = true;
+		// parsed['genomic'] = gubbinsParser.parse_gff(DefaultData.return_gubbins_string());
+		// loaded.annotation = true;
+		// var res = annotationParser.parse_gff(DefaultData.return_annotation_string());
+		// // Actions.set_genome_length(res[0][1]);
+		// parsed['annotation'] = res[1];
+		// RawDataStore.emitChange();
+	}
+	else if (payload.actionType === 'sortRoary') {
+		console.log("ACTION SORT WITH CODE",payload.sortCode)
+		saveRoaryAsData(rawData['roary'][0],rawData['roary'][1],100,payload.sortCode)
+		misc.roarySortCode = payload.sortCode;
 	}
 })
 

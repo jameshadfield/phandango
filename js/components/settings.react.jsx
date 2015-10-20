@@ -1,5 +1,5 @@
 var React = require('react');
-// var RawDataStore = require('../stores/RawDataStore.js');
+var RawDataStore = require('../stores/RawDataStore.js');
 var Actions = require('../actions/actions.js');
 var MetadataStore = require('../stores/MetadataStore.js');
 // var Taxa_Locations = require('../stores/Taxa_Locations.js')
@@ -14,6 +14,44 @@ var Settings = React.createClass({displayName: "displayName",
 			<div className="border fullpage bgwhite-alpha">
 			<MetaSettings topState={this.props.topState} toggleColRow={this.props.toggleColRow} elementsOn={this.props.elementsOn}/>
 			<Layout divPerc={this.props.divPerc} newDivPerc={this.props.newDivPerc} topState={this.props.topState} elementsOn={this.props.elementsOn}/>
+			<ComponentsLoaded componentsLoaded={this.props.componentsLoaded}/>
+			<RoaryPanel roarySortCode={this.props.roarySortCode}/>
+			</div>
+		);
+	}
+});
+
+
+
+var RoaryPanel = React.createClass({displayName: "displayName",
+	getInitialState: function() {
+		var roarySortCode = RawDataStore.getRoarySortCode();
+		return({roarySortCode:roarySortCode});
+	},
+	reSortRoary: function() {
+		if (this.state.roarySortCode=="asIs") {
+			Actions.sortRoary("fragments");
+			this.setState({roarySortCode:"fragments"})
+		}
+		else if (this.state.roarySortCode=="fragments") {
+			Actions.sortRoary("asIs");
+			this.setState({roarySortCode:"asIs"})
+		}
+	},
+	render: function() {
+		return (
+			<div className="border settings-col bgwhite">
+				<h4>ROARY</h4>
+				<hr/>
+				<div id="mySwitch" className="switch">
+					<label>
+						Default order
+						<input disabled={this.props.disabled} type="checkbox" defaultChecked={this.state.roarySortCode==="fragments"} onChange={this.reSortRoary}/>
+						<span className="lever"></span>
+						By Fragment
+					</label>
+					<div className="horizontalgap">sorting strategy</div>
+				</div>
 			</div>
 		);
 	}
@@ -22,6 +60,24 @@ var Settings = React.createClass({displayName: "displayName",
 
 
 
+
+
+var ComponentsLoaded = React.createClass({displayName: "displayName",
+	render: function() {
+		var keys = Object.keys(this.props.componentsLoaded)
+		console.log("keys",keys)
+		return (
+			<div className="border settings-col bgwhite">
+				<h4>Loaded Components</h4>
+				<hr/>
+				{keys.map(function(x,i){
+					return(<p key={"loadedComponent"+i}>{x}:{this.props.componentsLoaded[x].toString()}</p>)
+				}.bind(this))}
+				<hr />
+			</div>
+		);
+	}
+});
 
 
 

@@ -1,5 +1,5 @@
 // time to attach listeners to the gubbins canvas
-var Actions = require('../../actions/actions.js')
+var Actions = require('../actions/actions.js')
 
 mouse_moves = function(canvas) {
 	var myState = this;

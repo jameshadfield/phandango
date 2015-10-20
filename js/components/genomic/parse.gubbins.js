@@ -67,6 +67,7 @@ function parse_gff(gff_string) {
     	}
     }
 
+    //       Y    V A L U E S    (for plotting)
     // the following can be a setTimeout i think...
     if (blocks.length>0) {
     	// console.log("STARTING PLOT CALC")
