@@ -1,8 +1,3 @@
-/*
-resizing of canvases is tricky -- read this:
-http://stackoverflow.com/questions/5034529/size-of-html5-canvas-via-css-versus-element-attributes
-*/
-
 .newline {
   clear: both;
 }
@@ -15,15 +10,16 @@ http://stackoverflow.com/questions/5034529/size-of-html5-canvas-via-css-versus-e
   left: 0;
 }
 
-/*#canvassesDiv {
+
+#canvassesDiv {
   padding: 10px 10px 10px 10px;
 }
-*/
+
 
 
 /* D E VE E L O P M E N T */
 
-/*canvas { border: 1px solid black}*/
+/*canvas { border: 3px solid black}*/
 
 /*.red {background: #FAAC58;}
 .red:hover {background: #DF0101;}
