@@ -18,6 +18,7 @@ function drawArrows(context, arrows) {
 
 
 		context.closePath();
+		context.stroke();
 		context.fill();
 
 	}

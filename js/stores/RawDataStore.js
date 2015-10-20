@@ -91,12 +91,14 @@ function incomingData(files) {
 					// console.log("here's the roary header objects",roaryObjs[1]);
 					// console.log("here's the roary data objects",roaryObjs[0]);
 					// console.log("here's the (fake) genome lentgh",roaryObjs[2]);
+
 					// TODO
 					parsed['genomic'] = [[0,roaryObjs[2]],roaryObjs[0]];
 					parsed['annotation'] = roaryObjs[1];
 					loaded.genomic = true;
 					loaded.annotation = true;
 					Actions.set_genome_length(roaryObjs[2]);
+					Actions.save_plotYvalues(roaryObjs[3], "recombGraph")
 				}
 				else if (file_extension=="gubbins") {
 					console.log("Starting parsing of gubbins")

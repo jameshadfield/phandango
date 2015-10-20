@@ -50,18 +50,19 @@ function parseCSV(gff_string) {
 }
 
 function generateRoary(roary,header,geneLen) {
-	var blocks = makeBlocks(roary);
-	var arrows = makeAnnotation(header);
+	var blocks = makeBlocks(roary,geneLen);
+	var arrows = makeAnnotation(header,geneLen);
 	var genomeLength = geneLen * header.length;
-	return([blocks,arrows,genomeLength]);
+	var yValues = generateYValues(blocks,genomeLength)
+	return([blocks,arrows,genomeLength,yValues]);
 };
 
 
-function makeBlocks(roary) {
+function makeBlocks(roary,geneLen) {
 	var ret = [];
 	Object.keys(roary).forEach( function(taxa) {
-		console.log("key of roary: ",taxa)
-		var maxIdx = roary[taxa].length, inBlock=false, blockOpen=0, blockClose=0, xPos=0, geneLen=100;
+		// console.log("key of roary: ",taxa)
+		var maxIdx = roary[taxa].length, inBlock=false, blockOpen=0, blockClose=0, xPos=0;
 		for (var i=0; i<maxIdx-1; i++) {
 			if (roary[taxa][i]) { // i.e. gene "present"
 				if (!inBlock) { // but we wern't in a block --> open one
@@ -76,12 +77,6 @@ function makeBlocks(roary) {
 				}
 				// else we wern't in a block anyway so nothing changes
 			}
-
-			if (taxa==='PT4') {
-				console.log(ret[-1])
-			}
-
-
 			xPos += geneLen; // basically a counter
 		}
 		// final case (i==maxIdx-1 i.e. final column)
@@ -96,11 +91,40 @@ function makeBlocks(roary) {
 	return(ret);
 }
 
-function makeAnnotation(header) {
-	var ret=[], geneLen=100;
+function generateYValues(blocks,genomeLength) {
+	var plotYvalues = [];
+	for (var i = 0; i < genomeLength; i++){ plotYvalues.push(0); }
+	// each block change plotYvalues :)
+	for (var i=0; i<blocks.length; i++) {
+		for (var j=blocks[i].start_base; j<=blocks[i].end_base; j++) {
+			plotYvalues[j] += 1
+		}
+	}
+	return plotYvalues;
+}
+
+
+
+function makeAnnotation(header,geneLen) {
+	var ret=[];
+
+	// adding fragment by fragment (+ strand)
+	var currentFragment = header[0].fragment, fragmentOpen=0, strand='+';
+	for (var i=1; i<header.length; i++) {
+		if (currentFragment!==header[i].fragment || i+1===header.length) { // save as a block :)
+			var info="locus_tag=fragment "+currentFragment+";";
+			ret.push(new gffParser.Arrow(fragmentOpen,(i+1)*geneLen, strand,"#FFA500", "black", 2,info))
+			fragmentOpen = (i+1)*geneLen;
+			currentFragment = header[i].fragment;
+		}
+	}
+
+	// adding gene by gene (i.e. lots of geneLen blocks)
+	var strand = '-';
 	for (var i=0; i<header.length; i++) {
 		// Arrow(featurestart, featureend, direction, fill, stroke, strokeWidth, info)
-		ret.push(new gffParser.Arrow(i*geneLen,(i+1)*geneLen, i%2===0 ? '+' : '-',"#318DCC", "black", 1,header[i].name))
+		var info="locus_tag="+header[i].name+";product="+header[i].annotation;
+		ret.push(new gffParser.Arrow(i*geneLen,(i+1)*geneLen, strand,"#318DCC", "black", 1,info))
 	}
 	return ret;
 }

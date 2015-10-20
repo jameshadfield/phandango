@@ -12,11 +12,6 @@ var RawDataStore = require('../../stores/RawDataStore.js');
 
 
 
-
-
-
-
-
 function gubbins(canvas) {
 	this.canvas = canvas;
 	this.context = this.canvas.getContext('2d');
