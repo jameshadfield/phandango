@@ -8,22 +8,25 @@
   },
   "main": "js/app.js",
   "browserify": {
-    "transform": [ "reactify" ]
+    "transform": [
+      "reactify"
+    ]
   },
   "repository": {
-  	"type": "git",
-  	"url": "https://github.com/jameshadfield/JScandy"
+    "type": "git",
+    "url": "https://github.com/jameshadfield/JScandy"
   },
   "bugs": {
-  	"url": "https://github.com/jameshadfield/JScandy/issues"
+    "url": "https://github.com/jameshadfield/JScandy/issues"
   },
   "dependencies": {
     "browserify": "10.2.4",
-    "reactify": "1.1.1",
-    "watchify": "3.2.3",
-    "react": "0.13.3",
     "events": "1.0.2",
-    "object-assign": "3.0.0"
+    "object-assign": "3.0.0",
+    "phylocanvas-plugin-context-menu": "phylocanvas/phylocanvas-plugin-context-menu",
+    "react": "0.13.3",
+    "reactify": "1.1.1",
+    "watchify": "3.2.3"
   },
   "preferGlobal": false,
   "private": true,
