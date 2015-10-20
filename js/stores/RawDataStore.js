@@ -11,8 +11,11 @@ var annotationParser = require('../components/annotation/parse.annotations.js');
 var roaryParser = require('../components/genomic/roary.parser.js');
 
 
-var loaded = {'genomic':false, 'tree':false, 'meta':false, 'annotaion':false, 'roary':false, 'SNPs':false};
+var loaded = {'genomic':false, 'tree':false, 'meta':false, 'annotaion':false, 'roary':false, 'SNPs':false, 'gubbins':false};
 var parsed = {};
+var rawData = {}; // internal ONLY
+var misc = {'roarySortCode':'asIs'};
+
 // the idea is that we store the files here as strings e.t.c.
 
 // when this store updates, if (e.g.) the tree file hasn't changed, we want
@@ -44,6 +47,9 @@ var RawDataStore = assign({}, EventEmitter.prototype, {
 	},
 	getParsedData: function(name) {
 		return parsed[name];
+	},
+	getRoarySortCode: function(name) {
+		return misc.roarySortCode;
 	}
 })
 
@@ -84,21 +90,9 @@ function incomingData(files) {
 				// console.log("file extension: "+file_extension)
 				if (file_extension=="roary") {
 					console.log("ROARY IN")
-					var roaryData = roaryParser.parseCSV(event.target.result);
-					var roaryObjs = roaryParser.generateRoary(roaryData[1],roaryData[0],100)
-					//; roaryObjs = [blocks,arrows,genome_length]
-
-					// console.log("here's the roary header objects",roaryObjs[1]);
-					// console.log("here's the roary data objects",roaryObjs[0]);
-					// console.log("here's the (fake) genome lentgh",roaryObjs[2]);
-
-					// TODO
-					parsed['genomic'] = [[0,roaryObjs[2]],roaryObjs[0]];
-					parsed['annotation'] = roaryObjs[1];
-					loaded.genomic = true;
-					loaded.annotation = true;
-					Actions.set_genome_length(roaryObjs[2]);
-					Actions.save_plotYvalues(roaryObjs[3], "recombGraph")
+					rawData['roary'] = roaryParser.parseCSV(event.target.result);
+					// returned is header and roaryData
+					saveRoaryAsData(rawData['roary'][0],rawData['roary'][1],100,misc.roarySortCode)
 				}
 				else if (file_extension=="gubbins") {
 					console.log("Starting parsing of gubbins")
@@ -156,6 +150,25 @@ function incomingData(files) {
 	}
 }
 
+function saveRoaryAsData(headerData,roaryData,geneLen,sortCode) {
+	var roaryObjs = roaryParser.generateRoary(headerData,roaryData,geneLen,sortCode)
+	if (!roaryObjs) {
+		console.log("roary data conversion failed!")
+		return;
+	}
+	parsed['genomic'] = [[0,roaryObjs[2]],roaryObjs[0]]; // FIX
+	parsed['annotation'] = roaryObjs[1];
+	loaded.genomic = true;
+	loaded.roary = true;
+	loaded.annotation = true;
+	setTimeout(function() {
+		Actions.set_genome_length(roaryObjs[2])},0);
+	setTimeout(function() {
+		Actions.save_plotYvalues(roaryObjs[3], "recombGraph")},0);
+	setTimeout(function() {
+		RawDataStore.emitChange()},0);
+}
+
 
 Dispatcher.register(function(payload) {
   	// useful for debugging
@@ -169,6 +182,11 @@ Dispatcher.register(function(payload) {
 		data["gff"] = [DefaultData.return_annotation_string(), DefaultData.return_gubbins_string()];
 		data["tre"] = [DefaultData.return_newick_string()];
 		RawDataStore.emitChange();
+	}
+	else if (payload.actionType === 'sortRoary') {
+		console.log("ACTION SORT WITH CODE",payload.sortCode)
+		saveRoaryAsData(rawData['roary'][0],rawData['roary'][1],100,payload.sortCode)
+		misc.roarySortCode = payload.sortCode;
 	}
 })
 

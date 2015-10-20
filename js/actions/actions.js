@@ -147,7 +147,15 @@ module.exports = {
     Dispatcher.dispatch({
       actionType: 'redrawAll'
     });
+  },
+  sortRoary: function(x) {
+    console.log("ACTION");
+    Dispatcher.dispatch({
+      actionType: 'sortRoary',
+      sortCode: x
+    });
   }
+
 
 
 };

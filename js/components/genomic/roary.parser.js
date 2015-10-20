@@ -58,8 +58,8 @@ function parseCSV(gff_string) {
 	return ([header,roary]);
 }
 
-function generateRoary(roary,header,geneLen) {
-	var orderedIdx = sortHeader(header);
+function generateRoary(header,roary,geneLen,sortCase) {
+	var orderedIdx = sortHeader(header,sortCase);
 	var blocks = makeBlocks(roary,geneLen,orderedIdx);
 	var arrows = makeAnnotation(header,geneLen,orderedIdx);
 	var genomeLength = geneLen * header.length;
@@ -67,19 +67,27 @@ function generateRoary(roary,header,geneLen) {
 	return([blocks,arrows,genomeLength,yValues]);
 };
 
-function sortHeader(header) {
+function sortHeader(header,sortCase) {
 	// returns arroy of indicies which we use to process
 	// currently hardcoded to sort into fragments
 	var len = header.length;
 	var indices = new Array(len);
 	for (var i = 0; i < len; ++i) indices[i] = i;
-	indices.sort(function (a,b) { // a,b are indices in this case!
-		if (header[a].fragment===header[b].fragment) {
-			return parseInt(header[a].order) < parseInt(header[b].order) ? -1 : 1;
-		} else {
-			return parseInt(header[a].fragment) < parseInt(header[b].fragment) ? -1 : 1;
-		}
-	})
+
+	switch (sortCase) {
+		case "asIs":
+			break;
+		case "fragments":
+			// fragment then order
+			indices.sort(function (a,b) { // a,b are indices in this case!
+				if (header[a].fragment===header[b].fragment) {
+					return parseInt(header[a].order) < parseInt(header[b].order) ? -1 : 1;
+				} else {
+					return parseInt(header[a].fragment) < parseInt(header[b].fragment) ? -1 : 1;
+				}
+			})
+			break;
+	}
 	return indices;
 }
 

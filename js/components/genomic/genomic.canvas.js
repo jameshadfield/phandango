@@ -23,9 +23,15 @@ function gubbins(canvas) {
 	// Actions.set_genome_length(gff_returned[0][1]);
 	// var raw_blocks = gff_returned[1];
 
-	var raw_blocks = RawDataStore.getParsedData('genomic')[1]
+	// var raw_blocks = RawDataStore.getParsedData('genomic')[1]
+	var raw_blocks;
 	var blocks;
 	this.selected_block = undefined;
+
+	this.loadRawData = function() {
+		myState.raw_blocks = RawDataStore.getParsedData('genomic')[1];
+		myState.redraw();
+	}
 
 	// window.addEventListener('resize', function(){myState.redraw()}, true);
 
@@ -59,11 +65,11 @@ function gubbins(canvas) {
  		// 						* click has selected / deseleced a block (myState.selected_block) <-
  		//						* Taxa_Locations have changed (i.e. y values are different) <-- this is taken care of in the store
 		// is anything actually loaded?
-		if (raw_blocks===undefined) {return false}
+		if (myState.raw_blocks===undefined) {return false}
 		// trim_blocks() will limit blocks to our viewport and also associate the x and y values in pixels
 		var visible_genome = GenomeStore.getVisible()
 		// console.log("DRAW GUBBINS over visible_genome",visible_genome)
-		blocks = trim_blocks(raw_blocks, visible_genome, myState.canvas)
+		blocks = trim_blocks(myState.raw_blocks, visible_genome, myState.canvas)
 		draw.clearCanvas(myState.canvas)
 		// console.log(GenomeStore.getSelectedTaxaY())
 		draw.highlightSelectedNodes(myState.canvas, myState.context, GenomeStore.getSelectedTaxaY())
@@ -103,8 +109,9 @@ function gubbins(canvas) {
 
 	MiscStore.addChangeListener(this.redraw);
 
+	RawDataStore.addChangeListener(this.loadRawData);
 
-	this.redraw();
+	this.loadRawData(); // forces this.redraw()
 }
 
 function getSelectedBlock(blocks, mouse) {
