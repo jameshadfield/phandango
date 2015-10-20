@@ -5,6 +5,7 @@ var DefaultData = require('../static/DefaultData.js');
 var Actions = require('../actions/actions.js');
 
 // P A R S E R S
+// all parsers return null / false upon failure
 var gubbinsParser = require('../components/genomic/parse.gubbins.js');
 var metaParser = require('../components/meta/parse.csv.js');
 var annotationParser = require('../components/annotation/parse.annotations.js');
@@ -16,18 +17,6 @@ var parsed = {};
 var rawData = {}; // internal ONLY
 var misc = {'roarySortCode':'asIs'};
 
-// the idea is that we store the files here as strings e.t.c.
-
-// when this store updates, if (e.g.) the tree file hasn't changed, we want
-// the phylocanvas updater (which listens for emissions here) to know
-// that it doesn't need to change... can this be done with custom emissions?
-
-
-// var gffs = [];
-// var trees = [];
-// var plots = [];
-
-var data = {};
 
 var RawDataStore = assign({}, EventEmitter.prototype, {
 	emitChange: function() {
@@ -54,7 +43,6 @@ var RawDataStore = assign({}, EventEmitter.prototype, {
 })
 
 function incomingData(files) {
-	data = {}; // clear cache
 	// using the idea of a barrier from
 	// http://stackoverflow.com/questions/7957952/detecting-when-javascript-is-done-executing
 	// to know when all the IO is done!
@@ -71,7 +59,6 @@ function incomingData(files) {
 		}
 		this.done = function() {
 			console.log("all IO done")
-			// console.log(data)
 			RawDataStore.emitChange();
 		}
 	}
@@ -88,56 +75,72 @@ function incomingData(files) {
 			return function(event) {
 				// console.log("reader.onload started (new tick?)")
 				// console.log("file extension: "+file_extension)
-				if (file_extension=="roary") {
-					console.log("ROARY IN")
-					rawData['roary'] = roaryParser.parseCSV(event.target.result);
-					// returned is header and roaryData
-					saveRoaryAsData(rawData['roary'][0],rawData['roary'][1],100,misc.roarySortCode)
-				}
-				else if (file_extension=="gubbins") {
-					console.log("Starting parsing of gubbins")
-					var aaa = gubbinsParser.parse_gff(event.target.result);
-					// this may well FAIL
-					if (aaa===false) {
-						console.log("gubbins parsing failed")
-						// return false
-					}
-					else {
-						console.log("here's the gubbins data",aaa)
-						loaded.genomic = true;
-						parsed['genomic'] = aaa;
-					}
-				}
-				else if (file_extension==="csv") {
-					var res = metaParser(event.target.result);
-					console.log('parsed metadata', res)
-					loaded.meta = true;
-					if (res) {
-						Actions.hereIsMetadata(res)
-					}
-					// Actions.csvStringReceived(event.target.result)
-				}
-				else if (file_extension==="tre") {
-					// error checking handled by PhyloCanvas
-					loaded.tree = true;
-					parsed['tree'] = event.target.result;
-				}
+				switch(file_extension) {
 
-				else if (file_extension==="gff") {
-					var res = annotationParser.parse_gff(event.target.result);
-					if (res===false) {
-						return false;
-					}
-					Actions.set_genome_length(res[0][1]);
-					parsed['annotation'] = res[1];
-					loaded.annotation = true;
-				}
 
-				else if (file_extension in data) {
-					data[file_extension].unshift(event.target.result) // adds to beginning
-				}
-				else {
-					data[file_extension] = [event.target.result];
+					case 'gff':
+						// could be gubbins OR annotation
+						console.log("trying gubbins parsing")
+						var gubbins = gubbinsParser.parse_gff(event.target.result);
+						if (gubbins===false) {
+							console.log("gubbins parsing failed")
+						}
+						else{
+							console.log("gubbins parsing success")
+							loaded.genomic = true;
+							parsed['genomic'] = gubbins;
+							break;
+						}
+
+						// try annotation now
+						console.log("trying annotation parsing")
+						var res = annotationParser.parse_gff(event.target.result);
+						if (res===false) {
+							console.log("annotation parsing failed")
+						} else {
+							console.log("annotation parsing success")
+							Actions.set_genome_length(res[0][1]);
+							parsed['annotation'] = res[1];
+							loaded.annotation = true;
+						}
+						break;
+
+
+					case 'tre':
+						// basically palm this off to PhyloCanvas
+						loaded.tree = true;
+						parsed['tree'] = event.target.result;
+						break;
+
+
+					case 'csv':
+						// could be roary OR metadata
+						console.log("trying metadata parsing")
+						var res = metaParser(event.target.result);
+						if (res===false) {
+							console.log("metadata parsing failed")
+						}
+						else{
+							console.log("metadata parsing success")
+							loaded.meta = true;
+							Actions.hereIsMetadata(res)
+							break;
+						}
+
+						// try ROARY now
+						console.log("trying ROARY parsing")
+						var res = roaryParser.parseCSV(event.target.result);
+						if (res===false) {
+							console.log("ROARY parsing failed")
+						}
+						else{
+							console.log("ROARY parsing success")
+							rawData['roary'] = res;
+							saveRoaryAsData(rawData['roary'][0],rawData['roary'][1],100,misc.roarySortCode)
+						}
+						break;
+
+
 				}
 				emitWhenIOFinished.IOdone();
 			};
@@ -178,10 +181,16 @@ Dispatcher.register(function(payload) {
 		incomingData(payload.files);
 	}
 	else if (payload.actionType === 'loadDefaultData') {
-		data = {}
-		data["gff"] = [DefaultData.return_annotation_string(), DefaultData.return_gubbins_string()];
-		data["tre"] = [DefaultData.return_newick_string()];
-		RawDataStore.emitChange();
+		console.log("default data broken")
+		// loaded.tree = true;
+		// parsed['tree'] = DefaultData.return_newick_string();
+		// loaded.genomic = true;
+		// parsed['genomic'] = gubbinsParser.parse_gff(DefaultData.return_gubbins_string());
+		// loaded.annotation = true;
+		// var res = annotationParser.parse_gff(DefaultData.return_annotation_string());
+		// // Actions.set_genome_length(res[0][1]);
+		// parsed['annotation'] = res[1];
+		// RawDataStore.emitChange();
 	}
 	else if (payload.actionType === 'sortRoary') {
 		console.log("ACTION SORT WITH CODE",payload.sortCode)

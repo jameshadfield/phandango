@@ -32,6 +32,11 @@ function parseCSV(gff_string) {
 		})
 	});
 
+	// is it really ROARY data (this isn't foolproof!)
+	if (splitLines[0][0]!=='Gene') {
+		return false;
+	}
+
 	// remove the last lines
 	splitLines = splitLines.slice(0,-1)
 
