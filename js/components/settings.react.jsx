@@ -14,6 +14,7 @@ var Settings = React.createClass({displayName: "displayName",
 			<div className="border fullpage bgwhite-alpha">
 			<MetaSettings topState={this.props.topState} toggleColRow={this.props.toggleColRow} elementsOn={this.props.elementsOn}/>
 			<Layout divPerc={this.props.divPerc} newDivPerc={this.props.newDivPerc} topState={this.props.topState} elementsOn={this.props.elementsOn}/>
+			<ComponentsLoaded componentsLoaded={this.props.componentsLoaded}/>
 			</div>
 		);
 	}
@@ -21,7 +22,22 @@ var Settings = React.createClass({displayName: "displayName",
 
 
 
-
+var ComponentsLoaded = React.createClass({displayName: "displayName",
+	render: function() {
+		var keys = Object.keys(this.props.componentsLoaded)
+		console.log("keys",keys)
+		return (
+			<div className="border settings-col bgwhite">
+				<h4>Loaded Components</h4>
+				<hr/>
+				{keys.map(function(x,i){
+					return(<p>{x}:{this.props.componentsLoaded[x].toString()}</p>)
+				}.bind(this))}
+				<hr />
+			</div>
+		);
+	}
+});
 
 
 

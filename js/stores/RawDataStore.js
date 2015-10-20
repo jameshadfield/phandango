@@ -2,7 +2,17 @@ var EventEmitter = require('events').EventEmitter;
 var assign = require('object-assign');
 var Dispatcher = require('../dispatcher/dispatcher');
 var DefaultData = require('../static/DefaultData.js');
+var Actions = require('../actions/actions.js');
 
+// P A R S E R S
+var gubbinsParser = require('../components/genomic/parse.gubbins.js');
+var metaParser = require('../components/meta/parse.csv.js');
+var annotationParser = require('../components/annotation/parse.annotations.js');
+var roaryParser = require('../components/genomic/roary.parser.js');
+
+
+var loaded = {'genomic':false, 'tree':false, 'meta':false, 'annotaion':false, 'roary':false, 'SNPs':false};
+var parsed = {};
 // the idea is that we store the files here as strings e.t.c.
 
 // when this store updates, if (e.g.) the tree file hasn't changed, we want
@@ -18,7 +28,6 @@ var data = {};
 
 var RawDataStore = assign({}, EventEmitter.prototype, {
 	emitChange: function() {
-		// console.log("raw data store store emission")
 		this.emit('change');
 	},
 	addChangeListener: function(callback) {
@@ -27,14 +36,14 @@ var RawDataStore = assign({}, EventEmitter.prototype, {
 	removeChangeListener: function(callback) {
 		this.removeListener('change', callback);
 	},
-	// getTrees: function() {
-	// 	return trees; // reference (to array)
-	// },
-	// getGFFs: function() {
-	// 	return gffs; // reference
-	// }
 	getData: function() {
 		return data; // reference
+	},
+	getLoadedStatus: function(name) {
+		return name ? loaded[name] : loaded;
+	},
+	getParsedData: function(name) {
+		return parsed[name];
 	}
 })
 
@@ -73,8 +82,63 @@ function incomingData(files) {
 			return function(event) {
 				// console.log("reader.onload started (new tick?)")
 				// console.log("file extension: "+file_extension)
-				if (file_extension in data) {
-					data[file_extension].unshift(event.target.result)
+				if (file_extension=="roary") {
+					console.log("ROARY IN")
+					var roaryData = roaryParser.parseCSV(event.target.result);
+					var roaryObjs = roaryParser.generateRoary(roaryData[1],roaryData[0],100)
+					//; roaryObjs = [blocks,arrows,genome_length]
+
+					// console.log("here's the roary header objects",roaryObjs[1]);
+					// console.log("here's the roary data objects",roaryObjs[0]);
+					// console.log("here's the (fake) genome lentgh",roaryObjs[2]);
+					// TODO
+					parsed['genomic'] = [[0,roaryObjs[2]],roaryObjs[0]];
+					parsed['annotation'] = roaryObjs[1];
+					loaded.genomic = true;
+					loaded.annotation = true;
+					Actions.set_genome_length(roaryObjs[2]);
+				}
+				else if (file_extension=="gubbins") {
+					console.log("Starting parsing of gubbins")
+					var aaa = gubbinsParser.parse_gff(event.target.result);
+					// this may well FAIL
+					if (aaa===false) {
+						console.log("gubbins parsing failed")
+						// return false
+					}
+					else {
+						console.log("here's the gubbins data",aaa)
+						loaded.genomic = true;
+						parsed['genomic'] = aaa;
+					}
+				}
+				else if (file_extension==="csv") {
+					var res = metaParser(event.target.result);
+					console.log('parsed metadata', res)
+					loaded.meta = true;
+					if (res) {
+						Actions.hereIsMetadata(res)
+					}
+					// Actions.csvStringReceived(event.target.result)
+				}
+				else if (file_extension==="tre") {
+					// error checking handled by PhyloCanvas
+					loaded.tree = true;
+					parsed['tree'] = event.target.result;
+				}
+
+				else if (file_extension==="gff") {
+					var res = annotationParser.parse_gff(event.target.result);
+					if (res===false) {
+						return false;
+					}
+					Actions.set_genome_length(res[0][1]);
+					parsed['annotation'] = res[1];
+					loaded.annotation = true;
+				}
+
+				else if (file_extension in data) {
+					data[file_extension].unshift(event.target.result) // adds to beginning
 				}
 				else {
 					data[file_extension] = [event.target.result];

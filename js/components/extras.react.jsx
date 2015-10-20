@@ -1,6 +1,6 @@
 
 var React = require('react');
-var annotationTrack = require('../canvas/annotation/main.annotations.js');
+var annotationTrack = require('./annotation/main.annotations.js');
 var small_genome = require('../canvas/small_genome/main.js');
 var RawDataStore = require('../stores/RawDataStore.js');
 
@@ -25,26 +25,31 @@ var GenomeAnnotation = React.createClass({displayName: "displayName",
 		this.getDOMNode().setAttribute('width', window.getComputedStyle(this.getDOMNode()).width)
 		this.getDOMNode().setAttribute('height', window.getComputedStyle(this.getDOMNode()).height)
 		annotationInstance = new annotationTrack(this.getDOMNode());
+		annotationInstance.redraw();
 		// at the moment no tree is "loaded"
 		// we listen for an event from RawDataStore (i.e. tree file dropped)
 
-		RawDataStore.addChangeListener(function() {
-			var incomingData = RawDataStore.getData() // reference
-			if ("gff" in incomingData) {
-				// the following is added to the event loop else we get Dispatch errors
-				// we need the nested functions as javascript doesn't have block scope
-				// it only has function scope
-				for (var i=0; i<incomingData["gff"].length; i++) {
-					// console.log('extras.react respose -> event loop')
-					setTimeout(function(j) {
-						return function() {
-							// console.log(incomingData["gff"][j].substring(0,100))
-							annotationInstance.load(incomingData["gff"][j])
-						}
-					}(i), 0);
-				}
-			}
-		});
+		// RawDataStore.addChangeListener(function() {
+		// 	var incomingData = RawDataStore.getData() // reference
+		// 	if ("gff" in incomingData) {
+		// 		// the following is added to the event loop else we get Dispatch errors
+		// 		// we need the nested functions as javascript doesn't have block scope
+		// 		// it only has function scope
+		// 		for (var i=0; i<incomingData["gff"].length; i++) {
+		// 			// console.log('extras.react respose -> event loop')
+		// 			setTimeout(function(j) {
+		// 				return function() {
+		// 					// console.log(incomingData["gff"][j].substring(0,100))
+		// 					annotationInstance.load(incomingData["gff"][j])
+		// 				}
+		// 			}(i), 0);
+		// 		}
+		// 	}
+		// });
+
+
+
+
 	},
     render: function() {
         return (

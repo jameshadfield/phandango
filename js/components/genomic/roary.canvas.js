@@ -11,9 +11,39 @@ var MiscStore = require('../../stores/misc.Store.js');
 var RawDataStore = require('../../stores/RawDataStore.js');
 
 
+function roary(canvas) {
 
 
 
+
+}
+
+
+
+function generateIndexOfRoaryHeader(header,key1,key2) {
+	var ret=[];
+
+	// sort the array idx based on keys in the header and set the idx of ret
+}
+
+function binaryRoaryByTaxa(taxa) {
+	return roary[taxa]
+}
+
+function drawRoaryByTaxa(taxa,roaryOrder) {
+
+	var pxPos = 0, x1=0, x2=0, inBlock=false;
+
+	for (i=0; i<roaryOrder.length; i++) {
+		if (roary[taxa][roaryOrder[i]]) {
+
+		}
+
+
+	}
+
+
+}
 
 
 
@@ -27,7 +57,6 @@ function gubbins(canvas) {
 	// var genome_coords = gff_returned[0];
 	// Actions.set_genome_length(gff_returned[0][1]);
 	// var raw_blocks = gff_returned[1];
-
 	var raw_blocks = RawDataStore.getParsedData('genomic')[1]
 	var blocks;
 	this.selected_block = undefined;
@@ -67,7 +96,7 @@ function gubbins(canvas) {
 		if (raw_blocks===undefined) {return false}
 		// trim_blocks() will limit blocks to our viewport and also associate the x and y values in pixels
 		var visible_genome = GenomeStore.getVisible()
-		// console.log("DRAW GUBBINS over visible_genome",visible_genome)
+		// console.log("DRAW GUBBINS")
 		blocks = trim_blocks(raw_blocks, visible_genome, myState.canvas)
 		draw.clearCanvas(myState.canvas)
 		// console.log(GenomeStore.getSelectedTaxaY())

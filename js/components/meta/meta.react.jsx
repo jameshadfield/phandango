@@ -1,10 +1,10 @@
 
 var React = require('react');
-var RawDataStore = require('../stores/RawDataStore.js');
-var Actions = require('../actions/actions.js');
-var MetadataStore = require('../stores/MetadataStore.js');
-var Taxa_Locations = require('../stores/Taxa_Locations.js')
-var MiscStore = require('../stores/misc.Store.js');
+var RawDataStore = require('../../stores/RawDataStore.js');
+var Actions = require('../../actions/actions.js');
+var MetadataStore = require('../../stores/MetadataStore.js');
+var Taxa_Locations = require('../../stores/Taxa_Locations.js')
+var MiscStore = require('../../stores/misc.Store.js');
 
 
 /*
@@ -24,7 +24,7 @@ This is currently a self contained thing, but we should really make it part of r
 var MetaCanvasClass = React.createClass({displayName: "displayName",
 
 	componentDidMount: function() { // Invoked once, immediately after the initial rendering
-        // console.log("META COMPONENET DID MOUNT")
+        console.log("META COMPONENET DID MOUNT")
 		// Canvas grid is set here, and we want this to be the same as the CSS...
 		// the CSS scales the canvas, but we have to set the correct width and height here as well
 		// see
@@ -32,25 +32,25 @@ var MetaCanvasClass = React.createClass({displayName: "displayName",
 		this.getDOMNode().setAttribute('height', window.getComputedStyle(this.getDOMNode()).height)
 		metaInstance = new meta(this.getDOMNode());
 
-        RawDataStore.addChangeListener(function() {
-            var incomingData = RawDataStore.getData() // reference
-            if ("csv" in incomingData) {
-                setTimeout(function() {
-                    // console.log(incomingData["gff"][j].substring(0,100))
-                    // trigger an action here which is taken by the MetadataStore :)
-                    Actions.csvStringReceived(incomingData["csv"][0])
-                    // metaInstance.load(incomingData["csv"][0])
-                }
-            )};
+        // RawDataStore.addChangeListener(function() {
+        //     var incomingData = RawDataStore.getData() // reference
+        //     if ("csv" in incomingData) {
+        //         setTimeout(function() {
+        //             // console.log(incomingData["gff"][j].substring(0,100))
+        //             // trigger an action here which is taken by the MetadataStore :)
+        //             Actions.csvStringReceived(incomingData["csv"][0])
+        //             // metaInstance.load(incomingData["csv"][0])
+        //         }
+        //     )};
 
-        });
+        // });
 
 	},
     render: function() {
         // console.log("meta props on:",this.props.on)
-        if (!this.props.on) {
-            return null
-        }
+        // if (!this.props.on) {
+        //     return null
+        // }
         return(
             <canvas id="metaCanvas" className="inContainer"></canvas>
         );
@@ -60,12 +60,12 @@ var MetaCanvasClass = React.createClass({displayName: "displayName",
 
 
 function meta(canvas) {
+    console.log("i'm alive!")
     this.canvas = canvas;
     this.context = this.canvas.getContext('2d');
     this.mouseIsOver = [undefined,undefined]
     this.blockWidth
     var myState = this;
-
     this.mouse_moves = new mouse_moves(this.canvas);
     window.addEventListener('resize', function(){myState.redraw()}, true);
 

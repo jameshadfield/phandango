@@ -29,11 +29,11 @@ webpack*
 dev
 dist
 
-# datasets
-datasets
-
 
 # the bundle -- make this yourself!
 js/bundle.js
 
-
+# eventually this should be committed, but becaues
+# jyo is using webpack and james is using browserify
+# we must ignore it
+#package.json

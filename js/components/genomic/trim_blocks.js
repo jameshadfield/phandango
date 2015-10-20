@@ -28,7 +28,6 @@ function trim_blocks(raw_blocks, visible_genome_coords, canvas) {
 	var bases_visible = visible_genome_coords[1] - visible_genome_coords[0];
 	var trimmed_blocks = [];
 	var active_taxa = Object.keys(Taxa_Locations.getAll()) ; // all taxa which are currently "active"
-	// active_taxa = ['ST1_8','ST1_43']; // JAMES
 	var is_phylotree_active = Taxa_Locations.loaded()
 	if (is_phylotree_active===false) {
 		// console.log('[BUG] phylocanvas not initialised and we\'re trying to start up gubbins. Problems to follow...')
@@ -53,7 +52,6 @@ function trim_blocks(raw_blocks, visible_genome_coords, canvas) {
 			}
 		}
 		if (any_taxa_in_view===false) {continue};
-
 
 		var new_block = raw_blocks[i] // pass by reference
 		new_block.x1 = parseInt( (new_block.start_base - visible_genome_coords[0]) / bases_visible * canvas.width );

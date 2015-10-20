@@ -111,12 +111,20 @@ module.exports = {
     });
   },
 
-  csvStringReceived: function(csvString) {
+  // csvStringReceived: function(csvString) {
+  //   Dispatcher.dispatch({
+  //     actionType: 'csvStringReceived',
+  //     csvString: csvString
+  //   });
+  // },
+
+  hereIsMetadata: function(data) {
     Dispatcher.dispatch({
-      actionType: 'csvStringReceived',
-      csvString: csvString
+      actionType: 'hereIsMetadata',
+      data: data
     });
   },
+
 
   toggleMetadataColumn: function(i) {
     // console.log("action picked up to toggle column, ", i)

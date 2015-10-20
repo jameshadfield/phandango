@@ -1,3 +1,5 @@
+componentWillReceiveProps
+
 
 var React = require('react');
 var gubbins = require('./genomic.canvas.js');
