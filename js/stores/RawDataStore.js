@@ -12,7 +12,7 @@ var annotationParser = require('../components/annotation/parse.annotations.js');
 var roaryParser = require('../components/genomic/roary.parser.js');
 
 
-var loaded = {'genomic':false, 'tree':false, 'meta':false, 'annotaion':false, 'roary':false, 'SNPs':false, 'gubbins':false};
+var loaded = {'tree':false, 'meta':false, 'annotaion':false, 'roary':false, 'SNPs':false, 'gubbins':false};
 var parsed = {};
 var rawData = {}; // internal ONLY
 var misc = {'roarySortCode':'asIs'};
@@ -87,7 +87,8 @@ function incomingData(files) {
 						}
 						else{
 							console.log("gubbins parsing success")
-							loaded.genomic = true;
+							loaded.gubbins = true;
+							loaded.roary = false;
 							parsed['genomic'] = gubbins;
 							break;
 						}
@@ -161,8 +162,8 @@ function saveRoaryAsData(headerData,roaryData,geneLen,sortCode) {
 	}
 	parsed['genomic'] = [[0,roaryObjs[2]],roaryObjs[0]]; // FIX
 	parsed['annotation'] = roaryObjs[1];
-	loaded.genomic = true;
 	loaded.roary = true;
+	loaded.gubbins = false;
 	loaded.annotation = true;
 	setTimeout(function() {
 		Actions.set_genome_length(roaryObjs[2])},0);
