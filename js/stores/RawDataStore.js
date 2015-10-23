@@ -1,7 +1,7 @@
 var EventEmitter = require('events').EventEmitter;
 var assign = require('object-assign');
 var Dispatcher = require('../dispatcher/dispatcher');
-var DefaultData = require('../static/DefaultData.js');
+// var DefaultData = require('../static/DefaultData.js');
 var Actions = require('../actions/actions.js');
 
 // P A R S E R S

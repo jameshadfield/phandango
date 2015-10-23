@@ -60,9 +60,8 @@ function metaText(canvas) {
         var yDispPos   =  myState.canvas.height - 5;
         var headers    =  MetadataStore.getActiveHeaders();
         var xDispPos   =  parseInt(blockWidth / 2);
-        console.log("meta text redraw")
+        // console.log("meta text redraw")
         for (var i=0; i<headers.length; i++) {
-            console.log("header",headers[i],"x:",xDispPos,"y:",yDispPos)
             myState.context.save();
             myState.context.fillStyle    = "black";
             myState.context.textBaseline = "left";
@@ -182,10 +181,10 @@ function meta(canvas) {
 
                     if (display && j===myState.mouseIsOver[0] && activeTaxa[i]===myState.mouseIsOver[1]) {
                         myState.context.save();
-                        myState.context.textAlign = "centre";
-                        myState.context.textBaseline="bottom";
-                        myState.context.fillStyle = "black";
-                        myState.context.font="12px Helvetica";
+                        myState.context.textAlign    =  "centre";
+                        myState.context.textBaseline =  "bottom";
+                        myState.context.fillStyle    =  "black";
+                        myState.context.font         =  "12px Helvetica";
                         myState.context.fillText(MetadataStore.getDataForGivenTaxa(activeTaxa[i],'value')[j], parseInt(xStart+(myState.blockWidth/2)), yValues[0]);
                         myState.context.restore();
                     }
@@ -193,31 +192,6 @@ function meta(canvas) {
                 }
             }
         }
-
-        // // draw the labels
-        // if (Taxa_Locations.getTaxaY([activeTaxa[0]])[0] > 20) {
-        //     var yDispPos = parseInt(Taxa_Locations.getTaxaY([activeTaxa[0]])[0])-5;
-        //     var headers = MetadataStore.getActiveHeaders();
-        //     var xDispPos            = parseInt(myState.blockWidth / 2);
-        //     for (var i=0; i<headers.length; i++) {
-        //         myState.context.save();
-        //         myState.context.fillStyle = "black";
-        //         myState.context.textBaseline="left";
-        //         myState.context.textAlign = "left";
-        //         myState.context.font="12px Helvetica";
-        //         var X=xDispPos
-        //         var Y=yDispPos
-        //         myState.context.translate(X,Y);
-        //         myState.context.rotate(-Math.PI/2);
-        //         // console.log("printing header ",headers[i],"at X: ",X," Y: ",Y)
-        //         myState.context.fillText(headers[i], 0, 0);
-        //         myState.context.restore();
-        //         xDispPos += parseInt(myState.blockWidth)
-        //     }
-
-        // }
-
-
     }
 
     // whenever the Taxa_Locations store changes (e.g. someones done something to the tree) we should re-draw
