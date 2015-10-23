@@ -59,7 +59,7 @@ var CanvasDivs = React.createClass({displayName: "Main_React_Element",
 
 				{/* BOTTOM ROW (only plot at the moment) */}
 				<div className="newline"/>
-				<div style={this.styleize(1,3)}></div>
+				<div style={this.styleize(1,3)}><Logo/></div>
 				<div style={this.styleize(2,3)}></div>
 				<div className="blue" style={this.styleize(3,3)}><GenomicCanvas.RecombGraphClass/></div>
 
@@ -91,6 +91,13 @@ var ReactDiv = React.createClass({displayName: "displayName",
 	}
 });
 
+var Logo = React.createClass({displayName: "displayName",
+	render: function() {
+		return (
+			<img src="img/JScandy.v2.svg" id="logoMainPage"/>
+		);
+	}
+});
 
 module.exports = CanvasDivs;
 

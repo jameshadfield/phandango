@@ -19,7 +19,7 @@
 
 /* D E VE E L O P M E N T */
 
-/*canvas { border: 3px solid black}*/
+canvas { border: 3px solid black}
 
 /*.red {background: #FAAC58;}
 .red:hover {background: #DF0101;}
@@ -80,7 +80,6 @@ div.horizontalgap{padding-left: 10px; display: inline}
   }
 }
 
-
 .hidden { display:none; }
 
 img.frontpage{
@@ -97,6 +96,23 @@ input[type=range]{
 
 
 
+/* L O G O */
+#logoMainPage {
+    zoom: 2;  //increase if you have very small images
+
+    display: block;
+    margin: auto;
+
+    height: auto;
+    max-height: 100%;
+
+    width: auto;
+    max-width: 100%;
+
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
 
 
 
