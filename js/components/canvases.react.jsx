@@ -36,6 +36,7 @@ var CanvasDivs = React.createClass({displayName: "Main_React_Element",
 		}
 		// have things been loaded?
 		var genomicDiv = this.props.componentsLoaded.genomic ? <GenomicCanvas.GenomicCanvasClass/> : <div/>;
+		var metaTextDiv = this.props.elementsOn.col[1] ? <MetaReact.MetaTextClass/> : <div/>;
 		var metaDiv = this.props.elementsOn.col[1] ? <MetaReact.MetaCanvasClass/> : <div/>;
 		var treeDiv = this.props.componentsLoaded.tree ? <PhyloReact/> : <div/>;
 		var annotationDiv = this.props.componentsLoaded.annotation ? <Extras.GenomeAnnotation/> : <div/>;
@@ -47,7 +48,7 @@ var CanvasDivs = React.createClass({displayName: "Main_React_Element",
 				{/* TOP ROW (annotation etc) */}
 				<div className="newline"/>
 				<div className="blue" style={this.styleize(1,1)}><Extras.SmallGenome/></div>
-				<div className="red" style={this.styleize(2,1)}><ReactCanvas id="col1-row2"/></div>
+				<div className="red" style={this.styleize(2,1)}>{metaTextDiv}</div>
 				<div className="blue" style={this.styleize(3,1)}>{annotationDiv}</div>
 
 				{/* MIDDLE ROW (tree & gubbins & meta) */}
