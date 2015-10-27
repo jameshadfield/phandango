@@ -100,9 +100,11 @@ function set_colours(header,metadata) {
 		var numCols = values.length
 		if (numCols>11) {
 			console.log("metadata column (",header[headerIdx],") with more than 11 entries... expect problems!")
-			numCols = 11;
+			numCols = 11; // colorBrewer maximum
 		}
-
+		else if (numCols<3) {
+			numCols = 3; // colorBrewer minimum
+		}
 		var colourspace;
 		if (values.length===2) { // binary
 			colourspace = [colorBrewer.Set2[3][0], colorBrewer.Set2[3][1]]
@@ -113,7 +115,6 @@ function set_colours(header,metadata) {
 		else {
 			colourspace = colorBrewer.Spectral[numCols]
 		}
-
 		// assign the colours back to the metadata object
 		for (var taxa in metadata) {
 			// console.log("assigning colours")
