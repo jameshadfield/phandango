@@ -7,15 +7,13 @@ var MetadataStore = require('../stores/MetadataStore.js');
 
 var Settings = React.createClass({displayName: "displayName",
 	render: function() {
-		if (!this.props.on) {
-			return null
-		}
+		var RoaryDiv = this.props.componentsLoaded.roary ? <RoaryPanel roarySortCode={this.props.roarySortCode}/> : <div/>;
 		return (
 			<div className="border fullpage bgwhite-alpha">
 			<MetaSettings topState={this.props.topState} toggleColRow={this.props.toggleColRow} elementsOn={this.props.elementsOn}/>
 			<Layout divPerc={this.props.divPerc} newDivPerc={this.props.newDivPerc} topState={this.props.topState} elementsOn={this.props.elementsOn}/>
 			<ComponentsLoaded componentsLoaded={this.props.componentsLoaded}/>
-			<RoaryPanel roarySortCode={this.props.roarySortCode}/>
+			{RoaryDiv}
 			</div>
 		);
 	}

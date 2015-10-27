@@ -145,11 +145,12 @@ var Main_React_Element = React.createClass({displayName: "Main_React_Element",
 		console.log("router:",this.state.router)
 		var LoadingDiv = this.state.router=="loading" ? <Spinner/> : <div/>;
 		var LandingDiv = this.state.router=="landing" ? <Landing showLoading={this.state.showLoading}/> : <div/>;
+		var SettingsDiv = this.state.router=="settings" ? <Settings divPerc={this.state.divPerc} newDivPerc={this.newDivPerc} topState={this} toggleColRow={this.toggleColRow} elementsOn={this.state.elementsOn} componentsLoaded={this.state.componentsLoaded}/> : <div/>;
 		return(
 			<div id="mainDiv">
 				{LoadingDiv}
 				{LandingDiv}
-				<Settings on={this.state.router=='settings' ? true : false} divPerc={this.state.divPerc} newDivPerc={this.newDivPerc} topState={this} toggleColRow={this.toggleColRow} elementsOn={this.state.elementsOn} componentsLoaded={this.state.componentsLoaded}/>
+				{SettingsDiv}
 				<CanvasDivs divPerc={this.state.divPerc} on={true} elementsOn={this.state.elementsOn} componentsLoaded={this.state.componentsLoaded}/> {/* always on to keep components alive */}
 			</div>
 		)
