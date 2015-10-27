@@ -1,9 +1,12 @@
-var React = require('react/addons');
+var React = require('react');
+var ReactDOM = require('react-dom');
 var GenomicCanvas = require('./genomic/genomic.react.jsx');
 var MetaReact = require('./meta/meta.react.jsx');
 var PhyloReact = require('./phylo.react.jsx');
 var Extras = require('./extras.react.jsx');
 var Actions = require('../actions/actions.js');
+var misc = require('./misc.js')
+
 
 // Props passed here are:
 //	divPerc -> col -> [col1, col2, col3]
@@ -71,8 +74,7 @@ var CanvasDivs = React.createClass({displayName: "Main_React_Element",
 
 var ReactCanvas = React.createClass({displayName: "displayName",
 	componentDidMount: function() {
-		this.getDOMNode().setAttribute('width', window.getComputedStyle(this.getDOMNode()).width)
-		this.getDOMNode().setAttribute('height', window.getComputedStyle(this.getDOMNode()).height)
+		misc.initCanvasXY(this);
 	},
 
 	render: function() {
