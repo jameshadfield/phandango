@@ -2,13 +2,6 @@ var EventEmitter = require('events').EventEmitter;
 var assign = require('object-assign');
 var Dispatcher = require('../dispatcher/dispatcher');
 
-// there is a bug in this file -- taxa_positions changes
-// between redraws
-// to recreate: comment out set_y_values() from payload.actionType === 'phylocanvas_changed'
-// and when gubbins zooms / pans, the y-values get all screwd up
-// i've had to hack it to update the y-values every time gubbins pans and zooms
-// but clearly this shouldn't be necessary
-
 var taxa_positions = {};
 var activeTaxa = [];
 var selectedTaxa = undefined;

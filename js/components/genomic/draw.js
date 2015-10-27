@@ -23,13 +23,18 @@ function drawBlocks(context, blocks) {
 
 }
 
-function highlightSelectedNodes(canvas,context,Yvalues) {
-	if (Yvalues!==undefined) {
-		// console.log("gubbins background Y values")
-		// console.log(Yvalues)
+function highlightSelectedNodes(canvas,context,values,isY) {
+	if (values!==undefined) {
+		// console.log("gubbins background values")
+		// console.log(values)
 		context.save(); // http://html5.litten.com/understanding-save-and-restore-for-the-canvas-context/
 		context.fillStyle = "#E0E0E0";
-		context.fillRect(0, Yvalues[0], canvas.width, Yvalues[1]-Yvalues[0]);
+		if (isY) {
+			context.fillRect(0, values[0], canvas.width, values[1]-values[0]);
+		}
+		else { // X
+			context.fillRect(values[0], 0, values[1]-values[0], canvas.height);
+		}
 		context.restore();
 	}
 }

@@ -21,33 +21,22 @@ function annotationTrack(canvas) {
 
 	window.addEventListener('resize', function(){myState.redraw()}, true);
 
-	var arrows = RawDataStore.getParsedData('annotation');
-
-	// this.load = function(gff_string) {
-	// 	// console.log("annotations load running")
-	// 	var parsed = parser.parse_gff(gff_string);
-	// 	// this may well FAIL and, if so, we should return false or something
-	// 	if (parsed===false) {
-	// 		// console.log("annotation parsing failed")
-	// 		return false
-	// 	}
-	// 	console.log('annotation parsing successful')
-	// 	arrows = parsed[1]
-	// 	Actions.set_genome_length(parsed[0][1])
-	// 	// this action will cause another redraw!
-	// 	this.redraw()
-	// }
+	this.loadRawData = function() {
+		myState.arrows =  RawDataStore.getParsedData('annotation');
+		myState.scaleType = RawDataStore.getLoadedStatus('gubbins') ? 'bp' : 'num';
+		myState.currently_selected =  undefined;
+		myState.redraw();
+	}
 
 	this.redraw = function() {
 		// is anything loaded (else we can't redraw!)
-		if (arrows===undefined) {
+		if (myState.arrows===undefined) {
 			return
 		}
-		// console.log("GFF REDRAW GOOD?")
 		// trim_blocks() will limit blocks to our viewport and also associate the x and y values in pixels
 		var visible_genome = GenomeStore.getVisible()
 		// console.log(arrows)
-		var current_arrows = draw.get_arrows_in_scope(arrows, visible_genome, myState.canvas)
+		var current_arrows = draw.get_arrows_in_scope(myState.arrows, visible_genome, myState.canvas)
 		// console.log(current_arrows)
 		// console.log("DRAW ANNOTATION")
 		draw.clearCanvas(myState.canvas);
@@ -69,7 +58,7 @@ function annotationTrack(canvas) {
 		var mouse = RegionSelectedStore.getClickXY()
 		// console.log("RegionSelectedStore change detected. Mouse x: "+mouse[0]+" y: "+mouse[1])
 		var visible_genome = GenomeStore.getVisible()
-		var current_arrows = draw.get_arrows_in_scope(arrows, visible_genome, myState.canvas)
+		var current_arrows = draw.get_arrows_in_scope(myState.arrows, visible_genome, myState.canvas)
 		for (var i=0; i<current_arrows.length; i++) {
 			if ( mouse[0] >= current_arrows[i].x && mouse[0] <= (current_arrows[i].x + current_arrows[i].w) && mouse[1] >= current_arrows[i].y && mouse[1] <= (current_arrows[i].y + current_arrows[i].h)) {
 				myState.currently_selected = current_arrows[i];
@@ -94,6 +83,10 @@ function annotationTrack(canvas) {
 	RegionSelectedStore.addChangeListener(this.checkForClick);
 
 	MiscStore.addChangeListener(this.redraw);
+
+	RawDataStore.addChangeListener(this.loadRawData);
+
+	this.loadRawData();
 
 }
 

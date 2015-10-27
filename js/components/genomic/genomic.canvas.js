@@ -24,11 +24,11 @@ function gubbins(canvas) {
 	// var raw_blocks = gff_returned[1];
 
 	// var raw_blocks = RawDataStore.getParsedData('genomic')[1]
-	var raw_blocks;
-	var blocks;
+	var raw_blocks, blocks, isGubbins;
 	this.selected_block = undefined;
 
 	this.loadRawData = function() {
+		myState.isGubbins = RawDataStore.getLoadedStatus('gubbins');
 		myState.raw_blocks = RawDataStore.getParsedData('genomic')[1];
 		myState.redraw();
 	}
@@ -41,7 +41,7 @@ function gubbins(canvas) {
 	// 	}, false
 	// );
 
-	Actions.set_genome_length(RawDataStore.getParsedData('genomic')[0][1])
+	Actions.set_genome_length(RawDataStore.getParsedData('genomic')[0][1]) // stupid place to put this!
 
 
 	// this.load = function(gff_string) {
@@ -70,14 +70,20 @@ function gubbins(canvas) {
 		var visible_genome = GenomeStore.getVisible()
 		// console.log("DRAW GUBBINS over visible_genome",visible_genome)
 		blocks = trim_blocks(myState.raw_blocks, visible_genome, myState.canvas)
+		console.log('visible_genome',visible_genome)
 		draw.clearCanvas(myState.canvas)
 		// console.log(GenomeStore.getSelectedTaxaY())
-		draw.highlightSelectedNodes(myState.canvas, myState.context, GenomeStore.getSelectedTaxaY())
-		draw.drawBlocks(myState.context, blocks);
-		// console.log(blocks)
+		draw.highlightSelectedNodes(myState.canvas, myState.context, GenomeStore.getSelectedTaxaY(),true)
+		// check selected_block (if any) is still in view
+		if (myState.selected_block!==undefined && myState.selected_block.end_base < visible_genome[0] && myState.selected_block.start_base > visible_genome[1]) {
+			myState.selected_block = undefined;
+		}
 		if (myState.selected_block!==undefined) {
-			// why does this not update? It should be a reference to the block, not a copy?
-			// because the block (inside )
+			draw.highlightSelectedNodes(myState.canvas, myState.context, [myState.selected_block.x1,myState.selected_block.x2],false)
+		}
+		draw.drawBlocks(myState.context, blocks);
+		// annotation last --> on top
+		if (myState.selected_block!==undefined && myState.isGubbins) {
 			draw.displayBlockInfo(myState.context, myState.selected_block);
 		}
 	}
@@ -92,6 +98,7 @@ function gubbins(canvas) {
 				((myState.selected_block!==undefined && new_selected_block!==undefined) && myState.selected_block.id!==new_selected_block.id )
 				) {
 				myState.selected_block = new_selected_block
+				console.log('selected block:',myState.selected_block);
 				myState.redraw() // will pick up the block :)
 			}
 		}

@@ -1,6 +1,7 @@
 var PlotStore = require('../../stores/PlotStore.js')
 var GenomeStore = require('../../stores/genome.js')
 var MiscStore = require('../../stores/misc.Store.js');
+var RawDataStore = require('../../stores/RawDataStore.js');
 
 
 
@@ -17,6 +18,7 @@ function plotter(canvas, plotName) {
 		// console.log("PLOT REDRAW")
 		var genome_length = GenomeStore.getGenomeLength();
 		var visible_genome = GenomeStore.getVisible()
+		var isGubbins = RawDataStore.getLoadedStatus('gubbins');
 
 		if (!PlotStore.isPlotActive(myState.plotName)) {
 			// console.log('PLOT NOT ACTIVE')
@@ -42,21 +44,8 @@ function plotter(canvas, plotName) {
 			myState.context.lineTo(x, y )
 			// console.log("pixel x: ",x," genome x: ", genome_x," genome y: ",plotYvalues[genome_x]," pixel y: ",y)
 		}
-		myState.context.moveTo(canvas.width,canvas.height);
-		myState.context.lineTo(0,canvas.height) // bottom line :)
-		myState.context.lineTo(0,0) // left hand axis
-		myState.context.lineTo(5,0) // axis tick
-		myState.context.moveTo(0,canvas.height/2);
-		myState.context.lineTo(5,canvas.height/2) // axis tick
-		myState.context.stroke();
 
-		// some text :)
-		myState.context.fillStyle = "black";
-		myState.context.textBaseline="middle";
-		myState.context.textAlign = "left";
-		myState.context.font="12px Helvetica";
-		myState.context.fillText(maximumYvalue.toString() , 5, 5);
-		myState.context.fillText((maximumYvalue/2).toString() , 5, parseInt(canvas.height/2));
+		drawAxis(myState.canvas,myState.context,maximumYvalue,isGubbins);
 
 	}
 
@@ -66,6 +55,45 @@ function plotter(canvas, plotName) {
 
 }
 
+function drawAxis(canvas,context,maximumYvalue,isGubbins) {
+	var myState = this;
+	this.drawTicks = function(canvas,context,tickPercs,tickLength) {
+		// we are starting at 0,0 (i.e. TOP LEFT)
+		context.moveTo(0,0);
+		for (var i=0; i<tickPercs.length;i++) {
+			perc=(100-tickPercs[i])/100;
+			context.lineTo(0,canvas.height*(1-perc))
+			context.lineTo(tickLength,canvas.height*(1-perc))
+			context.lineTo(0,canvas.height*(1-perc))
+		}
+		context.stroke();
+	}
+	context.moveTo(canvas.width,canvas.height);
+	context.lineTo(0,canvas.height) // bottom line :)
+	context.lineTo(0,0) // left hand axis (now at top left)
+	context.stroke();
+
+
+	// some text :)
+	context.fillStyle = "black";
+	context.textBaseline="middle";
+	context.textAlign = "left";
+	context.font="12px Helvetica";
+	if (isGubbins) {
+		this.drawTicks(canvas,context,[100,75,50,25],5);
+		context.fillText(maximumYvalue.toString() , 5, 5);
+		context.fillText((maximumYvalue*.75).toString() , 5, parseInt(canvas.height*.25));
+		context.fillText((maximumYvalue*.50).toString() , 5, parseInt(canvas.height*.5));
+		context.fillText((maximumYvalue*.25).toString() , 5, parseInt(canvas.height*.75));
+	}
+	else { // R O A R Y
+		this.drawTicks(canvas,context,[100,75,50,25],5);
+		context.fillText('100%' , 5, 5);
+		context.fillText('75%' , 5, parseInt(canvas.height*.25));
+		context.fillText('50%' , 5, parseInt(canvas.height*.5));
+		context.fillText('25%' , 5, parseInt(canvas.height*.75));
+	}
+}
 
 function clearCanvas(canvas) {
 	canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
