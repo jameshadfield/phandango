@@ -51,7 +51,7 @@ function parse_gff(gff_string) {
 	    	if (words[1]=="GUBBINS"){
 	    		// next few lines, replace lines[i] with words[10] ???
 	    		var taxa = lines[i].split("taxa=\"")[1].split("\"")[0].split(/\s+/).filter(Boolean);
-	    		if (taxa.length>1) {
+                if (taxa.length>1) {
 		    		var node = lines[i].split("node=\"")[1].split("\"")[0].split("->");
 	    		} else {
 	    			var node = false;

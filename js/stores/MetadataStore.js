@@ -97,23 +97,23 @@ function set_colours(header,metadata) {
 			values.sort()
 		}
 		// we now have a sorted array. but how long is it???
-		var numCols = values.length
-		if (numCols>11) {
+		var numColours = values.length
+		if (numColours>11) {
 			console.log("metadata column (",header[headerIdx],") with more than 11 entries... expect problems!")
-			numCols = 11; // colorBrewer maximum
+			numColours = 11; // colorBrewer maximum
 		}
-		else if (numCols<3) {
-			numCols = 3; // colorBrewer minimum
+		else if (numColours<3) {
+			numColours = 3; // colorBrewer minimum
 		}
 		var colourspace;
 		if (values.length===2) { // binary
 			colourspace = [colorBrewer.Set2[3][0], colorBrewer.Set2[3][1]]
 		}
 		else if (numeric) {
-			colourspace = colorBrewer.RdYlBu[numCols]
+			colourspace = colorBrewer.RdYlBu[numColours]
 		}
 		else {
-			colourspace = colorBrewer.Spectral[numCols]
+			colourspace = colorBrewer.Spectral[numColours]
 		}
 		// assign the colours back to the metadata object
 		for (var taxa in metadata) {
@@ -123,8 +123,19 @@ function set_colours(header,metadata) {
 			// console.log("taxa: ",taxa)
 			// console.log("header idx: ",headerIdx)
 			// console.log("header: ",header[headerIdx])
+			// console.log("idx of colour:",values.indexOf(metadata[taxa][headerIdx]['value']))
 			// console.log("colour: ",colourspace[values.indexOf(metadata[taxa][headerIdx]['value'])])
-			metadata[taxa][headerIdx]['colour'] = colourspace[values.indexOf(metadata[taxa][headerIdx]['value'])]
+			idxOfEntry = values.indexOf(metadata[taxa][headerIdx]['value'])
+			if (idxOfEntry > numColours) {
+				idxOfEntry = idxOfEntry % numColours;
+			}
+			// console.log("taxa:",taxa,"value:",metadata[taxa][headerIdx]['value'],"oldIdx=",values.indexOf(metadata[taxa][headerIdx]['value']),"newIdx",idxOfEntry)
+			if (idxOfEntry === -1) {
+				metadata[taxa][headerIdx]['colour'] = "#FFFFFF"
+			}
+			else {
+				metadata[taxa][headerIdx]['colour'] = colourspace[idxOfEntry]
+			}
 		}
 	}
 	return metadata
