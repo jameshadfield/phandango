@@ -1,10 +1,12 @@
 
 var React = require('react');
+var ReactDOM = require('react-dom');
 var RawDataStore = require('../../stores/RawDataStore.js');
 var Actions = require('../../actions/actions.js');
 var MetadataStore = require('../../stores/MetadataStore.js');
 var Taxa_Locations = require('../../stores/Taxa_Locations.js')
 var MiscStore = require('../../stores/misc.Store.js');
+var misc = require('../misc.js')
 
 
 /*
@@ -22,10 +24,8 @@ This is currently a self contained thing, but we should really make it part of r
 
 var MetaTextClass = React.createClass({displayName: "displayName",
     componentDidMount: function() { // Invoked once, immediately after the initial rendering
-        console.log("META text mounted")
-        this.getDOMNode().setAttribute('width', window.getComputedStyle(this.getDOMNode()).width)
-        this.getDOMNode().setAttribute('height', window.getComputedStyle(this.getDOMNode()).height)
-        metaInstance = new metaText(this.getDOMNode());
+        misc.initCanvasXY(this);
+        metaInstance = new metaText(ReactDOM.findDOMNode(this));
     },
     render: function() {
         return(
@@ -37,10 +37,8 @@ var MetaTextClass = React.createClass({displayName: "displayName",
 
 var MetaCanvasClass = React.createClass({displayName: "displayName",
 	componentDidMount: function() { // Invoked once, immediately after the initial rendering
-        console.log("META COMPONENET DID MOUNT")
-		this.getDOMNode().setAttribute('width', window.getComputedStyle(this.getDOMNode()).width)
-		this.getDOMNode().setAttribute('height', window.getComputedStyle(this.getDOMNode()).height)
-		metaInstance = new meta(this.getDOMNode());
+        misc.initCanvasXY(this);
+		metaInstance = new meta(ReactDOM.findDOMNode(this));
 	},
     render: function() {
         return(

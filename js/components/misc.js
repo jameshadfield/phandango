@@ -1,4 +1,5 @@
 var Actions = require('../actions/actions.js');
+var ReactDOM = require('react-dom');
 
 
 var rescaleCanvases = function() {
@@ -20,4 +21,10 @@ var rescaleCanvases = function() {
 	// phylocanvas.fitInPanel();
 }
 
-module.exports = {'rescaleCanvases': rescaleCanvases};
+// the CSS scales the canvas, but we have to set the correct width and height here as well, and this must be updated upon resizes (and then a redraw triggered)
+var initCanvasXY = function(myState) {
+    ReactDOM.findDOMNode(myState).setAttribute('width', window.getComputedStyle(ReactDOM.findDOMNode(myState)).width);
+    ReactDOM.findDOMNode(myState).setAttribute('height', window.getComputedStyle(ReactDOM.findDOMNode(myState)).height);
+}
+
+module.exports = {'rescaleCanvases': rescaleCanvases, 'initCanvasXY': initCanvasXY};

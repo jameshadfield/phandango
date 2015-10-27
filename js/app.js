@@ -6,6 +6,7 @@
 // This file bootstraps the entire application.
 
 var React = require('react');
+var ReactDOM = require('react-dom');
 // var dispatcher = new Dispatcher();
 var Main_React_Element = require('./components/main.react.jsx')
 var notChrome = require('./components/notChrome.jsx')
@@ -15,9 +16,9 @@ var Taxa_Locations = require('./stores/Taxa_Locations.js')
 
 // test to see if the user is using chrome
 if (navigator.userAgent.toLowerCase().indexOf('chrome') > -1) {
-	React.render(React.createElement(Main_React_Element, null), document.getElementById('react') );
+	ReactDOM.render(React.createElement(Main_React_Element, null), document.getElementById('react') );
 } else {
-	React.render(React.createElement(notChrome, null), document.getElementById('react') );
+	ReactDOM.render(React.createElement(notChrome, null), document.getElementById('react') );
 }
 
 

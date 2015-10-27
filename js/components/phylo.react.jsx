@@ -1,5 +1,6 @@
 
 var React = require('react');
+var ReactDOM = require('react-dom');
 var RawDataStore = require('../stores/RawDataStore.js');
 var PhyloCanvas = require('PhyloCanvas').default;
 var ContextMenuPlugin = require('phylocanvas-plugin-context-menu');
@@ -11,7 +12,7 @@ var PhyloReact = React.createClass({displayName: "displayName",
 
 	componentDidMount: function() { // Invoked once, immediately after the initial rendering
 		// initialise phylocanvas and basic info about how we want the tree to look
-		phylocanvas = PhyloCanvas.createTree(this.getDOMNode()) //GLOBAL
+		phylocanvas = PhyloCanvas.createTree(ReactDOM.findDOMNode(this)) //GLOBAL
 		phylocanvas.setTreeType('rectangular')
 		phylocanvas.nodeAlign = true;
 		this.attachListenersToPhylocanvas()
