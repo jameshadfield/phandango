@@ -143,20 +143,24 @@ module.exports = {
   },
 
   redrawAll: function() {
-    console.log("ACTION");
     Dispatcher.dispatch({
       actionType: 'redrawAll'
     });
   },
   sortRoary: function(x) {
-    console.log("ACTION");
     Dispatcher.dispatch({
       actionType: 'sortRoary',
       sortCode: x
     });
+  },
+
+  loadDefaultData: function(x) {
+    console.log("ACTION: loadDefaultData",x);
+    Dispatcher.dispatch({
+      actionType: 'loadDefaultData',
+      dataset: x
+    });
   }
-
-
 
 };
 
