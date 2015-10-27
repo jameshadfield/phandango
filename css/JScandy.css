@@ -111,11 +111,19 @@ input[type=range]{
     left: 0;
 }
 
+.pointer {
+    cursor:pointer;
+    cursor:hand;
+}
 
+#logoLanding {
+  width:100%;
+  max-width:250px;
+}
 
-
-
-
+#spinner {
+  padding-top: 40vh;
+}
 
 
 

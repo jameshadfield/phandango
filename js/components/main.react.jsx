@@ -23,7 +23,13 @@ var Main_React_Element = React.createClass({displayName: "Main_React_Element",
 		// console.log("ROUTER:",router)
 		var elementsOn = {col:[true,true,true],row:[true,true,true]}
 		var componentsLoaded = RawDataStore.getLoadedStatus();
-		return({divPerc: divPerc, router:router,elementsOn:elementsOn,componentsLoaded:componentsLoaded});
+		return({
+			divPerc: divPerc,
+			router:router,
+			elementsOn:elementsOn,
+			componentsLoaded:componentsLoaded,
+			showLoading:this.showLoading
+		});
 	},
 	keyIncoming: function(key){
 		// http://www.cambiaresearch.com/articles/15/javascript-char-codes-key-codes
@@ -38,6 +44,9 @@ var Main_React_Element = React.createClass({displayName: "Main_React_Element",
 		else if (event.keyCode === 76 || event.charCode === 76){ // 'l'
 			this.setState({router: this.state.router=="landing" ? 'main' : 'landing'});
 		}
+	},
+	showLoading:function() {
+		this.setState({router:"loading"})
 	},
 	toggleColRow: function(colRow,num){
 		// console.log("params:",colRow,num)
@@ -102,9 +111,15 @@ var Main_React_Element = React.createClass({displayName: "Main_React_Element",
 		};
 
 		// phylocanvas is a black box
-		phylocanvas.resizeToContainer();
-		phylocanvas.draw(true); // forces phylocanvas.fitInPanel()
-
+		try {
+			phylocanvas.resizeToContainer();
+			phylocanvas.draw(true); // forces phylocanvas.fitInPanel()
+		}
+		catch (e) {
+			if (e instanceof ReferenceError) {
+				console.log("caught silently")
+			}
+		}
 		Actions.phylocanvas_changed()
 		Actions.redrawAll();
 	},
@@ -118,19 +133,22 @@ var Main_React_Element = React.createClass({displayName: "Main_React_Element",
 		ReactDOM.findDOMNode(this).addEventListener("drop", function(event) {
 		    event.preventDefault();
 			var files = event.dataTransfer.files;
-			// if files.length>1 then do some carny apply trick to call multiple actions
+			myState.showLoading();
 			Actions.files_dropped(files)
 			myState.setState({router:'main'});
 		}, false);
 		RawDataStore.addChangeListener(function() {
-			myState.setState({'componentsLoaded' : RawDataStore.getLoadedStatus()});
+			myState.setState({'componentsLoaded' : RawDataStore.getLoadedStatus(), 'router':'main'});
 		})
 	},
 	render: function() {
+		console.log("router:",this.state.router)
+		var LoadingDiv = this.state.router=="loading" ? <Spinner/> : <div/>;
+		var LandingDiv = this.state.router=="landing" ? <Landing showLoading={this.state.showLoading}/> : <div/>;
 		return(
 			<div id="mainDiv">
-				<Landing on={this.state.router=='landing' ? true : false}/>
-
+				{LoadingDiv}
+				{LandingDiv}
 				<Settings on={this.state.router=='settings' ? true : false} divPerc={this.state.divPerc} newDivPerc={this.newDivPerc} topState={this} toggleColRow={this.toggleColRow} elementsOn={this.state.elementsOn} componentsLoaded={this.state.componentsLoaded}/>
 				<CanvasDivs divPerc={this.state.divPerc} on={true} elementsOn={this.state.elementsOn} componentsLoaded={this.state.componentsLoaded}/> {/* always on to keep components alive */}
 			</div>
@@ -138,6 +156,61 @@ var Main_React_Element = React.createClass({displayName: "Main_React_Element",
 	},
 });
 
+
+
+var Spinner = React.createClass({displayName: "displayName",
+	render: function() {
+		return (
+			<div className="fullpage center-align" id="spinner">
+
+
+			<div className="preloader-wrapper big active">
+			<div className="spinner-layer spinner-blue">
+			<div className="circle-clipper left">
+			<div className="circle"></div>
+			</div><div className="gap-patch">
+			<div className="circle"></div>
+			</div><div className="circle-clipper right">
+			<div className="circle"></div>
+			</div>
+			</div>
+
+			<div className="spinner-layer spinner-red">
+			<div className="circle-clipper left">
+			<div className="circle"></div>
+			</div><div className="gap-patch">
+			<div className="circle"></div>
+			</div><div className="circle-clipper right">
+			<div className="circle"></div>
+			</div>
+			</div>
+
+			<div className="spinner-layer spinner-yellow">
+			<div className="circle-clipper left">
+			<div className="circle"></div>
+			</div><div className="gap-patch">
+			<div className="circle"></div>
+			</div><div className="circle-clipper right">
+			<div className="circle"></div>
+			</div>
+			</div>
+
+			<div className="spinner-layer spinner-green">
+			<div className="circle-clipper left">
+			<div className="circle"></div>
+			</div><div className="gap-patch">
+			<div className="circle"></div>
+			</div><div className="circle-clipper right">
+			<div className="circle"></div>
+			</div>
+			</div>
+			</div>
+
+
+			</div>
+		);
+	}
+});
 
 
 module.exports = Main_React_Element;
