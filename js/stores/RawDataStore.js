@@ -22,15 +22,15 @@ var defaultDataPrefix = "https://cdn.rawgit.com/jameshadfield/JScandy/"
 var defaultDataPaths={
 	'gubbins':[
 		// defaultDataPrefix+"feat-defaultData/example_datasets/gubbins/gubbins.tre"
-		defaultDataPrefix+"feat-defaultData/example_datasets/gubbins/Spn23f.gff",
-		defaultDataPrefix+"feat-defaultData/example_datasets/gubbins/gubbins.gff",
-		defaultDataPrefix+"feat-defaultData/example_datasets/gubbins/gubbins.tre",
-		defaultDataPrefix+"feat-defaultData/example_datasets/gubbins/meta.simple.csv"
+		defaultDataPrefix+"v0.2.0/example_datasets/gubbins/Spn23f.gff",
+		defaultDataPrefix+"v0.2.0/example_datasets/gubbins/gubbins.gff",
+		defaultDataPrefix+"v0.2.0/example_datasets/gubbins/gubbins.tre",
+		defaultDataPrefix+"v0.2.0/example_datasets/gubbins/meta.simple.csv"
 	],
 	'roary': [
-		defaultDataPrefix+"feat-defaultData/example_datasets/roary/gene_presence_absence.csv",
-		defaultDataPrefix+"feat-defaultData/example_datasets/roary/gubbins.tre",
-		defaultDataPrefix+"feat-defaultData/example_datasets/roary/metadata.csv"
+		defaultDataPrefix+"v0.2.0/example_datasets/roary/gene_presence_absence.csv",
+		defaultDataPrefix+"v0.2.0/example_datasets/roary/gubbins.tre",
+		defaultDataPrefix+"v0.2.0/example_datasets/roary/metadata.csv"
 	]
 };
 
