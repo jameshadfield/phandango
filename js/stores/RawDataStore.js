@@ -16,6 +16,7 @@ var loaded = {'tree':false, 'meta':false, 'annotaion':false, 'roary':false, 'SNP
 var parsed = {};
 var rawData = {}; // internal ONLY
 var misc = {'roarySortCode':'asIs'};
+var datasetType;
 // change prefix for testing / production purposes!
 // var defaultDataPrefix = "https://rawgit.com/jameshadfield/JScandy/"
 var defaultDataPrefix = "https://cdn.rawgit.com/jameshadfield/JScandy/"
@@ -55,6 +56,9 @@ var RawDataStore = assign({}, EventEmitter.prototype, {
 	},
 	getRoarySortCode: function(name) {
 		return misc.roarySortCode;
+	},
+	getDatasetType: function() {
+		return datasetType;
 	}
 })
 
@@ -231,9 +235,11 @@ Dispatcher.register(function(payload) {
   	// console.log("action triggered: "+payload.actionType)
 
 	if (payload.actionType === 'files_dropped') {
+		datasetType = "user";
 		incomingData(payload.files,false);
 	}
 	else if (payload.actionType === 'loadDefaultData') {
+		datasetType = 'default_'+payload.dataset;
 		incomingData(defaultDataPaths[payload.dataset],true)
 	}
 	else if (payload.actionType === 'sortRoary') {

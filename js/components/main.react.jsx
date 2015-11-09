@@ -141,8 +141,22 @@ var Main_React_Element = React.createClass({displayName: "Main_React_Element",
 			myState.setState({'componentsLoaded' : RawDataStore.getLoadedStatus(), 'router':'main'});
 		})
 	},
+	sendGA() {
+		if (this.state.router === 'landing') {
+			ga('set', 'page', 'landing');
+		} else if (this.state.router === 'loading') {
+			return; // no GA
+		} else if (this.state.router === 'main') {
+			var datasetType = RawDataStore.getDatasetType()
+			ga('set', 'page', 'main_'+RawDataStore.getDatasetType());
+		} else {
+			console.warn("sendGA() fallthrough")
+			return
+		}
+		ga('send', 'pageview');
+	},
 	render: function() {
-		console.log("router:",this.state.router)
+		this.sendGA();
 		var LoadingDiv = this.state.router=="loading" ? <Spinner/> : <div/>;
 		var LandingDiv = this.state.router=="landing" ? <Landing showLoading={this.state.showLoading}/> : <div/>;
 		var SettingsDiv = this.state.router=="settings" ? <Settings divPerc={this.state.divPerc} newDivPerc={this.newDivPerc} topState={this} toggleColRow={this.toggleColRow} elementsOn={this.state.elementsOn} componentsLoaded={this.state.componentsLoaded}/> : <div/>;

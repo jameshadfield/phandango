@@ -23,6 +23,7 @@
   "dependencies": {
     "browserify": "latest",
     "events": "latest",
+    "http-server": "^0.8.5",
     "minifyify": "latest",
     "object-assign": "latest",
     "phylocanvas-plugin-context-menu": "phylocanvas/phylocanvas-plugin-context-menu",
