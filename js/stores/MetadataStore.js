@@ -181,6 +181,12 @@ Dispatcher.register(function(payload) {
 			break;
 
 		case 'hereIsMetadata':
+			// dump any information currently loaded
+			header = [];
+			active_indexes = [];
+			metaNamesByTaxa = {};
+			metadata = {}
+			// load the new data
 			var blah = payload.data;
 			header = blah[0]
 			columns_on_off = blah[1]
@@ -190,6 +196,7 @@ Dispatcher.register(function(payload) {
 			metadata = set_colours(header,blah[2]) // modifies metadata
 			loaded = true;
 			display = true;
+			MetadataStore.emitChange();
 			break;
 
 		//case

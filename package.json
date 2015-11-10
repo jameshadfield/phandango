@@ -5,7 +5,8 @@
   "scripts": {
     "build": "browserify js/app.js -t reactify --debug -p [minifyify --no-map] -o js/bundle.js",
     "notWorking": "watchify js/app.js -t reactify --debug --verbose -p [minifyify --map js/bundle.map.json --output js/bundle.map.json] -o js/bundle.js",
-    "watch": "watchify js/app.js -t reactify --debug --verbose -o js/bundle.js"
+    "watch": "watchify js/app.js -t reactify --debug --verbose -o js/bundle.js",
+    "start": "http-server --cors -a 127.0.0.1 -p 8000"
   },
   "main": "js/app.js",
   "browserify": {
@@ -23,6 +24,7 @@
   "dependencies": {
     "browserify": "latest",
     "events": "latest",
+    "http-server": "^0.8.5",
     "minifyify": "latest",
     "object-assign": "latest",
     "phylocanvas-plugin-context-menu": "phylocanvas/phylocanvas-plugin-context-menu",

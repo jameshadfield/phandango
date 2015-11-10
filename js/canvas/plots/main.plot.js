@@ -18,7 +18,7 @@ function plotter(canvas, plotName) {
 		// console.log("PLOT REDRAW")
 		var genome_length = GenomeStore.getGenomeLength();
 		var visible_genome = GenomeStore.getVisible()
-		var isGubbins = RawDataStore.getLoadedStatus('gubbins');
+		var isGubbins = RawDataStore.getGenomicDatasetType()==='gubbins';
 
 		if (!PlotStore.isPlotActive(myState.plotName)) {
 			// console.log('PLOT NOT ACTIVE')

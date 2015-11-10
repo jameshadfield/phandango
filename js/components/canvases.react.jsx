@@ -39,10 +39,11 @@ var CanvasDivs = React.createClass({displayName: "Main_React_Element",
 		}
 		// have things been loaded?
 		var metaTextDiv = this.props.elementsOn.col[1] ? <MetaReact.MetaTextClass/> : <div/>;
-		var genomicDiv = this.props.componentsLoaded.roary || this.props.componentsLoaded.gubbins ? <GenomicCanvas.GenomicCanvasClass/> : <div/>;
+		var genomicDiv = this.props.dataLoaded.genomic ? <GenomicCanvas.GenomicCanvasClass/> : <div/>;
 		var metaDiv = this.props.elementsOn.col[1] ? <MetaReact.MetaCanvasClass/> : <div/>;
-		var treeDiv = this.props.componentsLoaded.tree ? <PhyloReact/> : <div/>;
-		var annotationDiv = this.props.componentsLoaded.annotation ? <Extras.GenomeAnnotation/> : <div/>;
+		// var treeDiv = this.props.dataLoaded.tree ? <PhyloReact/> : <div/>;
+		var treeDiv = <PhyloReact/>; // always on
+		var annotationDiv = this.props.dataLoaded.annotation ? <Extras.GenomeAnnotation/> : <div/>;
 
 		// console.log("RENDER:",this.props.divPerc.col[0],this.props.divPerc.col[1],this.props.divPerc.col[2])
 		return(

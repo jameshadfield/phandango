@@ -18,17 +18,12 @@ function add(a, b) {return a+b}; // http://stackoverflow.com/questions/1230233/h
 var Main_React_Element = React.createClass({displayName: "Main_React_Element",
 	getInitialState: function() {
 		// initial values
-		var divPerc = {col:[20,11,69],row:[15,70,15]};
-		var router = 'landing'; // what page do we start with?
-		// console.log("ROUTER:",router)
-		var elementsOn = {col:[true,true,true],row:[true,true,true]}
-		var componentsLoaded = RawDataStore.getLoadedStatus();
 		return({
-			divPerc: divPerc,
-			router:router,
-			elementsOn:elementsOn,
-			componentsLoaded:componentsLoaded,
-			showLoading:this.showLoading
+			divPerc		: 	{col:[20,11,69],row:[15,70,15]},
+			router		:	'landing', // what page do we start with?
+			elementsOn	: 	{col:[true,true,true],row:[true,true,true]},
+			dataLoaded	:	RawDataStore.getDataLoaded(),
+			showLoading	:	this.showLoading
 		});
 	},
 	keyIncoming: function(key){
@@ -135,23 +130,52 @@ var Main_React_Element = React.createClass({displayName: "Main_React_Element",
 			var files = event.dataTransfer.files;
 			myState.showLoading();
 			Actions.files_dropped(files)
-			myState.setState({router:'main'});
+			// myState.setState({router:'main'});
 		}, false);
 		RawDataStore.addChangeListener(function() {
-			myState.setState({'componentsLoaded' : RawDataStore.getLoadedStatus(), 'router':'main'});
+			myState.setState({'dataLoaded' : RawDataStore.getDataLoaded(), 'router':'main'});
 		})
 	},
+	currentGAPageName: undefined,
+	sendGAtoken: function(pageName) {
+		if (this.currentGAPageName === 'pageName') {
+			console.log("not sending GA (pageName unchanged)")
+			return
+		}
+		// console.log('sending GA. Page:',pageName)
+		ga('set', 'page', '/'+pageName);
+		ga('send', 'pageview');
+		this.currentGAPageName = pageName;
+	},
+	googleAnalytics: function() {
+		// page code for GA:
+		// simple: landing | settings
+		// data pages:
+		//		default_roary | default_gubbins
+		//		userData_roary | userData_gubbins
+		if (this.state.router === 'landing') {
+			this.sendGAtoken('landing')
+		}
+		else if (this.state.router === 'settings') {
+			this.sendGAtoken('settings')
+		}
+		else if (this.state.router === 'main') {
+			var prefix = RawDataStore.isDefaultData() ? 'default' : 'userData'
+			this.sendGAtoken(prefix+'_'+RawDataStore.getGenomicDatasetType());
+		}
+	},
 	render: function() {
-		console.log("router:",this.state.router)
+		// console.log("ROUTER:",this.state.router)
+		this.googleAnalytics();
 		var LoadingDiv = this.state.router=="loading" ? <Spinner/> : <div/>;
 		var LandingDiv = this.state.router=="landing" ? <Landing showLoading={this.state.showLoading}/> : <div/>;
-		var SettingsDiv = this.state.router=="settings" ? <Settings divPerc={this.state.divPerc} newDivPerc={this.newDivPerc} topState={this} toggleColRow={this.toggleColRow} elementsOn={this.state.elementsOn} componentsLoaded={this.state.componentsLoaded}/> : <div/>;
+		var SettingsDiv = this.state.router=="settings" ? <Settings divPerc={this.state.divPerc} newDivPerc={this.newDivPerc} topState={this} toggleColRow={this.toggleColRow} elementsOn={this.state.elementsOn} dataLoaded={this.state.dataLoaded}/> : <div/>;
 		return(
 			<div id="mainDiv">
 				{LoadingDiv}
 				{LandingDiv}
 				{SettingsDiv}
-				<CanvasDivs divPerc={this.state.divPerc} on={true} elementsOn={this.state.elementsOn} componentsLoaded={this.state.componentsLoaded}/> {/* always on to keep components alive */}
+				<CanvasDivs divPerc={this.state.divPerc} on={true} elementsOn={this.state.elementsOn} dataLoaded={this.state.dataLoaded}/> {/* always on to keep components alive */}
 			</div>
 		)
 	},
