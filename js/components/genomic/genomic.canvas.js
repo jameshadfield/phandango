@@ -28,7 +28,7 @@ function gubbins(canvas) {
 	this.selected_block = undefined;
 
 	this.loadRawData = function() {
-		myState.isGubbins = RawDataStore.getLoadedStatus('gubbins');
+		myState.isGubbins = RawDataStore.getGenomicDatasetType()==='gubbins';
 		myState.raw_blocks = RawDataStore.getParsedData('genomic')[1];
 		myState.redraw();
 	}
