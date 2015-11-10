@@ -11,12 +11,12 @@ var metaParser = require('../components/meta/parse.csv.js');
 var annotationParser = require('../components/annotation/parse.annotations.js');
 var roaryParser = require('../components/genomic/roary.parser.js');
 
-
-var loaded = {'tree':false, 'meta':false, 'annotaion':false, 'roary':false, 'SNPs':false, 'gubbins':false};
+// only possible to have one of each loaded at a given time!!!!!
+var loaded = {'tree':undefined, 'meta':undefined, 'annotation':undefined, 'genomic':undefined, 'SNPs':undefined, 'GWAS':undefined}; // store file names!!!!!
 var parsed = {};
 var rawData = {}; // internal ONLY
 var misc = {'roarySortCode':'asIs'};
-var datasetType;
+var datasetType = {'default':false, 'data':undefined} // default -> false == user data. data = gubbins | roary (defined by parser success)
 // change prefix for testing / production purposes!
 // var defaultDataPrefix = "https://rawgit.com/jameshadfield/JScandy/"
 var defaultDataPrefix = "https://cdn.rawgit.com/jameshadfield/JScandy/"
@@ -48,7 +48,7 @@ var RawDataStore = assign({}, EventEmitter.prototype, {
 	getData: function() {
 		return data; // reference
 	},
-	getLoadedStatus: function(name) {
+	getDataLoaded: function(name) {
 		return name ? loaded[name] : loaded;
 	},
 	getParsedData: function(name) {
@@ -57,13 +57,17 @@ var RawDataStore = assign({}, EventEmitter.prototype, {
 	getRoarySortCode: function(name) {
 		return misc.roarySortCode;
 	},
-	getDatasetType: function() {
-		return datasetType;
+	isDefaultData: function() {
+		return datasetType.default;
+	},
+	getGenomicDatasetType: function() {
+		return datasetType.data;
 	}
 })
 
 
 function incomingData(files,ajax) {
+	console.groupCollapsed("File Parsing")
 	// using the idea of a barrier from
 	// http://stackoverflow.com/questions/7957952/detecting-when-javascript-is-done-executing
 	// to know when all the IO is done!
@@ -80,12 +84,15 @@ function incomingData(files,ajax) {
 		}
 		this.done = function() {
 			console.log("all IO done")
+			console.groupEnd()
 			RawDataStore.emitChange();
 		}
 	}
 
 
-	function masterParser(file_extension,data) {
+	function masterParser(fileName,data) {
+		var file_extension = fileName.split(".").slice(-1)[0];
+		var displayName = fileName.split("/").slice(-1)[0];
 		switch(file_extension) {
 
 			case 'gff':
@@ -97,8 +104,8 @@ function incomingData(files,ajax) {
 				}
 				else{
 					console.log("gubbins parsing success")
-					loaded.gubbins = true;
-					loaded.roary = false;
+					loaded.genomic = displayName;
+					datasetType.data = 'gubbins';
 					parsed['genomic'] = gubbins;
 					break;
 				}
@@ -112,14 +119,14 @@ function incomingData(files,ajax) {
 					console.log("annotation parsing success")
 					Actions.set_genome_length(res[0][1]);
 					parsed['annotation'] = res[1];
-					loaded.annotation = true;
+					loaded.annotation = displayName;
 				}
 				break;
 
 
 			case 'tre':
 				// basically palm this off to PhyloCanvas
-				loaded.tree = true;
+				loaded.tree = displayName;
 				parsed['tree'] = data;
 				break;
 
@@ -133,8 +140,8 @@ function incomingData(files,ajax) {
 				}
 				else{
 					console.log("metadata parsing success")
-					loaded.meta = true;
-					Actions.hereIsMetadata(res)
+					loaded.meta = displayName;
+					Actions.hereIsMetadata(res); // seperate store!
 					break;
 				}
 
@@ -147,7 +154,10 @@ function incomingData(files,ajax) {
 				else{
 					console.log("ROARY parsing success")
 					rawData['roary'] = res;
-					saveRoaryAsData(rawData['roary'][0],rawData['roary'][1],100,misc.roarySortCode)
+					loaded.genomic = displayName;
+					datasetType.data = 'roary';
+					loaded.annotation = displayName;
+					saveRoaryAsData(rawData['roary'][0],rawData['roary'][1],100,misc.roarySortCode); // modifies parsed['annotation'] & parsed['genomic']
 				}
 				break;
 
@@ -176,7 +186,7 @@ function incomingData(files,ajax) {
 						if (requests[i].status === 200) {
 							// console.log("i:",i,"filename:",files[i],"extension:",files[i].split(".").slice(-1)[0])
 							// console.log(requests[i].responseText);
-							masterParser(files[i].split(".").slice(-1)[0],requests[i].responseText)
+							masterParser(files[i],requests[i].responseText)
 						} else {
 							console.log("Error", requests[i].statusText);
 						}
@@ -192,19 +202,21 @@ function incomingData(files,ajax) {
 		for (var i=0; i<files.length; i++) {
 			// console.log("Filename: " + files[i].name + " " + parseInt(files[i].size/1024) + " kb");
 			reader = new FileReader();
-			var file_extension = files[i].name.split(".").slice(-1)[0]
-			// onload, being sent to the event loop, needs a closure to bind certain variables to it (in this case, file_extension)
-			reader.onload = function(file_extension) {
+			var fileName = files[i].name;
+			// onload, being sent to the event loop (or a callback, maybe it's not on the loop), needs a closure to bind certain variables to it (in this case, fileName)
+			reader.onload = function(fileName) {
 				return function(event) {
-					masterParser(file_extension,event.target.result)
+					masterParser(fileName,event.target.result)
 				};
-			}(file_extension);
+			}(fileName);
 			reader.onerror = function(event) {
 			    console.error("File could not be read! Code " + event.target.error.code);
 			};
 			reader.readAsText(files[i]);
 		}
 	}
+	// console.groupEnd()
+
 }
 
 
@@ -217,9 +229,6 @@ function saveRoaryAsData(headerData,roaryData,geneLen,sortCode) {
 	}
 	parsed['genomic'] = [[0,roaryObjs[2]],roaryObjs[0]]; // FIX
 	parsed['annotation'] = roaryObjs[1];
-	loaded.roary = true;
-	loaded.gubbins = false;
-	loaded.annotation = true;
 	setTimeout(function() {
 		Actions.set_genome_length(roaryObjs[2])},0);
 	setTimeout(function() {
@@ -235,11 +244,11 @@ Dispatcher.register(function(payload) {
   	// console.log("action triggered: "+payload.actionType)
 
 	if (payload.actionType === 'files_dropped') {
-		datasetType = "user";
+		datasetType.default = false;
 		incomingData(payload.files,false);
 	}
 	else if (payload.actionType === 'loadDefaultData') {
-		datasetType = 'default_'+payload.dataset;
+		datasetType.default = true;
 		incomingData(defaultDataPaths[payload.dataset],true)
 	}
 	else if (payload.actionType === 'sortRoary') {

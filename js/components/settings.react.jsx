@@ -7,12 +7,12 @@ var MetadataStore = require('../stores/MetadataStore.js');
 
 var Settings = React.createClass({displayName: "displayName",
 	render: function() {
-		var RoaryDiv = this.props.componentsLoaded.roary ? <RoaryPanel roarySortCode={this.props.roarySortCode}/> : <div/>;
+		var RoaryDiv = RawDataStore.getGenomicDatasetType()==='roary' ? <RoaryPanel/> : <div/>;
 		return (
 			<div className="border fullpage bgwhite-alpha">
 			<MetaSettings topState={this.props.topState} toggleColRow={this.props.toggleColRow} elementsOn={this.props.elementsOn}/>
 			<Layout divPerc={this.props.divPerc} newDivPerc={this.props.newDivPerc} topState={this.props.topState} elementsOn={this.props.elementsOn}/>
-			<ComponentsLoaded componentsLoaded={this.props.componentsLoaded}/>
+			<ComponentsLoaded dataLoaded={this.props.dataLoaded}/>
 			{RoaryDiv}
 			</div>
 		);
@@ -62,14 +62,26 @@ var RoaryPanel = React.createClass({displayName: "displayName",
 
 var ComponentsLoaded = React.createClass({displayName: "displayName",
 	render: function() {
-		var keys = Object.keys(this.props.componentsLoaded)
-		console.log("keys",keys)
+		var stringizeDataFile = function(x) {
+			try {
+
+				return(this.props.dataLoaded[x].toString())
+			} catch(e) {
+				if (e instanceof TypeError) {
+					return('not loaded');
+				} else {
+					return('ERROR')
+				}
+			}
+		};
+		var keys = Object.keys(this.props.dataLoaded)
+		// console.log("keys",keys)
 		return (
 			<div className="border settings-col bgwhite">
 				<h4>Loaded Components</h4>
 				<hr/>
 				{keys.map(function(x,i){
-					return(<p key={"loadedComponent"+i}>{x}:{this.props.componentsLoaded[x].toString()}</p>)
+					return(<p key={"loadedComponent"+i}><strong>{x}:</strong> {stringizeDataFile.bind(this,x)()}</p>)
 				}.bind(this))}
 				<hr />
 			</div>

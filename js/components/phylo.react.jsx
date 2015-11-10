@@ -1,12 +1,14 @@
-
 var React = require('react');
 var ReactDOM = require('react-dom');
-var RawDataStore = require('../stores/RawDataStore.js');
-var PhyloCanvas = require('PhyloCanvas').default;
 var ContextMenuPlugin = require('phylocanvas-plugin-context-menu');
 var Actions = require('../actions/actions.js');
-
+var RawDataStore = require('../stores/RawDataStore.js');
+var RawDataStore = require('../stores/RawDataStore.js');
+var PhyloCanvas = require('PhyloCanvas').default;
 PhyloCanvas.plugin(ContextMenuPlugin);
+
+
+
 
 var PhyloReact = React.createClass({displayName: "displayName",
 
@@ -16,29 +18,15 @@ var PhyloReact = React.createClass({displayName: "displayName",
 		phylocanvas.setTreeType('rectangular')
 		phylocanvas.nodeAlign = true;
 		this.attachListenersToPhylocanvas()
+		// phylocanvas.load(RawDataStore.getParsedData('tree'))
+		RawDataStore.addChangeListener(this.loadTree);
 
-		phylocanvas.load(RawDataStore.getParsedData('tree'))
-
-
-
-
-		// at the moment no tree is "loaded"
-		// we listen for an event from RawDataStore (i.e. tree file dropped)
-		// RawDataStore.addChangeListener(function() {
-		// 	var incomingData = RawDataStore.getData() // reference
-		// 	// console.log(incomingData)
-		// 	// what are we being given? a tree?
-		// 	if ("tre" in incomingData) {
-		// 		console.log('phylo.react respose -> event loop')
-		// 		if (incomingData["tre"].length>1) {
-		// 			console.error("More than one tree file added!")
-		// 		}
-		// 		// the following is added to the event loop else we get Dispatch errors
-		// 		setTimeout(function() {phylocanvas.load(incomingData["tre"][0])},0);
-		// 	}
-		// 	// setTimeout(function() {phylocanvas.load(RawDataStore.getTrees()[0]);},0);
-		// });
 	},
+
+	loadTree: function() {
+		phylocanvas.load(RawDataStore.getParsedData('tree'))
+	},
+
 
 	shouldComponentUpdate: function() {return false},
 

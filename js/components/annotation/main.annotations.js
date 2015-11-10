@@ -23,7 +23,7 @@ function annotationTrack(canvas) {
 
 	this.loadRawData = function() {
 		myState.arrows =  RawDataStore.getParsedData('annotation');
-		myState.scaleType = RawDataStore.getLoadedStatus('gubbins') ? 'bp' : 'num';
+		myState.scaleType = RawDataStore.getGenomicDatasetType()==='gubbins' ? 'bp' : 'num';
 		myState.currently_selected =  undefined;
 		myState.redraw();
 	}
