@@ -91,15 +91,13 @@ function drawLineGraph(canvas,context,plotName) {
 		var visible_genome = GenomeStore.getVisible()
 
 
-		// if (!PlotStore.isPlotActive(plotName)) {
-		// 	// console.log('PLOT NOT ACTIVE')
-		// 	return;
-		// }
-
+		if (!PlotStore.isPlotActive(plotName)) {
+			// console.log('PLOT NOT ACTIVE')
+			return;
+		}
 		var plotYvalues = PlotStore.getPlotYvalues(plotName)
 		var maximumYvalue = PlotStore.getPlotMaxY(plotName)
 		var y_scale_multiplier = parseFloat( canvas.height / maximumYvalue )
-
 		// console.log("in plot object, got len: ",plotYvalues.length," and max Y: ",maximumYvalue)
 
 		clearCanvas(canvas);
@@ -121,6 +119,7 @@ function drawLineGraph(canvas,context,plotName) {
 function drawAxis(canvas,context,plotName) {
 	var myState = this;
 	var maximumYvalue = PlotStore.getPlotMaxY(plotName);
+	console.log('maximumYvalue',maximumYvalue)
 	var y_scale_multiplier = parseFloat( canvas.height / maximumYvalue ); //double up!
 	this.drawTicks = function(canvas,context,vals,tickLengthPx,valsArePerc) {
 		if (valsArePerc) {
@@ -146,6 +145,16 @@ function drawAxis(canvas,context,plotName) {
 		}
 		return ret;
 	}
+	this.drawDottedLine = function(yValPx) {
+		context.save();
+		context.strokeStyle = 'red';
+		context.setLineDash([5,10]);
+		context.beginPath();
+		context.moveTo(0,yValPx);
+		context.lineTo(canvas.width,yValPx);
+		context.stroke();
+		context.restore();
+	}
 	context.save();
 	context.moveTo(canvas.width,canvas.height);
 	context.lineTo(0,canvas.height) // bottom line :)
@@ -154,15 +163,11 @@ function drawAxis(canvas,context,plotName) {
 	context.restore();
 
 	if (plotName==='GWAS') {
-		var y5val = getYPixelValsForGivenVals([5])[0]
-		context.save();
-		context.strokeStyle = 'red';
-		context.setLineDash([5,10]);
-		context.beginPath();
-		context.moveTo(0,y5val);
-		context.lineTo(canvas.width,y5val);
-		context.stroke();
-		context.restore();
+		this.drawDottedLine(getYPixelValsForGivenVals([5])[0])
+	}
+	else if (RawDataStore.getGenomicDatasetType()==='roary') {
+		this.drawDottedLine(parseInt(canvas.height*.25))
+		this.drawDottedLine(parseInt(canvas.height*.05))
 	}
 
 	// some text :)
