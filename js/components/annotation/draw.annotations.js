@@ -5,7 +5,7 @@ function clearCanvas(canvas) {
 	canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
 }
 
-function drawArrows(context, arrows) {
+function drawArrows(context, arrows, drawBorder) {
 	for (var i=0; i<arrows.length; i++) {
 		context.fillStyle = arrows[i].fill;
 		context.strokeStyle = arrows[i].stroke;
@@ -15,12 +15,11 @@ function drawArrows(context, arrows) {
 		for (var j=0; j<arrows[i].coordinates.length; j++) {
 			context.lineTo(arrows[i].coordinates[j][0], arrows[i].coordinates[j][1])
 		}
-
-
 		context.closePath();
-		context.stroke();
+		if (drawBorder) {
+			context.stroke();
+		}
 		context.fill();
-
 	}
 
 }
