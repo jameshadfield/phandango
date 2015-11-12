@@ -28,7 +28,7 @@ var RegionSelectedStore = assign({}, EventEmitter.prototype, {
 Dispatcher.register(function(payload) {
 	if (payload.actionType === 'click') {
 		canvas_id = payload.id;
-		location_clicked = [payload.mx, payload.my]
+		location_clicked = [payload.mx, payload.my];
 		// console.log('action received. location_clicked = ['+payload.mx+', '+payload.my+']')
 		RegionSelectedStore.emitChange()
 	}

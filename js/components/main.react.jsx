@@ -133,6 +133,7 @@ var Main_React_Element = React.createClass({displayName: "Main_React_Element",
 			// myState.setState({router:'main'});
 		}, false);
 		RawDataStore.addChangeListener(function() {
+			console.log("state change")
 			myState.setState({'dataLoaded' : RawDataStore.getDataLoaded(), 'router':'main'});
 		})
 	},
@@ -142,7 +143,7 @@ var Main_React_Element = React.createClass({displayName: "Main_React_Element",
 			console.log("not sending GA (pageName unchanged)")
 			return
 		}
-		// console.log('sending GA. Page:',pageName)
+		console.log('sending GA. Page:',pageName)
 		ga('set', 'page', '/'+pageName);
 		ga('send', 'pageview');
 		this.currentGAPageName = pageName;
@@ -161,11 +162,13 @@ var Main_React_Element = React.createClass({displayName: "Main_React_Element",
 		}
 		else if (this.state.router === 'main') {
 			var prefix = RawDataStore.isDefaultData() ? 'default' : 'userData'
-			this.sendGAtoken(prefix+'_'+RawDataStore.getGenomicDatasetType());
+			var gwasSuffix = RawDataStore.getDataLoaded('GWAS') ? '_GWAS' : '';
+			var genomicSuffix = RawDataStore.getGenomicDatasetType() ? '_'+RawDataStore.getGenomicDatasetType() : '';
+			this.sendGAtoken(prefix+genomicSuffix+gwasSuffix);
 		}
 	},
 	render: function() {
-		// console.log("ROUTER:",this.state.router)
+		console.log("ROUTER:",this.state.router)
 		this.googleAnalytics();
 		var LoadingDiv = this.state.router=="loading" ? <Spinner/> : <div/>;
 		var LandingDiv = this.state.router=="landing" ? <Landing showLoading={this.state.showLoading}/> : <div/>;
