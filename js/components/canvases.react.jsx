@@ -64,7 +64,7 @@ var CanvasDivs = React.createClass({displayName: "Main_React_Element",
 
 				{/* BOTTOM ROW (only plot at the moment) */}
 				<div className="newline"/>
-				<div style={this.styleize(1,3)}><Logo/></div>
+				<div style={this.styleize(1,3)} className="pointer" onClick={this.props.logoClick}><Logo/></div>
 				<div style={this.styleize(2,3)}></div>
 				<div className="blue" style={this.styleize(3,3)}><Graphs/></div>
 

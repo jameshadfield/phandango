@@ -6,14 +6,39 @@ var MetadataStore = require('../stores/MetadataStore.js');
 
 
 var Settings = React.createClass({displayName: "displayName",
+	// this is code-duplication. TO DO.
+	percentize: function(n) {
+		return(n.toString()+'%')
+	},
+	makeVh: function(n) {
+		return(n.toString()+'vh')
+	},
+	styleize: function(colNum,rowNum) {
+		var sty = {
+			width: this.percentize(this.props.divPerc.col[colNum-1]),
+			height: 'calc('+this.makeVh(this.props.divPerc.row[rowNum-1])+' - 7px)',
+			position: 'fixed',
+			bottom: 7
+		};
+		if (colNum<3) {
+			sty['float'] = 'left'
+		} else {
+			sty['float'] = 'right'
+		}
+		return(sty);
+	},
 	render: function() {
 		var RoaryDiv = RawDataStore.getGenomicDatasetType()==='roary' ? <RoaryPanel/> : <div/>;
 		return (
-			<div className="border fullpage bgwhite-alpha">
-			<MetaSettings topState={this.props.topState} toggleColRow={this.props.toggleColRow} elementsOn={this.props.elementsOn}/>
-			<Layout divPerc={this.props.divPerc} newDivPerc={this.props.newDivPerc} topState={this.props.topState} elementsOn={this.props.elementsOn}/>
-			<ComponentsLoaded dataLoaded={this.props.dataLoaded}/>
-			{RoaryDiv}
+			<div className="fullpage bgwhite-alpha">
+				<h4 className="justifyText"><strong>/ S E T T I N G S /</strong></h4>
+				<div className="newline"/>
+				<MetaSettings topState={this.props.topState} toggleColRow={this.props.toggleColRow} elementsOn={this.props.elementsOn}/>
+				<Layout divPerc={this.props.divPerc} newDivPerc={this.props.newDivPerc} topState={this.props.topState} elementsOn={this.props.elementsOn}/>
+				<ComponentsLoaded dataLoaded={this.props.dataLoaded}/>
+				{RoaryDiv}
+				<div className="newline"/>
+				<div style={this.styleize(1,3)} className="pointer" onClick={this.props.logoClick}><img src="img/JScandy.v2.svg" id="logoMainPage"/></div>
 			</div>
 		);
 	}
