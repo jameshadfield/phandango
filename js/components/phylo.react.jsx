@@ -24,7 +24,10 @@ var PhyloReact = React.createClass({displayName: "displayName",
 	},
 
 	loadTree: function() {
-		phylocanvas.load(RawDataStore.getParsedData('tree'))
+		var treeData = RawDataStore.getParsedData('tree')
+		if (treeData) {
+			phylocanvas.load(treeData)
+		}
 	},
 
 

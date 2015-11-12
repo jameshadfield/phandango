@@ -1,6 +1,7 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
 var GenomicCanvas = require('./genomic/genomic.react.jsx');
+var Graphs = require('./graphs/graphs.react.jsx');
 var MetaReact = require('./meta/meta.react.jsx');
 var PhyloReact = require('./phylo.react.jsx');
 var Extras = require('./extras.react.jsx');
@@ -9,10 +10,10 @@ var misc = require('./misc.js')
 
 
 // Props passed here are:
-//	divPerc -> col -> [col1, col2, col3]
-// 			-> row -> [row1, row2, row3]
-//	router -> STRING // string is which "page" to render (i.e. if ! then render null)
-//  canvasOn -> [strings] // strings match set of components which can be turned on / off (e.g. "meta")
+//	divPerc  ->  col -> [col1, col2, col3]
+// 			 ->  row -> [row1, row2, row3]
+//	router   ->  STRING // string is which "page" to render (i.e. if ! then render null)
+//  canvasOn ->  [strings] // strings match set of components which can be turned on / off (e.g. "meta")
 var CanvasDivs = React.createClass({displayName: "Main_React_Element",
 	percentize: function(n) {
 		return(n.toString()+'%')
@@ -63,9 +64,9 @@ var CanvasDivs = React.createClass({displayName: "Main_React_Element",
 
 				{/* BOTTOM ROW (only plot at the moment) */}
 				<div className="newline"/>
-				<div style={this.styleize(1,3)}><Logo/></div>
+				<div style={this.styleize(1,3)} className="pointer" onClick={this.props.logoClick}><Logo/></div>
 				<div style={this.styleize(2,3)}></div>
-				<div className="blue" style={this.styleize(3,3)}><GenomicCanvas.RecombGraphClass/></div>
+				<div className="blue" style={this.styleize(3,3)}><Graphs/></div>
 
 			</div>
 		)

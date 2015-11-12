@@ -36,4 +36,5 @@ datasets
 # the bundle (this is not ignored on releases)
 js/bundle.js
 
-
+# ESlint (for the time being)
+.eslintrc

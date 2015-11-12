@@ -64,16 +64,8 @@ module.exports = {
     });
   },
 
-  // annotation_click: function(x,y) {
-  //   // console.log("action triggered")
-  //   Dispatcher.dispatch({
-  //     actionType: 'annotation_click',
-  //     mx: x,
-  //     my: y
-  //   });
-  // },
   click: function(id, x, y) {
-    // console.log("action triggered")
+    // console.log("click in",id,"at x:",x,"y:",y)
     Dispatcher.dispatch({
       actionType: 'click',
       id: id,
