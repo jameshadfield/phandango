@@ -40,7 +40,7 @@ function annotationTrack(canvas) {
 		// console.log(current_arrows)
 		// console.log("DRAW ANNOTATION")
 		draw.clearCanvas(myState.canvas);
-		draw.drawArrows(myState.context, current_arrows);
+		draw.drawArrows(myState.context, current_arrows, visible_genome[1] - visible_genome[0] < 100000);
 		draw.drawScale(myState.context, myState.canvas.width, visible_genome, parseInt(myState.canvas.height/2));
 		if (myState.currently_selected!==undefined) {
 			// check it hasn't gone off the screen!

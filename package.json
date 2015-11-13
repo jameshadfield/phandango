@@ -1,7 +1,7 @@
 {
   "_comment": "http://browsenpm.org/package.json",
   "name": "JScandy",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "scripts": {
     "build": "browserify js/app.js -t reactify --debug -p [minifyify --no-map] -o js/bundle.js",
     "notWorking": "watchify js/app.js -t reactify --debug --verbose -p [minifyify --map js/bundle.map.json --output js/bundle.map.json] -o js/bundle.js",

@@ -64,16 +64,8 @@ module.exports = {
     });
   },
 
-  // annotation_click: function(x,y) {
-  //   // console.log("action triggered")
-  //   Dispatcher.dispatch({
-  //     actionType: 'annotation_click',
-  //     mx: x,
-  //     my: y
-  //   });
-  // },
   click: function(id, x, y) {
-    // console.log("action triggered")
+    // console.log("click in",id,"at x:",x,"y:",y)
     Dispatcher.dispatch({
       actionType: 'click',
       id: id,
@@ -155,12 +147,19 @@ module.exports = {
   },
 
   loadDefaultData: function(x) {
-    console.log("ACTION: loadDefaultData",x);
+    // console.log("ACTION: loadDefaultData",x);
     Dispatcher.dispatch({
       actionType: 'loadDefaultData',
       dataset: x
     });
-  }
+  },
+  // recalculateLineGraph: function(a,b) {
+  //   Dispatcher.dispatch({
+  //     actionType: 'recalculateLineGraph',
+  //     selectedTaxaNames: a,
+  //     name: b
+  //   });
+  // }
 
 };
 

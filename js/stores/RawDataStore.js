@@ -10,6 +10,7 @@ var gubbinsParser = require('../components/genomic/parse.gubbins.js');
 var metaParser = require('../components/meta/parse.csv.js');
 var annotationParser = require('../components/annotation/parse.annotations.js');
 var roaryParser = require('../components/genomic/roary.parser.js');
+var gwasParser = require('../components/graphs/plotFileParser.js');
 
 // only possible to have one of each loaded at a given time!!!!!
 var loaded = {'tree':undefined, 'meta':undefined, 'annotation':undefined, 'genomic':undefined, 'SNPs':undefined, 'GWAS':undefined}; // store file names!!!!!
@@ -158,6 +159,20 @@ function incomingData(files,ajax) {
 					datasetType.data = 'roary';
 					loaded.annotation = displayName;
 					saveRoaryAsData(rawData['roary'][0],rawData['roary'][1],100,misc.roarySortCode); // modifies parsed['annotation'] & parsed['genomic']
+				}
+				break;
+
+
+			case 'plot':
+				console.log(displayName,"-> GWAS parsing")
+				var gwas = gwasParser(data);
+				if (gwas===false) {
+					console.log("GWAS parsing failed")
+				}
+				else{
+					console.log("GWAS parsing success")
+					loaded.GWAS = displayName;
+					parsed['GWAS'] = gwas;
 				}
 				break;
 

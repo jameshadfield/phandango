@@ -67,30 +67,9 @@ function parse_gff(gff_string) {
     	}
     }
 
-    //       Y    V A L U E S    (for plotting)
-    // the following can be a setTimeout i think...
     if (blocks.length>0) {
-    	// console.log("STARTING PLOT CALC")
-    	// initialise array the correct length
-    	var plotYvalues = [];
-		for(var i = 0; i < genome_coords[1]; i++){
-		    plotYvalues.push(0);
-		}
-    	// var plotYvalues = Array.apply(null, Array(genome_coords[1])).map(Number.prototype.valueOf,0);
-
-    	// each block change plotYvalues :)
-    	for (var i=0; i<blocks.length; i++) {
-    		for (var j=blocks[i].start_base; j<=blocks[i].end_base; j++) {
-    			plotYvalues[j] += 1
-    		}
-    	}
-    	// console.log("FINISHED PLOT CALC")
-    	Actions.save_plotYvalues(plotYvalues, "recombGraph")
-
-    }
-
-
-    if (blocks.length>0) {
+        var plotYvalues = blocksToLineGraphData(blocks,genome_coords[1],false);
+        Actions.save_plotYvalues(plotYvalues, "recombGraph")
 	    return([genome_coords, blocks]);
 	}
 	else {
@@ -98,6 +77,43 @@ function parse_gff(gff_string) {
 	}
 }
 
+function blocksToLineGraphData(blocks, genomeLength, selectedTaxa) {
+    //       Y    V A L U E S    (for plotting)
+    // the following can be a setTimeout i think...
+    // selectedTaxa = False -> parse all blocks
+    //                True  -> only blocks with taxa overlap!
+    if (blocks.length>0) {
+        // console.log("STARTING PLOT CALC")
+        // initialise array the correct length
+        var plotYvalues = [];
+        for(var i = 0; i < genomeLength; i++){
+            plotYvalues.push(0);
+        }
+        // each block change plotYvalues :)
+        for (var i=0; i<blocks.length; i++) {
+            var useBlock = true;
+            if (selectedTaxa) {
+                useBlock = false;
+                for (var j=0; j<blocks[i].taxa.length; j++) {
+                    if (selectedTaxa.indexOf(blocks[i].taxa[j]) > -1) {
+                        useBlock = true;
+                        break;
+                    }
+                }
+            }
+            if (useBlock) {
+                for (var j=blocks[i].start_base; j<=blocks[i].end_base; j++) {
+                    plotYvalues[j] += 1
+                }
+            }
+        }
+        // console.log("FINISHED PLOT CALC")
+        return(plotYvalues)
+    }
+    return false;
+}
+
+
 // return_gubbins_string moved to DefaultData
 
-module.exports = {'parse_gff': parse_gff , 'Block': Block};
+module.exports = {'parse_gff': parse_gff , 'Block': Block, 'blocksToLineGraphData': blocksToLineGraphData};

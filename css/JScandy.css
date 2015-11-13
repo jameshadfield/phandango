@@ -111,6 +111,18 @@ input[type=range]{
     left: 0;
 }
 
+.centerText {
+   text-align: center;
+}
+.justifyText {
+  text-align: justify;
+}
+.justifyText:after {
+  content: "";
+  display: inline-block;
+  width: 100%;
+}
+
 .pointer {
     cursor:pointer;
     cursor:hand;
