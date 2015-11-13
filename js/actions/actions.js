@@ -147,12 +147,19 @@ module.exports = {
   },
 
   loadDefaultData: function(x) {
-    console.log("ACTION: loadDefaultData",x);
+    // console.log("ACTION: loadDefaultData",x);
     Dispatcher.dispatch({
       actionType: 'loadDefaultData',
       dataset: x
     });
-  }
+  },
+  // recalculateLineGraph: function(a,b) {
+  //   Dispatcher.dispatch({
+  //     actionType: 'recalculateLineGraph',
+  //     selectedTaxaNames: a,
+  //     name: b
+  //   });
+  // }
 
 };
 
