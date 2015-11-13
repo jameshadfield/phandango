@@ -13,14 +13,18 @@ function plotter(canvas) {
 	this.mouse_moves = new mouse_moves(canvas); // set up listeners
 	window.addEventListener('resize', function(){myState.redraw()}, true);
 	this.redraw = function() {
-		// console.log('graphs.js REDRAW.',RawDataStore.getDataLoaded('GWAS'),RawDataStore.getDataLoaded('genomic'))
+		console.log('graphs.js REDRAW.',RawDataStore.getDataLoaded('GWAS'),RawDataStore.getDataLoaded('genomic'))
 		// what type of plot is it?
 		// this needs to be re-written
 		if (RawDataStore.getDataLoaded('GWAS')) {
 			drawScatterGraph(myState.canvas,myState.context);
 			drawAxis(myState.canvas,myState.context,'GWAS');
 		} else if (RawDataStore.getDataLoaded('genomic')) {
-			drawLineGraph(myState.canvas,myState.context,'recombGraph');
+			clearCanvas(myState.canvas);
+			drawLineGraph(myState.canvas,myState.context,'recombGraph','black');
+			if (PlotStore.getPlotMaxY('subtree')) {
+				drawLineGraph(myState.canvas,myState.context,'subtree','#fd8d3c');
+			}
 			drawAxis(myState.canvas,myState.context,'recombGraph');
 		}
 	}
@@ -46,7 +50,7 @@ function plotter(canvas) {
 		}
 		myState.redraw();
 	}
-
+	RawDataStore.addChangeListener(this.redraw); // initial load
 	GenomeStore.addChangeListener(this.redraw);
 	PlotStore.addChangeListener(this.redraw);
 	MiscStore.addChangeListener(this.redraw);
@@ -72,7 +76,7 @@ function drawScatterGraph(canvas,context){
 		if (circles[i].featurex > visible_genome_coords[0] && circles[i].featurex < visible_genome_coords[1]) {
 			// what are the (canvas) co-ords to draw to?
 			circles[i].x = parseInt(( circles[i].featurex - visible_genome_coords[0] ) / bases_visible * canvas.width);
-			circles[i].y = canvas.height - (circles[i].featurey * y_scale_multiplier)
+			circles[i].y = canvas.height - (circles[i].featurey * y_scale_multiplier);
 			circles[i].r = r;
 			circles[i].draw(context) // r not contained in object!
 		}
@@ -85,35 +89,40 @@ function drawScatterGraph(canvas,context){
 };
 
 
-function drawLineGraph(canvas,context,plotName) {
-		// console.log("PLOT REDRAW")
-		var genome_length = GenomeStore.getGenomeLength();
-		var visible_genome = GenomeStore.getVisible()
+function drawLineGraph(canvas,context,plotName,colour) {
+	console.log("PLOT REDRAW. colour:",colour)
+	var genome_length = GenomeStore.getGenomeLength();
+	var visible_genome = GenomeStore.getVisible()
 
 
-		if (!PlotStore.isPlotActive(plotName)) {
-			// console.log('PLOT NOT ACTIVE')
-			return;
-		}
-		var plotYvalues = PlotStore.getPlotYvalues(plotName)
-		var maximumYvalue = PlotStore.getPlotMaxY(plotName)
-		var y_scale_multiplier = parseFloat( canvas.height / maximumYvalue )
-		// console.log("in plot object, got len: ",plotYvalues.length," and max Y: ",maximumYvalue)
-
-		clearCanvas(canvas);
-		// draw
-		context.strokeStyle="black";
-		context.lineWidth=1;
-		context.beginPath();
-		context.moveTo(0,canvas.height);
-		// crawl across the x axis by pixel :)
-		for (var x=1; x<=canvas.width; x++) {
-			var genome_x = parseInt( visible_genome[0] + (x / canvas.width)*(visible_genome[1] - visible_genome[0]) )
-			var y = canvas.height - (plotYvalues[genome_x] * y_scale_multiplier)
-			context.lineTo(x, y )
-			// console.log("pixel x: ",x," genome x: ", genome_x," genome y: ",plotYvalues[genome_x]," pixel y: ",y)
-		}
+	if (!PlotStore.isPlotActive(plotName)) {
+		// console.log('PLOT NOT ACTIVE')
+		return;
 	}
+	var plotYvalues = PlotStore.getPlotYvalues(plotName)
+	var maximumYvalue = PlotStore.getPlotMaxY('recombGraph')
+	var y_scale_multiplier = parseFloat( canvas.height / maximumYvalue )
+	// console.log("in plot object, got len: ",plotYvalues.length," and max Y: ",maximumYvalue)
+
+	// clearCanvas(canvas);
+	// draw
+	context.save();
+	context.strokeStyle=colour;
+	context.lineWidth=1;
+	context.beginPath();
+	context.moveTo(0,canvas.height);
+	// crawl across the x axis by pixel :)
+	for (var x=1; x<=canvas.width; x++) {
+		var genome_x = parseInt( visible_genome[0] + (x / canvas.width)*(visible_genome[1] - visible_genome[0]) )
+		var y = canvas.height - (plotYvalues[genome_x] * y_scale_multiplier)
+		context.lineTo(x, y )
+		// console.log("pixel x: ",x," genome x: ", genome_x," genome y: ",plotYvalues[genome_x]," pixel y: ",y)
+	}
+	context.stroke();
+	context.restore();
+}
+
+
 
 
 function drawAxis(canvas,context,plotName) {
@@ -156,6 +165,7 @@ function drawAxis(canvas,context,plotName) {
 		context.restore();
 	}
 	context.save();
+	context.beginPath();
 	context.moveTo(canvas.width,canvas.height);
 	context.lineTo(0,canvas.height) // bottom line :)
 	context.lineTo(0,0) // left hand axis (now at top left)
