@@ -1,0 +1,109 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>JScandy by jameshadfield</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+
+        <img style="" src="img/JScandy.v2.svg" />
+
+        <p></p>
+
+        <h2 class="view"><a href="https://jameshadfield.github.io/JScandy/">Load JScandy</a></h2>
+        <h2 class="view"><a href="https://github.com/jameshadfield/JScandy">View the Project on GitHub</a></h2>
+
+<!--
+        <ul>
+          <li><a href="https://github.com/jameshadfield/JScandy/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/jameshadfield/JScandy/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/jameshadfield/JScandy">View On <strong>GitHub</strong></a></li>
+        </ul>
+ -->
+
+
+        <p><strong>JScandy is currently unreleased and in testing.</strong> If you find any bugs or would like to suggest improvements then please file an <a href="https://github.com/jameshadfield/JScandy/issues">issue on the github page</a> or email <a href="mailto:jh22@sanger.ac.uk">james</a>. It would be helpful to include any output from the javascript console in chrome (cmd + alt + j brings this up) and steps to reproduce the error.
+        </p>
+
+
+
+      </header>
+      <section>
+
+<h3>Interactive visualization of genome phylogenies</h3>
+<p>JScandy is a fully interactive tool to allow visualisation of a phylogenetic tree and associated metadata and genomic information such as recombination blocks, gene-presence/absence or SNP variation.</p>
+<p>Running is as simple as loading <a href="https://jameshadfield.github.io/JScandy/">this page</a> in Google Chrome and then dragging on your data. That's it.</p>
+
+<h3>Data that you can visualise</h3>
+<ol>
+  <li><strong>Phylogenetic tree</strong> is the backbone of the visualization as it links together all the other data. Trees must be in <a href="http://evolution.genetics.washington.edu/phylip/newicktree.html">Newick format</a> (which is the standard output from software such as <a href="http://sco.h-its.org/exelixis/software.html">RAxML</a>). If you need to convert your tree to a different format try using <a href="http://tree.bio.ed.ac.uk/software/figtree/">FigTree.</a></li>
+
+  <li><strong>Metadata</strong> can be displayed alongside the tree. A simple csv file with the first column containing sample names which match the tips of the tree is used.</li>
+
+  <li><strong>Genome annotation</strong> file can be read in gff3 format. If you need to convert an embl file to a gff3 file try using <a href="https://www.sanger.ac.uk/resources/software/artemis/">Artemis</a> or install <a href="http://www.ebi.ac.uk/Tools/sfc/emboss_seqret/help/">seqret</a> and convert via <em>seqret -sequence GFF_FILE -feature -fformat embl -fopenfile EMBL_FILE -osformat gff -auto</em></li>
+
+  <li><strong>Genomic data</strong> (the main bit!) JScandy is designed to visualise the output of three pieces of software&mdash;<a href="https://github.com/sanger-pathogens/gubbins">Gubbins</a>, <a href="https://github.com/sanger-pathogens/Roary">Roary</a> or called SNPs. We are working on increasing the files that JScandy can display, however any output which uses the same format should (in theory) work fine.
+
+  <ul>
+    <li>Gubbins (gff3 format&mdash;each line links a whitespace seperated list of taxa with genomic co-ordinates). If you have old output from gubbins (a _rec.tab file) then there is a <a href="https://github.com/jameshadfield/JScandy/blob/master/scripts/gubbins_tab2gff.py">simple python script</a> which will convert this for you.</li>
+    <li>Roary (gene_presence_absence.csv)</li>
+    <li>Plot data (GWAS)</li>
+    <li>SNP data (VCF) <em>COMING SOON</em></li>
+
+  </ul>
+
+  </li>
+
+</li>
+</ol>
+
+
+<h3>Example Datasets</h3>
+<p>Roary and Gubbins example datasets can be loaded from the JScandy starting page.</p>
+
+
+<h3>Screenshots</h3>
+<p><em>Coming soon -- interactive svgs of roary / gubbins / SNP screenshot</em></p>
+
+<h3>Known bugs // 'features'</h3>
+<p><ul>
+  <li>JScandy only works on <a href="https://www.google.com/chrome/browser/desktop/">Google Chrome!</a></li>
+</ul>
+</p>
+
+
+<h3>Install your own (local) copy</h3>
+<p>Follow the instructions on the <a href="https://github.com/jameshadfield/JScandy/">Github</a> page to install a local (development) copy. </p>
+
+
+
+
+
+
+
+      </section>
+      <footer>
+
+
+
+        <p>Designed and coded by <a href="https://github.com/jameshadfield/" class="user-mention">james hadfield</a> and <a href="https://github.com/simonrharris/" class="user-mention">Simon Harris</a>. (c) Wellcome Trust Sanger Institute 2015-. JScandy uses a modified version of <a href="https://github.com/PhyloCanvas/PhyloCanvas">PhyloCanvas</a> which is maintained by <a href="https://github.com/richardgoater" class="user-mention">Richard Goater</a> and <a href="https://github.com/jyothishnt" class="user-mention">Jyothish Bhai</a>.
+        </p>
+
+
+        <p><small>This project is maintained by <a href="https://github.com/jameshadfield">james hadfield</a>. Hosted on GitHub Pages &mdash; Theme modified from <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+
+  </body>
+</html>

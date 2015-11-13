@@ -1,4 +1,5 @@
 #### specific gitignore for gh-pages branch
+#### updates to master are merged into this branch via `git checkout master font img js/bundle.js index.html css`
 
 .DS_Store
 
