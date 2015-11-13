@@ -1,6 +1,7 @@
 # [JScandy](http://jameshadfield.github.io/JScandy/)
 
-Introduction and overview [here](http://jameshadfield.github.io/JScandy/)
+Introduction and overview [here](http://jameshadfield.github.io/JScandy/intro.html)
+Live version (version 0.2.3) [here](http://jameshadfield.github.io/JScandy/)
 
 ### Install your own (local) copy
 
@@ -12,6 +13,8 @@ JSCandy is entirely run from within the browser and runs entirely on your comput
 * But if you want to have a development version then you'll need to install the required packages by running **npm install** in the JScandy directory, with these caveats
   * Currently [PhyloCanvas](https://github.com/PhyloCanvas/PhyloCanvas) is linked in, so you'll have to clone that repo (branch release/2.0) and then link that with these commands **npm link** (in the PhyloCanvas directory) and **npm link PhyloCanvas** (in the JScandy directory)
   * run **npm run build** to build the javascript files into a single bundle.
-  * open index.html in google chrome
+  * either:
+    * run **npm run start** to start a simple server and open localhost:8000 in google chrome
+    * open index.html in google chrome
 
 
