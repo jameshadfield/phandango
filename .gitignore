@@ -1,0 +1,17 @@
+#### specific gitignore for gh-pages branch
+
+.DS_Store
+
+# Dependency directory
+# https://docs.npmjs.com/misc/faq#should-i-check-my-node-modules-folder-into-git
+node_modules
+webpack*
+dev
+dist
+
+# datasets (used for local testing)
+datasets
+
+
+# ESlint (for the time being)
+.eslintrc
