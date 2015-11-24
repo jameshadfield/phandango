@@ -4,6 +4,7 @@ var Actions = require('../actions/actions.js')
 mouse_moves = function(canvas) {
 	var myState = this;
 	this.dragging = false
+	this._zooming = false;
 
 	canvas.addEventListener('selectstart', function(e) { e.preventDefault(); return false; }, false);
 
@@ -94,6 +95,7 @@ mouse_moves = function(canvas) {
 
 	canvas.addEventListener ("mousewheel", function(e) {
 		e.preventDefault();
+		if (myState.zooming) return;
 		var mouse = myState.getMouse(e, canvas);
 		var mx = mouse.x;
 		var my = mouse.y;
@@ -110,10 +112,16 @@ mouse_moves = function(canvas) {
         delta = delta>0 ? 1 : -1;
 
 		// console.log('delta '+delta+' mx '+mx+' canvas.width '+canvas.width+' frac '+mx/canvas.width)
-
+		myState.zooming = true;
 		Actions.genome_zoom(delta, mx/canvas.width);
 		// WHY IS THE FOLLOWING NECESSARY????
 		Actions.phylocanvas_changed();
+
+		//change this timeout function to change the responsiveness of the zoom. The timeout is here to stop trackpad movements being impossible to control.
+
+		setTimeout(function () {
+			myState.zooming = false;
+		}, 40);
 
 	}, false);
 

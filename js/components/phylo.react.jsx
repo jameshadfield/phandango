@@ -1,10 +1,10 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
-var ContextMenuPlugin = require('phylocanvas-plugin-context-menu');
 var Actions = require('../actions/actions.js');
 var RawDataStore = require('../stores/RawDataStore.js');
 var RawDataStore = require('../stores/RawDataStore.js');
 var PhyloCanvas = require('PhyloCanvas').default;
+var ContextMenuPlugin = require('phylocanvas-plugin-context-menu').default;
 PhyloCanvas.plugin(ContextMenuPlugin);
 
 

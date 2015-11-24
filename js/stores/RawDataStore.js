@@ -124,7 +124,7 @@ function incomingData(files,ajax) {
 				}
 				break;
 
-
+			case 'tree': // FALLTHROUGH
 			case 'tre':
 				// basically palm this off to PhyloCanvas
 				loaded.tree = displayName;

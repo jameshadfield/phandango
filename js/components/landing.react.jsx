@@ -28,21 +28,20 @@ var Landing = React.createClass({displayName: "displayName",
 				<div className="row">
 					<div className="col s6">
 						<p className="promo-caption ">Introduction</p>
-						<p className="light">JScandy is an interactive viewer for populations of bacterial genomes linked by a phylogeny. It allows visualisation of recombination breakpoints, genome annotations and pan-genomes.</p>
-						<p className="light">Designed and coded by James Hadfield & Simon Harris. (c) <a href="www.sanger.ac.uk/">Wellcome Trust Sanger Institute</a> 2015-.</p>
-						<p className="light">Built using <a href="https://facebook.github.io/react/">React</a> and <a href="http://www.materializecss.com">Materialize</a>. Rendered with HTML canvas.</p>
-						<p className="light">View the source on <a href="https://github.com/jameshadfield/JScandy">github.</a></p>
-						<p className="light">Version: 0.2 (internal testing)</p>
+						<p className="light">JScandy is an interactive viewer for populations of bacterial genomes linked by a phylogeny. It allows visualisation of recombination breakpoints, genome annotations and pan-genomes. Additionally it allows visualisation of plot files (such as GWAS). </p>
+						<p className="light">Designed and build by James Hadfield & Simon Harris at the <a href="www.sanger.ac.uk/">Wellcome Trust Sanger Institute</a>  using <a href="https://facebook.github.io/react/">React</a>, <a href="https://facebook.github.io/flux/docs/overview.html">Flux</a>, <a href="http://www.materializecss.com">Materialize</a> and HTML canvas.</p>
+						<p className="light">View the source at <a href="https://github.com/jameshadfield/JScandy">github.com/jameshadfield/JScandy</a></p>
+						<p>(c) 2015- under a <a href="https://tldrlegal.com/license/mit-license#summary">MIT license</a></p>
+						<p className="light">Version: 0.2.4</p>
 
 					</div>
 					<div className="col s6">
 						<p className="promo-caption ">How to use</p>
-						<p className="light">Simply click one of the examples below or drag on your own data files. Press "s" to toggle the settings page.</p>
+						<p className="light">Simply click one of the examples below or drag on your own data files (see "Data Formats"). Clicking on the JScandy logo will toggle the settings. All data processing is done in your browser so none of your files are sent to (or stored in) servers.</p>
 						<p className="promo-caption ">Data Formats</p>
-						<p className="light">The <a href="http://jameshadfield.github.io/JScandy/">github page</a> explains the data formats which JScandy can read and gives you help on converting into these formats.</p>
+						<p className="light"><a href="http://jameshadfield.github.io/JScandy/intro.html">This page</a> explains the data formats which JScandy can read and gives you help on converting files into these formats.</p>
 						<p className="promo-caption ">Bug reports</p>
 						<p className="light">via <a href="mailto:jh22@sanger.ac.uk">email</a> or <a href="https://github.com/jameshadfield/JScandy/">github</a></p>
-
 
 					</div>
 				</div>
