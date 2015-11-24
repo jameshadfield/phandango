@@ -1,7 +1,10 @@
 # [JScandy](http://jameshadfield.github.io/JScandy/)
 
 Introduction and overview [here](http://jameshadfield.github.io/JScandy/intro.html)
-Live version (version 0.2.3) [here](http://jameshadfield.github.io/JScandy/)
+
+Live version [here](http://jameshadfield.github.io/JScandy/)
+
+##
 
 ### Install your own (local) copy
 
