@@ -107,7 +107,7 @@ function set_colours(header,metadata) {
 		}
 		var colourspace;
 		if (values.length===2) { // binary
-			colourspace = [colorBrewer.Set2[3][0], colorBrewer.Set2[3][1]]
+			colourspace = [colorBrewer.PuOr[3][0], colorBrewer.PuOr[3][2]]
 		}
 		else if (numeric) {
 			colourspace = colorBrewer.RdYlBu[numColours]

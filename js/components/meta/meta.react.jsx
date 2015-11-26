@@ -1,20 +1,16 @@
-
 var React = require('react');
 var ReactDOM = require('react-dom');
-var RawDataStore = require('../../stores/RawDataStore.js');
-var Actions = require('../../actions/actions.js');
 var MetadataStore = require('../../stores/MetadataStore.js');
-var Taxa_Locations = require('../../stores/Taxa_Locations.js')
+var taxaLocations = require('../../stores/Taxa_Locations.js');
 var MiscStore = require('../../stores/misc.Store.js');
-var misc = require('../misc.js')
-
+var misc = require('../misc.js');
 
 /*
 The parsing of the csv file is done in the metadata store!
 A click / mouseover is interpreted here as to what square (of metadata) we are in
     If there is a change in this "state" an action is triggered
     MetadataStore interprets this square and tells us what text to display :)
-The Y values are from Taxa_Locations
+The Y values are from taxaLocations
 They X values are calculated here
 The colours are given from MetadataStore
 
@@ -22,189 +18,226 @@ This is currently a self contained thing, but we should really make it part of r
 
 */
 
-var MetaTextClass = React.createClass({displayName: "displayName",
-    componentDidMount: function() { // Invoked once, immediately after the initial rendering
+var MetaTextClass = React.createClass({displayName: 'displayName',
+    componentDidMount: function () { // Invoked once, immediately after the initial rendering
         misc.initCanvasXY(this);
-        metaInstance = new metaText(ReactDOM.findDOMNode(this));
+        metaInstance = new MetaText(ReactDOM.findDOMNode(this));
     },
-    render: function() {
-        return(
+    render: function () {
+        return (
             <canvas id="metaTextCanvas" className="inContainer"></canvas>
         );
     }
 });
 
 
-var MetaCanvasClass = React.createClass({displayName: "displayName",
-	componentDidMount: function() { // Invoked once, immediately after the initial rendering
+var MetaCanvasClass = React.createClass({displayName: 'displayName',
+	componentDidMount: function () { // Invoked once, immediately after the initial rendering
         misc.initCanvasXY(this);
-		metaInstance = new meta(ReactDOM.findDOMNode(this));
+		metaInstance = new Meta(ReactDOM.findDOMNode(this));
 	},
-    render: function() {
-        return(
+    render: function () {
+        return (
             <canvas id="metaCanvas" className="inContainer"></canvas>
         );
     }
 });
 
-function metaText(canvas) {
+function xOffsetForColumnGenerator(canvas) {
+    var activeHeaders = MetadataStore.getActiveHeaders(); // eval @ funct creation
+    var betweenColPadding = activeHeaders.length * 2 < canvas.width ? 1 : 0;
+    var blockWidth = parseInt(canvas.width / activeHeaders.length, 10) - betweenColPadding;
+    return (function (idx) {
+        var xOffset = parseInt(idx * blockWidth + idx * betweenColPadding, 10);
+        return ([xOffset, blockWidth]);
+    });
+}
+
+function MetaText(canvas) {
     var myState  =  this;
     this.canvas  =  canvas;
     this.context =  this.canvas.getContext('2d');
 
-    this.redraw = function(){
-        myState.context.clearRect(0, 0, myState.canvas.width, myState.canvas.height);
-        var blockWidth =  myState.canvas.width / MetadataStore.getActiveHeaders().length;
+    this.redraw = function () {
         var yDispPos   =  myState.canvas.height - 5;
         var headers    =  MetadataStore.getActiveHeaders();
-        var xDispPos   =  parseInt(blockWidth / 2);
-        // console.log("meta text redraw")
-        for (var i=0; i<headers.length; i++) {
+        var xOffsetForColumn = xOffsetForColumnGenerator(myState.canvas);
+        var x; // x value in pixels
+        var i; // loop idx
+
+        myState.context.clearRect(0, 0, myState.canvas.width, myState.canvas.height);
+
+        for (i = 0; i < headers.length; i++) {
             myState.context.save();
-            myState.context.fillStyle    = "black";
-            myState.context.textBaseline = "left";
-            myState.context.textAlign    = "left";
-            myState.context.font         = "12px Helvetica";
-            var X=xDispPos;
-            var Y=yDispPos;
-            myState.context.translate(X,Y);
-            myState.context.rotate(-Math.PI/2);
-            // console.log("printing header ",headers[i],"at X: ",X," Y: ",Y)
+            myState.context.fillStyle    = 'black';
+            myState.context.textBaseline = 'left';
+            myState.context.textAlign    = 'left';
+            myState.context.font         = '12px Helvetica';
+            myState.context.textBaseline = 'middle';
+            x = xOffsetForColumn(i)[0] + xOffsetForColumn(i)[1] / 2;
+            myState.context.translate(x, yDispPos);
+            myState.context.rotate(-Math.PI / 2);
             myState.context.fillText(headers[i], 0, 0);
             myState.context.restore();
-            xDispPos += parseInt(blockWidth);
-        };
+        }
     };
 
-    // whenever the Taxa_Locations store changes (e.g. someones done something to the tree) we should re-draw
-    Taxa_Locations.addChangeListener(this.redraw);
+    // whenever the taxaLocations store changes (e.g. someones done something to the tree) we should re-draw
+    taxaLocations.addChangeListener(this.redraw);
 
     // whenever the MetadataStore store changes we should re-draw
     MetadataStore.addChangeListener(this.redraw);
 
     MiscStore.addChangeListener(this.redraw);
-
-
 }
 
-function meta(canvas) {
-    console.log("i'm alive!")
+
+function Meta(canvas) {
+    var myState = this;
+    var i; // idx of taxa loop
+    var j; // idx of header loop
+    var yValues;
+    var xOffsetForColumn;
     this.canvas = canvas;
     this.context = this.canvas.getContext('2d');
-    this.mouseIsOver = [undefined,undefined]
-    this.blockWidth
-    var myState = this;
-    this.mouse_moves = new mouse_moves(this.canvas);
-    window.addEventListener('resize', function(){myState.redraw()}, true);
+    this.mouseIsOver = [undefined, undefined];
+    this.blockWidth;
+    window.addEventListener('resize', function () {myState.redraw();}, true);
 
-    this.y_to_taxa = function(y) {
+    this.y_to_taxa = function (y) {
         // given an X position what taxa are we in? return undefined if no taxa
-        var activeTaxa = Taxa_Locations.getActiveTaxa();
-        for (var i=0; i<activeTaxa.length; i++) {
-            var yValues = Taxa_Locations.getTaxaY([activeTaxa[i]])
-            if (y>=yValues[0] && y<=yValues[1]) {
-                return (activeTaxa[i])
+        var activeTaxa = taxaLocations.getActiveTaxa();
+        for (i = 0; i < activeTaxa.length; i++) {
+            yValues = taxaLocations.getTaxaY([activeTaxa[i]]);
+            if (y >= yValues[0] && y <= yValues[1]) {
+                return (activeTaxa[i]);
             }
         }
         return (undefined);
-    }
+    };
 
-    this.x_to_columnNum = function(x) {
-        var xStart = 0;
-        for (var j=0; j< MetadataStore.getActiveHeaders().length; j++) {
-            if (x>=xStart && x<=xStart+myState.blockWidth) {
+    this.x_to_columnNum = function (x) {
+        xOffsetForColumn = xOffsetForColumnGenerator(myState.canvas); // closure
+        for (j = 0; j <  MetadataStore.getActiveHeaders().length; j++) {
+            if (x >= xOffsetForColumn(j)[0] && x <= xOffsetForColumn(j)[0] + xOffsetForColumn(j)[1]) {
                 return (j);
             }
-            xStart += myState.blockWidth;
         }
         return (undefined);
-    }
+    };
 
-    this.canvas.addEventListener('mousemove', function(e) {
+    this.mouseMoveDetected = function (e) {
         // console.log("MOUSE DOWN")
         var mouse = myState.getMouse(e, myState.canvas);
-        var newMouseOver = [myState.x_to_columnNum(mouse['x']), myState.y_to_taxa(mouse['y'])]
+        var newMouseOver = [myState.x_to_columnNum(mouse.x), myState.y_to_taxa(mouse.y)];
         // console.log(newMouseOver[0], newMouseOver[1])
-        if ( ( (newMouseOver[0]===undefined || newMouseOver[1]===undefined) && (myState.mouseIsOver[0]===undefined || myState.mouseIsOver[1]===undefined) ) || (newMouseOver[0]===myState.mouseIsOver[0] && newMouseOver[1]===myState.mouseIsOver[1]) ) {
+        if (
+            ( (newMouseOver[0] === undefined || newMouseOver[1] === undefined) &&
+            (myState.mouseIsOver[0] === undefined || myState.mouseIsOver[1] === undefined) )
+            ||
+            (newMouseOver[0] === myState.mouseIsOver[0] && newMouseOver[1] === myState.mouseIsOver[1])
+            ) {
             // no change
         } else {
             // console.log("CHANGE!","(x)",myState.mouseIsOver[0],"->",newMouseOver[0],"(y)",myState.mouseIsOver[1],"->",newMouseOver[1])
-            myState.mouseIsOver[0] = newMouseOver[0]
-            myState.mouseIsOver[1] = newMouseOver[1]
+            myState.mouseIsOver[0] = newMouseOver[0];
+            myState.mouseIsOver[1] = newMouseOver[1];
             // if (newMouseOver[0]===undefined || newMouseOver[1]===undefined) {
             //     myState.dataToDisplay = undefined
             // } else {
             //     myState.dataToDisplay =
             // }
-            myState.redraw()
+            myState.redraw();
         }
-    }, true);
+    };
 
-    this.redraw = function() {
-        // console.log("myState:",myState)
-        // console.log("myState.context",myState.context)
+    this.redraw = function () {
+        var display = false; // hack for speed increase -- is a block selected?
+        var activeTaxa = taxaLocations.getActiveTaxa();
+        var blockWidth;
+        var blockColours; // list of blockColours for drawing blocks
+        var x; // x value in pixels
+        var text; // text to draw on hover
+        xOffsetForColumn = xOffsetForColumnGenerator(myState.canvas); // closure
+        blockWidth = xOffsetForColumn(0)[1];
         myState.context.clearRect(0, 0, myState.canvas.width, myState.canvas.height);
-        if (! MetadataStore.shouldWeDisplay()) {
-            return
-        }
-        /* redraws are expensive. We need to work out if we redraw.
-        we only redraw if   * Taxa_Locations have changed (i.e. y values are different) <-- this is taken care of in the store
-                            * Click in this region
-                            * CSV file parsed (MetadataStore emission)
-        */
-        // console.log("active headers are: ",MetadataStore.getActiveHeaders())
-        // console.log("active taxa are: ",Taxa_Locations.getActiveTaxa())
 
-        // we start by using the whole X width available
+        if (! MetadataStore.shouldWeDisplay()) {
+            return;
+        }
+
         myState.blockWidth = myState.canvas.width / MetadataStore.getActiveHeaders().length;
 
-        var display=false
-        if (myState.mouseIsOver[0]!==undefined && myState.mouseIsOver[1]!==undefined) {
-            var display=true
-        }
 
-        // draw each (active) taxa
-        var activeTaxa = Taxa_Locations.getActiveTaxa();
-        for (var i=0; i<activeTaxa.length; i++) {
-            var yValues = Taxa_Locations.getTaxaY([activeTaxa[i]])
-            var xStart = 0;
-            var blockColours = MetadataStore.getDataForGivenTaxa(activeTaxa[i],'colour')
+        if (myState.mouseIsOver[0] !== undefined && myState.mouseIsOver[1] !== undefined) {
+            display = true;
+        }
+        // outer loop: vertical (taxa), inner lop: horisontal (meta column)
+        for (i = 0; i < activeTaxa.length; i++) {
+            yValues = taxaLocations.getTaxaY([activeTaxa[i]]);
+            // var xStart = 0;
+            blockColours = MetadataStore.getDataForGivenTaxa(activeTaxa[i], 'colour');
+
             if (blockColours) { // may return null --> don't draw!
-                for (var j=0; j<blockColours.length; j++) {
+
+                for (j = 0; j < blockColours.length; j++) {
+                    x = xOffsetForColumn(j)[0];
+
+                    // draw the block
                     myState.context.save();
-                    myState.context.fillStyle = blockColours[j]
-                    // myState.context.globalAlpha=
-                    myState.context.fillRect(xStart, yValues[0], myState.blockWidth, yValues[1]-yValues[0]);
+                    myState.context.fillStyle = blockColours[j];
+                    myState.context.fillRect(x, yValues[0], blockWidth, yValues[1] - yValues[0]);
                     myState.context.restore();
 
-                    if (display && j===myState.mouseIsOver[0] && activeTaxa[i]===myState.mouseIsOver[1]) {
+                    if (display && j === myState.mouseIsOver[0] && activeTaxa[i] === myState.mouseIsOver[1]) {
                         myState.context.save();
-                        myState.context.textAlign    =  "centre";
-                        myState.context.textBaseline =  "bottom";
-                        myState.context.fillStyle    =  "black";
-                        myState.context.font         =  "12px Helvetica";
-                        myState.context.fillText(MetadataStore.getDataForGivenTaxa(activeTaxa[i],'value')[j], parseInt(xStart+(myState.blockWidth/2)), yValues[0]);
+                        myState.context.textAlign    =  'center';
+                        myState.context.textBaseline =  'bottom';
+                        myState.context.fillStyle    =  'black';
+                        myState.context.font         =  '12px Helvetica';
+                        text = MetadataStore.getDataForGivenTaxa(activeTaxa[i], 'value')[j];
+                        // testing only -- display headers as well to check alignment
+                        // text = MetadataStore.getDataForGivenTaxa(activeTaxa[i], 'value')[j] + ' ' + MetadataStore.getActiveHeaders()[j];
+                        myState.context.fillText(text, xOffsetForColumn(j)[0] + xOffsetForColumn(j)[1] / 2, yValues[0]);
+                        myState.context.restore();
+
+                        // border -- used as a hack for testing really
+                        myState.context.save();
+                        myState.context.strokeStyle = 'black';
+                        myState.context.beginPath();
+                        myState.context.moveTo(x, yValues[0]); //  top left
+                        myState.context.lineTo(x + blockWidth, yValues[0]); // top right
+                        myState.context.lineTo(x + blockWidth, yValues[1]); // bottom right
+                        myState.context.lineTo(x, yValues[1]); // bottom left
+                        myState.context.lineTo(x, yValues[0]); // top left
+                        myState.context.stroke();
+                        myState.context.restore();
                         myState.context.restore();
                     }
-                    xStart += myState.blockWidth;
                 }
             }
         }
-    }
-
-    // whenever the Taxa_Locations store changes (e.g. someones done something to the tree) we should re-draw
-    Taxa_Locations.addChangeListener(this.redraw);
+    };
+    // whenever the taxaLocations store changes (e.g. someones done something to the tree) we should re-draw
+    taxaLocations.addChangeListener(this.redraw);
 
     // whenever the MetadataStore store changes we should re-draw
     MetadataStore.addChangeListener(this.redraw);
 
     MiscStore.addChangeListener(this.redraw);
 
+    this.canvas.addEventListener('mousemove', this.mouseMoveDetected, true);
+
+    this.canvas.addEventListener('mouseout', this.mouseMoveDetected, true);
 }
 
 
-meta.prototype.getMouse = function(e, canvas) {
-    var element = canvas, offsetX = 0, offsetY = 0, mx, my;
+Meta.prototype.getMouse = function (e, canvas) {
+    var element = canvas;
+    var offsetX = 0;
+    var offsetY = 0;
+    var mx;
+    var my;
     if (element.offsetParent !== undefined) {
         do {
             offsetX += element.offsetLeft;
@@ -216,14 +249,11 @@ meta.prototype.getMouse = function(e, canvas) {
     // ctx = canvas.getContext('2d');
     // ctx.beginPath();
     // ctx.arc(mx, my, 5, 0, 2 * Math.PI, false);
-    // ctx.fillStyle = 'green';
+    // ctx.fillStyle = 'red';
     // ctx.fill();
     // ctx.closePath();
     return {x: mx, y: my};
-}
-
-
-
+};
 
 
 module.exports = {'MetaCanvasClass': MetaCanvasClass, 'MetaTextClass': MetaTextClass};
