@@ -66,13 +66,20 @@ function gubbins(canvas) {
 		blocks = trim_blocks(myState.raw_blocks, visible_genome, myState.canvas)
 		// console.log('visible_genome',visible_genome)
 		draw.clearCanvas(myState.canvas)
-		// console.log(GenomeStore.getSelectedTaxaY())
-		draw.highlightSelectedNodes(myState.canvas, myState.context, GenomeStore.getSelectedTaxaY(),true)
+
+		// draw grey background for selected taxa (4th param = true)
+		draw.highlightSelectedNodes(myState.canvas, myState.context, GenomeStore.getSelectedTaxaY(), true)
+
 		// check selected_block (if any) is still in view
-		if (myState.selected_block!==undefined && myState.selected_block.end_base < visible_genome[0] && myState.selected_block.start_base > visible_genome[1]) {
+		if (
+			myState.selected_block!==undefined
+			&&
+			(myState.selected_block.end_base < visible_genome[0] || myState.selected_block.start_base > visible_genome[1])
+			) {
 			myState.selected_block = undefined;
 		}
 		if (myState.selected_block!==undefined) {
+			// draw grey background for selected block (4th param = false)
 			draw.highlightSelectedNodes(myState.canvas, myState.context, [myState.selected_block.x1,myState.selected_block.x2],false)
 		}
 		draw.drawBlocks(myState.context, blocks);
