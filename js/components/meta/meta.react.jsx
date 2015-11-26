@@ -89,6 +89,8 @@ function MetaText(canvas) {
     MetadataStore.addChangeListener(this.redraw);
 
     MiscStore.addChangeListener(this.redraw);
+
+    window.addEventListener('resize', function () {this.redraw();}, true);
 }
 
 
@@ -229,6 +231,8 @@ function Meta(canvas) {
     this.canvas.addEventListener('mousemove', this.mouseMoveDetected, true);
 
     this.canvas.addEventListener('mouseout', this.mouseMoveDetected, true);
+
+    window.addEventListener('resize', function () {this.redraw();}, true);
 }
 
 

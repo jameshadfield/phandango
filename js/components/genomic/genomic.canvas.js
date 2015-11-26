@@ -33,13 +33,7 @@ function gubbins(canvas) {
 		myState.redraw();
 	}
 
-	// window.addEventListener('resize', function(){myState.redraw()}, true);
-
-	// this.canvas.addEventListener("onresize", function() {
-	// 		console.log("resize detected")
-	// 	    this.redraw()
-	// 	}, false
-	// );
+	window.addEventListener('resize', function () {myState.redraw();}, true);
 
 	Actions.set_genome_length(RawDataStore.getParsedData('genomic')[0][1]) // stupid place to put this!
 
