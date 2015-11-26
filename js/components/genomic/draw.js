@@ -28,7 +28,7 @@ function highlightSelectedNodes(canvas,context,values,isY) {
 		// console.log("gubbins background values")
 		// console.log(values)
 		context.save(); // http://html5.litten.com/understanding-save-and-restore-for-the-canvas-context/
-		context.fillStyle = "#E0E0E0";
+		context.fillStyle = "rgba(0, 0, 0, 0.2)";
 		if (isY) {
 			context.fillRect(0, values[0], canvas.width, values[1]-values[0]);
 		}

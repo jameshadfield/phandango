@@ -42,10 +42,11 @@ function annotationTrack(canvas) {
 		draw.clearCanvas(myState.canvas);
 		draw.drawArrows(myState.context, current_arrows, visible_genome[1] - visible_genome[0] < 100000);
 		draw.drawScale(myState.context, myState.canvas.width, visible_genome, parseInt(myState.canvas.height/2));
-		if (myState.currently_selected!==undefined) {
-			// check it hasn't gone off the screen!
-			// draw
-			draw.drawBorderAndText(myState.context, myState.currently_selected, parseInt(myState.canvas.width/2), parseInt(myState.canvas.height/2));
+		if (myState.currently_selected !== undefined) {
+			if (draw.get_arrows_in_scope([myState.currently_selected], visible_genome, myState.canvas).length > 0) {
+				// draw
+				draw.drawBorderAndText(myState.context, myState.currently_selected, parseInt(myState.canvas.width / 2, 10), parseInt(myState.canvas.height / 2, 10));
+			}
 		}
 	}
 
