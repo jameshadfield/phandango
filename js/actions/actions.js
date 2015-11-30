@@ -153,6 +153,14 @@ module.exports = {
       dataset: x
     });
   },
+
+
+  newErr: function(x) {
+    Dispatcher.dispatch({
+      actionType: 'newErr',
+      errObj: x
+    });
+  }
   // recalculateLineGraph: function(a,b) {
   //   Dispatcher.dispatch({
   //     actionType: 'recalculateLineGraph',

@@ -1,8 +1,10 @@
+/*eslint indent:0*/
 var EventEmitter = require('events').EventEmitter;
 var assign = require('object-assign');
 var Dispatcher = require('../dispatcher/dispatcher');
 var Taxa_Locations = require('./Taxa_Locations.js')
 var Actions = require('../actions/actions.js');
+var ErrStruct = require('../structs/errStruct.js');
 
 // this store is simple
 // it contains the length of the genome
@@ -39,25 +41,50 @@ var GenomeStore = assign({}, EventEmitter.prototype, {
 })
 
 function set_genome_length(x) {
-	if (x!==genome_length) { //note that genome length may be currently undefined
-		if (genome_length!==undefined) {
-			console.error('warning: genome length changed from '+genome_length+'bp to '+x+'bp');
-		}
+	var prevGenomeLength;
+	var errStr;
+	var errObj;
+	if (x !== genome_length) { //note that genome length may be currently undefined
+		prevGenomeLength = genome_length; // copy not ref
 		genome_length = x;
-		visible_genome = [0,x]; // any change resets this...
-	  	GenomeStore.emitChange()
+		visible_genome = [0, x]; // any change resets this...
+	  	GenomeStore.emitChange();
+	  	// if we changed the genome length (as opposed
+	  	// to setting it) then display an error!
+		if (prevGenomeLength !== undefined) {
+			// console.error('genome length changed from ' + prevGenomeLength + 'bp to ' + genome_length + 'bp');
+			// create error
+			errStr = [
+				'Genome length has changed from ', prevGenomeLength, 'bp to ',
+				genome_length, 'bp. This means that the blocks and annotation',
+				' display will be out of sync!'
+			];
+			errObj = new ErrStruct(true, 'ERROR: Genome length change.', errStr);
+			setTimeout(function(){Actions.newErr([errObj]);},0); // TO FIX
+		}
 	}
+}
+
+function showHelperMessage(msg) {
+	// console.log(msg)
+	var errObj = new ErrStruct(false, msg);
+	// this next bit must be fixed ASAP
+	// TO DO -- TO FIX
+	setTimeout(function(){Actions.newErr([errObj]);},0);
 }
 
 function pan(fracCanvasPan) {
 	if (visible_genome[0]===0 && visible_genome[1]===genome_length) {
-	console.log("no pan (whole genome visible)"); return false}; //
+		showHelperMessage('can\'t drag (whole genome in view)');
+		return false
+	};
 	var bp_to_move = (visible_genome[1]-visible_genome[0]) * fracCanvasPan;
 	var newLeft = visible_genome[0] + bp_to_move;
 	var newRight = visible_genome[1] + bp_to_move;
-	if (newLeft<0) {console.log("no pan, would move out of view (L)"); return false};
-	if (newRight>genome_length) {console.log("no pan, would move out of view (R)"); return false};
-	// console.log("bases to move: "+bp_to_move+" new visible view: "+newLeft+" - "+newRight)
+	if (newLeft < 0 || newRight > genome_length) {
+		showHelperMessage('can\'t drag (already at edge of genome)');
+		return false;
+	}
 	visible_genome = [newLeft, newRight];
 	return true;
 }
@@ -77,7 +104,7 @@ function zoom(delta, fracInCanvas) {
 	}
 	// need some checking here -- don't want to zoom in too much and don't want to zoom out too much!
 	if (new_visible_genome[1] - new_visible_genome[0] < 1000) {
-		console.log("Won't zoom in to less than 1000bp");
+		showHelperMessage('can\'t zoom in to less than 1000bp');
 		return;
 	}
 	if (new_visible_genome[0]<0) {new_visible_genome[0]=0}

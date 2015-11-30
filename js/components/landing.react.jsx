@@ -1,7 +1,6 @@
 var React = require('react');
 var Actions = require('../actions/actions.js');
 
-
 var Landing = React.createClass({displayName: "displayName",
 	loadGubbins: function() {
 		console.log("LOAD GUBBINS")
@@ -16,14 +15,13 @@ var Landing = React.createClass({displayName: "displayName",
 	},
 
 	render: function() {
+
 		return (
 			<div className="fullpage bgwhite">
-
 
 				<div className="center-align">
 					<img id="logoLanding" src="img/JScandy.v2.svg" alt="JScandy"/>
 				</div>
-
 
 				<div className="row">
 					<div className="col s6">

@@ -1,6 +1,7 @@
 var Taxa_Locations = require('../../stores/Taxa_Locations.js')
 var parser = require('./parse.gubbins.js');
-
+var ErrStruct = require('../../structs/errStruct.js');
+var Actions = require('../../actions/actions.js');
 
 // hack. rewrite.
 function associate_taxa_with_dummy_y_values(blocks, canvas_height) {
@@ -30,12 +31,16 @@ function trim_blocks(raw_blocks, visible_genome_coords, canvas) {
 	var active_taxa = Object.keys(Taxa_Locations.getAll()) ; // all taxa which are currently "active"
 	var is_phylotree_active = Taxa_Locations.loaded()
 	if (is_phylotree_active===false) {
-		// console.log('[BUG] phylocanvas not initialised and we\'re trying to start up gubbins. Problems to follow...')
-		// create a dummy mapping. This should be a call to the store to do this but oh well.
-		console.log("not drawing gubbins blocks without tree!")
-		return []
-		// var taxa_y_value = associate_taxa_with_dummy_y_values(raw_blocks, canvas.height);
-		// console.log(taxa_y_value)
+		// we *should* create a dummy tree here (flat tree)
+		// but for now...
+		// create error
+		var errStr = [
+			'Currently a tree is required to display the genomic data.'
+		];
+		errObj = new ErrStruct(true, 'ERROR: No tree.', errStr);
+		Actions.newErr([errObj]);
+		// console.log("not drawing gubbins blocks without tree!")
+		return [];
 	}
 
 	// console.log("Is tree loaded???? "+is_phylotree_active)

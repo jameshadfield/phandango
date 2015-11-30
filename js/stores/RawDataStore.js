@@ -1,8 +1,9 @@
+/*eslint indent:0*/
 var EventEmitter = require('events').EventEmitter;
 var assign = require('object-assign');
 var Dispatcher = require('../dispatcher/dispatcher');
-// var DefaultData = require('../static/DefaultData.js');
 var Actions = require('../actions/actions.js');
+var errStruct = require('../structs/errStruct.js');
 
 // P A R S E R S
 // all parsers return null / false upon failure
@@ -12,12 +13,13 @@ var annotationParser = require('../components/annotation/parse.annotations.js');
 var roaryParser = require('../components/genomic/roary.parser.js');
 var gwasParser = require('../components/graphs/plotFileParser.js');
 
+
 // only possible to have one of each loaded at a given time!!!!!
 var loaded = {'tree':undefined, 'meta':undefined, 'annotation':undefined, 'genomic':undefined, 'SNPs':undefined, 'GWAS':undefined}; // store file names!!!!!
 var parsed = {};
 var rawData = {}; // internal ONLY
 var misc = {'roarySortCode':'asIs'};
-var datasetType = {'default':false, 'data':undefined} // default -> false == user data. data = gubbins | roary (defined by parser success)
+var datasetType = {'default': false, 'data': undefined}; // default -> false == user data. data = gubbins | roary (defined by parser success)
 // change prefix for testing / production purposes!
 // var defaultDataPrefix = "https://rawgit.com/jameshadfield/JScandy/"
 var defaultDataPrefix = "https://cdn.rawgit.com/jameshadfield/JScandy/"
@@ -35,6 +37,7 @@ var defaultDataPaths={
 		defaultDataPrefix+"v0.2.0/example_datasets/roary/metadata.csv"
 	]
 };
+var blockTaxaNames = [];
 
 var RawDataStore = assign({}, EventEmitter.prototype, {
 	emitChange: function() {
@@ -63,11 +66,15 @@ var RawDataStore = assign({}, EventEmitter.prototype, {
 	},
 	getGenomicDatasetType: function() {
 		return datasetType.data;
+	},
+	getBlockTaxaNames: function() {
+		return blockTaxaNames;
 	}
 })
 
 
 function incomingData(files,ajax) {
+	var errQueue = [];
 	console.groupCollapsed("File Parsing")
 	// using the idea of a barrier from
 	// http://stackoverflow.com/questions/7957952/detecting-when-javascript-is-done-executing
@@ -87,6 +94,9 @@ function incomingData(files,ajax) {
 			console.log("all IO done")
 			console.groupEnd()
 			RawDataStore.emitChange();
+			if (errQueue.length > 0) {
+				Actions.newErr(errQueue);
+			}
 		}
 	}
 
@@ -104,10 +114,20 @@ function incomingData(files,ajax) {
 					console.log("gubbins parsing failed")
 				}
 				else{
-					console.log("gubbins parsing success")
+					console.log('gubbins parsing success');
 					loaded.genomic = displayName;
 					datasetType.data = 'gubbins';
-					parsed['genomic'] = gubbins;
+					parsed.genomic = gubbins;
+					// we now want to know what taxa were included...
+					// this should be a fn on the event loop to speed up!
+					blockTaxaNames = []; // global to this file
+					for (var el of parsed.genomic[1]) {
+						for (var taxaName of el.taxa) {
+							if  (blockTaxaNames.indexOf(taxaName) === -1) {
+								blockTaxaNames.push(taxaName);
+							}
+						}
+					}
 					break;
 				}
 
@@ -121,7 +141,21 @@ function incomingData(files,ajax) {
 					Actions.set_genome_length(res[0][1]);
 					parsed['annotation'] = res[1];
 					loaded.annotation = displayName;
+					break;
 				}
+				// if we're here then both the gubbins & annotation parsing failed
+				var errStr = [
+					'GFF file ', <strong>{fileName}</strong>,
+					' was not parsed by either the Gubbins or Annotation parsers!',
+					' Are you sure the format is correct?',
+					<p/>,
+					'Currently the 2nd column of the GFF file must be "EMBL" or "artemis" (for annotation) or "GUBBINS" (for gubbins blocks).',
+					<p/>,
+					<a href='https://jameshadfield.github.io/JScandy/intro.html'>This page</a>,
+					' details the file formats that are understood.'
+				];
+				errObj = new errStruct(true, 'ERROR: Unused input file.', errStr);
+				errQueue.push(errObj);
 				break;
 
 
@@ -159,9 +193,32 @@ function incomingData(files,ajax) {
 					datasetType.data = 'roary';
 					loaded.annotation = displayName;
 					saveRoaryAsData(rawData['roary'][0],rawData['roary'][1],100,misc.roarySortCode); // modifies parsed['annotation'] & parsed['genomic']
+					// we now want to know what taxa were included...
+					// this should be a fn on the event loop to speed up!
+					blockTaxaNames = []; // global to this file
+					for (var el of parsed.genomic[1]) {
+						for (var taxaName of el.taxa) {
+							if  (blockTaxaNames.indexOf(taxaName) === -1) {
+								blockTaxaNames.push(taxaName);
+							}
+						}
+					}
+					break;
 				}
+				// if we're here then both the metadata and roary parsing failed
+				var errStr = [
+					'CSV file ', <strong>{fileName}</strong>,
+					' was not parsed by either the ROARY or metadata parsers!',
+					' Are you sure the format is correct?',
+					<p/>,
+					'For a metadata file the first entry of the header must be "name", "lane", "isolate" or "id".',
+					<p/>,
+					<a href='https://jameshadfield.github.io/JScandy/intro.html'>This page</a>,
+					' details the file formats that are understood.'
+				];
+				errObj = new errStruct(true, 'ERROR: Unused input file.', errStr);
+				errQueue.push(errObj);
 				break;
-
 
 			case 'plot':
 				console.log(displayName,"-> GWAS parsing")
@@ -176,7 +233,16 @@ function incomingData(files,ajax) {
 				}
 				break;
 
-
+			default:
+				var errStr = [
+					'Filename ', <strong>{fileName}</strong>, ' was not parsed due to ',
+					'an unknown file suffix (', file_extension, '). ',
+					<p/>,
+					<a href='https://jameshadfield.github.io/JScandy/intro.html'>This page</a>,
+					' details the file formats that are understood.'
+				];
+				errObj = new errStruct(true, 'WARNING: Unused input file.', errStr);
+				errQueue.push(errObj);
 		}
 		emitWhenIOFinished.IOdone();
 

@@ -7,7 +7,7 @@ var CanvasDivs = require('./canvases.react.jsx');
 var Settings = require('./settings.react.jsx');
 var Actions = require('../actions/actions.js');
 var RawDataStore = require('../stores/RawDataStore.js');
-
+var ErrComponent = require('./err.react.jsx');
 
 function add(a, b) {return a+b}; // http://stackoverflow.com/questions/1230233/how-to-find-the-sum-of-an-array-of-numbers
 
@@ -23,7 +23,7 @@ var Main_React_Element = React.createClass({displayName: "Main_React_Element",
 			router		:	'landing', // what page do we start with?
 			elementsOn	: 	{col:[true,true,true],row:[true,true,true]},
 			dataLoaded	:	RawDataStore.getDataLoaded(),
-			showLoading	:	this.showLoading
+			showLoading	:	this.showLoading,
 		});
 	},
 	keyIncoming: function(key){
@@ -144,8 +144,9 @@ var Main_React_Element = React.createClass({displayName: "Main_React_Element",
 		RawDataStore.addChangeListener(function() {
 			console.log("state change")
 			myState.setState({'dataLoaded' : RawDataStore.getDataLoaded(), 'router':'main'});
-		})
+		});
 	},
+
 	currentGAPageName: undefined,
 	sendGAtoken: function(pageName) {
 		if (this.currentGAPageName === 'pageName') {
@@ -182,8 +183,10 @@ var Main_React_Element = React.createClass({displayName: "Main_React_Element",
 		var LoadingDiv = this.state.router=="loading" ? <Spinner/> : <div/>;
 		var LandingDiv = this.state.router=="landing" ? <Landing showLoading={this.state.showLoading}/> : <div/>;
 		var SettingsDiv = this.state.router=="settings" ? <Settings logoClick={this.showMain} divPerc={this.state.divPerc} newDivPerc={this.newDivPerc} topState={this} toggleColRow={this.toggleColRow} elementsOn={this.state.elementsOn} dataLoaded={this.state.dataLoaded}/> : <div/>;
+
 		return(
 			<div id="mainDiv">
+				<ErrComponent/>
 				{LoadingDiv}
 				{LandingDiv}
 				{SettingsDiv}
@@ -251,3 +254,4 @@ var Spinner = React.createClass({displayName: "displayName",
 
 
 module.exports = Main_React_Element;
+
