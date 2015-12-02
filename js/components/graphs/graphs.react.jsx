@@ -1,19 +1,19 @@
-var ReactDOM = require('react-dom');
-var React = require('react');
-var misc = require('../misc.js'); // basic functions
+const ReactDOM = require('react-dom');
+const React = require('react');
+const misc = require('../misc.js'); // basic functions
 // GRAPHS
-var Graph    = require('./graphs.js');
+const Graph = require('./graphs.js');
 
-var RecombGraphClass = React.createClass({displayName: "displayName",
-    componentDidMount: function() { // Invoked once, immediately after the initial rendering
-        misc.initCanvasXY(this);
-        var graph = new Graph(ReactDOM.findDOMNode(this));
-    },
-    render: function() {
-        return (
-            <canvas id="recombGraphDiv" className="inContainer"></canvas>
-        );
-    }
+const RecombGraphClass = React.createClass({ displayName: 'displayName',
+  componentDidMount: function () { // Invoked once, immediately after the initial rendering
+    misc.initCanvasXY(this);
+    const graph = new Graph(ReactDOM.findDOMNode(this)); // eslint-disable-line no-unused-vars
+  },
+  render: function () {
+    return (
+        <canvas id="recombGraphDiv" className="inContainer"></canvas>
+    );
+  },
 });
 
 

@@ -8,65 +8,62 @@
 // but this would put the draw method inside parser.gubbins.js which is bad
 
 function clearCanvas(canvas) {
-	canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+  canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
 }
 
 function drawBlocks(context, blocks) {
-	for (i=0; i<blocks.length; i++) {
-		context.save();
-		// context.beginPath() // does what?
-		context.fillStyle = blocks[i].fill;
-		context.globalAlpha=0.3;
-		context.fillRect(blocks[i].x1, blocks[i].y1, blocks[i].x2-blocks[i].x1, blocks[i].y2-blocks[i].y1);
-		context.restore();
-	}
-
+  for (let i = 0; i < blocks.length; i++) {
+    context.save();
+    // context.beginPath() // does what?
+    context.fillStyle = blocks[i].fill;
+    context.globalAlpha = 0.3;
+    context.fillRect(blocks[i].x1, blocks[i].y1, blocks[i].x2 - blocks[i].x1, blocks[i].y2 - blocks[i].y1);
+    context.restore();
+  }
 }
 
-function highlightSelectedNodes(canvas,context,values,isY) {
-	if (values!==undefined) {
-		// console.log("gubbins background values")
-		// console.log(values)
-		context.save(); // http://html5.litten.com/understanding-save-and-restore-for-the-canvas-context/
-		context.fillStyle = "rgba(0, 0, 0, 0.2)";
-		if (isY) {
-			context.fillRect(0, values[0], canvas.width, values[1]-values[0]);
-		}
-		else { // X
-			context.fillRect(values[0], 0, values[1]-values[0], canvas.height);
-		}
-		context.restore();
-	}
+function highlightSelectedNodes(canvas, context, values, isY) {
+  if (values !== undefined) {
+    // console.log("gubbins background values")
+    // console.log(values)
+    context.save(); // http://html5.litten.com/understanding-save-and-restore-for-the-canvas-context/
+    context.fillStyle = 'rgba(0, 0, 0, 0.2)';
+    if (isY) {
+      context.fillRect(0, values[0], canvas.width, values[1] - values[0]);
+    } else { // X
+      context.fillRect(values[0], 0, values[1] - values[0], canvas.height);
+    }
+    context.restore();
+  }
 }
 
 function displayBlockInfo(context, block) {
-	var hLine = 12; // http://stackoverflow.com/questions/5026961/html5-canvas-ctx-filltext-wont-do-line-breaks
-	var yDispPos = block.y1>50 ? block.y1-3*hLine : 50;
-	var xDispPos = parseInt(block.x1 + (block.x2-block.x1)/2)
-	context.fillStyle = "black";
-	context.textBaseline="middle";
-	context.textAlign = "center";
-	context.font="12px Helvetica";
-	var text = "SNPs: "+block.snps
-	context.fillText(text, xDispPos, yDispPos);
-	// var text = "Neg Log Likelihood: "+block.nll
-	var len = block.end_base - block.start_base
-	if (len>=1000) { 	// kb?
-		len=len/1000
-		len=String(+ len.toFixed(2))+"kb";
-	}
-	else {
-		len=String(+ len.toFixed(2))+"bp";
-	}
-	var text = "length: "+len
-	context.fillText(text, xDispPos, yDispPos+hLine);
-	var text = "n(taxa): "+block.taxa.length
-	context.fillText(text, xDispPos, yDispPos+2*hLine);
-
+  const hLine = 12; // http://stackoverflow.com/questions/5026961/html5-canvas-ctx-filltext-wont-do-line-breaks
+  const yDispPos = block.y1 > 50 ? block.y1 - 3 * hLine : 50;
+  const xDispPos = parseInt(block.x1 + (block.x2 - block.x1) / 2, 10);
+  context.fillStyle = 'black';
+  context.textBaseline = 'middle';
+  context.textAlign = 'center';
+  context.font = '12px Helvetica';
+  let text = 'SNPs: ' + block.snps;
+  context.fillText(text, xDispPos, yDispPos);
+  // var text = "Neg Log Likelihood: "+block.nll
+  let len = block.end_base - block.start_base;
+  if (len >= 1000) {  // kb?
+    len = len / 1000;
+    len = String(+ len.toFixed(2)) + 'kb';
+  } else {
+    len = String(+ len.toFixed(2)) + 'bp';
+  }
+  text = 'length: ' + len;
+  context.fillText(text, xDispPos, yDispPos + hLine);
+  text = 'n(taxa): ' + block.taxa.length;
+  context.fillText(text, xDispPos, yDispPos + 2 * hLine);
 }
 
-
-module.exports = {'drawBlocks': drawBlocks, 'clearCanvas': clearCanvas, 'highlightSelectedNodes': highlightSelectedNodes, 'displayBlockInfo': displayBlockInfo};
-
-
-
+module.exports = {
+  drawBlocks: drawBlocks,
+  clearCanvas: clearCanvas,
+  highlightSelectedNodes: highlightSelectedNodes,
+  displayBlockInfo: displayBlockInfo,
+};
