@@ -1,9 +1,9 @@
-var errStruct = function (isDialog, errTitle, errMessage) {
+function errStruct(isDialog, errTitle, errMessage) {
   this.isDialog = isDialog === false ? false : true;
   this.title = errTitle || undefined;
   this.message = errMessage || undefined;
   this.isScrollable = false;
-};
+}
 
 // coult add proptotypes here to make error creation easier...
 // errStruct.prototype.addCompareList = function () {

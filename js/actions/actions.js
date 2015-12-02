@@ -1,173 +1,141 @@
-
-var Dispatcher = require('../dispatcher/dispatcher');
+const Dispatcher = require('../dispatcher/dispatcher');
 
 // user inputs trugger one of these functions (e.g. Actions.increase())
 // and we send off a dispatch to be picked up by the dispatcher
 
-
-
 module.exports = {
-  loadTree: function(not_sure) {
-    Dispatcher.dispatch({
-      actionType: 'loadTree'
-      // tree file? tree string? pass this information through the Dispatcher and to a store
-    })
-  },
-
-  phylocanvas_subtree_drawn: function(nodeID) {
+  phylocanvas_subtree_drawn: function (nodeID) {
     // console.log('[Action triggered] Subtree drawn from node '+nodeID+'');
     Dispatcher.dispatch({
       actionType: 'phylocanvas_subtree_drawn',
-      nodeID: nodeID
+      nodeID: nodeID,
     });
   },
 
-  phylocanvas_nodes_selected: function(taxa) {
+  phylocanvas_nodes_selected: function (taxa) {
     // console.log('[Action triggered] Nodes '+taxa+' selected');
     Dispatcher.dispatch({
       actionType: 'phylocanvas_nodes_selected',
-      taxa: taxa
+      taxa: taxa,
     });
   },
 
-  genome_pan: function(x) {
+  genome_pan: function (x) {
     // console.log('[Action triggered] Genome panned by '+x*100+'% of the canvas');
     Dispatcher.dispatch({
       actionType: 'genome_pan',
-      fracCanvasPan: x
+      fracCanvasPan: x,
     });
   },
 
-  genome_zoom: function(delta, fracInCanvas) {
+  genome_zoom: function (delta, fracInCanvas) {
     Dispatcher.dispatch({
       actionType: 'genome_zoom',
       delta: delta,
-      fracInCanvas: fracInCanvas
+      fracInCanvas: fracInCanvas,
     });
   },
 
-  set_genome_length: function(x) {
+  set_genome_length: function (x) {
     Dispatcher.dispatch({
-      actionType: 'set_genome_length',
-      x: x
+      actionType: 'setGenomeLength',
+      x: x,
     });
   },
 
-  phylocanvas_changed: function(x) {
+  phylocanvas_changed: function () {
     Dispatcher.dispatch({
-      actionType: 'phylocanvas_changed'
-    });
-  },
-  phylocanvas_loaded: function(x) {
-    Dispatcher.dispatch({
-      actionType: 'phylocanvas_loaded'
+      actionType: 'phylocanvas_changed',
     });
   },
 
-  click: function(id, x, y) {
+  phylocanvas_loaded: function () {
+    Dispatcher.dispatch({
+      actionType: 'phylocanvas_loaded',
+    });
+  },
+
+  click: function (id, x, y) {
     // console.log("click in",id,"at x:",x,"y:",y)
     Dispatcher.dispatch({
       actionType: 'click',
       id: id,
       mx: x,
-      my: y
+      my: y,
     });
   },
 
-  selected_taxa_updated: function() {
+  selected_taxa_updated: function () {
     Dispatcher.dispatch({
-      actionType: 'selected_taxa_updated'
+      actionType: 'selected_taxa_updated',
     });
   },
 
-  loadDefaultData: function() {
-    Dispatcher.dispatch({
-      actionType: 'loadDefaultData'
-    });
-  },
-
-  files_dropped: function(files) {
+  files_dropped: function (files) {
     Dispatcher.dispatch({
       actionType: 'files_dropped',
-      files: files
+      files: files,
     });
   },
 
-
-  save_plotYvalues: function(plotYvalues,plotName) {
+  save_plotYvalues: function (plotYvalues, plotName) {
     // console.log("saving plot values. Length: ",plotYvalues.length)
     Dispatcher.dispatch({
       actionType: 'save_plotYvalues',
       plotYvalues: plotYvalues,
-      plotName: plotName
+      plotName: plotName,
     });
   },
 
-  // csvStringReceived: function(csvString) {
-  //   Dispatcher.dispatch({
-  //     actionType: 'csvStringReceived',
-  //     csvString: csvString
-  //   });
-  // },
-
-  hereIsMetadata: function(data) {
+  hereIsMetadata: function (data) {
     Dispatcher.dispatch({
       actionType: 'hereIsMetadata',
-      data: data
+      data: data,
     });
   },
 
-
-  toggleMetadataColumn: function(i) {
+  toggleMetadataColumn: function (i) {
     // console.log("action picked up to toggle column, ", i)
     Dispatcher.dispatch({
       actionType: 'toggleMetadataColumn',
-      colNumToToggle: i
+      colNumToToggle: i,
     });
   },
 
-  toggleMetaDisplay: function(i) {
+  toggleMetaDisplay: function (i) {
     // console.log("action picked up to toggle metadata display to ", i)
     Dispatcher.dispatch({
       actionType: 'toggleMetaDisplay',
-      newDisplayBool: i
+      newDisplayBool: i,
     });
   },
 
-  redrawAll: function() {
+  redrawAll: function () {
     Dispatcher.dispatch({
-      actionType: 'redrawAll'
+      actionType: 'redrawAll',
     });
   },
-  sortRoary: function(x) {
+  sortRoary: function (x) {
     Dispatcher.dispatch({
       actionType: 'sortRoary',
-      sortCode: x
+      sortCode: x,
     });
   },
 
-  loadDefaultData: function(x) {
+  loadDefaultData: function (x) {
     // console.log("ACTION: loadDefaultData",x);
     Dispatcher.dispatch({
       actionType: 'loadDefaultData',
-      dataset: x
+      dataset: x,
     });
   },
 
-
-  newErr: function(x) {
+  newErr: function (x) {
     Dispatcher.dispatch({
       actionType: 'newErr',
-      errObj: x
+      errObj: x,
     });
-  }
-  // recalculateLineGraph: function(a,b) {
-  //   Dispatcher.dispatch({
-  //     actionType: 'recalculateLineGraph',
-  //     selectedTaxaNames: a,
-  //     name: b
-  //   });
-  // }
+  },
 
 };
 

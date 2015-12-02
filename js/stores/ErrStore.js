@@ -1,9 +1,9 @@
-var EventEmitter = require('events').EventEmitter;
-var assign = require('object-assign');
-var Dispatcher = require('../dispatcher/dispatcher');
-var queue = []; // maintain a queue of err objects
+const EventEmitter = require('events').EventEmitter;
+const assign = require('object-assign');
+const Dispatcher = require('../dispatcher/dispatcher');
+let queue; // maintain a queue of err objects
 
-var ErrStore = assign({}, EventEmitter.prototype, {
+const ErrStore = assign({}, EventEmitter.prototype, {
   emitChange: function () {
     // console.log('change emitted');
     this.emit('change');
@@ -16,7 +16,7 @@ var ErrStore = assign({}, EventEmitter.prototype, {
   },
   getErr: function () {
     return queue.shift();
-  }
+  },
 
 });
 

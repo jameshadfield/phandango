@@ -1,86 +1,79 @@
-var EventEmitter = require('events').EventEmitter;
-var assign = require('object-assign');
-var Dispatcher = require('../dispatcher/dispatcher');
+const EventEmitter = require('events').EventEmitter;
+const assign = require('object-assign');
+const Dispatcher = require('../dispatcher/dispatcher');
 
-var taxa_positions = {};
-var activeTaxa = [];
-var selectedTaxa = undefined;
+let taxaPositions = {};
+let activeTaxa = [];
+let selectedTaxa = undefined;
 
-var Taxa_Locations = assign({}, EventEmitter.prototype, {
-	emitChange: function() {
-		// console.log("taxa locations store emission")
-		this.emit('change');
-	},
+const TaxaLocations = assign({}, EventEmitter.prototype, {
+  emitChange: function () {
+    this.emit('change');
+  },
 
-	addChangeListener: function(callback) {
-		this.on('change', callback);
-	},
+  addChangeListener: function (callback) {
+    this.on('change', callback);
+  },
 
-	removeChangeListener: function(callback) {
-		this.removeListener('change', callback);
-	},
+  removeChangeListener: function (callback) {
+    this.removeListener('change', callback);
+  },
 
-	getAll: function() {
-		return taxa_positions;
-	},
+  getAll: function () {
+    return taxaPositions;
+  },
 
-	getSelectedTaxa: function() {
-		return selectedTaxa;
-	},
+  getSelectedTaxa: function () {
+    return selectedTaxa;
+  },
 
-	getActiveTaxa: function() {
-		return activeTaxa
-	},
+  getActiveTaxa: function () {
+    return activeTaxa;
+  },
 
-	getTaxaY: function(listOfTaxaUnchecked) {
-		// var listOfTaxa = listOfTaxaUnchecked;
-		// the taxa coming in might be a subset of what's displayed by the tree
-		// or they might be nothing!
-		var listOfTaxa = []
-		for (var i=0; i<listOfTaxaUnchecked.length; i++) {
-			if (activeTaxa.indexOf(listOfTaxaUnchecked[i]) >= 0) {
-				listOfTaxa.push(listOfTaxaUnchecked[i]);
-			}
-		}
+  getTaxaY: function (listOfTaxaUnchecked) {
+    // the taxa coming in might be a subset of what's displayed by the tree
+    // or they might be nothing!
+    let ret;
+    const listOfTaxa = [];
+    for (let i = 0; i < listOfTaxaUnchecked.length; i++) {
+      if (activeTaxa.indexOf(listOfTaxaUnchecked[i]) >= 0) {
+        listOfTaxa.push(listOfTaxaUnchecked[i]);
+      }
+    }
 
-		// console.log(listOfTaxa)
-		if (listOfTaxa.length===0) {
-			return null; // DONT DISPLAY ANYTHING
-		}
+    if (listOfTaxa.length === 0) {
+      ret = null; // DONT DISPLAY ANYTHING
+    } else if (listOfTaxa.length === 1) {
+      // blue
+      ret = taxaPositions[listOfTaxa[0]];
+    } else {
+      // red
+      const minmax = [];
+      minmax[0] = taxaPositions[listOfTaxa[0]][0];
+      minmax[1] = taxaPositions[listOfTaxa[0]][1];
+      // console.log('minmax', taxaPositions)
+      for (let i = 1; i < listOfTaxa.length; i++) {
+        // console.log(taxaPositions[listOfTaxa[i]][0]+" -- "+taxaPositions[listOfTaxa[i]][1])
+        if (taxaPositions[listOfTaxa[i]][1] > minmax[1]) {
+          minmax[1] = taxaPositions[listOfTaxa[i]][1];
+        } else if (taxaPositions[listOfTaxa[i]][0] < minmax[0]) {
+          minmax[0] = taxaPositions[listOfTaxa[i]][0];
+        }
+      }
+      ret = minmax;
+    }
+    return ret;
+  },
 
-		if (listOfTaxa.length===1) {
-			// blue
-			return (taxa_positions[listOfTaxa[0]]);
-		} else {
-			// red
-			var minmax = [];
-			minmax[0] = taxa_positions[listOfTaxa[0]][0];
-			minmax[1] = taxa_positions[listOfTaxa[0]][1];
-			// console.log('minmax', taxa_positions)
-			for (var i=1; i<listOfTaxa.length; i++) {
-				// console.log(taxa_positions[listOfTaxa[i]][0]+" -- "+taxa_positions[listOfTaxa[i]][1])
-				if (taxa_positions[listOfTaxa[i]][1] > minmax[1]) {
-					minmax[1] = taxa_positions[listOfTaxa[i]][1]
-				}
-				else if (taxa_positions[listOfTaxa[i]][0] < minmax[0]) {
-					minmax[0] = taxa_positions[listOfTaxa[i]][0]
-				}
-			}
-			// console.log(minmax)
-			return minmax
-		}
-	},
-
-	loaded: function() {
-		if (Object.keys(taxa_positions).length) {
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
-
-})
+  loaded: function () {
+    let ret = false;
+    if (Object.keys(taxaPositions).length) {
+      ret = true;
+    }
+    return ret;
+  },
+});
 
 function getBackingStorePixelRatio(context) { // PhyloCanvas code
   return (
@@ -98,79 +91,77 @@ function getPixelRatio(canvas) { // PhyloCanvas code
 }
 
 
-
-function set_y_values() {
-	activeTaxa = new Array(); // dev only
-	for (var i=0; i<phylocanvas.leaves.length; i++) {
-		activeTaxa.push( phylocanvas.leaves[i].id );
-	}
-	taxa_positions = {}; // declared above. closure
-	var pixelRatio = getPixelRatio(phylocanvas.canvas.canvas)
-	var translate = function(y) {
-		// this. is. complicated.
-		// i'm sort of undoing the translateClick function really
-		y *= phylocanvas.zoom;
-		y += phylocanvas.offsety;
-		y += phylocanvas.canvas.canvas.height / 2;
-		y  = y / pixelRatio;
-		return y;
-	};
-
-	var height_half = phylocanvas.textSize/2 * phylocanvas.zoom;
-	for (var i=0; i<activeTaxa.length; i++) {
-		var centery = translate(phylocanvas.branches[activeTaxa[i]].centery);
-		taxa_positions[activeTaxa[i]] = [centery-height_half, centery+height_half];
-		// taxa_positions[activeTaxa[i]] = [translate(phylocanvas.branches[activeTaxa[i]].miny), translate(phylocanvas.branches[dummy_list_of_taxa[i]].maxy)]
-	}
-};
-
-// register this store with the dispatcher (here, not in actions)
-
-Taxa_Locations.dispatchToken = Dispatcher.register(function(payload) {
-// Dispatcher.register(function(payload) {
-  if (payload.actionType === 'phylo_taxa_change') {
-    get_taxa_and_y_coord();
-    Taxa_Locations.emitChange();
+function setYValues() {
+  activeTaxa = new Array(); // dev only
+  for (let i = 0; i < window.phylocanvas.leaves.length; i++) {
+    activeTaxa.push( window.phylocanvas.leaves[i].id );
   }
-  else if (payload.actionType === 'phylocanvas_changed') {
-  	// a lot of this block is only necessary as phylocanvas has an action every fucking time
-  	// we want to check if anything's actually changed
-  	var old_activeTaxa = [] // old_activeTaxa is not a reference, it is a true copy
-  	var old_minYvalues = []
-  	for (var i=0; i<activeTaxa.length; i++) {
-  		old_activeTaxa.push(activeTaxa[i])
-  		old_minYvalues.push(taxa_positions[activeTaxa[i]][0])
-  	}
+  taxaPositions = {}; // declared above. closure
+  const pixelRatio = getPixelRatio(window.phylocanvas.canvas.canvas);
+  const translate = function (y) {
+    // this. is. complicated.
+    // i'm sort of undoing the translateClick function (of PhyloCanvas)
+    let ret = y;
+    ret *= window.phylocanvas.zoom;
+    ret += window.phylocanvas.offsety;
+    ret += window.phylocanvas.canvas.canvas.height / 2;
+    ret  = ret / pixelRatio;
+    return ret;
+  };
 
-    set_y_values();
+  const heightHalf = window.phylocanvas.textSize / 2 * window.phylocanvas.zoom;
+  for (let i = 0; i < activeTaxa.length; i++) {
+    const centerY = translate(window.phylocanvas.branches[activeTaxa[i]].centery);
+    taxaPositions[activeTaxa[i]] = [ centerY - heightHalf, centerY + heightHalf ];
+  }
+}
+
+TaxaLocations.dispatchToken = Dispatcher.register(function (payload) {
+  switch (payload.actionType) {
+
+  case 'phylocanvas_changed':
+    // a lot of this block is only necessary as phylocanvas has an action every fucking time
+    // we want to check if anything's actually changed
+    const oldActiveTaxa = []; // oldActiveTaxa is not a reference, it is a true copy
+    const oldMinYValues = [];
+    for (let i = 0; i < activeTaxa.length; i++) {
+      oldActiveTaxa.push(activeTaxa[i]);
+      oldMinYValues.push(taxaPositions[activeTaxa[i]][0]);
+    }
+
+    setYValues();
     // Taxa_Locations.emitChange(); // now conditionally triggered -- see below
 
     // has the length of activeTaxa changed?
-    if (old_activeTaxa.length!==activeTaxa.length) {
-    	Taxa_Locations.emitChange();
-    	return
+    if (oldActiveTaxa.length !== activeTaxa.length) {
+      TaxaLocations.emitChange();
+      return;
     }
-   	for (var i=0; i<old_activeTaxa.length; i++) {
-   		// if new minY of taxaX != old minY then emit
-   		if (taxa_positions[old_activeTaxa[i]][0] !== old_minYvalues[i] ) {
-   			// console.log("taxa ",old_activeTaxa[i],old_minYvalues[i]," -> ",taxa_positions[old_activeTaxa[i]][0]," (i: ",i,")")
-	    	Taxa_Locations.emitChange();
-	    	return
-   		}
-  	}
+    for (let i = 0; i < oldActiveTaxa.length; i++) {
+      // if new minY of taxaX != old minY then emit
+      if (taxaPositions[oldActiveTaxa[i]][0] !== oldMinYValues[i] ) {
+        // console.log("taxa ",oldActiveTaxa[i],oldMinYValues[i]," -> ",taxaPositions[oldActiveTaxa[i]][0]," (i: ",i,")")
+        TaxaLocations.emitChange();
+        return;
+      }
+    }
+    break;
 
+  case 'phylocanvas_loaded':
+    setYValues();
+    TaxaLocations.emitChange();
+    break;
+
+  case 'phylocanvas_nodes_selected':
+    selectedTaxa = payload.taxa.length === 0 ? undefined : payload.taxa;
+    // console.log("Taxa_Loactions store: selected taxa: "+selectedTaxa)
+    TaxaLocations.emitChange();
+    break;
+
+  default:
+    break;
   }
-  else if (payload.actionType === 'phylocanvas_loaded') {
-    set_y_values();
-    Taxa_Locations.emitChange();
-  }
-  else if (payload.actionType === 'phylocanvas_nodes_selected') {
-  	selectedTaxa = payload.taxa.length===0 ? undefined : payload.taxa;
-  	// console.log("Taxa_Loactions store: selected taxa: "+selectedTaxa)
-    Taxa_Locations.emitChange();
-
-  }
-})
+});
 
 
-module.exports = Taxa_Locations;
+module.exports = TaxaLocations;
