@@ -20,4 +20,25 @@ JSCandy is entirely run from within the browser and runs entirely on your comput
     * run **npm run start** to start a simple server and open localhost:8000 in google chrome
     * open index.html in google chrome
 
+### Development
 
+#### Branching
+* Branch off `master` (for features / hotfixes)
+* Comment out the google analytics script in `index.html`
+* Write code using `eslint`
+* Write`.md` files using [markdownlivepreview](http://markdownlivepreview.com/)
+* Run `npm run build` before all commits (this minimises the `bundle.js` file)
+* Push your branch to github and email / submit a pull request
+
+#### Merging (into `master`)
+* un-comment google analytics script in `index.html`
+* All merges into `master` result in a version increase
+  * Modify version in `package.json`
+  * Modify version in `landing.react.jsx`
+  * Tag commit with version
+
+#### Deployment (currently to `gh-pages`)
+* git checkout `gh-pages`
+* bump version in `intro.html`
+* `git checkout master font img js/bundle.js index.html css`
+* commit

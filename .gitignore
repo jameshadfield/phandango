@@ -33,8 +33,6 @@ dist
 datasets
 
 
-# the bundle (this is not ignored on releases)
-js/bundle.js
+# bundle is now included (at least in master branch, dev branches may be different)
+# js/bundle.js
 
-# ESlint (for the time being)
-.eslintrc

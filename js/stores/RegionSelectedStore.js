@@ -1,37 +1,36 @@
-var EventEmitter = require('events').EventEmitter;
-var assign = require('object-assign');
-var Dispatcher = require('../dispatcher/dispatcher');
+const EventEmitter = require('events').EventEmitter;
+const assign = require('object-assign');
+const Dispatcher = require('../dispatcher/dispatcher');
 
-var location_clicked = [0,0];
-var canvas_id = undefined;
+let locationClicked = [ 0, 0 ];
+let canvasId = undefined;
 
-var RegionSelectedStore = assign({}, EventEmitter.prototype, {
-	emitChange: function() {
-		// console.log("regions selected store store emission")
-		this.emit('change');
-	},
-	addChangeListener: function(callback) {
-		this.on('change', callback);
-	},
-	removeChangeListener: function(callback) {
-		this.removeListener('change', callback);
-	},
-	getClickXY: function() {
-		return location_clicked;
-	},
-	getID: function() {
-		return canvas_id;
-	}
-})
+const RegionSelectedStore = assign({}, EventEmitter.prototype, {
+  emitChange: function () {
+    // console.log("regions selected store store emission")
+    this.emit('change');
+  },
+  addChangeListener: function (callback) {
+    this.on('change', callback);
+  },
+  removeChangeListener: function (callback) {
+    this.removeListener('change', callback);
+  },
+  getClickXY: function () {
+    return locationClicked;
+  },
+  getID: function () {
+    return canvasId;
+  },
+});
 
-
-Dispatcher.register(function(payload) {
-	if (payload.actionType === 'click') {
-		canvas_id = payload.id;
-		location_clicked = [payload.mx, payload.my];
-		// console.log('action received. location_clicked = ['+payload.mx+', '+payload.my+']')
-		RegionSelectedStore.emitChange()
-	}
-})
+Dispatcher.register(function (payload) {
+  if (payload.actionType === 'click') {
+    canvasId = payload.id;
+    locationClicked = [ payload.mx, payload.my ];
+    // console.log('action received. locationClicked = ['+payload.mx+', '+payload.my+']')
+    RegionSelectedStore.emitChange();
+  }
+});
 
 module.exports = RegionSelectedStore;
