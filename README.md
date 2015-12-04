@@ -31,14 +31,21 @@ JSCandy is entirely run from within the browser and runs entirely on your comput
 * Push your branch to github and email / submit a pull request
 
 #### Merging (into `master`)
-* un-comment google analytics script in `index.html`
-* All merges into `master` result in a version increase
-  * Modify version in `package.json`
-  * Modify version in `landing.react.jsx`
-  * Tag commit with version
+*All merges into `master` result in version increases*
+
+* Modify version in `package.json`
+* Modify version in `landing.react.jsx`
+* Rebuild via  `npm run build`
+* Tag commit with version
+
 
 #### Deployment (currently to `gh-pages`)
+*This branch is the only one with active google analytics*
+
 * git checkout `gh-pages`
 * bump version in `intro.html`
-* `git checkout master font img js/bundle.js index.html css`
+* `git checkout master font img js/bundle.js css`
+* if `index.html` has been modified (check via `git diff gh-pages master index.html`) then:
+  *  `git checkout master index.htm`
+  * make sure google analytics script is no longer commented out
 * commit
