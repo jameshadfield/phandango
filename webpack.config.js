@@ -5,7 +5,7 @@ module.exports = {
   // context: path.join(__dirname, 'dev'),
   // entry: All modules are loaded upon startup. The last one is exported.
   entry: [
-    './js/app',
+    './js/containers/app',
   ],
   debug: false,
   output: {
@@ -27,8 +27,10 @@ module.exports = {
       {
         test: /\.jsx?$/,
         exclude: /node_modules/,
-        // to avoid having a .babelrc write the presets like this:
-        loaders: [ 'babel?presets[]=es2015&presets[]=react' ],
+        // to avoid having a .babelrc we can write
+        // loaders: [ 'babel?presets[]=es2015&presets[]=react' ],
+        // but we need the .babelrc for mocha, so
+        loaders: [ 'babel' ],
         // note we can't have queries as there are multiple loaders
         include: path.join(__dirname, 'js'),
       }, {
