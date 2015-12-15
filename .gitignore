@@ -25,14 +25,14 @@ build/Release
 # Dependency directory
 # https://docs.npmjs.com/misc/faq#should-i-check-my-node-modules-folder-into-git
 node_modules
-webpack*
+
+# we are now using webpack
+# webpack*
+
 dev
 dist
 
-# datasets
+# datasets directory (testing only, use example_datasets for release)
 datasets
 
-
-# bundle is now included (at least in master branch, dev branches may be different)
-# js/bundle.js
 

@@ -18,28 +18,40 @@ const ErrDiv = React.createClass({ displayName: 'displayName',
     const standardActions = []; // [{text: 'standard text'}];
     // var title = <h3><font color="orange">WARNING</font> {this.state.errObj.title}</h3>;
     let mui; // the react code from material UI
-    if (this.state.errObj.isDialog) {
-      mui = (
-        <Dialog
-          title={this.state.errObj.title}
-          actions={standardActions}
-          open={this.state.showDialogStandardActions}
-          onRequestClose={this._getError}
-          ref="errorDisplay">
-          {this.state.errObj.message}
-        </Dialog>
-      );
-    } else {
-      mui = (
-        <Snackbar
-          title={this.state.errObj.title}
-          message={this.state.errObj.title}
-          autoHideDuration={2000}
-          ref="errorDisplay">
-          {this.state.errObj.title}
-        </Snackbar>
-      );
-    }
+    // TO DO
+    // NOT WORKING IN WEBPACK FOR SOME UNKNOWN REASON
+    // CHANGE AWAY FROM MATERIAL UI ?
+    // if (this.state.errObj.isDialog) {
+    //   mui = (
+    //     <Dialog
+    //       title={this.state.errObj.title}
+    //       actions={standardActions}
+    //       open={this.state.showDialogStandardActions}
+    //       onRequestClose={this._getError}
+    //       ref="errorDisplay">
+    //       {this.state.errObj.message}
+    //     </Dialog>
+    //   );
+    // } else {
+    //   mui = (
+    //     <Snackbar
+    //       title={this.state.errObj.title}
+    //       message={this.state.errObj.title}
+    //       autoHideDuration={2000}
+    //       ref="errorDisplay">
+    //       {this.state.errObj.title}
+    //     </Snackbar>
+    //   );
+    // }
+    mui = (
+      <Snackbar
+        title={this.state.errObj.title}
+        message={this.state.errObj.title || ''}
+        autoHideDuration={2000}
+        ref="errorDisplay">
+        {this.state.errObj.title}
+      </Snackbar>
+    );
     return (
       <g>{mui}</g>
     );
