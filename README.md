@@ -1,51 +1,63 @@
 # [JScandy](http://jameshadfield.github.io/JScandy/)
 
-Introduction and overview [here](http://jameshadfield.github.io/JScandy/intro.html)
+##
 
-Live version [here](http://jameshadfield.github.io/JScandy/)
+###[Click for the live version](http://jameshadfield.github.io/JScandy/)
 
 ##
 
-### Install your own (local) copy
+#### What is it?
+A fully interactive viewer for population-scale genomic data linked together by a phylogeny. Examples include metadata, recombination blocks, GWAS results and pan-genome contents. It is a single-page javascript application that runs in Chrome entirely on the client (so none of your results are sent to any server).
 
-JSCandy is entirely run from within the browser and runs entirely on your computer (i.e. entirely client side). If you want to download / fork the project from github and have a local (development) copy on your computer then this is for you:
+#### Motivation:
+This was originally written to help explore recombination in populations of bacteria using [gubbins](https://github.com/sanger-pathogens/gubbins) in the context of the bacteria's phylogeny. We found that the ability to interact with the data allows much easier and faster understanding. It has since been expanded to visualise a number of other formats and data types.
 
-* Node and Node Package manager (npm) are needed to build the javascript bundles. On OS X I recommend following this guide which uses homebrew and nvm.
-* Clone/Fork the github repo or download the zip files via github.com/jameshadfield/JScandy
-* As the bundled javascript file is included in the repo, you should now be good to go -- simply open up index.html in google chrome...
-* But if you want to have a development version then you'll need to install the required packages by running **npm install** in the JScandy directory, with these caveats
-  * Currently [PhyloCanvas](https://github.com/PhyloCanvas/PhyloCanvas) is linked in, so you'll have to clone that repo (branch release/2.0) and then link that with these commands **npm link** (in the PhyloCanvas directory) and **npm link PhyloCanvas** (in the JScandy directory)
-  * run **npm run build** to build the javascript files into a single bundle.
-  * either:
-    * run **npm run start** to start a simple server and open localhost:8000 in google chrome
-    * open index.html in google chrome
+#### Examples
 
-### Development
+Load the [live version](http://jameshadfield.github.io/JScandy/) to see some example datasets to explore.
 
-#### Branching
-* Branch off `master` (for features / hotfixes)
-* Comment out the google analytics script in `index.html`
-* Write code using `eslint`
+#### [Roadmap](#roadmap)
+Here is our list of (big) things to implement -- additional ideas or contributions are welcome.
+
+* Multiple plot display
+* ClonalFrameML & BRAT input
+* GWAS & seer display
+* ROARY (pan-genome) display
+* SNP display (VCF / tab file)
+* Searching for gene / taxa
+* Persist data via server
+* Firefox / Edge / Safari compatability
+* (phylocanvas) annotation / BEAST display
+* PDF output
+* (phylocanvas) colour in tips via selected metadata
+
+
+#### [Development](#development)
+
+##### Installing a local copy:
+
+* Install Node and Node Package manager (npm), which allow bundling of the javascript packages. On OS X [I find nvm](http://stackoverflow.com/a/28025834) to be the best way.
+* Clone or fork this github repo
+* Run `npm install` in the JScandy directory
+* Install PhyloCanvas (>2.0.0) via `npm install git+https://github.com/PhyloCanvas/PhyloCanvas.git#8849ce3  ` or clone the PhyloCanvas repo and use `npm link`
+* Run the tests with `npm run test`
+* `npm run start` bundles the javascript and serves it to localhost:8080 with dev-tools enabled
+* `npm run build` produces a production-ready bundle available at index.html
+
+##### Branching:
+
+* Branch off `master`
+* Ensure `eslint` is working in your editor
 * Write`.md` files using [markdownlivepreview](http://markdownlivepreview.com/)
-* Run `npm run build` before all commits (this minimises the `bundle.js` file)
-* Push your branch to github and email / submit a pull request
 
-#### Merging (into `master`)
-*All merges into `master` result in version increases*
+##### Merging into `master`:
 
 * Modify version in `package.json`
 * Modify version in `landing.react.jsx`
-* Rebuild via  `npm run build`
-* Tag commit with version
 
+##### Deployment to `gh-pages`:
 
-#### Deployment (currently to `gh-pages`)
-*This branch is the only one with active google analytics*
-
-* git checkout `gh-pages`
-* bump version in `intro.html`
-* `git checkout master font img js/bundle.js css`
-* if `index.html` has been modified (check via `git diff gh-pages master index.html`) then:
-  *  `git checkout master index.htm`
-  * make sure google analytics script is no longer commented out
-* commit
+* (in `master`) build bundle and stash it
+* apply the stash
+* if `index.html` has changed (`git diff gh-pages master index.html`) then: `git checkout master index.htm` and make sure google analytics are not commented out
+* manually checkout any newly required images / fonts (CSS is bundled).

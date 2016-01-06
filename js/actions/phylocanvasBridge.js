@@ -63,3 +63,14 @@ function _getBackingStorePixelRatio(context) { // PhyloCanvas code
 function _getPixelRatio(canvas) { // PhyloCanvas code
   return (window.devicePixelRatio || 1) / _getBackingStorePixelRatio(canvas);
 }
+
+export function nodeSelected(taxa) {
+  return function (dispatch, getState) {
+    dispatch({
+      type: 'computeSubLineGraph',
+      blocks: getState().blocks.blocks,
+      genomeLength: getState().genomeInfo.genomeLength,
+      taxa: taxa,
+    });
+  };
+}

@@ -1,7 +1,7 @@
 {
   "_comment": "http://browsenpm.org/package.json",
   "name": "JScandy",
-  "version": "0.2.6",
+  "version": "0.3.0",
   "scripts": {
     "build": "webpack",
     "start": "webpack-dev-server --config webpack-dev-server.config.js --progress --port 8080 --hot --colors",
@@ -31,11 +31,13 @@
     "eslint": "^1.10.3",
     "eslint-plugin-react": "^3.13.1",
     "events": "^1.1.0",
+    "flexboxgrid": "^6.3.0",
     "lodash": "^3.10.1",
+    "material-ui": "^0.14.1",
     "mocha": "^2.3.4",
+    "node-libs-browser": "^0.5.3",
     "object-assign": "4.0.1",
     "papaparse": "^4.1.2",
-    "phylocanvas": "file:../PhyloCanvas",
     "phylocanvas-plugin-context-menu": "phylocanvas/phylocanvas-plugin-context-menu",
     "raw-loader": "^0.5.1",
     "react": "^0.14.3",
@@ -51,6 +53,9 @@
     "style-loader": "^0.13.0",
     "webpack": "^1.12.9",
     "webpack-dev-server": "^1.14.0"
+  },
+  "linkedDependencies": {
+    "phylocanvas": "file:../PhyloCanvas"
   },
   "preferGlobal": false,
   "private": true,

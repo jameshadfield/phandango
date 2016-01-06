@@ -7,7 +7,8 @@ const init = {
     smallGenome: false,
     meta: false,
     annotation: false,
-    plots: [ false ],
+    metaKey: false,
+    plots: {},
   },
   colPercs: [ 0, 0, 0 ],
   rowPercs: [ 0, 0, 0 ],
@@ -18,10 +19,87 @@ const startingValues = {
   rowPercs: [ 15, 70, 15 ],
 };
 
+export function layout(state = init, action) {
+  let newState;
+  switch (action.type) {
+  // when new data is loaded, load it and give it a percentage
+  case 'annotationData':
+    newState = merge({}, state);
+    newState.active.annotation = true;
+    newState.colPercs = calculateNewPercs(state.colPercs, 2, true);
+    newState.rowPercs = calculateNewPercs(state.rowPercs, 0, false);
+    return newState;
+  case 'roaryData': // fallthrough
+  case 'gubbinsData':
+    newState = merge({}, state);
+    newState.active.blocks = true;
+    newState.colPercs = calculateNewPercs(state.colPercs, 2, true);
+    newState.rowPercs = calculateNewPercs(state.rowPercs, 1, false);
+    return newState;
+  case 'computeLineGraph':
+    newState = merge({}, state);
+    newState.active.plots.line = true;
+    newState.rowPercs[2] = 15;
+    return newState;
+  case 'gwasData':
+    newState = merge({}, state);
+    newState.active.plots.gwas = true;
+    newState.rowPercs[2] = 15;
+    return newState;
+  case 'treeData':
+    newState = merge({}, state);
+    newState.active.tree = true;
+    newState.colPercs = calculateNewPercs(state.colPercs, 0, true);
+    newState.rowPercs = calculateNewPercs(state.rowPercs, 1, false);
+    return newState;
+  case 'metaData':
+    newState = merge({}, state);
+    newState.active.meta = true;
+    newState.colPercs = calculateNewPercs(state.colPercs, 1, true);
+    newState.rowPercs = calculateNewPercs(state.rowPercs, 1, false);
+    return newState;
+  // modify percentages
+  case 'layoutColChange':
+    newState = merge({}, state);
+    newState.colPercs = distributeNewPercs(newState.colPercs, action.perc, action.idx);
+    // newState.colPercs[action.idx] = action.perc;
+
+
+    return newState;
+  case 'layoutRowChange':
+    newState = merge({}, state);
+    // newState.rowPercs[action.idx] = action.perc;
+    newState.rowPercs = distributeNewPercs(newState.rowPercs, action.perc, action.idx);
+    return newState;
+  // de-re-activate things
+  case 'turnOffCanvas':
+    newState = merge({}, state);
+    newState.active[action.name] = false;
+    if (!newState.active.meta) {
+      newState.active.metaKey = false;
+    }
+    return newState;
+  case 'turnOnCanvas':
+    newState = merge({}, state);
+    newState.active[action.name] = true;
+    return newState;
+  case 'toggleMetaKey':
+    newState = merge({}, state);
+    // if metadata is currently active, then we can toggle:
+    if (state.active.meta) {
+      newState.active.metaKey = !state.active.metaKey;
+    }
+    return newState;
+  default:
+    return state;
+  }
+}
+
+
 function calculateNewPercs(old, idxAdded, column) {
   let ret;
   if (old[idxAdded]) {
-    console.log('what should I do?');
+    // console.log('what should I do?');
     ret = old;
   } else {
     [ ...ret ] = old;
@@ -31,51 +109,23 @@ function calculateNewPercs(old, idxAdded, column) {
   return ret;
 }
 
+function add(a, b) {return (a + b);} // http://stackoverflow.com/questions/1230233/how-to-find-the-sum-of-an-array-of-numbers
 
-export function layout(state = init, action) {
-  const newState = merge({}, state);
-  switch (action.type) {
-  // when new data is loaded, load it and give it a percentage
-  case 'annotationData':
-    newState.active.annotation = true;
-    newState.colPercs = calculateNewPercs(state.colPercs, 2, true);
-    newState.rowPercs = calculateNewPercs(state.rowPercs, 0, false);
-    return newState;
-  case 'gubbinsData':
-    newState.active.blocks = true;
-    newState.colPercs = calculateNewPercs(state.colPercs, 2, true);
-    newState.rowPercs = calculateNewPercs(state.rowPercs, 1, false);
-    // don't forget the line graph!
-    newState.active.plots[0] = true;
-    newState.rowPercs[2] = 15;
-    return newState;
-  case 'treeData':
-    newState.active.tree = true;
-    newState.colPercs = calculateNewPercs(state.colPercs, 0, true);
-    newState.rowPercs = calculateNewPercs(state.rowPercs, 1, false);
-    return newState;
-  case 'metaData':
-    newState.active.meta = true;
-    newState.colPercs = calculateNewPercs(state.colPercs, 1, true);
-    newState.rowPercs = calculateNewPercs(state.rowPercs, 1, false);
-    return newState;
-  // modify percentages
-  case 'layoutColChange':
-    newState.colPercs[action.idx] = action.perc;
-    return newState;
-  case 'layoutRowChange':
-    newState.rowPercs[action.idx] = action.perc;
-    return newState;
-  // de-re-activate things
-  case 'turnOffCanvas':
-    newState.active[action.name] = false;
-    return newState;
-  case 'turnOnCanvas':
-    newState.active[action.name] = true;
-    return newState;
-  default:
-    return state;
+function distributeNewPercs(oldVals, newVal, newIdx) {
+  const newVals = [ ...oldVals ];
+  newVals[newIdx] = newVal;
+  const spaceToFill = oldVals[newIdx] - newVal;
+
+  for (let i = 0; i < oldVals.length; i++) {
+    if (i === newIdx) {
+      continue;
+    }
+    newVals[i] = parseInt(oldVals[i] + spaceToFill * (oldVals[i] / 100), 10);
   }
+
+  newVals[0] -= newVals.reduce(add, 0) - 100;
+
+  return newVals;
 }
 
 /*

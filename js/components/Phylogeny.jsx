@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { setYValues } from '../actions/phylocanvasBridge';
+import { setYValues, nodeSelected } from '../actions/phylocanvasBridge';
 import PhyloCanvas from 'PhyloCanvas';
 import ContextMenuPlugin from 'phylocanvas-plugin-context-menu';
 PhyloCanvas.plugin(ContextMenuPlugin);
@@ -45,15 +45,17 @@ export const Phylogeny = React.createClass({
     // or when zoom happens then we should do the same!
     // we update the store by listening to an event, triggering an action, dispatching the action e.t.c. (FLUX)
 
+    // can we not use ref here, instead of document.getElem... ??
+
     document.getElementById('phyloDiv').addEventListener('updated', function (e) {
       if (e.property === 'selected') {
-        console.log('TO DO: node selected');
-        // Actions.phylocanvas_nodes_selected(e.nodeIds);
+        dispatch(nodeSelected(e.nodeIds));
+        // dispatch(setYValues(this.phylocanvas));
       }
     }, false);
 
     document.getElementById('phyloDiv').addEventListener('subtree', (e) => {
-      console.log('TO DO: subtree drawn. e:', e);
+      // console.log('TO DO: subtree drawn. e:', e);
       dispatch(setYValues(this.phylocanvas));
     }, false);
 

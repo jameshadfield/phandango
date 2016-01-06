@@ -1,6 +1,8 @@
 import React from 'react';
-import { Mouse } from '../misc/mouse';
+import { Mouse, getMouse } from '../misc/mouse';
 import * as helper from '../misc/helperFunctions';
+import { InfoTip } from './infoTip';
+
 
 /*
   The Blocks component
@@ -16,25 +18,52 @@ export const Blocks = React.createClass({
   },
 
   getInitialState: function () {
-    return ({ selected: undefined });
+    return ({ selected: undefined, hovered: undefined });
   },
 
   componentDidMount: function () { // don't use fat arrow
     this.initCanvasXY();
     this.mouse = new Mouse(this.canvas, this.props.dispatch, this.onClickCallback); // set up listeners
-    this.selected = undefined; // selected arrow (gene)
-    this.redraw(this.props);
+    this.canvas.addEventListener('mousemove', this.onMouseMove, true);
+    this.canvas.addEventListener('mouseout',
+      () => {this.setState({ hovered: undefined });},
+      true);
+    this.redraw(this.props, this.state);
   },
 
   shouldComponentUpdate() {
     return true;
   },
 
-  componentWillUpdate(props) {
-    this.redraw(props);
+  componentWillUpdate(props, state) {
+    this.canvasPos = this.canvas.getBoundingClientRect();
+    this.redraw(props, state);
   },
 
   render() {
+    const selected = [];
+    // if (this.state.selected) {
+    //   selected.push({
+    //     x: this.getXYOfBlock(this.state.selected)[0],
+    //     y: this.getXYOfBlock(this.state.selected)[1],
+    //     disp: {
+    //       'n(SNPs)': this.state.selected.snps,
+    //       'n(taxa)': this.state.selected.nTaxa,
+    //       nll: parseInt(this.state.selected.nll, 10),
+    //     },
+    //   });
+    // }
+    if (this.state.hovered) {
+      selected.push({
+        x: this.getXYOfBlock(this.state.hovered)[0],
+        y: this.getXYOfBlock(this.state.hovered)[1],
+        disp: {
+          'n(SNPs)': this.state.hovered.snps,
+          'n(taxa)': this.state.hovered.nTaxa,
+          nll: parseInt(this.state.hovered.nll, 10),
+        },
+      });
+    }
     return (
       <div>
         <canvas
@@ -42,11 +71,14 @@ export const Blocks = React.createClass({
           ref={(c) => this.canvas = c}
           style={this.props.style}
         />
+        {selected.map((cv, idx) =>
+          <InfoTip key={idx} disp={cv.disp} x={cv.x} y={cv.y} />
+        )}
       </div>
     );
   },
 
-  redraw: function (props) {
+  redraw: function (props, state) {
     // expensive way to handle resizing
     this.initCanvasXY();
     const context = this.canvas.getContext('2d');
@@ -57,7 +89,7 @@ export const Blocks = React.createClass({
     // if (
     //   myState.selected_block !== undefined
     //   &&
-    //   (myState.selected_block.end_base < visibleGenome[0] || myState.selected_block.start_base > visibleGenome[1])
+    //   (myState.selected_block.endBase < visibleGenome[0] || myState.selected_block.startBase > visibleGenome[1])
     // ) {
     //   myState.selected_block = undefined;
     // }
@@ -65,14 +97,27 @@ export const Blocks = React.createClass({
     //   draw.highlightSelectedNodes(myState.canvas, myState.context, [ myState.selected_block.x1, myState.selected_block.x2 ], false);
     // }
     drawBlocks(context, blocks);
+    // if (state.selected) {
+      // this.drawBorder(context, state.selected, 'black');
+    // }
+    if (state.hovered) {
+      this.drawBorder(context, state.hovered, 'purple');
+    }
   },
 
-  // onClickCallback(mx, my) {
-  //   // we can dispatch here as well if necessary!
-  //   this.setState({
-  //     selected: getClicked(mx, my, this.props.data, this.props.visibleGenome, this.canvas),
-  //   });
-  // },
+  onClickCallback(mx, my) {
+    // we can dispatch here as well if necessary!
+    this.setState({
+      selected: this.findSelected(mx, my),
+    });
+  },
+
+  onMouseMove(e) {
+    const mouse = getMouse(e, this.canvas);
+    this.setState({
+      hovered: this.findSelected(mouse.x, mouse.y),
+    });
+  },
 
   // by specifying the funtions here
   // react auto-binds 'this'
@@ -80,6 +125,55 @@ export const Blocks = React.createClass({
   // to be hot-reloaded
   initCanvasXY: helper.initCanvasXY,
   clearCanvas: helper.clearCanvas,
+
+  getXYOfBlock(block) {
+    return ([
+      parseInt( (block.x2) + this.canvasPos.left, 10),
+      parseInt( block.y2 + this.canvasPos.top + 5, 10),
+    ]);
+  },
+
+
+  findSelected(mx, my) {
+    const blocks = computeBlocksInView(this.props.data, this.props.visibleGenome, this.canvas, this.props.activeTaxa);
+    for (let idx = 0; idx < blocks.length; idx++) {
+      if (
+        mx >= blocks[idx].x1 &&
+        mx <= (blocks[idx].x2) &&
+        my >= blocks[idx].y1 &&
+        my <= (blocks[idx].y2)
+        ) {
+        return (
+          {
+            x1: blocks[idx].x1,
+            x2: blocks[idx].x2,
+            y1: blocks[idx].y1,
+            y2: blocks[idx].y2,
+            nll: blocks[idx].nll,
+            nTaxa: blocks[idx].taxa.length,
+            snps: blocks[idx].snps,
+          }
+        );
+        // blocks[idx]; // reference
+      }
+    }
+    // nothing selected! (fallthrough)
+    return undefined;
+  },
+
+  drawBorder(context, block, colour, width = 2) {
+    context.strokeStyle = colour;
+    context.lineWidth = width;
+    context.beginPath();
+    context.lineTo(block.x1, block.y1);
+    context.lineTo(block.x1, block.y2);
+    context.lineTo(block.x2, block.y2);
+    context.lineTo(block.x2, block.y1);
+    context.lineTo(block.x1, block.y1);
+    context.closePath();
+    context.stroke();
+  },
+
 });
 
 
@@ -99,13 +193,12 @@ export const Blocks = React.createClass({
 //   return undefined;
 // }
 
-
-function drawBlocks(context, blocks) {
+function drawBlocks(context, blocks, alpha = 0.3) {
   for (let i = 0; i < blocks.length; i++) {
     context.save();
     // context.beginPath() // does what?
     context.fillStyle = blocks[i].fill;
-    context.globalAlpha = 0.3;
+    context.globalAlpha = alpha;
     context.fillRect(blocks[i].x1, blocks[i].y1, blocks[i].x2 - blocks[i].x1, blocks[i].y2 - blocks[i].y1);
     context.restore();
   }
@@ -177,7 +270,7 @@ function computeBlocksInView(rawBlocks, visibleGenomeCoords, canvas, activeTaxa)
 
   for (let i = 0; i < rawBlocks.length; i++) {
     // check if in view here
-    if (rawBlocks[i].start_base >= visibleGenomeCoords[1] || rawBlocks[i].end_base <= visibleGenomeCoords[0]) {
+    if (rawBlocks[i].startBase >= visibleGenomeCoords[1] || rawBlocks[i].endBase <= visibleGenomeCoords[0]) {
       continue;
     }
     let anyTaxaInView = false;
@@ -190,8 +283,8 @@ function computeBlocksInView(rawBlocks, visibleGenomeCoords, canvas, activeTaxa)
     if (anyTaxaInView === false) {continue;}
 
     const newBlock = rawBlocks[i]; // pass by reference
-    newBlock.x1 = parseInt( (newBlock.start_base - visibleGenomeCoords[0]) / basesVisible * canvas.width, 10);
-    newBlock.x2 = parseInt( (newBlock.end_base - visibleGenomeCoords[0])  / basesVisible * canvas.width, 10);
+    newBlock.x1 = parseInt( (newBlock.startBase - visibleGenomeCoords[0]) / basesVisible * canvas.width, 10);
+    newBlock.x2 = parseInt( (newBlock.endBase - visibleGenomeCoords[0])  / basesVisible * canvas.width, 10);
 
     // how many pixels?  if 2 or 1 or 0 then don't bother
     // if ((newBlock.x2 - newBlock.x1) <= 2) {continue;}

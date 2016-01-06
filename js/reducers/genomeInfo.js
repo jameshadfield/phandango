@@ -8,6 +8,7 @@ const initialInfo = {
 export function genomeInfo(state = initialInfo, action) {
   switch (action.type) {
   case 'annotationData': // fallthrough
+  case 'roaryData': // fallthrough
   case 'gubbinsData':
     return merge({}, state, {
       genomeLength: action.genomeLength,

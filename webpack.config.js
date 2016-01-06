@@ -21,6 +21,23 @@ module.exports = {
     }),
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.NoErrorsPlugin(),
+    new webpack.optimize.UglifyJsPlugin({ // https://github.com/mishoo/UglifyJS2#usage
+      sourceMap: true, // only for display during compilation i think
+      mangle: true, // 890kb -> 580kb
+      compressor: { // these are only minor size savings
+        warnings: false,
+        sequences: true,
+        conditionals: true,
+        unused: true,
+        if_return: true,
+        drop_console: true,
+        dead_code: true,
+        drop_debugger: true,
+        unsafe: false, // would save 1kb
+      },
+      minimize: true,
+      'screw-ie8': true,
+    }),
   ],
   module: {
     loaders: [

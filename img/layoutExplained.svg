@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 15.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="562.812px" height="400px" viewBox="0 0 562.812 400" enable-background="new 0 0 562.812 400" xml:space="preserve">
+<rect x="72.322" y="102.418" fill="#D1D3D4" stroke="#000000" stroke-miterlimit="10" width="125.162" height="219.355"/>
+<rect x="202.355" y="102.418" fill="#D1D3D4" stroke="#000000" stroke-miterlimit="10" width="80.645" height="219.355"/>
+<rect x="288.645" y="102.418" fill="#D1D3D4" stroke="#000000" stroke-miterlimit="10" width="260.452" height="219.355"/>
+<rect x="288.645" y="36.354" fill="#D1D3D4" stroke="#000000" stroke-miterlimit="10" width="260.452" height="61.033"/>
+<rect x="288.645" y="327.581" fill="#D1D3D4" stroke="#000000" stroke-miterlimit="10" width="260.452" height="64.128"/>
+<polygon fill="none" points="170.966,259.273 33.555,303.933 8.404,226.527 145.814,181.877 "/>
+<text transform="matrix(0.951 -0.3091 0.3091 0.951 13.2266 241.3672)"><tspan x="0" y="0" fill="#92278F" font-family="'Lato-Bold'" font-size="21">tree</tspan><tspan x="-0.001" y="16.8" fill="#92278F" font-family="'Lato-Bold'" font-size="14">- zoom / move around</tspan><tspan x="-0.002" y="33.6" fill="#92278F" font-family="'Lato-Bold'" font-size="14">- right click on nodes </tspan><tspan x="-0.003" y="50.4" fill="#92278F" font-family="'Lato-Bold'" font-size="14">for options</tspan></text>
+<g>
+	<g>
+		<path fill="none" stroke="#FBB040" stroke-width="3" stroke-miterlimit="10" d="M33.698,208.201
+			c4.846-11.912,15.887-30.347,38.624-34.286c42.261-7.322,66.452,12.375,66.452,12.375"/>
+		<g>
+			<path fill="#FBB040" d="M30.387,218.549c3.412-4.253,8.484-9.25,12.977-11.899l-9.1,0.238l-7.146-5.639
+				C29.131,206.062,30.202,213.101,30.387,218.549z"/>
+		</g>
+	</g>
+</g>
+<g>
+	<g>
+		<path fill="none" stroke="#FBB040" stroke-width="3" stroke-miterlimit="10" d="M218.492,360.406
+			c12.083-5.705,31.875-17.482,40.927-36.496c19.952-41.904-1.464-78.576-1.464-78.576"/>
+		<g>
+			<path fill="#FBB040" d="M208.452,364.556c5.447-0.242,12.548,0.271,17.504,1.899l-6.184-6.681l-0.478-9.09
+				C217.006,355.372,212.423,360.821,208.452,364.556z"/>
+		</g>
+	</g>
+</g>
+<polygon fill="none" points="231.86,368.059 101.298,398.187 89.749,348.111 220.308,317.989 "/>
+<text transform="matrix(0.9744 -0.2248 0.2248 0.9744 93.2563 363.3145)"><tspan x="0" y="0" fill="#92278F" font-family="'Lato-Bold'" font-size="21">metadata</tspan><tspan x="-0.002" y="16.801" fill="#92278F" font-family="'Lato-Bold'" font-size="14">- hover over for info</tspan><tspan x="-0.004" y="33.6" fill="#92278F" font-family="'Lato-Bold'" font-size="14">- “k” toggles key</tspan></text>
+<polygon fill="none" points="489.073,385.438 292.968,385.277 293.019,333.887 489.119,334.054 "/>
+<text transform="matrix(1 8.324534e-04 -8.324534e-04 1 293.0049 349.4893)"><tspan x="0" y="0" fill="#92278F" font-family="'Lato-Bold'" font-size="21">graph(s)</tspan><tspan x="-0.003" y="16.8" fill="#92278F" font-family="'Lato-Bold'" font-size="14">- click on points for info</tspan><tspan x="-0.006" y="33.6" fill="#92278F" font-family="'Lato-Bold'" font-size="14">- options in settings panel (”s”)</tspan></text>
+<polygon fill="none" points="545.844,277.278 300,220.017 320.601,131.618 566.438,188.888 "/>
+<text transform="matrix(0.9739 0.2269 -0.2269 0.9739 317.0605 146.814)"><tspan x="0" y="0" fill="#92278F" font-family="'Lato-Bold'" font-size="21">recombination blocks / </tspan><tspan x="-0.002" y="25.199" fill="#92278F" font-family="'Lato-Bold'" font-size="21">pan-genome</tspan><tspan x="-0.004" y="42" fill="#92278F" font-family="'Lato-Bold'" font-size="14">- click on blocks for info</tspan><tspan x="-0.006" y="58.801" fill="#92278F" font-family="'Lato-Bold'" font-size="14">- display options in settings panel (”s”)</tspan></text>
+<polygon fill="none" points="300.489,77.48 99.538,97.388 94.479,46.247 295.427,26.346 "/>
+<text transform="matrix(0.9951 -0.0986 0.0986 0.9951 96.0176 61.7754)"><tspan x="0" y="0" fill="#92278F" font-family="'Lato-Bold'" font-size="21">genome annotation</tspan><tspan x="-0.003" y="16.799" fill="#92278F" font-family="'Lato-Bold'" font-size="14">- click on genes to display info</tspan></text>
+<g>
+	<g>
+		<path fill="none" stroke="#FBB040" stroke-width="3" stroke-miterlimit="10" d="M211.951,84.286
+			c13.599,6.308,40.862,15.901,76.694,13.101c46.269-3.615,59.806-23.354,59.806-23.354"/>
+		<g>
+			<path fill="#FBB040" d="M202.355,79.194c3.668,4.034,7.813,9.823,9.729,14.674l1.185-9.025l6.684-6.178
+				C214.886,79.902,207.766,79.861,202.355,79.194z"/>
+		</g>
+	</g>
+</g>
+</svg>

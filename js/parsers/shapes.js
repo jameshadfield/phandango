@@ -16,6 +16,7 @@ export function Arrow(featurestart, featureend, direction, fill, stroke, strokeW
   this.coordinates = [];
   this.ID = '';
   this.product = '';
+  this.fields = {};
   const artemisColours = {
     0: 'white',
     1: '#707070',
@@ -40,16 +41,21 @@ export function Arrow(featurestart, featureend, direction, fill, stroke, strokeW
     if (varval.length < 2) {
       continue;
     }
-    const variable = varval[0].replace(/(^'|'$)/g, '');
-    const value = varval[1].replace(/(^'|'$)/g, '');
+    const variable = varval[0].replace(/(^'|'$)/g, '').replace(/(^"|"$)/g, '');
+    const value = varval[1].replace(/(^'|'$)/g, '').replace(/(^"|"$)/g, '').substring(0, 50);
 
-    if (variable === 'ID') {
-      this.ID = value;
-    } else if (variable === 'product') {
-      this.product = value.replace(/(^'|'$)/g, '');
-    } else if (variable === 'locus_tag') {
-      this.locus_tag = value.replace(/(^'|'$)/g, '');
-    } else if ((variable === 'color') || (variable === 'colour')) {
+    if (variable && value) {
+      this.fields[variable] = value;
+    }
+
+    // if (variable === 'ID') {
+    //   this.ID = value;
+    // } else if (variable === 'product') {
+    //   this.product = value.replace(/(^'|'$)/g, '');
+    // } else if (variable === 'locus_tag') {
+    //   this.locus_tag = value.replace(/(^'|'$)/g, '');
+    // }
+    if ((variable === 'color') || (variable === 'colour')) {
       const colourValue = +value.replace(/(^'|'$)/g, '');
 
       if (!isNaN(colourValue)) {
@@ -67,8 +73,8 @@ export function Block(startBase, endBase, taxa, node, nll, snps, id) {
   // This is a very simple and unsafe constructor.
   // All we're doing is checking if the values exist.
   // if this.node is false then it's a leaf (croucher's version would display blue)
-  this.start_base = startBase;
-  this.end_base = endBase;
+  this.startBase = startBase;
+  this.endBase = endBase;
   this.taxa = taxa;
   this.node = node;
   this.nll = nll; // neg-log-likelihood
@@ -86,3 +92,31 @@ export function Block(startBase, endBase, taxa, node, nll, snps, id) {
   this.y2 = 0;
   this.id = id; // unique ID
 }
+
+
+/* Ellipse */
+export function Ellipse(featurex, featurey, val1, radiusX = false) {
+  this.stroke = 'black';
+  this.strokeWidth = 1;
+  this.featurex = featurex;
+  this.featurey = featurey;
+  this.radiusX = radiusX;
+  this.rSquared = val1;
+  // R^2 -> colour (unless seer)
+  if (this.radiusX) {
+    this.fill = 'gray';
+  } else {
+    if (val1 > 0.8) {
+      this.fill = '#FF0000';
+    } else if (val1 > 0.6) {
+      this.fill = '#FFA500';
+    } else if (val1 > 0.4) {
+      this.fill = '#32CD32';
+    } else if (val1 > 0.2) {
+      this.fill = '#87CEFA';
+    } else if (val1 >= 0) {
+      this.fill = '#0000FF';
+    }
+  }
+}
+

@@ -4,7 +4,9 @@ import { Annotation } from '../components/annotation';
 import { Phylogeny } from '../components/phylogeny';
 import { Blocks } from '../components/blocks';
 import { Metadata } from '../components/metadata';
+import { MetadataKey } from '../components/metadataKey';
 import { Line } from '../components/lineGraph';
+import { Gwas } from '../components/gwasGraph';
 import { Cartoon } from '../components/cartoonGenome';
 
 /*
@@ -14,7 +16,7 @@ These connect statements control which props they get
 */
 const ConnectedAnnotation = connect((state)=>({
   visibleGenome: state.genomeInfo.visibleGenome,
-  data: state.annotation,
+  data: state.annotation.data,
 }))(Annotation);
 const ConnectedPhylogeny = connect((state)=>({
   newickString: state.phylogeny.newickString,
@@ -28,11 +30,20 @@ const ConnectedMetadata = connect((state)=>({
   activeTaxa: state.phylogeny.activeTaxa,
   metadata: state.metadata,
 }))(Metadata);
+const ConnectedMetadataKey = connect((state)=>({
+  metadata: state.metadata,
+}))(MetadataKey);
 const ConnectedLine = connect((state)=>({
   visibleGenome: state.genomeInfo.visibleGenome,
   values: state.lineGraph.values,
+  subValues: state.lineGraph.subValues,
   max: state.lineGraph.max,
 }))(Line);
+const ConnectedGwas = connect((state)=>({
+  visibleGenome: state.genomeInfo.visibleGenome,
+  values: state.gwasGraph.values,
+  max: state.gwasGraph.max,
+}))(Gwas);
 const ConnectedCartoon = connect((state)=>({
   visibleGenome: state.genomeInfo.visibleGenome,
   genomeLength: state.genomeInfo.genomeLength,
@@ -102,15 +113,20 @@ export const CanvasContainer = React.createClass({ displayName: 'CanvasContainer
     } else {
       middleRow[1] = <div style={this.getStyle(1, 1)} key={'meta'} />;
     }
-    // blocks
-    if (active.blocks) {
+    // blocks / metadata key
+    if (active.metaKey) {
+      middleRow[2] = <ConnectedMetadataKey style={this.getStyle(2, 1)} key={'metaKey'} />;
+    } else if (active.blocks) {
       middleRow[2] = <ConnectedBlocks style={this.getStyle(2, 1)} key={'blocks'} />;
     } else {
       middleRow[2] = <div style={this.getStyle(2, 1)} key={'blocks'} />;
     }
 
+    // needs imporvement
     const plots = [];
-    if (active.plots[0]) {
+    if ('gwas' in active.plots ) {
+      plots[0] = <ConnectedGwas style={this.getStyle(2, 2)} key={'gwas'} />;
+    } else if ('line' in active.plots ) {
       plots[0] = <ConnectedLine style={this.getStyle(2, 2)} key={'line'} />;
     }
 

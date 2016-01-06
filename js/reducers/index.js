@@ -1,75 +1,39 @@
 import merge from 'lodash/object/merge';
-import clone from 'lodash/lang/clone';
 import { combineReducers } from 'redux';
 import { genomeInfo } from './genomeInfo';
-import { errorQueue } from './errors';
 import { layout } from './layout';
 import { lineGraph } from './lineGraph';
-
-const initialBlockState = {
-  gubbins: [],
-  roary: [],
-  other: [],
-  blocks: [], // this is the only thing actually displayed
-  fileNames: {},
-};
+import { gwasGraph } from './gwasGraph';
+import { notifications } from './notifications';
+import { metadata } from './metadata';
+import { blocks } from './blocks';
 
 const initialPhylogenyState = {
   newickString: undefined,
   activeTaxa: {},
-  fileName: undefined,
+  fileName: 'not loaded',
 };
 
-const initialMetadataState = {
-  data: undefined,
-  values: undefined,
-  colours: undefined,
-  headerNames: undefined,
-  info: undefined,
-  toggles: undefined,
-  fileName: undefined,
-};
 
 const rootReducer = combineReducers({
-  dummyReducer,
   annotation,
   metadata,
   blocks,
   lineGraph,
+  gwasGraph,
   genomeInfo,
   phylogeny,
   router,
-  errorQueue,
   layout,
+  notifications,
 });
 
 export default rootReducer;
 
-function dummyReducer(state = [], action) {
-  switch (action.type) {
-  case 'dummyAction':
-    return ([ action.data, ...state ]);
-  default:
-    return state;
-  }
-}
-
-function annotation(state = [], action) {
+function annotation(state = { data: [], fileName: '' }, action) {
   switch (action.type) {
   case 'annotationData':
-    return (action.data);
-  default:
-    return state;
-  }
-}
-
-function blocks(state = initialBlockState, action) {
-  switch (action.type) {
-  case 'gubbinsData':
-    return merge({}, state, {
-      gubbins: action.data,
-      blocks: action.data,
-    });
+    return { data: action.data, fileName: action.fileName };
   default:
     return state;
   }
@@ -80,11 +44,21 @@ function phylogeny(state = initialPhylogenyState, action) {
   case 'treeData':
     return merge({}, state, {
       newickString: action.data,
+      fileName: action.fileName,
     });
   case 'updatedTaxaPositions':
-    return merge({}, state, {
-      activeTaxa: action.activeTaxa,
-    });
+    const ret = merge({}, state);
+    ret.activeTaxa = action.activeTaxa;
+    return ret;
+    /* do not use merge in one go!
+     * if oldState.activeTaxa.X !== undefined, but now
+     * action.activeTaxa = undefined (as tip not visible)
+     * then the old value is retained!!!!!
+     * so merge is really a deepMerge
+     */
+    // return merge({}, state, {
+      // activeTaxa: action.activeTaxa,
+    // });
   default:
     return state;
   }
@@ -94,32 +68,14 @@ function router(state = 'landing', action) {
   switch (action.type) {
   case 'newPage':
     return state === action.pageName ? state : action.pageName;
-  case 'clearSpinner':
+  // case 'clearSpinner':
+    // return state === 'unknown' ? state : 'unknown';
+  // TO DO
+  case 'metaData':
+  case 'treeData':
     return state === 'unknown' ? state : 'unknown';
   default:
     return state;
   }
 }
 
-function metadata(state = initialMetadataState, action) {
-  switch (action.type) {
-  case 'metaData':
-    return {
-      data: action.data,
-      values: action.values,
-      colours: action.colours,
-      headerNames: action.headerNames,
-      info: action.info,
-      toggles: action.toggles,
-      fileName: action.fileName,
-    };
-  case 'toggleMetadataColumn':
-    // const newState = { ...state }; // DON'T DO THIS. NOT PURE.
-    // const newState = merge({}, state);
-    const newState = clone(state, true);
-    newState.toggles[action.idx] = action.newValue;
-    return newState;
-  default:
-    return state;
-  }
-}

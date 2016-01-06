@@ -1,11 +1,13 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import { Mouse } from '../misc/mouse';
+import { Mouse, getMouse } from '../misc/mouse';
 import * as helper from '../misc/helperFunctions';
+import { InfoTip } from './infoTip';
 
 /*
   The Annotation component
-  The only state here is the gene that's currently selected (and even this is a bad idea!)
+  The state here is to do with selected genes
+    on a click - the "permanently displayed" gene is put into state
+    on a mouseOver the "temporarily displayed" gene is put into state
 */
 export const Annotation = React.createClass({
   propTypes: {
@@ -16,14 +18,16 @@ export const Annotation = React.createClass({
   },
 
   getInitialState: function () {
-    return ({ selected: undefined });
+    return ({ geneSelected: undefined, geneHovered: undefined });
   },
 
   componentDidMount: function () {
-    this.initCanvasXY();
     this.mouse = new Mouse(this.canvas, this.props.dispatch, this.onClickCallback); // set up listeners
-    this.selected = undefined; // selected arrow (gene)
-    this.redraw(this.props, this.state);
+    this.canvas.addEventListener('mousemove', this.onMouseMove, true);
+    this.canvas.addEventListener('mouseout',
+      () => {this.setState({ geneHovered: undefined });},
+      true);
+    this.forceUpdate();
   },
 
   shouldComponentUpdate() {
@@ -31,10 +35,62 @@ export const Annotation = React.createClass({
   },
 
   componentWillUpdate(props, state) {
+    this.canvasPos = this.canvas.getBoundingClientRect();
+    this.initCanvasXY();
+    this.clearCanvas();
     this.redraw(props, state);
   },
 
+  onMouseMove(e) {
+    const mouse = getMouse(e, this.canvas);
+    this.setState({
+      geneHovered: getClicked(mouse.x, mouse.y, this.props.data, this.props.visibleGenome, this.canvas),
+    });
+  },
+
+  onClickCallback(mx, my) {
+    this.setState({
+      geneSelected: getClicked(mx, my, this.props.data, this.props.visibleGenome, this.canvas),
+    });
+  },
+
+  /* given an arrow, what are the x or y position to display the annotation at */
+  getXYOfSelectedGene(arrow, xy) {
+    let ret;
+    if (xy) { // xy=1 ==> y co-ordinate
+      ret = parseInt( arrow.coordinates[1][xy] + 5 + this.canvasPos.top, 10);
+    } else {
+      ret = parseInt( (arrow.coordinates[0][xy] + arrow.coordinates[2][xy]) / 2 + this.canvasPos.left, 10);
+    }
+    return ret;
+  },
+
+  infoUniqKey: 0,
   render() {
+    const genes = [];
+    if (this.state.geneSelected) {
+      genes.push({
+        x: this.getXYOfSelectedGene(this.state.geneSelected, 0),
+        y: this.getXYOfSelectedGene(this.state.geneSelected, 1),
+        // disp: {
+        //   locusTag: this.state.geneSelected.locus_tag,
+        //   product: this.state.geneSelected.product,
+        // },
+        disp: this.state.geneSelected.fields,
+      });
+    }
+    if (this.state.geneHovered) {
+      genes.push({
+        x: this.getXYOfSelectedGene(this.state.geneHovered, 0),
+        y: this.getXYOfSelectedGene(this.state.geneHovered, 1),
+        // disp: {
+        //   locusTag: this.state.geneHovered.locus_tag,
+        //   product: this.state.geneHovered.product,
+        // },
+        disp: this.state.geneHovered.fields,
+      });
+    }
+    // if (genes[0]) {console.log(genes[0].disp)} else {console.log(genes)}
     return (
       <div>
         <canvas
@@ -42,6 +98,9 @@ export const Annotation = React.createClass({
           ref={(c) => this.canvas = c}
           style={this.props.style}
         />
+        {genes.map((cv, idx) =>
+          <InfoTip key={++this.infoUniqKey + '_' + idx} disp={cv.disp} x={cv.x} y={cv.y} count={cv.count} />
+        )}
       </div>
     );
   },
@@ -50,30 +109,25 @@ export const Annotation = React.createClass({
   clearCanvas: helper.clearCanvas,
 
   redraw: function (props, state) {
-    // expensive way to handle resizing
-    this.initCanvasXY();
     const context = this.canvas.getContext('2d');
     const currentArrows = getArrowsInScope(props.data, props.visibleGenome, this.canvas);
     this.clearCanvas();
     drawArrows(context, currentArrows, props.visibleGenome[1] - props.visibleGenome[0] < 100000);
     drawScale(context, this.canvas.width, props.visibleGenome, parseInt(this.canvas.height / 2, 10));
-    if (state.selected !== undefined) {
-      if (getArrowsInScope([ state.selected ], props.visibleGenome, this.canvas).length > 0) {
-        drawBorderAndText(context, state.selected, parseInt(this.canvas.width / 2, 10), parseInt(this.canvas.height / 2, 10));
+
+    if (state.geneSelected !== undefined) {
+      if (getArrowsInScope([ state.geneSelected ], props.visibleGenome, this.canvas).length > 0) {
+        drawBorder(context, state.geneSelected, 'red');
       }
+    }
+    if (state.geneHovered !== undefined) {
+      drawBorder(context, state.geneHovered, 'purple');
     }
   },
 
-  // onClickCallback(mx, my) {
-  //   // we can dispatch here as well if necessary!
-  //   this.setState({
-  //     selected: getClicked(mx, my, this.props.data, this.props.visibleGenome, this.canvas),
-  //   });
-  // },
-
 });
 
-
+/* return the arrow which encompases mx, my */
 function getClicked(mx, my, data, visibleGenome, canvas) {
   const currentArrows = getArrowsInScope(data, visibleGenome, canvas);
   for (let i = 0; i < currentArrows.length; i++) {
@@ -91,7 +145,7 @@ function getClicked(mx, my, data, visibleGenome, canvas) {
 }
 
 
-function drawArrows(context, arrows, drawBorder) {
+function drawArrows(context, arrows, shouldDrawBorder) {
   for (let i = 0; i < arrows.length; i++) {
     context.fillStyle = arrows[i].fill;
     context.strokeStyle = arrows[i].stroke;
@@ -102,15 +156,16 @@ function drawArrows(context, arrows, drawBorder) {
       context.lineTo(arrows[i].coordinates[j][0], arrows[i].coordinates[j][1]);
     }
     context.closePath();
-    if (drawBorder) {
+    if (shouldDrawBorder) {
       context.stroke();
     }
     context.fill();
   }
 }
 
-function drawBorderAndText(context, arrow, middleCanvasWidth, scaleYvalue) {
-  context.strokeStyle = '#CC302E';
+/* given an arrow, draw a coloured border around it */
+function drawBorder(context, arrow, colour = '#CC302E') {
+  context.strokeStyle = colour;
   context.lineWidth = 2;
 
   context.beginPath();
@@ -120,16 +175,6 @@ function drawBorderAndText(context, arrow, middleCanvasWidth, scaleYvalue) {
   }
   context.closePath();
   context.stroke();
-  // TEXT
-  context.fillStyle = 'black';
-  context.textBaseline = 'middle';
-  context.textAlign = 'center';
-  context.font = '12px Helvetica';
-  const text = arrow.locus_tag + ' // ' + arrow.product;
-  context.fillText(text, middleCanvasWidth, scaleYvalue - 40);
-  // context.fillText(arrow.ID, arrow.x+(arrow.w/2), scaleYvalue-69);
-  // context.fillText(arrow.locus_tag, arrow.x+(arrow.w/2), scaleYvalue-52);
-  // context.fillText(arrow.product, arrow.x+(arrow.w/2), scaleYvalue-35);
 }
 
 

@@ -1,5 +1,5 @@
 import Papa from 'papaparse';
-import chroma from 'chroma-js';
+import chroma from 'chroma-js'; // big import!!!!
 
 /*    metaParser
 
@@ -65,7 +65,7 @@ function _getColourScale(n, type, binary) {
     if (type === 'float') {
       ret = chroma.scale('RdPu').mode('rgb').domain([ 0, n ]);
     } else if (type === 'int') {
-      ret = chroma.scale('Blues').mode('rgb').domain([ 0, n ]);
+      ret = chroma.scale([ '#fec44f', '#253494' ]).mode('hsl').domain([ 0, n ]);
     } else {
       ret = chroma.scale('Spectral').mode('rgb').domain([ 0, n ]);
     }

@@ -1,6 +1,7 @@
 import React from 'react';
 import { getMouse } from '../misc/mouse';
 import * as helper from '../misc/helperFunctions';
+import { InfoTip } from './infoTip';
 
 /*
   The Metadata component
@@ -27,7 +28,7 @@ export const Metadata = React.createClass({
    */
   componentDidMount: function () { // don't use fat arrow
     // this.canvas = ReactDOM.findDOMNode(this); // replaced by ref
-    this.initCanvasXY();
+    // this.initCanvasXY();
     this.canvas.addEventListener('mousemove', this.mouseMove, true);
     // when the mouse leaves we need to remove any selection
     this.canvas.addEventListener('mouseout',
@@ -49,6 +50,24 @@ export const Metadata = React.createClass({
   },
 
   render() {
+    let info = false;
+    if (this.state.displayInfoActive) {
+      const disp = {
+        taxa: this.state.displayInfo.taxa,
+        // this.state.displayInfo.header: this.state.displayInfo.value,
+        // header: this.state.displayInfo.header,
+        // value: this.state.displayInfo.value,
+        // type: this.state.displayInfo.info,
+      };
+      disp[this.state.displayInfo.header] = this.state.displayInfo.value;
+      info = (
+        <InfoTip
+          x={this.state.displayInfo.x}
+          y={this.state.displayInfo.y}
+          disp={disp}
+        />
+      );
+    }
     return (
       <div>
         <canvas
@@ -56,15 +75,7 @@ export const Metadata = React.createClass({
           ref={(c) => this.canvas = c}
           style={this.props.style}
         />
-        <InfoTip
-          active={this.state.displayInfoActive}
-          x={this.state.displayInfo.x}
-          y={this.state.displayInfo.y}
-          taxa={this.state.displayInfo.taxa}
-          header={this.state.displayInfo.header}
-          value={this.state.displayInfo.value}
-          info={this.state.displayInfo.info}
-        />
+        {info}
         <Headers
           y={0}
           toggles={this.props.metadata.toggles}
@@ -133,45 +144,6 @@ const Headers = React.createClass({
     return (
       <div>
         {divs}
-      </div>
-    );
-  },
-});
-
-/*  InfoTip
-stateless component
-renders when @prop active === true
-renders a div with text
-*/
-const InfoTip = React.createClass({
-  propTypes: {
-    active: React.PropTypes.bool.isRequired,
-    x: React.PropTypes.number,
-    y: React.PropTypes.number,
-    taxa: React.PropTypes.string,
-    value: React.PropTypes.string,
-    header: React.PropTypes.string,
-  },
-
-  render() {
-    if (!this.props.active) {
-      return false;
-    }
-    const style = {
-      position: 'absolute',
-      zIndex: 100,
-      left: this.props.x,
-      top: this.props.y,
-      background: 'black',
-      color: 'white',
-      pointerEvents: 'none',
-    };
-    return (
-      <div style={style}>
-          Taxa: {this.props.taxa}<br/>
-          Header: {this.props.header}<br/>
-          Value: {this.props.value}<br/>
-          Dev Only: {this.props.info}
       </div>
     );
   },
@@ -263,12 +235,13 @@ function _drawSquares(context, activeTaxa, toggles, data, colours) {
     let xIdx = 0;
     for (let j = 0; j < toggles.length; j++) {
       if (!toggles[j]) {
+        // console.log('continue hit at index ', j)
         continue;
       }
       const [ xLeft, blockWidth ] = this.calculateXOffsets(xIdx);
-      if (data[taxa] && data[taxa][xIdx] !== undefined) { // taxa may not have metadata!
+      if (data[taxa] && data[taxa][j] !== undefined) { // taxa may not have metadata!
         context.save();
-        context.fillStyle = colours[xIdx][data[taxa][xIdx]];
+        context.fillStyle = colours[j][data[taxa][j]];
         context.fillRect(xLeft, yValues[0], blockWidth, yValues[1] - yValues[0]);
         context.restore();
       // } else if (data[taxa]) {

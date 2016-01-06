@@ -1,3 +1,5 @@
+/* NO LONGER USED -- USING MATERIAL-UI INSTEAD */
+
 import React from 'react';
 
 export const Slider = React.createClass({
