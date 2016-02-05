@@ -30,7 +30,9 @@ node_modules
 # webpack*
 
 dev
-dist
+
+# dist bundles included to help with jumping back in time
+# dist
 
 # datasets directory (testing only, use example_datasets for release)
 datasets

@@ -11,7 +11,7 @@ module.exports = {
   output: {
     publicPath: 'dist/',
     path: path.join(__dirname, 'dist'),
-    filename: 'jscandy.js',
+    filename: 'phandango.js',
   },
   plugins: [
     new webpack.DefinePlugin({ // MUST BE FIRST!

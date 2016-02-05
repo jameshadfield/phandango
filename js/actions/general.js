@@ -1,5 +1,5 @@
-export function route(page) {
-  return ({ type: 'newPage', pageName: page });
+export function goToPage(name) {
+  return ({ type: 'newPage', name: name });
 }
 
 export function layoutChange(col, idx, perc) {

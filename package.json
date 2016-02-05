@@ -1,6 +1,6 @@
 {
   "_comment": "http://browsenpm.org/package.json",
-  "name": "JScandy",
+  "name": "phandango",
   "version": "0.3.0",
   "scripts": {
     "build": "webpack",

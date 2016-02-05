@@ -7,6 +7,7 @@ import { gwasGraph } from './gwasGraph';
 import { notifications } from './notifications';
 import { metadata } from './metadata';
 import { blocks } from './blocks';
+import { router } from './router';
 
 const initialPhylogenyState = {
   newickString: undefined,
@@ -64,18 +65,4 @@ function phylogeny(state = initialPhylogenyState, action) {
   }
 }
 
-function router(state = 'landing', action) {
-  switch (action.type) {
-  case 'newPage':
-    return state === action.pageName ? state : action.pageName;
-  // case 'clearSpinner':
-    // return state === 'unknown' ? state : 'unknown';
-  // TO DO
-  case 'metaData':
-  case 'treeData':
-    return state === 'unknown' ? state : 'unknown';
-  default:
-    return state;
-  }
-}
 

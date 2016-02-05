@@ -1,3 +1,39 @@
+/* transitions for animated logo */
+rect {
+  -webkit-transition: all 1.5s ease-in-out;
+  -moz-transition: all 1.5s ease-in-out;
+  transition: all 1.5s ease-in-out;
+}
+
+/* id outer used to wrap a vertically centered element - landing page */
+#outer {
+  width: 100%;
+  height: 90vh;
+  /*border: 1px solid #000;*/
+}
+.centeredVertically {
+  position: relative;
+  top: 50%;
+  /*border: #a0a0a0 solid 1px;*/
+  transform: translateY(-50%);
+}
+
+/* header element */
+#header {
+  width: 100%;
+  height: 25px;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  z-index: 100;
+  background: #f0f0f0;
+}
+.content {
+  position: relative;
+  top: 25px;
+}
+
+
 .newline {
   clear: both;
 }
@@ -119,7 +155,7 @@ input[type=range]{
 
 
 /* L O G O */
-#logoMainPage {
+/*#logoMainPage {
     zoom: 2;  //increase if you have very small images
 
     display: block;
@@ -135,7 +171,7 @@ input[type=range]{
     bottom: 0;
     left: 0;
 }
-
+*/
 .fitImageToBox {
   width: 80%;
   margin-left: auto;
@@ -164,12 +200,12 @@ input[type=range]{
     cursor:pointer;
     cursor:hand;
 }
-
+/*
 #logoLanding {
   width:100%;
   max-width:250px;
 }
-
+*/
 #spinner {
   padding-top: 40vh;
 }
@@ -232,6 +268,10 @@ input[type=range]{
 
 a {
   text-decoration: none; }
+
+.strikethorugh {
+  text-decoration: line-through;
+}
 
 html {
   line-height: 1.5;

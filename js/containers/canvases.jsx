@@ -137,9 +137,11 @@ export const CanvasContainer = React.createClass({ displayName: 'CanvasContainer
         <div className="newline" />
         {middleRow}
         <div className="newline" />
+        { /*
         <div style={this.getStyle(0, 2)} className="pointer">
           <Logo/>
         </div>
+        */ }
         {plots}
       </div>
     );
