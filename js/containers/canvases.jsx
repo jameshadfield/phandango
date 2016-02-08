@@ -8,6 +8,7 @@ import { MetadataKey } from '../components/metadataKey';
 import { Line } from '../components/lineGraph';
 import { Gwas } from '../components/gwasGraph';
 import { Cartoon } from '../components/cartoonGenome';
+import { StaticLogo } from '../components/logo';
 
 /*
 The children of this component are top level components that
@@ -25,6 +26,7 @@ const ConnectedBlocks = connect((state)=>({
   visibleGenome: state.genomeInfo.visibleGenome,
   data: state.blocks.blocks,
   activeTaxa: state.phylogeny.activeTaxa,
+  dataType: state.blocks.dataType,
 }))(Blocks);
 const ConnectedMetadata = connect((state)=>({
   activeTaxa: state.phylogeny.activeTaxa,
@@ -77,6 +79,11 @@ export const CanvasContainer = React.createClass({ displayName: 'CanvasContainer
     } else {
       sty.float = 'right';
     }
+    if (colIdx === 0 && rowIdx === 2) {
+      sty.position = 'absolute';
+      sty.bottom = '30px';
+      sty.left = '10px';
+    }
     return (sty);
   },
 
@@ -86,6 +93,7 @@ export const CanvasContainer = React.createClass({ displayName: 'CanvasContainer
     if (!Object.keys(active).some((e)=>active[e])) {
       return false;
     }
+
     // top row (small genome / ??? / annotation)
     const topRow = [];
     if (active.blocks || active.annotation) {
@@ -137,11 +145,9 @@ export const CanvasContainer = React.createClass({ displayName: 'CanvasContainer
         <div className="newline" />
         {middleRow}
         <div className="newline" />
-        { /*
-        <div style={this.getStyle(0, 2)} className="pointer">
-          <Logo/>
+        <div id="staticLogo" style={this.getStyle(0, 2)}>
+          <StaticLogo />
         </div>
-        */ }
         {plots}
       </div>
     );
@@ -155,12 +161,4 @@ export const CanvasContainer = React.createClass({ displayName: 'CanvasContainer
     return (n.toString() + 'vh');
   },
 
-});
-
-const Logo = React.createClass({ displayName: 'displayName',
-  render: function () {
-    return (
-      <img src="img/JScandy.v2.svg" id="logoMainPage"/>
-    );
-  },
 });

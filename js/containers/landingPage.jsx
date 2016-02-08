@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import React from 'react';
 import version from '../version';
-import { AnimatedLogo } from '../components/animatedLogo';
+import { AnimatedLogo } from '../components/logo';
 
 export const LandingPage = React.createClass({
   propTypes: {

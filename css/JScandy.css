@@ -5,6 +5,14 @@ rect {
   transition: all 1.5s ease-in-out;
 }
 
+/* this prevents tool tips from messing with the div as they extend out of it...
+ * BUT it introduces a vertical scroll bar. WTF!
+ * http://stackoverflow.com/questions/6179831/overflow-x-adds-vertical-scrollbar
+*/
+#react {
+  overflow-x: hidden;
+}
+
 /* id outer used to wrap a vertically centered element - landing page */
 #outer {
   width: 100%;
@@ -26,12 +34,23 @@ rect {
   top: 0px;
   left: 0px;
   z-index: 100;
-  background: #f0f0f0;
+  background: #D8D8D8;
 }
 .content {
   position: relative;
   top: 25px;
 }
+
+/* code snippets: */
+code {
+  font-family: Courier, 'New Courier', monospace;
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: -o-pre-wrap;
+  word-wrap: break-word;
+  background: #D8D8D8;
+}
+
 
 
 .newline {
@@ -47,9 +66,9 @@ rect {
 }
 
 
-#canvassesDiv {
-  padding: 10px 10px 10px 10px;
-}
+/*#canvassesDiv {
+  padding: 5px 5px 5px 5px;
+}*/
 
 
 /*canvas { border: 2px solid black}*/
@@ -153,25 +172,6 @@ input[type=range]{
 }
 
 
-
-/* L O G O */
-/*#logoMainPage {
-    zoom: 2;  //increase if you have very small images
-
-    display: block;
-    margin: auto;
-
-    height: auto;
-    max-height: 100%;
-
-    width: auto;
-    max-width: 100%;
-
-    position: absolute;
-    bottom: 0;
-    left: 0;
-}
-*/
 .fitImageToBox {
   width: 80%;
   margin-left: auto;
@@ -206,58 +206,8 @@ input[type=range]{
   max-width:250px;
 }
 */
-#spinner {
-  padding-top: 40vh;
-}
 
-
-/* COPIED FROM MATERIALIZE */
-
-/*@font-face {
-  font-family: "Roboto";
-  src: local(Roboto Thin), url("../font/roboto/Roboto-Thin.woff2") format("woff2"), url("../font/roboto/Roboto-Thin.woff") format("woff"), url("../font/roboto/Roboto-Thin.ttf") format("truetype");
-  font-weight: 200; }
-
-@font-face {
-  font-family: "Roboto";
-  src: local(Roboto Light), url("../font/roboto/Roboto-Light.woff2") format("woff2"), url("../font/roboto/Roboto-Light.woff") format("woff"), url("../font/roboto/Roboto-Light.ttf") format("truetype");
-  font-weight: 300; }
-
-@font-face {
-  font-family: "Roboto";
-  src: local(Roboto Regular), url("../font/roboto/Roboto-Regular.woff2") format("woff2"), url("../font/roboto/Roboto-Regular.woff") format("woff"), url("../font/roboto/Roboto-Regular.ttf") format("truetype");
-  font-weight: 400; }
-
-@font-face {
-  font-family: "Roboto";
-  src: url("../font/roboto/Roboto-Medium.woff2") format("woff2"), url("../font/roboto/Roboto-Medium.woff") format("woff"), url("../font/roboto/Roboto-Medium.ttf") format("truetype");
-  font-weight: 500; }
-
-@font-face {
-  font-family: "Roboto";
-  src: url("../font/roboto/Roboto-Bold.woff2") format("woff2"), url("../font/roboto/Roboto-Bold.woff") format("woff"), url("../font/roboto/Roboto-Bold.ttf") format("truetype");
-  font-weight: 700; }*/
-
-/*@font-face {
-  font-family: "Roboto";
-  src: url("../font/roboto/Roboto-Light.woff2") format("woff2");
-  font-weight: 300; }
-
-@font-face {
-  font-family: "Roboto";
-  src: url("../font/roboto/Roboto-Regular.woff2") format("woff2");
-  font-weight: 400; }*/
-
-@font-face {
-  font-family: "Lato";
-  src: url("../font/lato/LatoLatin-Light.woff2") format("woff2");
-  font-weight: 300; }
-
-@font-face {
-  font-family: "Lato";
-  src: url("../font/lato/LatoLatin-Bold.woff2") format("woff2");
-  font-weight: 700; }
-
+/* FONTS MOVED TO index.html */
 
 .heavy {
   font-weight: 700;
@@ -275,7 +225,6 @@ a {
 
 html {
   line-height: 1.5;
-  /*font-family: "Roboto", sans-serif;*/
   font-family: "Lato";
   font-weight: normal;
   color: rgba(0, 0, 0, 0.87);
@@ -311,3 +260,45 @@ html {
     50px 0px 0 0px #b3b3b3;
 }
 
+
+
+
+
+
+
+
+#spinner {
+  padding-top: 30vh;
+}
+
+/* http://tobiasahlin.com/spinkit/ */
+.spinner {
+  width: 40px;
+  height: 40px;
+  /*background-color: orange;*/
+
+  margin: 100px auto;
+  -webkit-animation: sk-rotateplane 1.2s infinite ease-in-out;
+  animation: sk-rotateplane 1.2s infinite ease-in-out;
+}
+
+@-webkit-keyframes sk-rotateplane {
+  0% { -webkit-transform: perspective(120px); background-color: purple; }
+  50% { -webkit-transform: perspective(120px) rotateY(180deg); background-color: orange; }
+  100% { -webkit-transform: perspective(120px) rotateY(180deg)  rotateX(180deg); background-color: purple; }
+}
+
+/* don't think chrome uses the following:
+@keyframes sk-rotateplane {
+  0% {
+    transform: perspective(120px) rotateX(0deg) rotateY(0deg);
+    -webkit-transform: perspective(120px) rotateX(0deg) rotateY(0deg)
+  } 50% {
+    transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg);
+    -webkit-transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg)
+  } 100% {
+    transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
+    -webkit-transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
+  }
+}
+*/

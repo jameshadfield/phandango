@@ -7,6 +7,7 @@ import DevTools from '../containers/devTools';
 import { Provider, connect } from 'react-redux';
 import { MainReactElement } from './main';
 import injectTapEventPlugin from 'react-tap-event-plugin';
+import { NotChrome } from '../components/notChrome';
 // Needed for onTouchTap -- Can go away when react 1.0 release
 // https://github.com/zilverline/react-tap-event-plugin
 injectTapEventPlugin();
@@ -18,6 +19,7 @@ if (process.env.NODE_ENV !== 'production') {
 const store = configureStore();
 const ConnectedMainReactElement = connect((state)=>({
   page: state.router,
+  spinner: state.spinner,
 }))(MainReactElement);
 
 let elements = [
@@ -31,13 +33,7 @@ if (process.env.NODE_ENV !== 'production') {
   );
 }
 if (!navigator.userAgent.match(/Chrome/i)) {
-  elements = [
-    <div className="fullpage" key={'notChromeKey'}>
-      <h1>JScandy only works in Chrome</h1>
-      <p>Sorry :(</p>
-      <p><a href="https://www.google.com/chrome/browser/desktop/">Download Chrome here</a></p>
-    </div>,
-  ];
+  elements = <NotChrome />;
 }
 
 render(

@@ -16,38 +16,31 @@ const HeaderEntry = ({ name, active }) => {
  * @prop goToPage {function}
  * @prop pageName {string}
 */
-export const Header = ({ pageName, goToPage }) => {
+export const Header = ({ pageName, goToPage, treeActive, annotationActive }) => {
   const cssClass = 'col-xs center';
-  let main = false;
-  let settings = false;
-  if (true) {
-    main = (
-      <div className={cssClass} onClick={()=>goToPage('main')}>
-        <HeaderEntry name="Main" active={pageName === 'main'}/>
-      </div>
-    );
-    settings = (
-      <div className={cssClass} onClick={()=>goToPage('settings')}>
-        <HeaderEntry name="Settings" active={pageName === 'settings'}/>
-      </div>
-    );
+  let unavalStyle = {};
+  if (!treeActive & !annotationActive) {
+    unavalStyle = { color: 'rgba(0, 0, 0, 0.3)' };
   }
-
   return (
     <div id="header">
       <div className="row">
         <div className={cssClass} onClick={()=>goToPage('landing')}>
           <HeaderEntry name="Landing" active={pageName === 'landing'}/>
         </div>
-        {main}
-        {settings}
+        <div className={cssClass} onClick={()=>goToPage('main')} style={unavalStyle}>
+          <HeaderEntry name="Main" active={pageName === 'main'}/>
+        </div>
+        <div className={cssClass} onClick={()=>goToPage('settings')} style={unavalStyle}>
+          <HeaderEntry name="Settings" active={pageName === 'settings'}/>
+        </div>
         <div className={cssClass} onClick={()=>goToPage('about')}>
           <HeaderEntry name="About" active={pageName === 'about'}/>
         </div>
         <div className={cssClass} onClick={()=>goToPage('examples')}>
           <HeaderEntry name="Examples" active={pageName === 'examples'}/>
         </div>
-        <div className={cssClass}>
+        <div className={cssClass} onClick={()=>goToPage('help')}>
           <HeaderEntry name="Help" active={pageName === 'help'}/>
         </div>
         <div className={cssClass} onClick={()=>window.open('https://github.com/jameshadfield/JScandy', '_blank')}>

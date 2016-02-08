@@ -48,15 +48,15 @@ export const AnimatedLogo = React.createClass({
         </g>
         <g>
           {/* react doesn't have textLength so we have to do this :( */}
-          <text x = "5%" y = "50%" fill="#FFFFFF" fontFamily="Lato-Light" fontSize={fontSize}>p</text>
-          <text x = "15%" y = "50%" fill="#FFFFFF" fontFamily="Lato-Light" fontSize={fontSize}>h</text>
-          <text x = "25%" y = "50%" fill="#FFFFFF" fontFamily="Lato-Light" fontSize={fontSize}>a</text>
-          <text x = "35%" y = "50%" fill="#FFFFFF" fontFamily="Lato-Light" fontSize={fontSize}>n</text>
-          <text x = "45%" y = "50%" fill="#FFFFFF" fontFamily="Lato-Light" fontSize={fontSize}>d</text>
-          <text x = "55%" y = "50%" fill="#FFFFFF" fontFamily="Lato-Light" fontSize={fontSize}>a</text>
-          <text x = "65%" y = "50%" fill="#FFFFFF" fontFamily="Lato-Light" fontSize={fontSize}>n</text>
-          <text x = "75%" y = "50%" fill="#FFFFFF" fontFamily="Lato-Light" fontSize={fontSize}>g</text>
-          <text x = "85%" y = "50%" fill="#FFFFFF" fontFamily="Lato-Light" fontSize={fontSize}>o</text>
+          <text x = "5%" y = "50%" fill="#FFFFFF" fontFamily="Lato" fontSize={fontSize}>p</text>
+          <text x = "15%" y = "50%" fill="#FFFFFF" fontFamily="Lato" fontSize={fontSize}>h</text>
+          <text x = "25%" y = "50%" fill="#FFFFFF" fontFamily="Lato" fontSize={fontSize}>a</text>
+          <text x = "35%" y = "50%" fill="#FFFFFF" fontFamily="Lato" fontSize={fontSize}>n</text>
+          <text x = "45%" y = "50%" fill="#FFFFFF" fontFamily="Lato" fontSize={fontSize}>d</text>
+          <text x = "55%" y = "50%" fill="#FFFFFF" fontFamily="Lato" fontSize={fontSize}>a</text>
+          <text x = "65%" y = "50%" fill="#FFFFFF" fontFamily="Lato" fontSize={fontSize}>n</text>
+          <text x = "75%" y = "50%" fill="#FFFFFF" fontFamily="Lato" fontSize={fontSize}>g</text>
+          <text x = "85%" y = "50%" fill="#FFFFFF" fontFamily="Lato" fontSize={fontSize}>o</text>
         </g>
       </svg>
     );
@@ -115,3 +115,19 @@ export const AnimatedLogo = React.createClass({
     }
   },
 });
+
+
+export const StaticLogo = () => {
+  return (
+    <svg viewBox="0 0 173.737 88.637" opacity="0.25">
+      <rect y="11.844" fill="#ED1C24" width="38.904" height="65.98"/>
+      <rect x="40.019" y="23.688" fill="#ED1C24" width="36.052" height="64.949"/>
+      <rect x="114.758" fill="#1C75BC" width="18.146" height="65.98"/>
+      <rect x="133.969" y="11.844" fill="#ED1C24" width="39.768" height="65.465"/>
+      <rect x="96.585" y="23.688" fill="#1C75BC" width="16.652" height="64.949"/>
+      <rect x="77.071" y="11.844" fill="#1C75BC" width="18.5" height="54.137"/>
+      <rect y="29.657" fill="none" width="380.808" height="128.788"/>
+      <text transform="matrix(1 0 0 1 0 55.8828)" fill="#FFFFFF" fontFamily="Lato" fontSize="36">phandango</text>
+    </svg>
+  );
+};

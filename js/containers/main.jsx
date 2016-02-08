@@ -9,14 +9,24 @@ import { Settings } from './settings';
 import { LandingPage } from './landingPage';
 import { AboutPage } from './aboutPage';
 import { ExamplesPage } from './examplesPage';
+import { HelpPanel } from '../components/helpPanel';
 
 // misc
-import { Spinner } from '../components/spinner';
 import { Header } from '../components/header';
 
 // Actions to be dispatched upon key presses
 import { notificationNew, notificationSeen, showHelp } from '../actions/notifications';
 import { goToPage, toggleMetaKey } from '../actions/general';
+
+// function Spinner({ active }) {
+//   console.log('spinner component. value: ', active);
+//   if (active < 1) {return (<g/>);}
+//   return (
+//    <div className="fullpage center-align" id="spinner">
+//       <div className="spinner"></div>
+//   </div>
+//   );
+// }
 
 /*
 Connect the containers which will be displayed here to redux store / dispatch etc
@@ -54,6 +64,8 @@ const ConnectedExamples = connect()(ExamplesPage); // dispatch is used
 const ConnectedHeader = connect(
   (state)=>({
     pageName: state.router,
+    treeActive: state.layout.active.tree,
+    annotationActive: state.layout.active.annotation,
   }),
   (dispatch) => ({
     goToPage: (name) => {dispatch(goToPage(name));},
@@ -70,6 +82,7 @@ export const MainReactElement = React.createClass({ displayName: 'Main_React_Ele
   propTypes: {
     page: React.PropTypes.string.isRequired,
     dispatch: React.PropTypes.func.isRequired,
+    spinner: React.PropTypes.number,
   },
   componentDidMount: function () {
     document.addEventListener('dragover', (e) => {e.preventDefault();}, false);
@@ -95,7 +108,14 @@ export const MainReactElement = React.createClass({ displayName: 'Main_React_Ele
       injectedPage = <ConnectedExamples />;
       break;
     case 'main':
+      // injectedPage = [
+      //   <Spinner key="a" active={this.props.spinner} />,
+      //   <ConnectedCanvasContainer key="b"/>,
+      // ];
       injectedPage = <ConnectedCanvasContainer />;
+      break;
+    case 'help':
+      injectedPage = <HelpPanel />;
       break;
     default:
       injectedPage = false;
@@ -111,29 +131,42 @@ export const MainReactElement = React.createClass({ displayName: 'Main_React_Ele
 
   keyIncoming: function (event) {
     // http://www.cambiaresearch.com/articles/15/javascript-char-codes-key-codes
-    if (event.keyCode === 83 || event.charCode === 83) { // 's'
-      this.props.dispatch(goToPage('settings'));
-    } else if (event.keyCode === 77 || event.charCode === 77) { // 'm'
-      this.props.dispatch(goToPage('canvases'));
-    } else if (event.keyCode === 69 || event.charCode === 69) { // 'e'
-      this.props.dispatch(notificationNew('error key pressed', 'time: ' + Date()));
-    } else if (event.keyCode === 82 || event.charCode === 82) { // 'r'
-      this.props.dispatch(notificationNew('snack error'));
-    } else if (event.keyCode === 72 || event.charCode === 72) { // 'h'
-      this.props.dispatch(showHelp());
-    } else if (event.keyCode === 75 || event.charCode === 75) { // 'k'
-      this.props.dispatch(toggleMetaKey());
+    const key = event.keyCode || event.charCode;
+    switch (key) {
+    case 83: // s
+      const p = this.props.page === 'settings' ? 'main' : 'settings';
+      this.props.dispatch(goToPage(p));
+      break;
+    case 77: // m
+      this.props.dispatch(goToPage('main'));
+      break;
+    case 72: // h
+      this.props.dispatch(goToPage('help'));
+      break;
+    case 76: // l
+      this.props.dispatch(goToPage('landing'));
+      break;
+    case 65: // a
+      this.props.dispatch(goToPage('about'));
+      break;
+    case 69: // a
+      this.props.dispatch(goToPage('examples'));
+      break;
+    default:
+      return;
     }
   },
 
   filesDropped(e) {
-    this.props.dispatch(goToPage('loading'));
+    // this.props.dispatch(goToPage('loading'));
     // this.props.dispatch(notificationNew(showHelp());
     this.props.dispatch(notificationNew('press \'h\' for help!'));
     const files = e.dataTransfer.files;
     e.preventDefault();
+    // this.props.dispatch({ type: 'setSpinner', value: files.length });
     for (let i = 0; i < files.length; i++) {
       this.props.dispatch(incomingFile(files[i]));
     }
   },
 });
+

@@ -15,6 +15,7 @@ export const Blocks = React.createClass({
     data: React.PropTypes.array.isRequired,
     style: React.PropTypes.object.isRequired,
     activeTaxa: React.PropTypes.object.isRequired,
+    dataType: React.PropTypes.string.isRequired,
   },
 
   getInitialState: function () {
@@ -24,10 +25,13 @@ export const Blocks = React.createClass({
   componentDidMount: function () { // don't use fat arrow
     this.initCanvasXY();
     this.mouse = new Mouse(this.canvas, this.props.dispatch, this.onClickCallback); // set up listeners
-    this.canvas.addEventListener('mousemove', this.onMouseMove, true);
-    this.canvas.addEventListener('mouseout',
-      () => {this.setState({ hovered: undefined });},
-      true);
+    // if it's ROARY data then don't add event listeners as it becomes slooooow
+    if (this.props.dataType !== 'roary') {
+      this.canvas.addEventListener('mousemove', this.onMouseMove, true);
+      this.canvas.addEventListener('mouseout',
+        () => {this.setState({ hovered: undefined });},
+        true);
+    }
     this.redraw(this.props, this.state);
   },
 

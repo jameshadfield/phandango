@@ -7,6 +7,7 @@ const initialBlockState = {
   blocks: [], // this is the only thing actually displayed
   fileNames: {}, // doubles as what's 'loaded'
   roarySortMethod: undefined,
+  dataType: undefined,
 };
 
 export function blocks(state = initialBlockState, action) {
@@ -16,6 +17,7 @@ export function blocks(state = initialBlockState, action) {
     ret = merge({}, state, {
       gubbins: action.data,
       blocks: action.data,
+      dataType: 'gubbins',
     });
     ret.fileNames.gubbins = action.fileName;
     return ret;
@@ -31,6 +33,7 @@ export function blocks(state = initialBlockState, action) {
     newState.roarySortMethod  = 'linear';
     newState.fileNames = { ...state.fileNames }; // copy 1 deep
     newState.fileNames.roary = action.fileName;
+    newState.dataType = 'roary';
     // following is ridiculously slow!!!!
     // ret = merge({}, state, {
     //   roary: action.blockData,

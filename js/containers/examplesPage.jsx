@@ -1,10 +1,14 @@
 /* eslint-disable max-len */
 import React from 'react';
-import { AnimatedLogo } from '../components/animatedLogo';
+import { AnimatedLogo } from '../components/logo';
 import { incomingFile } from '../actions/fileInput';
 
 const defaultDataPrefix = 'https://cdn.rawgit.com/jameshadfield/JScandy/';
 
+/* examples
+ * a list of maps
+ * modify this when you want to add in more examples
+ */
 const examples = [
   {
     name: 'PMEN1 (gubbins)',
@@ -21,18 +25,31 @@ const examples = [
   },
 
   {
-    name: 'Roary',
+    name: 'Roary (pan-genome)',
     imgPath: 'img/roary.png',
-    caption: 'ahh. umm..',
+    caption: 'Pan-Genome output for a collection of Salmonella enterica subspecies enterica serovar Weltevreden isolates',
     paths: [
       defaultDataPrefix + 'v0.2.0/example_datasets/roary/gene_presence_absence.csv',
       defaultDataPrefix + 'v0.2.0/example_datasets/roary/gubbins.tre',
       defaultDataPrefix + 'v0.2.0/example_datasets/roary/metadata.csv',
     ],
   },
+
+  {
+    name: 'Bacterial GWAS',
+    imgPath: 'img/Chewapreecha.png',
+    caption: 'A genome-wide association study to identify SNPs and indels that could confer beta-lactam non-susceptibility using 3,085 Thai and 616 USA pneumococcal isolates as independent datasets for the variant discovery. ',
+    citeURL: 'http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1004547',
+    citeCaption: <span>Chewapreecha <em>et al.</em> PLOS Genetics 2014</span>,
+    paths: [
+      defaultDataPrefix + 'v0.4.0/example_datasets/PneumoGWAS/Spn23f.gff',
+      defaultDataPrefix + 'v0.4.0/example_datasets/PneumoGWAS/Maela.MA.cmh.unadjusted.plot',
+    ],
+  },
+
 ];
 
-
+/* Example - the react component which creates an individual example box entirely on passed in props*/
 const Example = ({ name, paths, callback, caption, imgPath, citeURL, citeCaption }) => {
   let citation = false;
   if (citeURL) {
@@ -56,7 +73,10 @@ const Example = ({ name, paths, callback, caption, imgPath, citeURL, citeCaption
   );
 };
 
-
+/* Examples page - begins with the logo + title
+ * Then maps all the examples (defined above) to Example components
+ * uses flexboxgrid classes for layout
+ */
 export const ExamplesPage = React.createClass({
   propTypes: {
     dispatch: React.PropTypes.func.isRequired,
@@ -66,7 +86,7 @@ export const ExamplesPage = React.createClass({
     return (
       <div className="bgwhite content">
         <div className="center">
-          <AnimatedLogo w={400} h={150} interval={2000} animate={false}/>
+          <AnimatedLogo w={400} h={150} interval={10000}/>
         </div>
         <h2 className="light center">
           Example Datasets - click to load

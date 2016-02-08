@@ -40,14 +40,16 @@ export function setYValues(phylocanvas) {
 
 
 function _translatePhylocanvasCoordsToPixels(y, phylocanvas, pixelRatio) {
-  // sort of undoing the translateClick function of PhyloCanvas
+  /* sort of undoing the translateClick function of PhyloCanvas
+   * updated for phylocavnas 2.0.0 rc9
+   */
   let ret = y;
+  ret  = ret / pixelRatio;
   ret *= phylocanvas.zoom;
   ret += phylocanvas.offsety;
-  ret += phylocanvas.canvas.canvas.height / 2;
-  ret  = ret / pixelRatio;
   return ret;
 }
+
 
 function _getBackingStorePixelRatio(context) { // PhyloCanvas code
   return (
