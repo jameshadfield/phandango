@@ -16,7 +16,7 @@ import { Header } from '../components/header';
 
 // Actions to be dispatched upon key presses
 import { notificationNew, notificationSeen, showHelp } from '../actions/notifications';
-import { goToPage, toggleMetaKey } from '../actions/general';
+import { goToPage, toggleMetaKey, showBlocks } from '../actions/general';
 
 // function Spinner({ active }) {
 //   console.log('spinner component. value: ', active);
@@ -149,8 +149,20 @@ export const MainReactElement = React.createClass({ displayName: 'Main_React_Ele
     case 65: // a
       this.props.dispatch(goToPage('about'));
       break;
-    case 69: // a
+    case 69: // e
       this.props.dispatch(goToPage('examples'));
+      break;
+    case 90: // z
+      this.props.dispatch(showBlocks('gubbins'));
+      break;
+    case 88: // x
+      this.props.dispatch(showBlocks('gubbinsPerTaxa'));
+      break;
+    case 67: // c
+      this.props.dispatch(showBlocks('bratNextGen'));
+      break;
+    case 86: // v
+      this.props.dispatch(showBlocks('merged'));
       break;
     default:
       return;

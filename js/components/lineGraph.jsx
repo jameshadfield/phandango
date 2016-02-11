@@ -2,19 +2,19 @@ import React from 'react';
 import { Mouse } from '../misc/mouse';
 import * as helper from '../misc/helperFunctions';
 import { drawGraphAxis } from './graphAxis';
-/*
-  The Annotation component
-  The only state here is the gene that's currently selected (and even this is a bad idea!)
-*/
+
+
 export const Line = React.createClass({
   propTypes: {
     /* props not validated due to speed:
-     * values {array of nums} - the main line graph
-     * subValues {array of nums | undefined} - the subgraph values OR undefined
+     * values {array of array of nums} - the main line graph
+     * subValues {array of nums | undefined}
      */
     max: React.PropTypes.number.isRequired,
     visibleGenome: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
     style: React.PropTypes.object.isRequired,
+    dispatch: React.PropTypes.func.isRequired,
+    lineColours: React.PropTypes.array.isRequired,
   },
 
   componentDidMount: function () { // don't use fat arrow
@@ -30,9 +30,11 @@ export const Line = React.createClass({
     // expensive way to handle resizing
     this.initCanvasXY();
     this.clearCanvas();
-    this.drawLineGraph(this.canvas, props.visibleGenome, props.values, props.max);
+    for (let idx = 0; idx < props.values.length; idx++) {
+      this.drawLineGraph(this.canvas, props.visibleGenome, props.values[idx], props.max, props.lineColours[idx]);
+    }
     if (props.subValues) {
-      this.drawLineGraph(this.canvas, props.visibleGenome, props.subValues, props.max, 'purple');
+      this.drawLineGraph(this.canvas, props.visibleGenome, props.subValues, props.max, 'gray');
     }
     this.drawGraphAxis(this.canvas, {
       yMaxValue: props.max,
@@ -56,12 +58,12 @@ export const Line = React.createClass({
   clearCanvas: helper.clearCanvas,
   drawGraphAxis: drawGraphAxis,
 
-  drawLineGraph(canvas, visibleGenome, values, max, colour = 'orange') {
+  drawLineGraph(canvas, visibleGenome, values, max, colour) {
     const context = canvas.getContext('2d');
     const yScaleMultiplier = parseFloat( canvas.height / max );
 
     context.save();
-    context.strokeStyle = colour;
+    context.strokeStyle = colour || 'orange';
     context.lineWidth = 2;
     context.beginPath();
     context.moveTo(0, canvas.height);

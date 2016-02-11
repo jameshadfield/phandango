@@ -31,6 +31,7 @@ export function layout(state = init, action) {
     return newState;
   case 'roaryData': // fallthrough
   case 'gubbinsData':
+  case 'bratNextGenData':
     newState = merge({}, state);
     newState.active.blocks = true;
     newState.colPercs = calculateNewPercs(state.colPercs, 2, true);

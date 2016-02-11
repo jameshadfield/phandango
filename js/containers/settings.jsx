@@ -5,6 +5,7 @@ import {
   turnOffCanvas,
   turnOnCanvas,
   toggleMetadataColumn,
+  showBlocks,
 } from '../actions/general';
 import { route } from '../actions/general';
 import Slider from 'material-ui/lib/slider';
@@ -32,12 +33,15 @@ export const Settings = React.createClass({
 
   render: function () {
     // const panelClassName = 'settings-col';
-    const panelClassName = 'col-xs-3'; // flexbox grid
+    const panelClassName = 'col-xs-3 bgwhite border noOverflow';
+    // <ConnectedLoadedComponents className={panelClassName} />
     return (
-      <div className="fullpage padding10 bgwhite-alpha row" ref={(c) => this.node = c} key="myKey">
-        <ConnectedLayout className={panelClassName} />
-        <ConnectedMetadata className={panelClassName} />
-        <ConnectedLoadedComponents className={panelClassName} />
+      <div className="fullpage padding10 content" style={{ zIndex: 100 }} ref={(c) => this.node = c} key="myKey">
+        <div className="row" >
+          <ConnectedLayout className={panelClassName} />
+          <ConnectedMetadata className={panelClassName} />
+          <ConnectedBlocks className={panelClassName} />
+        </div>
       </div>
     );
   },
@@ -64,7 +68,7 @@ const Layout = React.createClass({
   // },
 
   render: function () {
-    console.log('render called. row percs are: ', this.props.rowPercs);
+    // console.log('render called. row percs are: ', this.props.rowPercs);
     const colNames = [ 'Left', 'Middle', 'Right' ];
     const Columns = this.props.colPercs.map((cv, idx) =>
       <div key={idx} className="range-field">
@@ -93,6 +97,7 @@ const Layout = React.createClass({
     );
     return (
       <div className={this.props.className}>
+        <h3>Panel Layout</h3>
         {Columns}
         {Rows}
       </div>
@@ -122,8 +127,8 @@ const ConnectedLayout = connect(
 
 const Metadata = React.createClass({
   propTypes: {
-    headerNames: PropTypes.arrayOf(PropTypes.string).isRequired,
-    toggles: PropTypes.arrayOf(PropTypes.bool).isRequired,
+    headerNames: PropTypes.arrayOf(PropTypes.string),
+    toggles: PropTypes.arrayOf(PropTypes.bool),
     fileName: PropTypes.string,
     active: PropTypes.bool,
     className: PropTypes.string,
@@ -139,31 +144,32 @@ const Metadata = React.createClass({
     if ( (!this.props.fileName) || this.props.fileName === 'not loaded') { return false; }
     return (
       <div className={this.props.className}>
-        <h4>Metadata</h4>
+        <h3>Metadata</h3>
         <hr/>
         {/* main on-off switch */}
         <Toggle
           name="master"
           value="master"
           labelPosition="right"
-          label="Master switch"
+          label="Turn off metadata"
           disabled={false}
           defaultToggled={this.props.active}
           onToggle={this.props.toggleMeta.bind(this, this.props.active)}
         />
         <hr/>
         <div className = {this.props.active ? '' : 'hidden'}>
+          <h4>Toggle columns:</h4>
           {this.props.headerNames.map((name, idx) =>
-          <Toggle
-            name={name}
-            value={name}
-            key={idx}
-            labelPosition="right"
-            label={name}
-            disabled={false}
-            defaultToggled={this.props.toggles[idx]}
-            onToggle={this.props.toggleMetaHeader.bind(this, this.props.toggles[idx], idx)}
-          />
+            <Toggle
+              name={name}
+              value={name}
+              key={idx}
+              labelPosition="right"
+              label={name}
+              disabled={false}
+              defaultToggled={this.props.toggles[idx]}
+              onToggle={this.props.toggleMetaHeader.bind(this, this.props.toggles[idx], idx)}
+            />
           )}
         </div>
       </div>
@@ -194,41 +200,90 @@ const ConnectedMetadata = connect(
  * Loaded components container:
  * just a list of what's loaded and the associated filenames
 */
-const DisplayFileName = ({ active, component, file }) => (
-  <p style={ active ? {} : { textDecoration: 'line-through' } }>
-    <strong>{component}:</strong> {file.split('/').slice(-1)[0]}
-  </p>
-);
-DisplayFileName.propTypes =  {
-  active: PropTypes.bool,
-  component: PropTypes.string,
-  file: PropTypes.string,
+// const DisplayFileName = ({ active, component, file }) => (
+//   <p style={ active ? {} : { textDecoration: 'line-through' } }>
+//     <strong>{component}:</strong> {file.split('/').slice(-1)[0]}
+//   </p>
+// );
+// DisplayFileName.propTypes =  {
+//   active: PropTypes.bool,
+//   component: PropTypes.string,
+//   file: PropTypes.string,
+// };
+
+// const LoadedComponents = (props) => (
+//   <div className={props.className}>
+//     <h3>Loaded Data:</h3>
+//     <hr/>
+//     <DisplayFileName component="Phylogeny" file={props.phylogeny} active={props.active.tree} />
+//     <DisplayFileName component="Metadata" file={props.metadata} active={props.active.meta} />
+//     <DisplayFileName component="Annotation" file={props.annotation} active={props.active.annotation} />
+//   </div>
+// );
+// LoadedComponents.propTypes = {
+//   className: PropTypes.string,
+//   active: PropTypes.arrayOf(PropTypes.bool).isRequired, // which components are loaded...
+//   metadata: PropTypes.string,
+//   annotation: PropTypes.string,
+//   phylogeny: PropTypes.string,
+//   plots: PropTypes.arrayOf(PropTypes.string),
+//   blocks: PropTypes.arrayOf(PropTypes.string),
+// };
+
+// const ConnectedLoadedComponents = connect(
+//   (state)=>({
+//     active: state.layout.active,
+//     phylogeny: state.phylogeny.fileName,
+//     metadata: state.metadata.fileName,
+//     annotation: state.annotation.fileName,
+//   })
+// )(LoadedComponents);
+
+
+/* ConnectedBlocks component!
+
+*/
+const Blocks = (props) => {
+  const available = props.dataAvailable;
+  if (available.hasOwnProperty('gubbins') && available.hasOwnProperty('bratNextGen')) {
+    available.merged = true;
+  }
+  const keyMap = { gubbins: 'z', gubbinsPerTaxa: 'x', bratNextGen: 'c', merged: 'v' };
+  return (
+    <div className={props.className}>
+      <h3>Block options:</h3>
+      <hr/>
+      <h4>Data to display:</h4>
+      {Object.keys(available).map((dataName, idx) =>
+        <Toggle
+          key={idx}
+          labelPosition="right"
+          label={dataName + ' (press ' + keyMap[dataName] + ')'}
+          toggled={dataName === props.currentDataType}
+          onToggle={props.show.bind(this, dataName)}
+        />
+      )}
+    </div>
+  );
 };
 
-const LoadedComponents = (props) => (
-  <div className={props.className}>
-    <h4>Loaded Data:</h4>
-    <hr/>
-    <DisplayFileName component="Phylogeny" file={props.phylogeny} active={props.active.tree} />
-    <DisplayFileName component="Metadata" file={props.metadata} active={props.active.meta} />
-    <DisplayFileName component="Annotation" file={props.annotation} active={props.active.annotation} />
-  </div>
-);
-LoadedComponents.propTypes = {
+Blocks.propTypes = {
   className: PropTypes.string,
-  active: PropTypes.arrayOf(PropTypes.bool).isRequired, // which components are loaded...
-  metadata: PropTypes.string,
-  annotation: PropTypes.string,
-  phylogeny: PropTypes.string,
-  plots: PropTypes.arrayOf(PropTypes.string),
-  blocks: PropTypes.arrayOf(PropTypes.string),
+  dataAvailable: PropTypes.object,
+  currentDataType: PropTypes.string,
+  show: PropTypes.func,
 };
 
-const ConnectedLoadedComponents = connect(
+const ConnectedBlocks = connect(
   (state)=>({
-    active: state.layout.active,
-    phylogeny: state.phylogeny.fileName,
-    metadata: state.metadata.fileName,
-    annotation: state.annotation.fileName,
+    fileNames: state.blocks.fileNames,
+    currentDataType: state.blocks.dataType,
+    dataAvailable: state.blocks.dataAvailable,
+  }),
+  (dispatch)=>({
+    show: (name) => {
+      dispatch(showBlocks(name));
+    },
   })
-)(LoadedComponents);
+)(Blocks);
+

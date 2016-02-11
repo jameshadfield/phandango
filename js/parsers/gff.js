@@ -25,9 +25,8 @@ export function gffParser(gffString) {
         const nll = lines[i].split('neg_log_likelihood=\"')[1].split('\"')[0];
         const numSnps =  lines[i].split('snp_count=\"')[1].split('\"')[0];
         shapes.push(
-          new Block( // startBase, endBase, taxa, node, nll, snps, uniq_ID
-            parseInt(words[3], 10), parseInt(words[4], 10), taxa, node, nll, numSnps, i
-          )
+          // new Block(start, end, id, {colour, taxa, node, info})
+          new Block(parseInt(words[3], 10), parseInt(words[4], 10), i, { taxa: taxa, node: node, info: { nll: parseInt(nll, 10), numSnps: numSnps, nTaxa: taxa.length } })
         );
       } else {
         if (words[2] === 'CDS') {

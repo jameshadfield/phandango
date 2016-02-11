@@ -21,7 +21,7 @@ import { Arrow, Block } from './shapes';
 export function roaryParser(csvString) {
   const papa = Papa.parse(csvString);
   const arrows = [];
-  const blocks = [];
+  // const blocks = [];
   const geneLen = 100;
   const tmp = {};
 
@@ -62,35 +62,38 @@ export function roaryParser(csvString) {
     // }
   }
 
-  Object.keys(tmp).forEach((key) => {
-    // tmp[key].sort(sortNumber);
+  const blocks = {};
+  let uniqId = 0;
+  // new Block(start, end, id, {colour, taxa, node, info})
+  Object.keys(tmp).forEach((taxa) => {
+    blocks[taxa] = [];
+    // tmp[taxa].sort(sortNumber);
     // let inBlock = true;
-    let openVal = tmp[key][0];
-    let prevVal = tmp[key][0];
+    let openVal = tmp[taxa][0];
+    let prevVal = tmp[taxa][0];
     // let closeVal = openVal + 1;
 
-    for (let idx = 1; idx < tmp[key].length - 1; idx ++) {
-      const thisVal = tmp[key][idx];
+    for (let idx = 1; idx < tmp[taxa].length - 1; idx ++) {
+      const thisVal = tmp[taxa][idx];
       if (thisVal === prevVal + 1) {
         prevVal = thisVal;
       } else {
-        blocks.push(new Block(openVal * geneLen, (prevVal + 1) * geneLen, [ key ], 0, 0, 0, 0));
+        blocks[taxa].push(new Block(openVal * geneLen, (prevVal + 1) * geneLen, uniqId++, {}));
         openVal = thisVal;
         prevVal = thisVal;
       }
     }
 
     // last case
-    const thisVal = tmp[key][tmp[key].length - 1];
+    const thisVal = tmp[taxa][tmp[taxa].length - 1];
     if (thisVal === prevVal + 1) {
-      blocks.push(new Block(openVal * geneLen, (thisVal + 1) * geneLen, [ key ], 0, 0, 0, 0));
+      blocks[taxa].push(new Block(openVal * geneLen, (thisVal + 1) * geneLen, uniqId++, {}));
     } else {
-      blocks.push(new Block(openVal * geneLen, (prevVal + 1) * geneLen, [ key ], 0, 0, 0, 0));
-      blocks.push(new Block(thisVal * geneLen, (thisVal + 1) * geneLen, [ key ], 0, 0, 0, 0));
+      blocks[taxa].push(new Block(openVal * geneLen, (prevVal + 1) * geneLen, uniqId++, {}));
+      blocks[taxa].push(new Block(thisVal * geneLen, (thisVal + 1) * geneLen, uniqId++, {}));
     }
   });
 
-  // debugger;
   return [ arrows, blocks, papa.data.length * geneLen ];
 }
 

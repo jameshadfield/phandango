@@ -26,7 +26,9 @@ const ConnectedBlocks = connect((state)=>({
   visibleGenome: state.genomeInfo.visibleGenome,
   data: state.blocks.blocks,
   activeTaxa: state.phylogeny.activeTaxa,
-  dataType: state.blocks.dataType,
+  shouldMouseOver: state.blocks.shouldMouseOver,
+  blocksArePerTaxa: state.blocks.blocksArePerTaxa,
+  blockFillAlpha: state.blocks.blockFillAlpha,
 }))(Blocks);
 const ConnectedMetadata = connect((state)=>({
   activeTaxa: state.phylogeny.activeTaxa,
@@ -38,6 +40,7 @@ const ConnectedMetadataKey = connect((state)=>({
 const ConnectedLine = connect((state)=>({
   visibleGenome: state.genomeInfo.visibleGenome,
   values: state.lineGraph.values,
+  lineColours: state.lineGraph.lineColours,
   subValues: state.lineGraph.subValues,
   max: state.lineGraph.max,
 }))(Line);
@@ -64,10 +67,6 @@ export const CanvasContainer = React.createClass({ displayName: 'CanvasContainer
   componentWillUnmount: function () {
     window.onresize = null;
   },
-  _resizeFn: function () {
-    this.forceUpdate(); // is this enough?
-  },
-
   getStyle: function (colIdx, rowIdx) {
     const sty = {
       width: this.percentize(this.props.colPercs[colIdx]),
@@ -145,12 +144,18 @@ export const CanvasContainer = React.createClass({ displayName: 'CanvasContainer
         <div className="newline" />
         {middleRow}
         <div className="newline" />
+        { /*
         <div id="staticLogo" style={this.getStyle(0, 2)}>
           <StaticLogo />
         </div>
+        */ }
         {plots}
       </div>
     );
+  },
+
+  _resizeFn: function () {
+    this.forceUpdate(); // is this enough?
   },
 
   percentize: function (n) {

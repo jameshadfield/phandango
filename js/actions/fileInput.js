@@ -3,10 +3,10 @@ import { notificationNew } from './notifications';
 // PARSERS:
 import { gffParser } from '../parsers/gff';
 import { metaParser } from '../parsers/metadataParser';
-import { computeLineGraph } from './lineGraph.js';
+import { clearLineGraph, computeLineGraph } from './lineGraph.js';
 import { roaryParser } from '../parsers/roaryParser';
 import { plotParser } from '../parsers/plotParser';
-// const gwasParser = () => {throw new Error('not done');};
+import { bratNextGenParser } from '../parsers/bratNextGenParser';
 
 /* readURL (via AJAX)
  * @RETURNS: promise
@@ -104,6 +104,14 @@ const analyseIncomingData = (fileName, fileContents) => {
     parserFn = plotParser;
     fileType = 'gwas';
     break;
+  case 'txt':
+    if (fileContents.startsWith('LIST OF FOREIGN GENOMIC SEGMENTS:')) { // bratNextGen
+      parserFn = bratNextGenParser;
+      fileType = 'bratNextGen';
+    } else {
+      throw new Error('Unknown file extension (' + fileExtension + ')');
+    }
+    break;
   default:
     throw new Error('Unknown file extension (' + fileExtension + ')');
   }
@@ -129,7 +137,14 @@ const goDispatch = (dispatch, parsedData, dataType, filename) => {
     break;
   case 'gubbins':
     dispatch({ ...dispatchObj, data: parsedData[1], genomeLength: parsedData[0][1] });
+    // dispatch an action to check the genoneLength is the same...
+    dispatch(clearLineGraph());
     dispatch(computeLineGraph());
+    break;
+  case 'bratNextGen':
+    dispatch({ ...dispatchObj, data: parsedData });
+    dispatch(clearLineGraph());
+    dispatch(computeLineGraph(true));
     break;
   case 'meta':
     dispatchObj = merge(dispatchObj, parsedData);
@@ -145,6 +160,7 @@ const goDispatch = (dispatch, parsedData, dataType, filename) => {
     // we have 3 dispatches -- the blocks, annotation and linegraph!
     dispatch({ ...dispatchObj, data: parsedData[0], type: 'annotationData' });
     dispatch({ ...dispatchObj, data: parsedData[1], genomeLength: parsedData[2] });
+    dispatch(clearLineGraph());
     dispatch(computeLineGraph());
     break;
   default:

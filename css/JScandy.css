@@ -13,6 +13,10 @@ rect {
   overflow-x: hidden;
 }
 
+.noOverflow {
+  overflow-x: hidden;
+}
+
 /* id outer used to wrap a vertically centered element - landing page */
 #outer {
   width: 100%;
@@ -71,6 +75,12 @@ code {
 }*/
 
 
+/*canvas{
+    -webkit-box-shadow:inset 0px 0px 0px 2px #f00;
+    -moz-box-shadow:inset 0px 0px 0px 2px #f00;
+    box-shadow:inset 0px 0px 0px 2px #f00;
+}*/
+
 /*canvas { border: 2px solid black}*/
 
 /*.red {background: #FAAC58;}
@@ -119,7 +129,14 @@ code {
   background: #d8d8d8;
 }
 
-.border { border: 2px solid gray;} /* settings panels */
+/* SETIINVGS panel border (interior) */
+.border{
+    -webkit-box-shadow:inset 0px 0px 0px 2px #bbbbbb;
+    -moz-box-shadow:inset 0px 0px 0px 2px #bbbbbb;
+    box-shadow:inset 0px 0px 0px 2px #bbbbbb;
+}
+
+
 
 div.horizontalgap{padding-left: 10px; display: inline}
 

@@ -20,7 +20,7 @@ export const LandingPage = React.createClass({
           (formerly known as <a href="https://jameshadfield.github.io/JScandy/v02x.html">JScandy</a>)
         </h3>
 
-        <AnimatedLogo w={600} h={200} interval={2000}/>;
+        <AnimatedLogo w={600} h={200} interval={2000}/>
         <p/>
 
 

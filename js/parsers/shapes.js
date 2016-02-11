@@ -68,29 +68,40 @@ export function Arrow(featurestart, featureend, direction, fill, stroke, strokeW
   }
 }
 
-// Block: this is an object / container contstructor
-export function Block(startBase, endBase, taxa, node, nll, snps, id) {
-  // This is a very simple and unsafe constructor.
-  // All we're doing is checking if the values exist.
-  // if this.node is false then it's a leaf (croucher's version would display blue)
+/* Block constructor
+ * there are only three essential fields here - startBase, endBase and id (unique integer)
+ * if you don't use any optional arguments you must pass {}
+ * optional arguments:
+ * taxa - saved to this.taxa
+ * colour - saved to fill
+ * node - saved but not used in display yet
+ * (if node is false then it's a leaf (croucher's version would display blue))
+ * info {obj} - a map of names and values to be displayed, e.g. nll, snps
+ * summary:
+ * // new Block(start, end, id, {colour, taxa, node, info})
+ */
+export function Block(startBase, endBase, id, {
+  colour = undefined,
+  taxa = undefined,
+  node = false,
+  info = {},
+}) {
   this.startBase = startBase;
   this.endBase = endBase;
+  this.id = id; // unique
   this.taxa = taxa;
+  this.info = info;
   this.node = node;
-  this.nll = nll; // neg-log-likelihood
-  this.snps = snps;
-  if (this.node) {
-    this.fill = 'red'; // you can change this with another function
+  if (colour) {
+    this.fill = colour;
   } else {
-    this.fill = 'blue';
+    this.fill = node ? 'red' : 'blue'; // crouchers colour scheme
   }
-  this.fillAlpha = 1;
-  // the following are measured in pixels relative to the canvas (and therefore unknown at the moment)
+  // the following are used by the display, added here for speed (?)
   this.x1 = 0;
   this.x2 = 0;
   this.y1 = 0;
   this.y2 = 0;
-  this.id = id; // unique ID
 }
 
 

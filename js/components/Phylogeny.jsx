@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { setYValues, nodeSelected } from '../actions/phylocanvasBridge';
+import { setYValues } from '../actions/phylocanvasBridge';
+import { computeSubLineGraph } from '../actions/lineGraph';
 import PhyloCanvas from 'PhyloCanvas';
 import ContextMenuPlugin from 'phylocanvas-plugin-context-menu';
 PhyloCanvas.plugin(ContextMenuPlugin);
@@ -18,7 +19,6 @@ export const Phylogeny = React.createClass({
     this.phylocanvas.setTreeType('rectangular');
     this.phylocanvas.nodeAlign = true;
     this.phylocanvas.padding = 0;
-
     this.phylocanvas.resizeToContainer();
     this.attachListenersToPhylocanvas(this.props.dispatch);
     if (this.props.newickString) {
@@ -33,7 +33,7 @@ export const Phylogeny = React.createClass({
   },
 
   componentDidUpdate() {
-    this.phylocanvas.resizeToContainer();
+    // this.phylocanvas.resizeToContainer();
     this.phylocanvas.draw(true);  // forces phylocanvas.fitInPanel()
   },
 
@@ -52,7 +52,7 @@ export const Phylogeny = React.createClass({
 
     document.getElementById('phyloDiv').addEventListener('updated', function (e) {
       if (e.property === 'selected') {
-        dispatch(nodeSelected(e.nodeIds));
+        dispatch(computeSubLineGraph(e.nodeIds));
         // dispatch(setYValues(this.phylocanvas));
       }
     }, false);
