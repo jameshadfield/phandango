@@ -1,5 +1,6 @@
 import Papa from 'papaparse';
 import { Arrow, Block, colourDB } from './shapes';
+import chroma from 'chroma-js';
 
 /* ROARY parser
  * @param csvString {string} - the file contents
@@ -18,12 +19,35 @@ import { Arrow, Block, colourDB } from './shapes';
 //   return a - b;
 // }
 
+
+
 export function roaryParser(csvString) {
   const papa = Papa.parse(csvString);
   const arrows = [];
   // const blocks = [];
   const geneLen = 100;
   const tmp = {};
+
+  /* so we crawl the rows. Each row forms a gene (+ side arrow)
+   * and contributes to a fragment (- side arrow) (idx = 6)
+   * then, while in the row
+   * we crawl the columns which form a binary matrix
+   *
+   * eventually this matrix is turned into blocks
+   */
+
+  let fragmentOpen = undefined;
+  let fragmentId = papa.data[1][6]; // initialise
+  const fragments = [];
+
+  // find maximum fragment ID...
+  let maxFragmentId = 0;
+  for (let i = 1; i < papa.data.length; i++) {
+    if (parseInt(papa.data[i][6], 10) > maxFragmentId) {
+      maxFragmentId = parseInt(papa.data[i][6], 10);
+    }
+  }
+  const fragmentColours = chroma.scale('Spectral').mode('rgb').domain([ 1, maxFragmentId ]);
 
   for (let rowIdx = 1; rowIdx < papa.data.length; rowIdx++) {
     arrows.push( new Arrow(
@@ -36,6 +60,26 @@ export function roaryParser(csvString) {
       'locus_tag=' + papa.data[rowIdx][0] + ';product=' + papa.data[rowIdx][2]
     ));
 
+    // if the fragment hasn't changed we simply continue...
+    if (papa.data[rowIdx][6] !== fragmentId) {
+      // save the previous fragment
+      fragments.push( new Arrow(
+        fragmentOpen * geneLen,
+        rowIdx * geneLen,
+        '-',
+        fragmentColours(fragmentId).hex(),
+        'black',
+        1,
+        'fragment=' + fragmentId
+      ));
+      // start a new fragment
+      fragmentOpen = rowIdx;
+      fragmentId = papa.data[rowIdx][6];
+      if (fragmentId > maxFragmentId) {
+        maxFragmentId = fragmentId;
+      }
+    }
+
     for (let taxaColIdx = 11; taxaColIdx < papa.data[rowIdx].length; taxaColIdx++) {
       if (papa.data[rowIdx][taxaColIdx]) {
         if (tmp[papa.data[0][taxaColIdx]]) {
@@ -45,22 +89,18 @@ export function roaryParser(csvString) {
         }
       }
     }
-
-    /* older way which created a block for every single gene */
-    // for (let taxaColIdx = 11; taxaColIdx < papa.data[rowIdx].length; taxaColIdx++) {
-    //   if (papa.data[rowIdx][taxaColIdx]) {
-    //     blocks.push( new Block(
-    //       rowIdx * geneLen,
-    //       (rowIdx + 1) * geneLen,
-    //       [ papa.data[0][taxaColIdx] ],
-    //       0,
-    //       0,
-    //       0,
-    //       0
-    //     ));
-    //   }
-    // }
   }
+
+  // now that we've gone through all the rows close the final fragment!
+  fragments.push( new Arrow(
+    fragmentOpen * geneLen,
+    papa.data.length * geneLen,
+    '-',
+    fragmentColours(fragmentId).hex(),
+    'black',
+    1,
+    'fragment=' + fragmentId
+  ));
 
   const blocks = {};
   let uniqId = 0;
@@ -94,7 +134,7 @@ export function roaryParser(csvString) {
     }
   });
 
-  return [ arrows, blocks, papa.data.length * geneLen ];
+  return [ arrows.concat(fragments), blocks, papa.data.length * geneLen ];
 }
 
 
