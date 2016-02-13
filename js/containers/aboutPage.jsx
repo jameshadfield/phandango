@@ -89,7 +89,7 @@ function MainText() {
 
       <h3>Data formats currently visualised</h3>
       <p/>
-      I know that data formats in bioinformatics can be problematic so phandango tries to warn you if things aren't looking right. Take a look at <a href="https://github.com/jameshadfield/JScandy#roadmap">the roadmap</a> for things coming in the future.
+      Data formats in bioinformatics can be problematic so phandango tries to warn you if things aren't looking right. Take a look at <a href="https://github.com/jameshadfield/JScandy#roadmap">the roadmap</a> for things coming in the future.
       <p>
         <strong>Phylogenies</strong> form the backbone of the visualization as they link together all the other data. Trees must be in <a href="http://evolution.genetics.washington.edu/phylip/newicktree.html">Newick format</a> (which is the standard output from software such as <a href="http://sco.h-its.org/exelixis/software.html">RAxML</a>). If you need to convert your tree to a different format try using <a href="http://tree.bio.ed.ac.uk/software/figtree/">FigTree</a>. Files must end in <code>.tre</code> or <code>.tree</code>. We try to identify (and raise an error) if Nexus files are used, and parsing of these formats is on the to-do list. If you use FigTree check that single quotes haven't been added around the taxa names!
       </p>
@@ -121,7 +121,15 @@ function MainText() {
         </li>
 
         <li>
-          <a href="https://github.com/sanger-pathogens/Roary" className="heavy">Roary</a> pan-genome output (the <code>gene_presence_absence.csv</code> file). Example <a href="https://github.com/jameshadfield/JScandy/v0.2.0/example_datasets/roary/gene_presence_absence.csv">here</a>.
+          <a href="http://www.helsinki.fi/bsg/software/BRAT-NextGen/" className="heavy">BRAT NextGen</a> (the tab seperated <code>*_segments_tabular.txt</code> file). BRAT NextGen uses HMMs to infer recombination regions from genomes.
+        </li>
+
+        <li>
+          <span className="heavy">Gubbins + BRAT NextGen</span> are both recombination detection algorithms for genomic data. If you have run both then drop both sets of data on and you can toggle between the different results and a merged output. Use the settings panel to switch between them.
+        </li>
+
+        <li>
+          <a href="https://github.com/sanger-pathogens/Roary" className="heavy">Roary</a> pan-genome output (the <code>gene_presence_absence.csv</code> file). Example of the csv file <a href="https://github.com/jameshadfield/JScandy/v0.2.0/example_datasets/roary/gene_presence_absence.csv">here</a>.
         </li>
 
       </ul>

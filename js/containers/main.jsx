@@ -16,7 +16,7 @@ import { Header } from '../components/header';
 import { Spinner } from '../components/spinner';
 
 // Actions to be dispatched upon key presses
-import { notificationNew, notificationSeen, showHelp } from '../actions/notifications';
+import { notificationNew, notificationSeen } from '../actions/notifications';
 import { goToPage, toggleMetaKey, showBlocks, increaseSpinner } from '../actions/general';
 
 /*
@@ -156,6 +156,9 @@ export const MainReactElement = React.createClass({ displayName: 'Main_React_Ele
       break;
     case 86: // v
       this.props.dispatch(showBlocks('merged'));
+      break;
+    case 75: // k
+      this.props.dispatch(toggleMetaKey());
       break;
     default:
       return;
