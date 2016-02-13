@@ -112,41 +112,40 @@ function MainText() {
 
       <p>
         <strong>Genomic data</strong>, i.e. recombination blocks, pan-genome output or any custom data that mimicks the following specifications:
-
-        <ul>
-          <li>
-            <a href="https://github.com/sanger-pathogens/gubbins" className="heavy">Gubbins</a> (GFF3 format as above&mdash;each line links a whitespace seperated list of taxa with genomic co-ordinates). Note that the second field of each line (apart from the header) must be <code>GUBBINS</code> in order to distinguish it from an annotation file.
-            <br/>
-            If you have old output from gubbins (e.g. <code>*_rec.tab</code> file) then <a href="https://github.com/jameshadfield/JScandy/blob/master/scripts/gubbins_tab2gff.py">here's a python script</a> which will convert this for you.
-          </li>
-
-          <li>
-            <a href="https://github.com/sanger-pathogens/Roary" className="heavy">Roary</a> pan-genome output (the <code>gene_presence_absence.csv</code> file). Example <a href="https://github.com/jameshadfield/JScandy/v0.2.0/example_datasets/roary/gene_presence_absence.csv">here</a>.
-          </li>
-
-        </ul>
       </p>
+      <ul>
+        <li>
+          <a href="https://github.com/sanger-pathogens/gubbins" className="heavy">Gubbins</a> (GFF3 format as above&mdash;each line links a whitespace seperated list of taxa with genomic co-ordinates). Note that the second field of each line (apart from the header) must be <code>GUBBINS</code> in order to distinguish it from an annotation file.
+          <br/>
+          If you have old output from gubbins (e.g. <code>*_rec.tab</code> file) then <a href="https://github.com/jameshadfield/JScandy/blob/master/scripts/gubbins_tab2gff.py">here's a python script</a> which will convert this for you.
+        </li>
+
+        <li>
+          <a href="https://github.com/sanger-pathogens/Roary" className="heavy">Roary</a> pan-genome output (the <code>gene_presence_absence.csv</code> file). Example <a href="https://github.com/jameshadfield/JScandy/v0.2.0/example_datasets/roary/gene_presence_absence.csv">here</a>.
+        </li>
+
+      </ul>
 
 
       <p>
         <strong>Plot data</strong> files ending in <code>.plot</code>
-        <ul>
-           <li>
-             <strong>GWAS</strong> results in plink format, i.e. a tab deliminated file with header line similar to
-             <br/>
-             <code>
-             #CHR&emsp;SNP&emsp;BP&emsp;minLOG10(P)&emsp;log10(p)&emsp;r^2
-             </code>
-             <br/>
-              We use the 3rd column as the genome co-ordinate, the 5th column as the <em>p</em> value and the 6th as the R^2 value (which changes the colour).
-          </li>
-
-          <li>
-            <a href="https://github.com/johnlees/seer" className="heavy">Seer</a> output is similar to GWAS except that the matches are k-mers not bases. The only difference in file format is that the 3rd column is seperated by two dots, e.g. <code>140..160</code>.
-          </li>
-
-        </ul>
       </p>
+      <ul>
+         <li>
+           <strong>GWAS</strong> results in plink format, i.e. a tab deliminated file with header line similar to
+           <br/>
+           <code>
+           #CHR&emsp;SNP&emsp;BP&emsp;minLOG10(P)&emsp;log10(p)&emsp;r^2
+           </code>
+           <br/>
+            We use the 3rd column as the genome co-ordinate, the 5th column as the <em>p</em> value and the 6th as the R^2 value (which changes the colour).
+        </li>
+
+        <li>
+          <a href="https://github.com/johnlees/seer" className="heavy">Seer</a> output is similar to GWAS except that the matches are k-mers not bases. The only difference in file format is that the 3rd column is seperated by two dots, e.g. <code>140..160</code>.
+        </li>
+
+      </ul>
 
     </div>
   );
