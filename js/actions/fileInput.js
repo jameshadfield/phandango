@@ -3,7 +3,7 @@ import { notificationNew } from './notifications';
 // PARSERS:
 import { gffParser } from '../parsers/gff';
 import { metaParser } from '../parsers/metadataParser';
-import { clearLineGraph, computeLineGraph } from './lineGraph.js';
+import { clearLineGraph, computeLineGraph, computeMergedLineGraph } from './lineGraph.js';
 import { roaryParser } from '../parsers/roaryParser';
 import { plotParser } from '../parsers/plotParser';
 import { bratNextGenParser } from '../parsers/bratNextGenParser';
@@ -129,7 +129,7 @@ const analyseIncomingData = (fileName, fileContents) => {
  * @SIDE-EFFECTS may throw
  * @RETURNS undefined
  */
-const goDispatch = (dispatch, parsedData, dataType, filename) => {
+const goDispatch = (dispatch, getState, parsedData, dataType, filename) => {
   let dispatchObj = { type: dataType + 'Data', fileName: filename };
   switch (dataType) {
   case 'annotation':
@@ -138,13 +138,28 @@ const goDispatch = (dispatch, parsedData, dataType, filename) => {
   case 'gubbins':
     dispatch({ ...dispatchObj, data: parsedData[1], genomeLength: parsedData[0][1] });
     // dispatch an action to check the genoneLength is the same...
+
+    // if bratNextGen is loaded then we want to switch to merged view
+    // else just make the line graph for this one...
     dispatch(clearLineGraph());
-    dispatch(computeLineGraph());
+    if (getState().blocks.fileNames.bratNextGen) {
+      dispatch({ type: 'showBlocks', name: 'merged' });
+      dispatch(computeMergedLineGraph([ 'gubbinsPerTaxa', 'bratNextGen' ]));
+    } else {
+      dispatch(computeLineGraph());
+    }
     break;
   case 'bratNextGen':
     dispatch({ ...dispatchObj, data: parsedData });
+    // if gubbins is loaded then we want to switch to merged view
+    // else just make the line graph for this one...
     dispatch(clearLineGraph());
-    dispatch(computeLineGraph(true));
+    if (getState().blocks.fileNames.gubbins) {
+      dispatch({ type: 'showBlocks', name: 'merged' });
+      dispatch(computeMergedLineGraph([ 'gubbinsPerTaxa', 'bratNextGen' ]));
+    } else {
+      dispatch(computeLineGraph(true));
+    }
     break;
   case 'meta':
     dispatchObj = merge(dispatchObj, parsedData);
@@ -189,7 +204,7 @@ const goDispatch = (dispatch, parsedData, dataType, filename) => {
 */
 export function incomingFile(file, ajax = false) {
   // thunks return function(dispatch)
-  return function (dispatch) {
+  return function (dispatch, getState) {
     // dispatch action to toggle spinner on?
     let dataType; // e.g. meta | annotation | tree | gubbins e.t.c
     // const filename = file.name.split('/').slice(-1)[0]; // basename of file
@@ -200,7 +215,7 @@ export function incomingFile(file, ajax = false) {
       [ dataType, parser ] = analyseIncomingData(filename, success);
       return parser(success); // usually a promise
     }).then( (success) =>
-      goDispatch(dispatch, success, dataType, filename) // returns undefined | throws
+      goDispatch(dispatch, getState, success, dataType, filename) // returns undefined | throws
     ).catch( (failure) => {
       console.error(failure.stack);
       dispatch( notificationNew(

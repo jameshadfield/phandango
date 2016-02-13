@@ -130,107 +130,112 @@ export function blocks(state = initialBlockState, action) {
       ret.blockFillAlpha = 1;
     } else if (action.name === 'merged') {
       console.log('showing Merged data now...');
-      ret = {};
-      ret.roary = [];
-      ret.bratNextGen = state.bratNextGen;
-      ret.gubbins = state.gubbins;
-      ret.gubbinsPerTaxa = state.gubbinsPerTaxa;
-      ret.fileNames = { ...state.fileNames };
-      ret.dataAvailable = { ...state.dataAvailable };
-      ret.shouldMouseOver = false;
-      ret.dataType = 'merged';
-      ret.blocksArePerTaxa = true;
-      ret.blockFillAlpha = 1;
-      ret.merged = state.merged;
-      if (!Object.keys(ret.merged).length) {
-        /* remember that bratNextGen is, by default, perTaxa, but we have to collapse gubbins */
-        if (!ret.gubbinsPerTaxa.length) {
-          ret.gubbinsPerTaxa = collapseGubbins(ret.gubbins);
-          // ret.dataAvailable.gubbinsPerTaxa = true;
-        }
-        // merge the objects gubbinsPerTaxa and bratNextGen
-        const gubbinsTaxa = Object.keys(ret.gubbinsPerTaxa);
-        const bratNextGenTaxa = Object.keys(ret.bratNextGen);
-        const taxaOnlyInGubbins = gubbinsTaxa.filter( (n) => bratNextGenTaxa.indexOf(n) === -1 );
-        const taxaOnlyInBratNextGen = bratNextGenTaxa.filter( (n) => gubbinsTaxa.indexOf(n) === -1 );
-        const commonTaxa = gubbinsTaxa.filter( (n) => bratNextGenTaxa.indexOf(n) > -1 );
-
-        // clone the blocks (how slow is this?)
-        const bratNextGen = cloneDeep(ret.bratNextGen);
-        const gubbinsCopy = cloneDeep(ret.gubbinsPerTaxa);
-
-        // change the colours of bratNextGen & gubbinsPerTaxa
-        for (const key of Object.keys(bratNextGen)) {
-          for (let i = 0; i < bratNextGen[key].length; i++) {
-            bratNextGen[key][i].fill = colourDB.block.bratNextGen.default;
-          }
-        }
-        for (const key of Object.keys(gubbinsCopy)) {
-          for (let i = 0; i < gubbinsCopy[key].length; i++) {
-            gubbinsCopy[key][i].fill = colourDB.block.gubbinsPerTaxa;
-          }
-        }
-
-        // merge!
-        for (const taxa of taxaOnlyInGubbins) {
-          ret.merged[taxa] = gubbinsCopy[taxa]; // pass by reference
-        }
-        for (const taxa of taxaOnlyInBratNextGen) {
-          ret.merged[taxa] = bratNextGen[taxa]; // pass by reference
-        }
-        /* if we simply wanted to add in both sets of blocks and let the opacity merge we could do
-         * // for (const taxa of commonTaxa) {
-         * //   ret.merged[taxa] = bratNextGen[taxa].concat(gubbinsCopy[taxa]); // pass by reference
-         * // }
-         * but we want to actually slice up the blocks and create new ones for the overlaps
-         *
-         * remember no two gubbins blocks will overlap & vice versa
-         */
-        for (const taxa of commonTaxa) {
-          let uniqId = 100000;
-          const allBlocks = gubbinsCopy[taxa].concat(bratNextGen[taxa]);
-          allBlocks.sort(sortBlockwise);
-          const merged = [ allBlocks[0] ];
-          for (let i = 1; i < allBlocks.length; i++) {
-            if (allBlocks[i].startBase < merged[merged.length - 1].endBase) {
-              // overlap of some kind
-              if (allBlocks[i].startBase === merged[merged.length - 1].startBase) {
-                // overlap cancelling out the first bit of the saved block
-                // note that because we sorted on endBase as well
-                // this incomming block CANNOT be shorter than the saved block - so we can overwrite
-                merged[merged.length - 1].fill = colourDB.block.merge;
-                if (allBlocks[i].endBase > merged[merged.length - 1].endBase) {
-                  allBlocks[i].startBase = merged[merged.length - 1].endBase + 1;
-                  merged.push(allBlocks[i]);
-                }
-              } else {
-                // so we know that incomming.start > existing.start, so make this start block
-                const existingEndBase = merged[merged.length - 1].endBase;
-                const existingColour = merged[merged.length - 1].fill;
-                merged[merged.length - 1].endBase = allBlocks[i].startBase;
-                if (allBlocks[i].endBase > existingEndBase) {
-                  merged.push(new Block(allBlocks[i].startBase, existingEndBase, uniqId++, { colour: colourDB.block.merge }));
-                  allBlocks[i].startBase = existingEndBase + 1;
-                  merged.push(allBlocks[i]);
-                } else {
-                  merged.push(new Block(allBlocks[i].startBase, allBlocks[i].endBase, uniqId++, { colour: colourDB.block.merge }));
-                  merged.push(new Block(allBlocks[i].endBase + 1, existingEndBase, uniqId++, { colour: existingColour }));
-                }
-              }
-            } else {
-              // no overlap -> add in the block
-              merged.push(allBlocks[i]);
-            }
-          }
-          ret.merged[taxa] = merged;
-        }
-      }
-      ret.blocks = ret.merged;
+      ret = mergeBratNextGenAndGubbins(state);
     }
     return ret;
   default:
     return state;
   }
+}
+
+function mergeBratNextGenAndGubbins(state) {
+  const ret = {};
+  ret.roary = [];
+  ret.bratNextGen = state.bratNextGen;
+  ret.gubbins = state.gubbins;
+  ret.gubbinsPerTaxa = state.gubbinsPerTaxa;
+  ret.fileNames = { ...state.fileNames };
+  ret.dataAvailable = { ...state.dataAvailable };
+  ret.shouldMouseOver = false;
+  ret.dataType = 'merged';
+  ret.blocksArePerTaxa = true;
+  ret.blockFillAlpha = 1;
+  ret.merged = state.merged;
+  if (!Object.keys(ret.merged).length) {
+    /* remember that bratNextGen is, by default, perTaxa, but we have to collapse gubbins */
+    if (!ret.gubbinsPerTaxa.length) {
+      ret.gubbinsPerTaxa = collapseGubbins(ret.gubbins);
+      // ret.dataAvailable.gubbinsPerTaxa = true;
+    }
+    // merge the objects gubbinsPerTaxa and bratNextGen
+    const gubbinsTaxa = Object.keys(ret.gubbinsPerTaxa);
+    const bratNextGenTaxa = Object.keys(ret.bratNextGen);
+    const taxaOnlyInGubbins = gubbinsTaxa.filter( (n) => bratNextGenTaxa.indexOf(n) === -1 );
+    const taxaOnlyInBratNextGen = bratNextGenTaxa.filter( (n) => gubbinsTaxa.indexOf(n) === -1 );
+    const commonTaxa = gubbinsTaxa.filter( (n) => bratNextGenTaxa.indexOf(n) > -1 );
+
+    // clone the blocks (how slow is this?)
+    const bratNextGen = cloneDeep(ret.bratNextGen);
+    const gubbinsCopy = cloneDeep(ret.gubbinsPerTaxa);
+
+    // change the colours of bratNextGen & gubbinsPerTaxa
+    for (const key of Object.keys(bratNextGen)) {
+      for (let i = 0; i < bratNextGen[key].length; i++) {
+        bratNextGen[key][i].fill = colourDB.block.bratNextGen.default;
+      }
+    }
+    for (const key of Object.keys(gubbinsCopy)) {
+      for (let i = 0; i < gubbinsCopy[key].length; i++) {
+        gubbinsCopy[key][i].fill = colourDB.block.gubbinsPerTaxa;
+      }
+    }
+
+    // merge!
+    for (const taxa of taxaOnlyInGubbins) {
+      ret.merged[taxa] = gubbinsCopy[taxa]; // pass by reference
+    }
+    for (const taxa of taxaOnlyInBratNextGen) {
+      ret.merged[taxa] = bratNextGen[taxa]; // pass by reference
+    }
+    /* if we simply wanted to add in both sets of blocks and let the opacity merge we could do
+     * // for (const taxa of commonTaxa) {
+     * //   ret.merged[taxa] = bratNextGen[taxa].concat(gubbinsCopy[taxa]); // pass by reference
+     * // }
+     * but we want to actually slice up the blocks and create new ones for the overlaps
+     *
+     * remember no two gubbins blocks will overlap & vice versa
+     */
+    for (const taxa of commonTaxa) {
+      let uniqId = 100000;
+      const allBlocks = gubbinsCopy[taxa].concat(bratNextGen[taxa]);
+      allBlocks.sort(sortBlockwise);
+      const merged = [ allBlocks[0] ];
+      for (let i = 1; i < allBlocks.length; i++) {
+        if (allBlocks[i].startBase < merged[merged.length - 1].endBase) {
+          // overlap of some kind
+          if (allBlocks[i].startBase === merged[merged.length - 1].startBase) {
+            // overlap cancelling out the first bit of the saved block
+            // note that because we sorted on endBase as well
+            // this incomming block CANNOT be shorter than the saved block - so we can overwrite
+            merged[merged.length - 1].fill = colourDB.block.merge;
+            if (allBlocks[i].endBase > merged[merged.length - 1].endBase) {
+              allBlocks[i].startBase = merged[merged.length - 1].endBase + 1;
+              merged.push(allBlocks[i]);
+            }
+          } else {
+            // so we know that incomming.start > existing.start, so make this start block
+            const existingEndBase = merged[merged.length - 1].endBase;
+            const existingColour = merged[merged.length - 1].fill;
+            merged[merged.length - 1].endBase = allBlocks[i].startBase;
+            if (allBlocks[i].endBase > existingEndBase) {
+              merged.push(new Block(allBlocks[i].startBase, existingEndBase, uniqId++, { colour: colourDB.block.merge }));
+              allBlocks[i].startBase = existingEndBase + 1;
+              merged.push(allBlocks[i]);
+            } else {
+              merged.push(new Block(allBlocks[i].startBase, allBlocks[i].endBase, uniqId++, { colour: colourDB.block.merge }));
+              merged.push(new Block(allBlocks[i].endBase + 1, existingEndBase, uniqId++, { colour: existingColour }));
+            }
+          }
+        } else {
+          // no overlap -> add in the block
+          merged.push(allBlocks[i]);
+        }
+      }
+      ret.merged[taxa] = merged;
+    }
+  }
+  ret.blocks = ret.merged;
+  return ret;
 }
 
 function sortBlockwise(a, b) {

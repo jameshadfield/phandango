@@ -64,6 +64,7 @@ export function showBlocks(name) {
         return;
       }
     }
+    // dispactch two things here - switch the blocks and subsequently switch the
     dispatch({ type: 'showBlocks', name: name });
     if (name === 'merged') {
       dispatch(clearLineGraph());
