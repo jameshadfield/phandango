@@ -13,20 +13,11 @@ import { HelpPanel } from '../components/helpPanel';
 
 // misc
 import { Header } from '../components/header';
+import { Spinner } from '../components/spinner';
 
 // Actions to be dispatched upon key presses
 import { notificationNew, notificationSeen, showHelp } from '../actions/notifications';
-import { goToPage, toggleMetaKey, showBlocks } from '../actions/general';
-
-// function Spinner({ active }) {
-//   console.log('spinner component. value: ', active);
-//   if (active < 1) {return (<g/>);}
-//   return (
-//    <div className="fullpage center-align" id="spinner">
-//       <div className="spinner"></div>
-//   </div>
-//   );
-// }
+import { goToPage, toggleMetaKey, showBlocks, increaseSpinner } from '../actions/general';
 
 /*
 Connect the containers which will be displayed here to redux store / dispatch etc
@@ -108,10 +99,6 @@ export const MainReactElement = React.createClass({ displayName: 'Main_React_Ele
       injectedPage = <ConnectedExamples />;
       break;
     case 'main':
-      // injectedPage = [
-      //   <Spinner key="a" active={this.props.spinner} />,
-      //   <ConnectedCanvasContainer key="b"/>,
-      // ];
       injectedPage = <ConnectedCanvasContainer />;
       break;
     case 'help':
@@ -123,6 +110,7 @@ export const MainReactElement = React.createClass({ displayName: 'Main_React_Ele
     return (
       <div id="mainDiv" ref={(c) => this.node = c}>
         <ConnectedHeader />
+        <Spinner key="spinner" active={this.props.spinner} />
         {injectedPage}
         <ConnectedNotifications />
       </div>
@@ -175,7 +163,7 @@ export const MainReactElement = React.createClass({ displayName: 'Main_React_Ele
     this.props.dispatch(notificationNew('press \'h\' for help!'));
     const files = e.dataTransfer.files;
     e.preventDefault();
-    // this.props.dispatch({ type: 'setSpinner', value: files.length });
+    this.props.dispatch(increaseSpinner(files.length));
     for (let i = 0; i < files.length; i++) {
       this.props.dispatch(incomingFile(files[i]));
     }

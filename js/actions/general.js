@@ -5,6 +5,14 @@ import {
 } from './lineGraph.js';
 import { notificationNew } from './notifications';
 
+export function increaseSpinner(value = 1) {
+  return ({ type: 'increaseSpinner', value });
+}
+
+export function decreaseSpinner() {
+  return ({ type: 'decreaseSpinner' });
+}
+
 export function goToPage(name) {
   return function (dispatch) {
     dispatch({ type: 'newPage', name: name });
@@ -65,6 +73,7 @@ export function showBlocks(name) {
       }
     }
     // dispactch two things here - switch the blocks and subsequently switch the
+    dispatch(increaseSpinner());
     dispatch({ type: 'showBlocks', name: name });
     if (name === 'merged') {
       dispatch(clearLineGraph());
@@ -72,19 +81,7 @@ export function showBlocks(name) {
     } else {
       dispatch(computeLineGraph());
     }
+    dispatch(decreaseSpinner());
   };
 }
 
-
-// export function computeLineGraph() {
-//   // THUNK
-//   return function (dispatch, getState) {
-//     // setTimeout( () => {
-//     dispatch({
-//       type: 'computeLineGraph',
-//       blocks: getState().blocks.blocks,
-//       genomeLength: getState().genomeInfo.genomeLength,
-//     });
-//     // }, 100);
-//   };
-// }

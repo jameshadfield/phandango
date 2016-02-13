@@ -27,7 +27,7 @@ const rootReducer = combineReducers({
   router,
   layout,
   notifications,
-  // spinner,
+  spinner,
 });
 
 export default rootReducer;
@@ -69,21 +69,22 @@ function phylogeny(state = initialPhylogenyState, action) {
 /* the spinner reducer is simply an integer of how many things are "to load"
  * so it reduces by one each time a data type comes in!
  */
-// function spinner(state = 0, action) {
-//   switch (action.type) {
-//   case 'setSpinner':
-//     console.log('spinner value set to ', action.value);
-//     return action.value;
-//   case 'gubbinsData': // fallthrough
-//   case 'roaryData': // fallthrough
-//   case 'treeData': // fallthrough
-//   case 'annotationData': // fallthrough
-//   case 'gwasData': // fallthrough
-//   case 'metaData':
-//     console.log('spinner value decreasing via ', action.type);
-//     return state - 1;
-//   default:
-//     return state;
-//   }
-// }
-
+function spinner(state = 0, action) {
+  switch (action.type) {
+  case 'increaseSpinner':
+    // console.log('spinner value set to ', action.value);
+    return action.value;
+  case 'gubbinsData': // fallthrough
+  case 'bratNextGenData': // fallthrough
+  case 'roaryData': // fallthrough
+  case 'treeData': // fallthrough
+  case 'annotationData': // fallthrough
+  case 'gwasData': // fallthrough
+  case 'metaData': // fallthrough
+  case 'decreaseSpinner':
+    // console.log('spinner value decreasing via ', action.type);
+    return state ? state - 1 : state;
+  default:
+    return state;
+  }
+}
