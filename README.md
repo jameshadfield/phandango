@@ -40,7 +40,10 @@ Here is our list of (big) things to implement -- additional ideas or contributio
 * Install Node and Node Package manager (npm), which allow bundling of the javascript packages. On OS X [I find nvm](http://stackoverflow.com/a/28025834) to be the best way.
 * Clone or fork this github repo
 * Run `npm install` in the JScandy directory
-* Install PhyloCanvas (>2.0.0) via `npm install git+https://github.com/PhyloCanvas/PhyloCanvas.git#8849ce3  ` or clone the PhyloCanvas repo and use `npm link`
+* If you need to modify PhyloCanvas then:
+ * npm rm phylocanvas
+ * clone the repo & link it via `npm link`
+ * `npm link PhyloCanvas`
 * Run the tests with `npm run test`
 * `npm run start` bundles the javascript and serves it to `localhost:8080` with dev-tools enabled
 * `npm run build` produces a production-ready bundle available at index.html

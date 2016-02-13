@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { setYValues } from '../actions/phylocanvasBridge';
 import { computeSubLineGraph } from '../actions/lineGraph';
-import PhyloCanvas from 'PhyloCanvas';
+import PhyloCanvas from 'phylocanvas';
 import ContextMenuPlugin from 'phylocanvas-plugin-context-menu';
 PhyloCanvas.plugin(ContextMenuPlugin);
 
