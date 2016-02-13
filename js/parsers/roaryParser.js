@@ -1,5 +1,5 @@
 import Papa from 'papaparse';
-import { Arrow, Block } from './shapes';
+import { Arrow, Block, colourDB } from './shapes';
 
 /* ROARY parser
  * @param csvString {string} - the file contents
@@ -78,7 +78,7 @@ export function roaryParser(csvString) {
       if (thisVal === prevVal + 1) {
         prevVal = thisVal;
       } else {
-        blocks[taxa].push(new Block(openVal * geneLen, (prevVal + 1) * geneLen, uniqId++, {}));
+        blocks[taxa].push(new Block(openVal * geneLen, (prevVal + 1) * geneLen, uniqId++, { colour: colourDB.block.roary }));
         openVal = thisVal;
         prevVal = thisVal;
       }
@@ -87,10 +87,10 @@ export function roaryParser(csvString) {
     // last case
     const thisVal = tmp[taxa][tmp[taxa].length - 1];
     if (thisVal === prevVal + 1) {
-      blocks[taxa].push(new Block(openVal * geneLen, (thisVal + 1) * geneLen, uniqId++, {}));
+      blocks[taxa].push(new Block(openVal * geneLen, (thisVal + 1) * geneLen, uniqId++, { colour: colourDB.block.roary }));
     } else {
-      blocks[taxa].push(new Block(openVal * geneLen, (prevVal + 1) * geneLen, uniqId++, {}));
-      blocks[taxa].push(new Block(thisVal * geneLen, (thisVal + 1) * geneLen, uniqId++, {}));
+      blocks[taxa].push(new Block(openVal * geneLen, (prevVal + 1) * geneLen, uniqId++, { colour: colourDB.block.roary }));
+      blocks[taxa].push(new Block(thisVal * geneLen, (thisVal + 1) * geneLen, uniqId++, { colour: colourDB.block.roary }));
     }
   });
 

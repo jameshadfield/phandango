@@ -1,6 +1,6 @@
 import merge from 'lodash/object/merge';
 import cloneDeep from 'lodash/lang/cloneDeep';
-import { Block } from '../parsers/shapes';
+import { Block, colourDB } from '../parsers/shapes';
 
 /* important speed observation:
  * using lodash's merge is very slow!
@@ -143,11 +143,6 @@ export function blocks(state = initialBlockState, action) {
       ret.blockFillAlpha = 1;
       ret.merged = state.merged;
       if (!Object.keys(ret.merged).length) {
-        const gubbinsColour = 'Orange';
-        const bratColour = 'Red';
-        const mergeColour = 'Black';
-
-
         /* remember that bratNextGen is, by default, perTaxa, but we have to collapse gubbins */
         if (!ret.gubbinsPerTaxa.length) {
           ret.gubbinsPerTaxa = collapseGubbins(ret.gubbins);
@@ -160,18 +155,19 @@ export function blocks(state = initialBlockState, action) {
         const taxaOnlyInBratNextGen = bratNextGenTaxa.filter( (n) => gubbinsTaxa.indexOf(n) === -1 );
         const commonTaxa = gubbinsTaxa.filter( (n) => bratNextGenTaxa.indexOf(n) > -1 );
 
-        // make bratNextGen colour -> something
-        // http://html-color-codes.info/color-names/
+        // clone the blocks (how slow is this?)
         const bratNextGen = cloneDeep(ret.bratNextGen);
+        const gubbinsCopy = cloneDeep(ret.gubbinsPerTaxa);
+
+        // change the colours of bratNextGen & gubbinsPerTaxa
         for (const key of Object.keys(bratNextGen)) {
           for (let i = 0; i < bratNextGen[key].length; i++) {
-            bratNextGen[key][i].fill = bratColour;
+            bratNextGen[key][i].fill = colourDB.block.bratNextGen.default;
           }
         }
-        const gubbinsCopy = cloneDeep(ret.gubbinsPerTaxa);
         for (const key of Object.keys(gubbinsCopy)) {
           for (let i = 0; i < gubbinsCopy[key].length; i++) {
-            gubbinsCopy[key][i].fill = gubbinsColour;
+            gubbinsCopy[key][i].fill = colourDB.block.gubbinsPerTaxa;
           }
         }
 
@@ -182,13 +178,12 @@ export function blocks(state = initialBlockState, action) {
         for (const taxa of taxaOnlyInBratNextGen) {
           ret.merged[taxa] = bratNextGen[taxa]; // pass by reference
         }
-        // now merge the taxa in commons
-        // for (const taxa of commonTaxa) {
-        //   ret.merged[taxa] = bratNextGen[taxa].concat(gubbinsCopy[taxa]); // pass by reference
-        // }
-        /* the above, commented lines, work well
-         * but don't let us identify new blocks for the overlaps
-         * let's try this in a smart way
+        /* if we simply wanted to add in both sets of blocks and let the opacity merge we could do
+         * // for (const taxa of commonTaxa) {
+         * //   ret.merged[taxa] = bratNextGen[taxa].concat(gubbinsCopy[taxa]); // pass by reference
+         * // }
+         * but we want to actually slice up the blocks and create new ones for the overlaps
+         *
          * remember no two gubbins blocks will overlap & vice versa
          */
         for (const taxa of commonTaxa) {
@@ -203,7 +198,7 @@ export function blocks(state = initialBlockState, action) {
                 // overlap cancelling out the first bit of the saved block
                 // note that because we sorted on endBase as well
                 // this incomming block CANNOT be shorter than the saved block - so we can overwrite
-                merged[merged.length - 1].fill = mergeColour;
+                merged[merged.length - 1].fill = colourDB.block.merge;
                 if (allBlocks[i].endBase > merged[merged.length - 1].endBase) {
                   allBlocks[i].startBase = merged[merged.length - 1].endBase + 1;
                   merged.push(allBlocks[i]);
@@ -214,11 +209,11 @@ export function blocks(state = initialBlockState, action) {
                 const existingColour = merged[merged.length - 1].fill;
                 merged[merged.length - 1].endBase = allBlocks[i].startBase;
                 if (allBlocks[i].endBase > existingEndBase) {
-                  merged.push(new Block(allBlocks[i].startBase, existingEndBase, uniqId++, { colour: mergeColour }));
+                  merged.push(new Block(allBlocks[i].startBase, existingEndBase, uniqId++, { colour: colourDB.block.merge }));
                   allBlocks[i].startBase = existingEndBase + 1;
                   merged.push(allBlocks[i]);
                 } else {
-                  merged.push(new Block(allBlocks[i].startBase, allBlocks[i].endBase, uniqId++, { colour: mergeColour }));
+                  merged.push(new Block(allBlocks[i].startBase, allBlocks[i].endBase, uniqId++, { colour: colourDB.block.merge }));
                   merged.push(new Block(allBlocks[i].endBase + 1, existingEndBase, uniqId++, { colour: existingColour }));
                 }
               }
@@ -282,7 +277,7 @@ function collapseGubbins(blocksIn) {
   for (const taxaName of Object.keys(blocksByTaxa)) {
     const blocksOneTaxa = blocksByTaxa[taxaName];
     blocksOneTaxa.sort(sortBlockwise);
-    const mergedBlocks = [ new Block(blocksOneTaxa[0].startBase, blocksOneTaxa[0].endBase, uniqId++, { colour: 'DodgerBlue' }) ];
+    const mergedBlocks = [ new Block(blocksOneTaxa[0].startBase, blocksOneTaxa[0].endBase, uniqId++, { colour: colourDB.block.gubbinsPerTaxa }) ];
     for (const thisBlock of blocksOneTaxa) {
       // note that thisBlock.startBase CANNOT be before mergedBlocks[mergedBlocks.length-1].startBase
       // but thisBlock.startBase MAY BE BEFORE mergedBlocks[mergedBlocks.length-1].endBase
@@ -290,7 +285,7 @@ function collapseGubbins(blocksIn) {
       if (thisBlock.startBase < mergedBlocks[mergedBlocks.length - 1].endBase && thisBlock.endBase > mergedBlocks[mergedBlocks.length - 1].endBase) { // MERGE
         mergedBlocks[mergedBlocks.length - 1].endBase = thisBlock.endBase;
       } else if (thisBlock.startBase > mergedBlocks[mergedBlocks.length - 1].endBase) { // NEW BLOCK
-        mergedBlocks.push(new Block(thisBlock.startBase, thisBlock.endBase, uniqId++, { colour: 'DodgerBlue' }));
+        mergedBlocks.push(new Block(thisBlock.startBase, thisBlock.endBase, uniqId++, { colour: colourDB.block.gubbinsPerTaxa }));
       }
     }
     ret[taxaName] = mergedBlocks;

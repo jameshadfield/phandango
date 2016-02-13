@@ -1,4 +1,6 @@
+import { colourDB } from '../parsers/shapes';
 // import merge from 'lodash/object/merge';
+
 const initialState = {
   preComputedValues: {},
   values: [],
@@ -7,16 +9,9 @@ const initialState = {
   lineColours: [],
 };
 
-const lineColours = {
-  gubbins: 'Purple',
-  gubbinsPerTaxa: 'DarkOrchid',
-  roary: 'Black',
-  bratNextGen: 'Orange',
-};
-
 export function lineGraph(state = initialState, action) {
   switch (action.type) {
-  case 'clearLizneGraph':
+  case 'clearLineGraph':
     return ({
       preComputedValues: state.preComputedValues,
       values: [],
@@ -38,13 +33,13 @@ export function lineGraph(state = initialState, action) {
     if (ret.preComputedValues[action.blockType]) {
       ret.max = ret.preComputedValues[action.blockType].max;
       ret.values = [ ret.preComputedValues[action.blockType].values ];
-      ret.lineColours = [ lineColours[action.blockType] ];
+      ret.lineColours = [ colourDB.line[action.blockType] ];
     } else {
-      console.log('computing plot value for ', action.blockType);
+      // console.log('computing plot value for ', action.blockType);
       const plotValues = computeLine(action.genomeLength, action.blocksArePerTaxa, action.blocks);
       ret.max = findMaxValueOfArray(plotValues);
       ret.values = [ plotValues ];
-      ret.lineColours = [ lineColours[action.blockType] ];
+      ret.lineColours = [ colourDB.line[action.blockType] ];
       ret.preComputedValues[action.blockType] = {
         max: ret.max,
         values: plotValues,
@@ -64,7 +59,7 @@ export function lineGraph(state = initialState, action) {
         rett.max = rett.preComputedValues[blockType].max;
       }
       rett.values.push(rett.preComputedValues[blockType].values);
-      rett.lineColours.push(lineColours[blockType]);
+      rett.lineColours.push(colourDB.line[blockType]);
     }
     return rett;
   case 'computeSubLineGraph':

@@ -1,7 +1,17 @@
-import { computeLineGraph, computeMergedLineGraph, clearLineGraph } from './lineGraph.js';
+import {
+  computeLineGraph,
+  computeMergedLineGraph,
+  clearLineGraph,
+} from './lineGraph.js';
+import { notificationNew } from './notifications';
 
 export function goToPage(name) {
-  return ({ type: 'newPage', name: name });
+  return function (dispatch) {
+    dispatch({ type: 'newPage', name: name });
+    if (name === 'settings') {
+      dispatch(notificationNew('press \'s\' or \'m\' to exit settings!'));
+    }
+  };
 }
 
 export function layoutChange(col, idx, perc) {

@@ -1,3 +1,44 @@
+/* colours are used by shape constructors as
+ * well as line graphs reducers, block reducers
+ * http://html-color-codes.info/color-names/
+ */
+export const colourDB = {
+  block: {
+    gubbinsLeaf: 'blue',
+    gubbinsNode: 'red',
+    gubbinsPerTaxa: 'DodgerBlue',
+    bratNextGen: {
+      default: 'DarkOrange',
+    },
+    merge: 'LimeGreen',
+    roary: 'MediumBlue',
+    unknown: 'Black', // how does this happen?
+  },
+  line: {
+    // subline: '#bbbbbb', // currently hard-coded in lineGraph.jsx
+    gubbins: 'Black',
+    gubbinsPerTaxa: 'DodgerBlue',
+    bratNextGen: 'DarkOrange',
+    roary: 'MediumBlue',
+  },
+  artemis: {
+    0: 'white',
+    1: '#707070',
+    2: '#C80000',
+    3: '#2C802D',
+    4: '#2A2C92',
+    5: '#22A5A3',
+    6: '#A61785',
+    7: '#E9E930',
+    8: '#19CE2E',
+    9: '#19ACCE',
+    10: '#ED961D',
+    11: '#6B4E25',
+    12: '#DB66D1',
+    13: '#AFADAF',
+  },
+};
+
 export function Arrow(featurestart, featureend, direction, fill, stroke, strokeWidth, info) {
   // This is a very simple and unsafe constructor.
   // All we're doing is checking if the values exist.
@@ -17,22 +58,6 @@ export function Arrow(featurestart, featureend, direction, fill, stroke, strokeW
   this.ID = '';
   this.product = '';
   this.fields = {};
-  const artemisColours = {
-    0: 'white',
-    1: '#707070',
-    2: '#C80000',
-    3: '#2C802D',
-    4: '#2A2C92',
-    5: '#22A5A3',
-    6: '#A61785',
-    7: '#E9E930',
-    8: '#19CE2E',
-    9: '#19ACCE',
-    10: '#ED961D',
-    11: '#6B4E25',
-    12: '#DB66D1',
-    13: '#AFADAF',
-  };
 
   const infoparts = this.info.split(';');
   // console.log(infoparts);
@@ -60,7 +85,7 @@ export function Arrow(featurestart, featureend, direction, fill, stroke, strokeW
 
       if (!isNaN(colourValue)) {
         if (colourValue < 14 && colourValue > -1) {
-          this.fill = artemisColours[colourValue];
+          this.fill = colourDB.artemis[colourValue];
           // console.log(this.ID, this.product, this.fill, colour_value);
         }
       }
@@ -95,7 +120,7 @@ export function Block(startBase, endBase, id, {
   if (colour) {
     this.fill = colour;
   } else {
-    this.fill = node ? 'red' : 'blue'; // crouchers colour scheme
+    this.fill = colourDB.block.unknown;
   }
   // the following are used by the display, added here for speed (?)
   this.x1 = 0;
@@ -103,7 +128,6 @@ export function Block(startBase, endBase, id, {
   this.y1 = 0;
   this.y2 = 0;
 }
-
 
 /* Ellipse */
 export function Ellipse(featurex, featurey, val1, radiusX = false) {

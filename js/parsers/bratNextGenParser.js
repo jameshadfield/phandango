@@ -1,4 +1,4 @@
-import { Block } from './shapes';
+import { Block, colourDB } from './shapes';
 
 /* bratNextGen format:
 LIST OF FOREIGN GENOMIC SEGMENTS:
@@ -14,11 +14,11 @@ export function bratNextGenParser(gffString) {
       const words = lines[i].split(/\s+/);
       if (shapes[words[5]]) {
         shapes[words[5]].push(
-          new Block(parseInt(words[0], 10), parseInt(words[1], 10), i, { colour: 'Orange' })
+          new Block(parseInt(words[0], 10), parseInt(words[1], 10), i, { colour: colourDB.block.bratNextGen.default })
         );
       } else {
         shapes[words[5]] = [
-          new Block(parseInt(words[0], 10), parseInt(words[1], 10), i, { colour: 'Orange' }),
+          new Block(parseInt(words[0], 10), parseInt(words[1], 10), i, { colour: colourDB.block.bratNextGen.default }),
         ];
       }
     }

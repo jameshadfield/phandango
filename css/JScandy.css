@@ -55,8 +55,6 @@ code {
   background: #D8D8D8;
 }
 
-
-
 .newline {
   clear: both;
 }
@@ -68,29 +66,6 @@ code {
   top: 0;
   left: 0;
 }
-
-
-/*#canvassesDiv {
-  padding: 5px 5px 5px 5px;
-}*/
-
-
-/*canvas{
-    -webkit-box-shadow:inset 0px 0px 0px 2px #f00;
-    -moz-box-shadow:inset 0px 0px 0px 2px #f00;
-    box-shadow:inset 0px 0px 0px 2px #f00;
-}*/
-
-/*canvas { border: 2px solid black}*/
-
-/*.red {background: #FAAC58;}
-.red:hover {background: #DF0101;}
-
-.green {background: #D8F781;}
-.green:hover {background: #A5DF00;}
-
-.blue {background: #80d8e9;}
-.blue:hover {background: #013ADF}*/
 
 
 /*  S E T T I N G S */
@@ -176,12 +151,12 @@ div.horizontalgap{padding-left: 10px; display: inline}
 
 .hidden { display:none; }
 
-img.frontpage{
+/*img.frontpage{
     width:100%;
     max-width:150px;
     display: block;
     margin: 0 auto;
-}
+}*/
 
 input[type=range]{
   float: right;

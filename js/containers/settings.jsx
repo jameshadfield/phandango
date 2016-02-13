@@ -69,15 +69,20 @@ const Layout = React.createClass({
 
   render: function () {
     // console.log('render called. row percs are: ', this.props.rowPercs);
+    const sliderStyle = {
+      'marginTop': '0px',
+      'marginBottom': '10px',
+    };
     const colNames = [ 'Left', 'Middle', 'Right' ];
     const Columns = this.props.colPercs.map((cv, idx) =>
       <div key={idx} className="range-field">
-        {colNames[idx] + ' Column.'}
+        {colNames[idx]}
         <Slider
-          name={colNames[idx] + ' Column.'}
+          name={colNames[idx]}
           min={0}
           max={100}
           value={cv}
+          style={sliderStyle}
           onChange={this.props.onSliderChange.bind(this, true, idx)}
         />
       </div>
@@ -85,12 +90,13 @@ const Layout = React.createClass({
     const rowNames = [ 'Top', 'Middle', 'Bottom' ];
     const Rows = this.props.rowPercs.map((cv, idx) =>
       <div key={idx} className="range-field">
-        {rowNames[idx] + ' Row.'}
+        {rowNames[idx]}
         <Slider
-          name={rowNames[idx] + ' Row.'}
+          name={rowNames[idx]}
           min={0}
           max={100}
           value={cv}
+          style={sliderStyle}
           onChange={this.props.onSliderChange.bind(this, false, idx)}
         />
       </div>
@@ -98,7 +104,9 @@ const Layout = React.createClass({
     return (
       <div className={this.props.className}>
         <h3>Panel Layout</h3>
+        <h4>columns:</h4>
         {Columns}
+        <h4>rows:</h4>
         {Rows}
       </div>
     );
