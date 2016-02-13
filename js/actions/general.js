@@ -37,8 +37,33 @@ export function toggleMetaKey() {
 
 /* showBlocks is a thunk in order to gain access to dispatch for multiple dispatches */
 export function showBlocks(name) {
-  return function (dispatch) {
-    console.log('must check i can do this...');
+  return function (dispatch, getState) {
+    /* we're trying to show the named dataset... so it better exist!
+     * this could be better i'm sure...
+     */
+    if (name === 'roary') {
+      // remember we trash roary if blocks data loaded...
+      // so we can never go to roary except if we drag on data
+      return;
+    }
+    if (name === 'gubbins' || name === 'gubbinsPerTaxa') {
+      // check gubbins data is loaded!
+      if (!getState().blocks.fileNames.gubbins) {
+        return;
+      }
+    }
+    if (name === 'bratNextGen') {
+      // check loaded
+      if (!getState().blocks.fileNames.bratNextGen) {
+        return;
+      }
+    }
+    if (name === 'merged') {
+      // check both gubbins and bratNextGen
+      if (!(getState().blocks.fileNames.gubbins && getState().blocks.fileNames.bratNextGen)) {
+        return;
+      }
+    }
     dispatch({ type: 'showBlocks', name: name });
     if (name === 'merged') {
       dispatch(clearLineGraph());

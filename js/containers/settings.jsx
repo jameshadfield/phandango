@@ -262,15 +262,21 @@ const Blocks = (props) => {
       <h3>Block options:</h3>
       <hr/>
       <h4>Data to display:</h4>
-      {Object.keys(available).map((dataName, idx) =>
-        <Toggle
-          key={idx}
-          labelPosition="right"
-          label={dataName + ' (press ' + keyMap[dataName] + ')'}
-          toggled={dataName === props.currentDataType}
-          onToggle={props.show.bind(this, dataName)}
-        />
-      )}
+      {Object.keys(available).map((dataName, idx) => {
+        let newLabel = dataName;
+        if (keyMap[dataName]) {
+          newLabel = dataName + ' (press ' + keyMap[dataName] + ')'
+        }
+        return (
+          <Toggle
+            key={idx}
+            labelPosition="right"
+            label={newLabel}
+            toggled={dataName === props.currentDataType}
+            onToggle={props.show.bind(this, dataName)}
+          />
+        );
+      })}
     </div>
   );
 };
