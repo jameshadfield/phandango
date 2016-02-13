@@ -6,7 +6,7 @@ export function router(state = 'landing', action) {
   switch (action.type) {
   case 'newPage':
     // webpack strips this in production
-    const allowed = [ 'landing', 'about', 'main', 'settings', 'examples' ];
+    const allowed = [ 'landing', 'about', 'main', 'settings', 'examples', 'help' ];
     console.assert( allowed.indexOf(action.name) > -1, 'router is trying to go to page ' + action.name );
     return state === action.name ? state : action.name;
   // case 'clearSpinner':

@@ -9,12 +9,22 @@ rect {
  * BUT it introduces a vertical scroll bar. WTF!
  * http://stackoverflow.com/questions/6179831/overflow-x-adds-vertical-scrollbar
 */
-#react {
+/*#react {
   overflow-x: hidden;
-}
+}*/
 
 .noOverflow {
   overflow-x: hidden;
+}
+
+/* disable scroll bars
+ideally only on the canvassesDiv element but
+I can't seem to get this working, despite
+http://stackoverflow.com/questions/5952911/webkit-scrollbars-in-one-place-not-another
+so we apply it everywhere
+*/
+::-webkit-scrollbar {
+    display: none;
 }
 
 /* id outer used to wrap a vertically centered element - landing page */

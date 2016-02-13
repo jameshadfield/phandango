@@ -57,11 +57,18 @@ export const Annotation = React.createClass({
   /* given an arrow, what are the x or y position to display the annotation at */
   getXYOfSelectedGene(arrow, xy) {
     let ret;
+    /* position at actual gene via: */
     if (xy) { // xy=1 ==> y co-ordinate
       ret = parseInt( arrow.coordinates[1][xy] + 5 + this.canvasPos.top, 10);
     } else {
       ret = parseInt( (arrow.coordinates[0][xy] + arrow.coordinates[2][xy]) / 2 + this.canvasPos.left, 10);
     }
+    /* fixed (LHS) */
+    // if (xy) { // xy=1 ==> y co-ordinate
+    //   ret = parseInt( this.canvasPos.bottom - 30, 10);
+    // } else {
+    //   ret = parseInt(this.canvasPos.left + 10, 10);
+    // }
     return ret;
   },
 
