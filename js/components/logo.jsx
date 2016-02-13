@@ -119,7 +119,7 @@ export const AnimatedLogo = React.createClass({
 
 export const StaticLogo = () => {
   return (
-    <svg viewBox="0 0 173.737 88.637" opacity="0.25">
+    <svg viewBox="0 0 173.737 88.637" opacity="0.8">
       <rect y="11.844" fill="#ED1C24" width="38.904" height="65.98"/>
       <rect x="40.019" y="23.688" fill="#ED1C24" width="36.052" height="64.949"/>
       <rect x="114.758" fill="#1C75BC" width="18.146" height="65.98"/>

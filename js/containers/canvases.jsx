@@ -144,12 +144,18 @@ export const CanvasContainer = React.createClass({ displayName: 'CanvasContainer
         <div className="newline" />
         {middleRow}
         <div className="newline" />
-        { /*
-        <div id="staticLogo" style={this.getStyle(0, 2)}>
+        {plots}
+
+        <div id="staticLogo" style={{
+          position: 'absolute',
+          bottom: '5px',
+          width: '200px',
+          left: '5px',
+          height: '100px',
+        }}>
           <StaticLogo />
         </div>
-        */ }
-        {plots}
+
       </div>
     );
   },
