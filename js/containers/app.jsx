@@ -33,6 +33,7 @@ if (process.env.NODE_ENV !== 'production') {
   );
 }
 if (!navigator.userAgent.match(/Chrome/i)) {
+  window.ga('send', 'pageview', '/notChrome');
   elements = <NotChrome />;
 }
 

@@ -84,24 +84,29 @@ export const MainReactElement = React.createClass({ displayName: 'Main_React_Ele
     let injectedPage;
     switch (this.props.page) {
     case 'landing':
+      window.ga('send', 'pageview', '/landing');
       injectedPage = <ConnectedLandingPage />;
       break;
     case 'about':
+      window.ga('send', 'pageview', '/about');
       injectedPage = <AboutPage />;
       break;
     case 'settings':
+      window.ga('send', 'pageview', '/settings');
       injectedPage = [
         <ConnectedSettings key="settings"/>,
         <ConnectedCanvasContainer key="canvases"/>,
       ];
       break;
     case 'examples':
+      window.ga('send', 'pageview', '/examples');
       injectedPage = <ConnectedExamples />;
       break;
     case 'main':
       injectedPage = <ConnectedCanvasContainer />;
       break;
     case 'help':
+      window.ga('send', 'pageview', '/help');
       injectedPage = <HelpPanel />;
       break;
     default:
@@ -158,6 +163,7 @@ export const MainReactElement = React.createClass({ displayName: 'Main_React_Ele
   },
 
   filesDropped(e) {
+    window.ga('send', 'pageview', '/filesDropped');
     // this.props.dispatch(goToPage('loading'));
     // this.props.dispatch(notificationNew(showHelp());
     this.props.dispatch(notificationNew('press \'h\' for help!'));
