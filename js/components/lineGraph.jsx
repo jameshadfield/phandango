@@ -19,7 +19,7 @@ export const Line = React.createClass({
 
   componentDidMount: function () { // don't use fat arrow
     this.mouse = new Mouse(this.canvas, this.props.dispatch, this.onClickCallback); // set up listeners
-    this.forceUpdate();
+    this.drawWrapper(this.props);
   },
 
   shouldComponentUpdate() {
@@ -27,8 +27,11 @@ export const Line = React.createClass({
   },
 
   componentWillUpdate(props) {
-    // expensive way to handle resizing
-    this.initCanvasXY();
+    this.drawWrapper(props);
+  },
+
+  drawWrapper(props) {
+    this.initCanvasXY(); // expensive way to handle resizing
     this.clearCanvas();
     for (let idx = 0; idx < props.values.length; idx++) {
       this.drawLineGraph(this.canvas, props.visibleGenome, props.values[idx], props.max, props.lineColours[idx]);

@@ -1,5 +1,11 @@
 import merge from 'lodash/object/merge';
 
+const startingValues = {
+  colPercs: [ 20, 11, 69 ],
+  rowPercs: [ 15, 70, 15 ],
+};
+
+
 const init = {
   active: {
     blocks: false,
@@ -10,14 +16,10 @@ const init = {
     metaKey: false,
     plots: {},
   },
-  colPercs: [ 0, 0, 0 ],
-  rowPercs: [ 0, 0, 0 ],
+  colPercs: startingValues.colPercs,
+  rowPercs: startingValues.rowPercs,
 };
 
-const startingValues = {
-  colPercs: [ 20, 11, 69 ],
-  rowPercs: [ 15, 70, 15 ],
-};
 
 export function layout(state = init, action) {
   let newState;

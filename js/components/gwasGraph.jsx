@@ -17,7 +17,9 @@ export const Gwas = React.createClass({
 
   componentDidMount: function () { // don't use fat arrow
     this.mouse = new Mouse(this.canvas, this.props.dispatch, this.onClickCallback); // set up listeners
-    this.forceUpdate();
+    if (this.props.visibleGenome[1]) {
+      this.drawWrapper(this.props);
+    }
   },
 
   shouldComponentUpdate() {
@@ -26,6 +28,12 @@ export const Gwas = React.createClass({
 
   componentWillUpdate(props) {
     // expensive way to handle resizing
+    if (props.visibleGenome[1]) {
+      this.drawWrapper(props);
+    }
+  },
+
+  drawWrapper(props) {
     this.initCanvasXY();
     this.clearCanvas();
     this.drawData(this.canvas, props.visibleGenome, props.values, props.max);
@@ -36,11 +44,12 @@ export const Gwas = React.createClass({
     });
   },
 
+
   render() {
     return (
       <div>
         <canvas
-          id="recombGraphDiv"
+          id="GWASGraphDiv"
           ref={(c) => this.canvas = c}
           style={this.props.style}
         />
