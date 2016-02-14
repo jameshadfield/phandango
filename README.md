@@ -1,4 +1,4 @@
-# phandango
+# phandango (formerly known as JScandy)
 
 ##
 

@@ -67,7 +67,7 @@ const examples = [
     citeURL: 'http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1004547',
     citeCaption: <span>Chewapreecha <em>et al.</em> PLOS Genetics 2014</span>,
     paths: [
-      defaultDataPrefix + 'v0.5.0/example_datasets/PneumoGWAS/Spn23f.gff',
+      defaultDataPrefix + 'v0.2.0/example_datasets/gubbins/Spn23f.gff',
       defaultDataPrefix + 'v0.5.0/example_datasets/PneumoGWAS/Maela.MA.cmh.unadjusted.plot',
     ],
   },
