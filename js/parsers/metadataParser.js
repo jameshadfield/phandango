@@ -57,7 +57,7 @@ https://vis4.net/blog/posts/mastering-multi-hued-color-scales/
 https://github.com/gka/chroma.js
 https://vis4.net/blog/posts/avoid-equidistant-hsv-colors/
 */
-function _getColourScale(n, type, binary) {
+export function _getColourScale(n, type, binary) {
   let ret;
   if (binary) {
     ret = chroma.scale([ 'purple', 'orange' ]).mode('hsl').domain([ 0, 1 ]);

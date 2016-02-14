@@ -33,7 +33,6 @@ export function layout(state = init, action) {
     return newState;
   case 'roaryData': // fallthrough
   case 'gubbinsData':
-  case 'bratNextGenData':
     newState = merge({}, state);
     newState.active.blocks = true;
     newState.colPercs = calculateNewPercs(state.colPercs, 2, true);
@@ -54,6 +53,15 @@ export function layout(state = init, action) {
     newState.active.tree = true;
     newState.colPercs = calculateNewPercs(state.colPercs, 0, true);
     newState.rowPercs = calculateNewPercs(state.rowPercs, 1, false);
+    return newState;
+  case 'bratNextGenData':
+    // copy and paste job of both blocks and metadata -- to imporve!
+    newState = merge({}, state);
+    newState.active.meta = true;
+    newState.active.blocks = true;
+    newState.colPercs = calculateNewPercs(state.colPercs, 2, true);
+    newState.rowPercs = calculateNewPercs(state.rowPercs, 1, false);
+    newState.colPercs = calculateNewPercs(state.colPercs, 1, true);
     return newState;
   case 'metaData':
     newState = merge({}, state);

@@ -150,7 +150,7 @@ const goDispatch = (dispatch, getState, parsedData, dataType, filename) => {
     }
     break;
   case 'bratNextGen':
-    dispatch({ ...dispatchObj, data: parsedData });
+    dispatch({ ...dispatchObj, data: parsedData[0], metadata: parsedData[1] });
     // if gubbins is loaded then we want to switch to merged view
     // else just make the line graph for this one...
     dispatch(clearLineGraph());

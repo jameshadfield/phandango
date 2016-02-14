@@ -79,7 +79,7 @@ export function blocks(state = initialBlockState, action) {
 
   case 'showBlocks':
     if (action.name === 'gubbins') {
-      console.log('showing gubbins data now...');
+      // console.log('showing gubbins data now...');
       ret = {};
       ret.roary = [];
       ret.merged = state.merged;
@@ -94,7 +94,7 @@ export function blocks(state = initialBlockState, action) {
       ret.blocksArePerTaxa = false;
       ret.blockFillAlpha = 0.4;
     } else if (action.name === 'gubbinsPerTaxa') {
-      console.log('showing gubbinsPerTaxa data now...');
+      // console.log('showing gubbinsPerTaxa data now...');
       ret = {};
       ret.roary = [];
       ret.bratNextGen = state.bratNextGen;
@@ -113,7 +113,7 @@ export function blocks(state = initialBlockState, action) {
       }
       ret.blocks = ret.gubbinsPerTaxa;
     } else if (action.name === 'bratNextGen') {
-      console.log('showing bratNextGen data now...');
+      // console.log('showing bratNextGen data now...');
       ret = {};
       ret.roary = [];
       ret.blocks = state.bratNextGen;
@@ -129,7 +129,7 @@ export function blocks(state = initialBlockState, action) {
       ret.blocksArePerTaxa = true;
       ret.blockFillAlpha = 1;
     } else if (action.name === 'merged') {
-      console.log('showing Merged data now...');
+      // console.log('showing Merged data now...');
       ret = mergeBratNextGenAndGubbins(state);
     }
     return ret;
