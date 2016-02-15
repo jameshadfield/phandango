@@ -11,6 +11,10 @@ const initialState = {
 
 export function lineGraph(state = initialState, action) {
   switch (action.type) {
+  case 'clearAllData':
+    const r = initialState;
+    r.preComputedValues = {};
+    return r;
   case 'clearLineGraph':
     return ({
       preComputedValues: state.preComputedValues,

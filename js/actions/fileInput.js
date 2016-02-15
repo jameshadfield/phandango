@@ -91,7 +91,7 @@ const analyseIncomingData = (fileName, fileContents) => {
   case 'embl':
     throw new Error('EMBL files cannot be parsed -- you must convert to GFF3');
   case 'csv':
-    if (fileContents.startsWith('"Gene","Non-unique Gene name"')) { // ROARY
+    if (fileContents.startsWith('"Gene","Non-unique Gene name"') || fileContents.startsWith('Gene,Non-unique Gene name')) { // ROARY
       fileType = 'roary';
       parserFn = roaryParser;
     } else {
@@ -224,4 +224,8 @@ export function incomingFile(file, ajax = false) {
       ));
     });
   };
+}
+
+export function clearAllData() {
+  return ({ type: 'clearAllData' });
 }

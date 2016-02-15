@@ -25,6 +25,10 @@ export function layout(state = init, action) {
   let newState;
   switch (action.type) {
   // when new data is loaded, load it and give it a percentage
+  case 'clearAllData':
+    const r = init;
+    r.active.plots = {};
+    return r;
   case 'annotationData':
     newState = merge({}, state);
     newState.active.annotation = true;

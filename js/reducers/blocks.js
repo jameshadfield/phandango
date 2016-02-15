@@ -28,6 +28,8 @@ const initialBlockState = {
 export function blocks(state = initialBlockState, action) {
   let ret = {};
   switch (action.type) {
+  case 'clearAllData':
+    return initialBlockState;
   case 'gubbinsData':
     ret = merge({}, state, {
       gubbins: action.data,

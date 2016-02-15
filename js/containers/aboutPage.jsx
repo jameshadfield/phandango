@@ -96,7 +96,7 @@ function MainText() {
 
       <p>
 
-        <strong>Metadata</strong> can be displayed alongside the tree. A comma seperated value (CSV) file with a header is used (<a href="https://raw.githubusercontent.com/jameshadfield/JScandy/master/example_datasets/gubbins/meta.simple.csv">example</a>). The entries of first column must match the tips of the tree is used and have a header of <em>name</em>, <em>lane</em> or <em>isolate</em>. Values can be strings, numbers or booleans. This file must end in <code>.csv</code>.
+        <strong>Metadata</strong> can be displayed alongside the tree. A comma seperated value (CSV) file with a header is used (<a href="https://rawgit.com/jameshadfield/JScandy/exampleData/examples/PMEN1_recombination/meta.simple.csv">example</a>). The entries of first column must match the tips of the tree is used and have a header of <em>name</em>, <em>lane</em> or <em>isolate</em>. Values can be strings, numbers or booleans. This file must end in <code>.csv</code>.
       </p>
 
       <p>
@@ -107,7 +107,7 @@ function MainText() {
           <br/>
           All of the semi-colon seperated fields are read and displayed and if the colour field is set then you'll get colours!
           <br/>
-          Take a look at <a href="https://cdn.rawgit.com/jameshadfield/JScandy/v0.2.0/example_datasets/gubbins/Spn23f.gff">this example file</a> if all else fails.
+          Take a look at <a href="https://rawgit.com/jameshadfield/JScandy/exampleData/examples/PMEN1_recombination/Spn23f.gff">this example file</a> if all else fails.
       </p>
 
       <p>
@@ -129,7 +129,7 @@ function MainText() {
         </li>
 
         <li>
-          <a href="https://github.com/sanger-pathogens/Roary" className="heavy">Roary</a> pan-genome output (the <code>gene_presence_absence.csv</code> file). Example of the csv file <a href="https://github.com/jameshadfield/JScandy/v0.2.0/example_datasets/roary/gene_presence_absence.csv">here</a>.
+          <a href="https://github.com/sanger-pathogens/Roary" className="heavy">Roary</a> pan-genome output (the <code>gene_presence_absence.csv</code> file). Example of the csv file <a href="https://rawgit.com/jameshadfield/JScandy/exampleData/examples/SPARC/sparc.roary.csv">here</a>.
         </li>
 
       </ul>

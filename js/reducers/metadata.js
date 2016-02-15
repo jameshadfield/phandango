@@ -14,6 +14,8 @@ const initialMetadataState = {
 
 export function metadata(state = initialMetadataState, action) {
   switch (action.type) {
+  case 'clearAllData':
+    return initialMetadataState;
   case 'metaData':
     let ret = {
       data: action.data,

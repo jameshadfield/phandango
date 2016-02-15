@@ -160,6 +160,10 @@ export const MainReactElement = React.createClass({ displayName: 'Main_React_Ele
     case 75: // k
       this.props.dispatch(toggleMetaKey());
       break;
+    // for testing only:
+    // case 27: // esc
+    //   this.props.dispatch({ type: 'clearAllData' });
+    //   break;
     default:
       return;
     }
