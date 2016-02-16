@@ -4,7 +4,7 @@ import { AnimatedLogo } from '../components/logo';
 import { incomingFile, clearAllData } from '../actions/fileInput';
 import { increaseSpinner } from '../actions/general';
 
-const defaultDataPrefix = 'https://rawgit.com/jameshadfield/JScandy/exampleData/examples/';
+const defaultDataPrefix = 'https://cdn.rawgit.com/jameshadfield/JScandy/exampleData/examples/';
 
 /* examples
  * a list of maps
@@ -13,19 +13,15 @@ const defaultDataPrefix = 'https://rawgit.com/jameshadfield/JScandy/exampleData/
 const examples = [
 
   {
-    name: 'Gubbins (PMEN1 data)',
-    imgPath: 'img/gubbinsNAR.png',
-    caption: 'The example from the orinal paper: Gubbins is an iterative algorithm that uses spatial scanning statistics to identify loci contain- ing elevated densities of base substitutions suggestive of horizontal sequence transfer while concurrently constructing a maximum likelihood phylogeny based on the putative point mutations out- side these regions of high sequence diversity.',
-    citeURLs: [
-      'http://nar.oxfordjournals.org/content/early/2014/11/20/nar.gku1196.abstract',
-    ],
-    citeCaptions: [
-      <span>Croucher <em>et al.</em> Nucleic Acids Research 2015</span>,
-    ],
+    name: 'ROARY pan-genome (SPARC data)',
+    imgPath: 'img/roary.png',
+    caption: 'These data show the distribution of genes across a sample of 616 pneumococci, isolated from carriage throughout Massachusetts in the years following the introduction of the seven valent anti-pneumococcal polysaccharide conjugate vaccine. Note: this dataset is ~6Mb in size.',
+    citeURLs: [ 'http://www.ncbi.nlm.nih.gov/pmc/articles/PMC4622223' ],
+    citeCaptions: [ <span>Croucher <em>et al.</em> Scientific Data 2015</span> ],
     paths: [
-      defaultDataPrefix + 'gubbinsNAR/EVAL.PMEN1.final_tree.tre',
-      defaultDataPrefix + 'gubbinsNAR/Spn23f.gff',
-      defaultDataPrefix + 'gubbinsNAR/EVAL.PMEN1.recombination_predictions.gff',
+      defaultDataPrefix + 'SPARC/sparc.phandango.newick',
+      defaultDataPrefix + 'SPARC/sparc.metadata.csv',
+      defaultDataPrefix + 'SPARC/sparc.roary.csv',
     ],
   },
 
@@ -51,15 +47,15 @@ const examples = [
   },
 
   {
-    name: 'ROARY pan-genome (SPARC data)',
+    name: 'ROARY pan-genome (Salmonella Weltevreden)',
     imgPath: 'img/roary.png',
-    caption: 'These data show the distribution of genes across a sample of 616 pneumococci, isolated from carriage throughout Massachusetts in the years following the introduction of the seven valent anti-pneumococcal polysaccharide conjugate vaccine. Note: this dataset is ~6Mb in size.',
-    citeURLs: [ 'http://www.ncbi.nlm.nih.gov/pmc/articles/PMC4622223' ],
-    citeCaptions: [ <span>Croucher <em>et al.</em> Scientific Data 2015</span> ],
+    caption: 'S. Weltevreden is an emerging cause of diarrheal and invasive disease in humans residing in tropical regions and little is known about its genetic diversity. Here, genome analysis of more than 100 isolates demonstrated that the population of S. Weltevreden can be segregated into two main phylogenetic clusters, one associated predominantly with continental Southeast Asia and the other more internationally dispersed. Here you can explore the pan genome content of the speices and see how it differs between lineages.',
+    citeURLs: [ 'http://journals.plos.org/plosntds/article?id=10.1371/journal.pntd.0004446' ],
+    citeCaptions: [ <span>Makendi <em>et al.</em> PLoS Negl Trop Dis 2016</span> ],
     paths: [
-      defaultDataPrefix + 'SPARC/sparc.phandango.newick',
-      defaultDataPrefix + 'SPARC/sparc.metadata.csv',
-      defaultDataPrefix + 'SPARC/sparc.roary.csv',
+      defaultDataPrefix + 'roary_S.Weltevreden/sw_chr_gubbins.tre',
+      defaultDataPrefix + 'roary_S.Weltevreden/sw_metadata.csv',
+      defaultDataPrefix + 'roary_S.Weltevreden/gene_presence_absence.csv',
     ],
   },
 
@@ -78,9 +74,9 @@ const examples = [
   {
     name: 'BRAT NextGen (Yersinia enterocolitica PG1)',
     imgPath: 'img/BNG_YEnt.png',
-    caption: 'Yersinia enterocolitica is a common cause of food-borne gastroenteritis worldwide.  Here is data for recombination flow in the non-pathogenic PG1 strains which are found to act as a reservoir for diversity, frequently acting as donors in recombination events. Note: this dataset is ~7Mb in size.',
+    caption: 'This data set is the core genome phylogeny of Yersinia enterocolitica inferred using harvest. The species is split into 6 phylogroups (PGs) with PG1 being non-pathogenic, PG2 being highly-pathogenic, PG3-5 being the most commonly isolated human pathogens, and PG6 being a very rare type only isolated from wild Hares. Here are the recombination regions inffered by BRAT NextGen for PG1 set against the phylogeny generated from a LS-BSR core alignment. Note: this dataset is ~7Mb in size.',
     citeURLs: [ 'http://mgen.microbiologyresearch.org/content/journal/mgen/10.1099/mgen.0.000030' ],
-    citeCaptions: [ <span>Reuter <em>et al.</em> Microbial Genetics 2015</span> ],
+    citeCaptions: [ <span>Reuter <em>et al.</em> Microbial Genomics 2015</span> ],
     paths: [
       defaultDataPrefix + 'BratNextGen_Yersinnia/Yent.all.tre',
       defaultDataPrefix + 'BratNextGen_Yersinnia/metadata.csv',
@@ -92,14 +88,31 @@ const examples = [
   {
     name: 'BRAT NextGen (Yersinia enterocolitica PG3-6)',
     imgPath: 'img/BNG_YEnt.png',
-    caption: 'Recombination flow in the dominant phylogroups isolated from human infections (PG3–5) which show very little diversity at the sequence level but present marked patterns of gain and loss of functions, including those involved in pathogenicity and metabolism, including the acquisition of phylogroup-specific O-antigen loci. Note: this dataset is ~6Mb in size.',
+    caption: 'The same Yersinia enterocolitica data but this time showing the recombinations inferred for PGs 3-6. Interestingly PG1 was shown to be a common donor for these lineages. Note: this dataset is ~6Mb in size.',
     citeURLs: [ 'http://mgen.microbiologyresearch.org/content/journal/mgen/10.1099/mgen.0.000030' ],
-    citeCaptions: [ <span>Reuter <em>et al.</em> Microbial Genetics 2015</span> ],
+    citeCaptions: [ <span>Reuter <em>et al.</em> Microbial Genomics 2015</span> ],
     paths: [
       defaultDataPrefix + 'BratNextGen_Yersinnia/Yent.all.tre',
       defaultDataPrefix + 'BratNextGen_Yersinnia/metadata.csv',
       defaultDataPrefix + 'BratNextGen_Yersinnia/Low/YentLow.gff',
       defaultDataPrefix + 'BratNextGen_Yersinnia/Low/Yentlow_recombinations_tabular.txt',
+    ],
+  },
+
+  {
+    name: 'Gubbins (PMEN1 data)',
+    imgPath: 'img/gubbinsNAR.png',
+    caption: 'The example from the orinal paper: Gubbins is an iterative algorithm that uses spatial scanning statistics to identify loci contain- ing elevated densities of base substitutions suggestive of horizontal sequence transfer while concurrently constructing a maximum likelihood phylogeny based on the putative point mutations out- side these regions of high sequence diversity.',
+    citeURLs: [
+      'http://nar.oxfordjournals.org/content/early/2014/11/20/nar.gku1196.abstract',
+    ],
+    citeCaptions: [
+      <span>Croucher <em>et al.</em> Nucleic Acids Research 2015</span>,
+    ],
+    paths: [
+      defaultDataPrefix + 'gubbinsNAR/EVAL.PMEN1.final_tree.tre',
+      defaultDataPrefix + 'gubbinsNAR/Spn23f.gff',
+      defaultDataPrefix + 'gubbinsNAR/EVAL.PMEN1.recombination_predictions.gff',
     ],
   },
 
