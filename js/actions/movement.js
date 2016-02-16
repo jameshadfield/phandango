@@ -12,11 +12,23 @@ export function genomePan(fracCanvasPan) {
       return;
     }
     const bpToMove = (visibleGenome[1] - visibleGenome[0]) * fracCanvasPan;
-    const newLeft = visibleGenome[0] + bpToMove;
-    const newRight = visibleGenome[1] + bpToMove;
+    let newLeft = visibleGenome[0] + bpToMove;
+    let newRight = visibleGenome[1] + bpToMove;
     if (newLeft < 0 || newRight > genomeLength) {
       dispatch( notificationNew('can\'t drag (already at edge of genome)'));
-      return;
+      if (newLeft < 0) {
+        if (newLeft === 0) {
+          return;
+        }
+        newRight -= newLeft; // adds on the region to the left of 0
+        newLeft = 0;
+      } else {
+        if (newRight === genomeLength) {
+          return;
+        }
+        newLeft -= newRight - genomeLength;
+        newRight = genomeLength;
+      }
     }
     dispatch({ type: 'updateVisibleGenome', visibleGenome: [ newLeft, newRight ] });
   };
