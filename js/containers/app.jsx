@@ -32,7 +32,7 @@ if (process.env.NODE_ENV !== 'production') {
     <DevTools key={'devToolsKey'} store={store}/>
   );
 }
-if (!navigator.userAgent.match(/Chrome/i)) {
+if (!navigator.userAgent.match(/WebKit/i)) {
   window.ga('send', 'pageview', '/notChrome');
   elements = <NotChrome />;
 }
