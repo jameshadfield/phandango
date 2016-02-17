@@ -43,7 +43,7 @@ export const Header = ({ pageName, goToPage, treeActive, annotationActive }) => 
         <div className={cssClass} onClick={()=>goToPage('help')}>
           <HeaderEntry name="Help" active={pageName === 'help'}/>
         </div>
-        <div className={cssClass} onClick={()=>window.open('https://github.com/jameshadfield/JScandy', '_blank')}>
+        <div className={cssClass} onClick={()=>window.open('https://github.com/jameshadfield/phandango', '_blank')}>
           <HeaderEntry name="GitHub" active={false}/>
         </div>
       </div>

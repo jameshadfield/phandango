@@ -30,7 +30,7 @@ function LeftPanel() {
       <br/>
       <h3 className="view">
         <img style={{ verticalAlign: 'middle' }} src="img/GitHub-Mark-32px.png"/>
-        <a style={{ verticalAlign: 'middle' }} href="https://github.com/jameshadfield/JScandy">&nbsp;&nbsp;&nbsp;View the project on GitHub</a>
+        <a style={{ verticalAlign: 'middle' }} href="https://github.com/jameshadfield/phandango">&nbsp;&nbsp;&nbsp;View the project on GitHub</a>
       </h3>
 
       <p className="light">
@@ -53,11 +53,11 @@ function LeftPanel() {
         <strong>Bugs / comments:</strong>&nbsp;
         <a href="mailto:jh22@sanger.ac.uk">email</a>
         &nbsp;/&nbsp;
-        <a href="https://github.com/jameshadfield/JScandy/issues">github</a>
+        <a href="https://github.com/jameshadfield/phandango/issues">github</a>
       </p>
       <p className="light">
         <strong>Roadmap:</strong>&nbsp;
-        <a href="https://github.com/jameshadfield/JScandy#roadmap">here</a>
+        <a href="https://github.com/jameshadfield/phandango#roadmap">here</a>
       </p>
       <p className="light">
         <strong>Version:</strong>&nbsp;{version}
@@ -78,25 +78,23 @@ function MainText() {
       <p>
         Phandango is a fully interactive tool to allow visualisation of a phylogenetic tree,associated metadata and genomic information such as recombination blocks or pan-genome content. Additionally it allows visualisation of plot files such as GWAS or seer.
       </p>
-      <p className="heavy">
-        Running is as simple as loading <a href="https://jameshadfield.github.io/JScandy/">this page</a> in Google Chrome and then dragging on your data. That's it.
-      </p>
+
       <p>
         Phandango runs entirely on the client (i.e. your computer) so none of your results are sent to any servers. If you would like your data to become one of the examples then <a href="mailto:jh22@sanger.ac.uk">let me know</a>.
       </p>
-      <br/>
+
       <div className="dots"></div>
 
       <h3>Data formats currently visualised</h3>
       <p/>
-      Data formats in bioinformatics can be problematic so phandango tries to warn you if things aren't looking right. Take a look at <a href="https://github.com/jameshadfield/JScandy#roadmap">the roadmap</a> for things coming in the future.
+      Data formats in bioinformatics can be problematic so phandango tries to warn you if things aren't looking right. Take a look at <a href="https://github.com/jameshadfield/phandango#roadmap">the roadmap</a> for things coming in the future.
       <p>
         <strong>Phylogenies</strong> form the backbone of the visualization as they link together all the other data. Trees must be in <a href="http://evolution.genetics.washington.edu/phylip/newicktree.html">Newick format</a> (which is the standard output from software such as <a href="http://sco.h-its.org/exelixis/software.html">RAxML</a>). If you need to convert your tree to a different format try using <a href="http://tree.bio.ed.ac.uk/software/figtree/">FigTree</a>. Files must end in <code>.tre</code> or <code>.tree</code>. We try to identify (and raise an error) if Nexus files are used, and parsing of these formats is on the to-do list. If you use FigTree check that single quotes haven't been added around the taxa names!
       </p>
 
       <p>
 
-        <strong>Metadata</strong> can be displayed alongside the tree. A comma seperated value (CSV) file with a header is used (<a href="https://rawgit.com/jameshadfield/JScandy/exampleData/examples/PMEN1_recombination/meta.simple.csv">example</a>). The entries of first column must match the tips of the tree is used and have a header of <em>name</em>, <em>lane</em> or <em>isolate</em>. Values can be strings, numbers or booleans. This file must end in <code>.csv</code>.
+        <strong>Metadata</strong> can be displayed alongside the tree. A comma seperated value (CSV) file with a header is used (<a href="https://rawgit.com/jameshadfield/phandango/exampleData/examples/PMEN1_recombination/meta.simple.csv">example</a>). The entries of first column must match the tips of the tree is used and have a header of <em>name</em>, <em>lane</em> or <em>isolate</em>. Values can be strings, numbers or booleans. This file must end in <code>.csv</code>.
       </p>
 
       <p>
@@ -107,7 +105,7 @@ function MainText() {
           <br/>
           All of the semi-colon seperated fields are read and displayed and if the colour field is set then you'll get colours!
           <br/>
-          Take a look at <a href="https://rawgit.com/jameshadfield/JScandy/exampleData/examples/PMEN1_recombination/Spn23f.gff">this example file</a> if all else fails.
+          Take a look at <a href="https://rawgit.com/jameshadfield/phandango/exampleData/examples/PMEN1_recombination/Spn23f.gff">this example file</a> if all else fails.
       </p>
 
       <p>
@@ -117,7 +115,7 @@ function MainText() {
         <li>
           <a href="https://github.com/sanger-pathogens/gubbins" className="heavy">Gubbins</a> (GFF3 format as above&mdash;each line links a whitespace seperated list of taxa with genomic co-ordinates). Note that the second field of each line (apart from the header) must be <code>GUBBINS</code> in order to distinguish it from an annotation file.
           <br/>
-          If you have old output from gubbins (e.g. <code>*_rec.tab</code> file) then <a href="https://github.com/jameshadfield/JScandy/blob/master/scripts/gubbins_tab2gff.py">here's a python script</a> which will convert this for you.
+          If you have old output from gubbins (e.g. <code>*_rec.tab</code> file) then <a href="https://github.com/jameshadfield/phandango/blob/master/scripts/gubbins_tab2gff.py">here's a python script</a> which will convert this for you.
         </li>
 
         <li>
@@ -129,7 +127,7 @@ function MainText() {
         </li>
 
         <li>
-          <a href="https://github.com/sanger-pathogens/Roary" className="heavy">Roary</a> pan-genome output (the <code>gene_presence_absence.csv</code> file). Example of the csv file <a href="https://rawgit.com/jameshadfield/JScandy/exampleData/examples/SPARC/sparc.roary.csv">here</a>.
+          <a href="https://github.com/sanger-pathogens/Roary" className="heavy">Roary</a> pan-genome output (the <code>gene_presence_absence.csv</code> file). Example of the csv file <a href="https://rawgit.com/jameshadfield/phandango/exampleData/examples/SPARC/sparc.roary.csv">here</a>.
         </li>
 
       </ul>

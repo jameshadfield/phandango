@@ -4,7 +4,7 @@ import { AnimatedLogo } from '../components/logo';
 import { incomingFile, clearAllData } from '../actions/fileInput';
 import { increaseSpinner } from '../actions/general';
 
-const defaultDataPrefix = 'https://cdn.rawgit.com/jameshadfield/JScandy/exampleData/examples/';
+const defaultDataPrefix = 'https://cdn.rawgit.com/jameshadfield/phandango/exampleData/examples/';
 
 /* examples
  * a list of maps

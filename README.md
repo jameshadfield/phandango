@@ -2,7 +2,7 @@
 
 ##
 
-###[Click for the live version](http://jameshadfield.github.io/JScandy/)
+###[Click for the live version](http://jameshadfield.github.io/phandango/)
 
 ##
 
@@ -21,7 +21,7 @@ This was originally written to help explore recombination in populations of bact
 
 #### Examples
 
-Load the [live version](http://jameshadfield.github.io/JScandy/) to see some example datasets to explore.
+Load the [live version](http://jameshadfield.github.io/phandango/) to see some example datasets to explore.
 
 #### [Roadmap](#roadmap)
 Here is our list of (big) things to implement -- additional ideas or contributions are welcome.
@@ -45,7 +45,7 @@ Here is our list of (big) things to implement -- additional ideas or contributio
 
 * Install Node and Node Package manager (npm), which allow bundling of the javascript packages. On OS X [I find nvm](http://stackoverflow.com/a/28025834) to be the best way.
 * Clone or fork this github repo
-* Run `npm install` in the JScandy directory
+* Run `npm install` in the phandango directory
 * If you need to modify PhyloCanvas then:
  * npm rm phylocanvas
  * clone the repo & link it via `npm link`

@@ -11,10 +11,10 @@
   "main": "js/bundle.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jameshadfield/JScandy"
+    "url": "https://github.com/jameshadfield/phandango"
   },
   "bugs": {
-    "url": "https://github.com/jameshadfield/JScandy/issues"
+    "url": "https://github.com/jameshadfield/phandango/issues"
   },
   "dependencies": {},
   "devDependencies": {

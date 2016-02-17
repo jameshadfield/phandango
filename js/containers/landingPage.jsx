@@ -17,7 +17,7 @@ export const LandingPage = React.createClass({
         </h2>
 
         <h3 className="light">
-          (formerly known as <a href="https://jameshadfield.github.io/JScandy/v02x.html">JScandy</a>)
+          (formerly known as <a href="https://jameshadfield.github.io/phandango/v02x.html">JScandy</a>)
         </h3>
 
         <AnimatedLogo w={600} h={200} interval={2000}/>
@@ -33,7 +33,7 @@ export const LandingPage = React.createClass({
           <br/><br/>
           <a className="pointer" onClick={()=>this.props.goToPage('examples')}>Example Datasets</a>
           <br/><br/>
-          <a className="pointer" onClick={()=>window.open('https://github.com/jameshadfield/JScandy', '_blank')}>Github (source code)</a>
+          <a className="pointer" onClick={()=>window.open('https://github.com/jameshadfield/phandango', '_blank')}>Github (source code)</a>
           <br/><br/>
           <a href="mailto:jh22@sanger.ac.uk">Contact (email)</a>
         </p>
