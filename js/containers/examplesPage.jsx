@@ -13,15 +13,16 @@ const defaultDataPrefix = 'https://cdn.rawgit.com/jameshadfield/phandango/exampl
 const examples = [
 
   {
-    name: 'ROARY pan-genome (SPARC data)',
-    imgPath: 'img/roary.png',
-    caption: 'These data show the distribution of genes across a sample of 616 pneumococci, isolated from carriage throughout Massachusetts in the years following the introduction of the seven valent anti-pneumococcal polysaccharide conjugate vaccine. Note: this dataset is ~6Mb in size.',
-    citeURLs: [ 'http://www.ncbi.nlm.nih.gov/pmc/articles/PMC4622223' ],
-    citeCaptions: [ <span>Croucher <em>et al.</em> Scientific Data 2015</span> ],
+    name: 'Gubbins (Legionella pneumophila ST578)',
+    imgPath: 'img/legionellaST578.png',
+    caption: 'Outbreak investigation of 46 Legionella pneumophila strains (ST578) linked to recurrent outbreaks in a single location (Alcoy, Spain) over 11 years showed that 16 recombination events are responsible for almost 98% of the SNPs detected in the core genome and an apparent acceleration in the evolutionary rate. This analysis is vitally important for public health interventions in Legionella outbreaks and is a great example of how non-vertical processes have a major role in the short-term evolution of pathogens and environmental bacteria alike.',
+    citeURLs: [ 'http://www.nature.com/ng/journal/v46/n11/full/ng.3114.html' ],
+    citeCaptions: [ <span>Sánchez-Busó <em>et al.</em> Nature Genetics 2014</span> ],
     paths: [
-      defaultDataPrefix + 'SPARC/sparc.phandango.newick',
-      defaultDataPrefix + 'SPARC/sparc.metadata.csv',
-      defaultDataPrefix + 'SPARC/sparc.roary.csv',
+      defaultDataPrefix + 'LegionellaST578/st578_3120genes_Final.tre',
+      defaultDataPrefix + 'LegionellaST578/st578_metadata.csv',
+      defaultDataPrefix + 'LegionellaST578/lpa.gff',
+      defaultDataPrefix + 'LegionellaST578/st578_3120genes_rec.gff',
     ],
   },
 
@@ -43,6 +44,19 @@ const examples = [
       defaultDataPrefix + 'PMEN1_recombination/gubbins.tre',
       defaultDataPrefix + 'PMEN1_recombination/meta.simple.csv',
       defaultDataPrefix + 'PMEN1_recombination/pmen1_segments_tabular.txt',
+    ],
+  },
+
+  {
+    name: 'ROARY pan-genome (SPARC data)',
+    imgPath: 'img/roary.png',
+    caption: 'These data show the distribution of genes across a sample of 616 pneumococci, isolated from carriage throughout Massachusetts in the years following the introduction of the seven valent anti-pneumococcal polysaccharide conjugate vaccine. Note: this dataset is ~6Mb in size.',
+    citeURLs: [ 'http://www.ncbi.nlm.nih.gov/pmc/articles/PMC4622223' ],
+    citeCaptions: [ <span>Croucher <em>et al.</em> Scientific Data 2015</span> ],
+    paths: [
+      defaultDataPrefix + 'SPARC/sparc.phandango.newick',
+      defaultDataPrefix + 'SPARC/sparc.metadata.csv',
+      defaultDataPrefix + 'SPARC/sparc.roary.csv',
     ],
   },
 
