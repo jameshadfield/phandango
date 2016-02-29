@@ -63,6 +63,11 @@ const ConnectedHeader = connect(
   })
 )(Header);
 
+/* PDF event
+https://developer.mozilla.org/en-US/docs/Web/Guide/Events/Creating_and_triggering_events
+This is a one-off thing and so it uses events rather than the flux approach
+*/
+const pdfEvent = new Event('pdf');
 
 /*
 The purposes of the MainReactElement:
@@ -159,6 +164,10 @@ export const MainReactElement = React.createClass({ displayName: 'Main_React_Ele
       break;
     case 75: // k
       this.props.dispatch(toggleMetaKey());
+      break;
+    // pdf triggered via 'p'
+    case 80: // p
+      window.dispatchEvent(pdfEvent);
       break;
     // for testing only:
     // case 27: // esc

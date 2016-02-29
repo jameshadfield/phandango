@@ -36,6 +36,7 @@ export const Blocks = React.createClass({
         true);
     }
     this.redraw(this.props, this.state);
+    window.addEventListener('pdf', () => {console.log('pdf printing blocks');}, false);
   },
 
   shouldComponentUpdate() {

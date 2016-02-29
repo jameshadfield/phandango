@@ -27,6 +27,7 @@ export const Annotation = React.createClass({
     this.canvas.addEventListener('mouseout',
       () => {this.setState({ geneHovered: undefined });},
       true);
+    window.addEventListener('pdf', () => {console.log('pdf printing annotation');}, false);
     this.forceUpdate();
   },
 
