@@ -1,5 +1,5 @@
-import merge from 'lodash/object/merge';
-import cloneDeep from 'lodash/lang/cloneDeep';
+import merge from 'lodash/merge';
+import cloneDeep from 'lodash/cloneDeep';
 import { Block, colourDB } from '../parsers/shapes';
 
 /* important speed observation:

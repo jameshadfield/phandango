@@ -1,4 +1,4 @@
-import merge from 'lodash/object/merge';
+import merge from 'lodash/merge';
 import { notificationNew } from './notifications';
 // PARSERS:
 import { gffParser } from '../parsers/gff';

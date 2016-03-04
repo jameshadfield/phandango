@@ -1,4 +1,4 @@
-import isEqual from 'lodash/lang/isEqual';
+import isEqual from 'lodash/isEqual';
 
 /*    setYValues
 When a change in phylocanvas is detected we need to
