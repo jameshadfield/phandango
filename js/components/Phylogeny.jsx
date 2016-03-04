@@ -17,6 +17,7 @@ export const Phylogeny = React.createClass({
   componentDidMount: function () {
     this.phylocanvas = PhyloCanvas.createTree(ReactDOM.findDOMNode(this), { fillCanvas: true });
     this.phylocanvas.setTreeType('rectangular');
+    this.phylocanvas.setNodeSize(0);
     this.phylocanvas.nodeAlign = true;
     this.phylocanvas.padding = 0;
     this.phylocanvas.resizeToContainer();
