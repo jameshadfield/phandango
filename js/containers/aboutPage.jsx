@@ -94,7 +94,7 @@ function MainText() {
 
       <p>
 
-        <strong>Metadata</strong> can be displayed alongside the tree. A comma seperated value (CSV) file with a header is used (<a href="https://rawgit.com/jameshadfield/phandango/exampleData/examples/PMEN1_recombination/meta.simple.csv">example</a>). The entries of first column must match the tips of the tree is used and have a header of <em>name</em>, <em>lane</em> or <em>isolate</em>. Values can be strings, numbers or booleans. This file must end in <code>.csv</code>.
+        <strong>Metadata</strong> can be displayed alongside the tree. A comma seperated value (CSV) file with a header is used (<a href="https://rawgit.com/jameshadfield/phandango/exampleData/examples/PMEN1_recombination/meta.simple.csv">example</a>). The entries of first column must match the taxa in the tree! Phandango tries to classify values into binary, ordinal or continuous (and uses different colour scales for each) but this isn't perfect so you may add on <code>:o</code> or <code>:c</code> to the header string to force that column to be ordinal or continuous respecively. If you have groups of columns that you would like the same colour scale to be applied to (e.g. so that the value <code>42</code> is the same colour in each column) then add an ID like so <code>:o1</code> to multiple columns (you can have as many different groups as you'd like). This file must end in <code>.csv</code>.
       </p>
 
       <p>
