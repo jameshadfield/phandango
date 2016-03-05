@@ -1,5 +1,5 @@
 import { Block, colourDB } from './shapes';
-import { _getColourScale } from './metadataParser';
+import { getColourScale } from './metadataParser';
 /* bratNextGen format:
 LIST OF FOREIGN GENOMIC SEGMENTS:
 Start     End       Origin  HomeCluster  BAPSIndex  StrainName
@@ -10,7 +10,7 @@ export function bratNextGenParser(gffString) {
   return new Promise((resolve) => {
     const lines = gffString.split('\n');
     const numClusters = findNumClusters(lines);
-    const colScale = _getColourScale(numClusters.home, 'int', false);
+    const colScale = getColourScale('ordinal', numClusters.home);
     // NB we are keeping colours 1-based (colours[0] is never used)
     const colours = [ undefined ];
     const taxaClusterMap = {};

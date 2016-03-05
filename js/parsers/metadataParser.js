@@ -6,31 +6,53 @@ import chroma from 'chroma-js'; // big import!!!!
 */
 export function metaParser(csvString) {
   const papa = Papa.parse(csvString);
-  const [ headerNames, headerLookupIdx, info ] = _getHeaderInfo(papa.data[0]);
+  const [ headerNames, headerLookupIdx, info, groups ] = getHeaderInfo(papa.data[0]);
   const numFields = headerNames.length;
   const toggles = Array(...Array(numFields)).map(()=>true);
-  const rawValues = _getAllValues(papa.data.slice(1), headerLookupIdx); // set
+  const rawValues = getAllValues(papa.data.slice(1), headerLookupIdx); // set
   // dev only
-  // console.log('headerNames: ', headerNames);
   // console.log('headerLookupIdx: ', headerLookupIdx);
-  // console.log('info: ', info);
   // console.log('rawValues: ', rawValues);
-
 
   // classify the (sets of) rawValues, then sort them
   const values = []; // sorted
   for (let i = 0; i < numFields; i++) {
-    [ info[i].type, info[i].binary ] = _classifyValues(new Set(rawValues[i]));
-    values[i] = _sortValues(rawValues[i], info[i].type);
+    if (!info[i].userTypeDefined) {
+      info[i].type = classifyValues(new Set(rawValues[i]));
+    }
+    values[i] = sortValues(rawValues[i], info[i].type);
+  }
+
+  // for the groups -> pool values and give them a colour scale
+  for (const groupId of Object.keys(groups)) {
+    const pooledValues = new Set();
+    for (const headerIdx of groups[groupId].indexes) {
+      rawValues[headerIdx - 1].forEach( (v) => {pooledValues.add(v);});
+    }
+    const groupType = info[groups[groupId].indexes[0]].type;
+    groups[groupId].sortedValues = sortValues(pooledValues, groupType);
+    groups[groupId].scale = getColourScale(groupType, groups[groupId].sortedValues.length);
   }
 
   // associate with a colour
   const colours = [];
-  // process each header (column) seperately
+  // process each column seperately
   for (let i = 0; i < numFields; i++) {
     const n = values[i].length;
-    const scale = _getColourScale(n, info[i].type, info[i].binary);
-    colours[i] = Array(...Array(n)).map((e, idx) => scale(idx).hex());
+    if (info[i].inGroup) {
+      const groupId = info[i].groupId;
+      colours[i] = Array(...Array(n)).map(
+        (e, idx) => {
+          // work out idx of value in group values
+          const idxInGroup = groups[groupId].sortedValues.indexOf(values[i][idx]);
+          // assign colour
+          return groups[groupId].scale(idxInGroup).hex();
+        }
+      );
+    } else {
+      const scale = getColourScale(info[i].type, n);
+      colours[i] = Array(...Array(n)).map((e, idx) => scale(idx).hex());
+    }
   }
 
   // create the actual data mapping
@@ -57,23 +79,20 @@ https://vis4.net/blog/posts/mastering-multi-hued-color-scales/
 https://github.com/gka/chroma.js
 https://vis4.net/blog/posts/avoid-equidistant-hsv-colors/
 */
-export function _getColourScale(n, type, binary) {
-  let ret;
-  if (binary) {
-    ret = chroma.scale([ 'purple', 'orange' ]).mode('hsl').domain([ 0, 1 ]);
-  } else {
-    if (type === 'float') {
-      ret = chroma.scale('RdPu').mode('rgb').domain([ 0, n ]);
-    } else if (type === 'int') {
-      ret = chroma.scale([ '#fec44f', '#253494' ]).mode('hsl').domain([ 0, n ]);
-    } else {
-      ret = chroma.scale('Spectral').mode('rgb').domain([ 0, n ]);
-    }
+export function getColourScale(type, n) {
+  switch (type) {
+  case 'binary':
+    return chroma.scale([ 'purple', 'orange' ]).mode('hsl').domain([ 0, 1 ]);
+  case 'ordinal':
+    return chroma.scale('Spectral').mode('hcl').domain([ n, 0 ]);
+  case 'continuous':
+    return chroma.scale([ 'navy', 'orange' ]).mode('lch').domain([ 0, n ]);
+  default:
+    throw new Error('getScale fallthrough');
   }
-  return ret;
 }
 
-function _sortValues(vals, type) {
+function sortValues(vals, type) {
   let ret;
   if (type === 'string') {
     ret = Array.from(vals).sort((a, b)=>a.toLowerCase().localeCompare(b.toLowerCase()));
@@ -83,17 +102,18 @@ function _sortValues(vals, type) {
   return ret;
 }
 
-function _classifyValues(vals) {
-  let type = 'string'; // string
+function classifyValues(vals) {
   const arr = Array.from(vals);
-  const binary = arr.length <= 2 ? true : false;
-  if (arr.every( (e) => !isNaN(parseFloat(e)) )) {
-    type = 'float';
-    if (arr.every( (e) => !(parseFloat(e) % 1))) {
-      type = 'int';
-    }
+  if (arr.length <= 2) {
+    return 'binary';
   }
-  return [ type, binary ];
+  if (arr.every( (e) => !isNaN(parseFloat(e)) )) {
+    return 'continuous';
+  }
+  // if (arr.every( (e) => !(parseFloat(e) % 1))) {
+  //   return 'ordinal';
+  // }
+  return 'ordinal';
 }
 /*    from stackoverflow
 function isNumber(obj) { return !isNaN(parseFloat(obj)) }
@@ -105,13 +125,15 @@ function isInt(n) {
 }
 */
 
-function _getAllValues(data, headerLookupIdx) {
+function getAllValues(data, headerLookupIdx) {
   const ret = [];
   for (const idx of headerLookupIdx) {
     const values = new Set;
     for (const row of data) {
       values.add(row[idx]);
     }
+    values.delete('unknown');
+    values.delete('Unknown');
     values.delete(undefined); // not displayed
     values.delete(''); // not displayed
     ret.push(values);
@@ -123,23 +145,60 @@ function _getAllValues(data, headerLookupIdx) {
   return ret;
 }
 
-function _getHeaderInfo(line) {
+function getHeaderInfo(line) {
   const headerNames = [];
   const headerLookupIdx = [];
   const info = [];
+  const groups = {};
   // populate the header arrays
   let indexInFinalArray = 0;
   for (let i = 1; i < line.length; i++) {
-    const name = line[i];
+    let name = line[i];
     // dev only
     if (name === '__colour__') {
       throw new Error('header name should never be __colour__');
     }
+    let inGroup = false;
+    let userTypeDefined = false;
+    let type = undefined;
+    let groupId = false;
+    if (name.indexOf(':') > -1) {
+      // console.log(name);
+      userTypeDefined = true;
+      const userString = name.split(':')[1];
+      name = name.split(':')[0];
+      switch (userString.slice(0, 1).toLowerCase()) {
+      case 'o':
+        type = 'ordinal';
+        break;
+      case 'c':
+        type = 'continuous';
+        break;
+      default:
+        userTypeDefined = false;
+      }
+      if (userString.length > 1) {
+        inGroup = true;
+        groupId = parseInt(userString.slice(1), 10);
+        if (!groups[groupId]) {
+          groups[groupId] = { indexes: [] };
+        }
+        groups[groupId].indexes.push(i);
+      }
+      // console.log(name);
+      // console.log(type);
+      // console.log(inGroup);
+      // console.log(groupId);
+    }
+
     headerNames.push(name);
     headerLookupIdx.push(i);
     info.push({
       userColour: false,
-      continuous: false,
+      userTypeDefined,
+      type,
+      inGroup,
+      groupId,
     });
 
     if (line[i + 1] === '___colour___') {
@@ -153,5 +212,5 @@ function _getHeaderInfo(line) {
     }
     indexInFinalArray++;
   }
-  return [ headerNames, headerLookupIdx, info ];
+  return [ headerNames, headerLookupIdx, info, groups ];
 }
