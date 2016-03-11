@@ -33,12 +33,13 @@ Here is our list of (big) things to implement -- additional ideas or contributio
 
 * Back-button support
 * Multiple plot display
+* Multiple contig support
 * ClonalFrameML & fastGEAR input
 * SNP display (VCF / tab file)
 * Homoplasic SNP display
 * Searching for gene / taxa
 * Persist data via server
-* Firefox / Edge / Safari support
+* Firefox / Edge support
 * Display of r/m values, bootstrap support on tree nodes
 * BEAST display
 * PDF output
@@ -46,33 +47,16 @@ Here is our list of (big) things to implement -- additional ideas or contributio
 
 #### [Development](#development)
 
-##### Installing a local copy
+##### Installing
 
-* Install Node and Node Package manager (npm), which allow bundling of the javascript packages. On OS X [I find nvm](http://stackoverflow.com/a/28025834) to be the best way.
-* Clone or fork this github repo
-* Run `npm install` in the phandango directory
-* If you need to modify PhyloCanvas then:
- * npm rm phylocanvas
- * clone the repo & link it via `npm link`
- * `npm link PhyloCanvas`
-* Run the tests with `npm run test`
-* `npm run start` bundles the javascript and serves it to `localhost:8080` with dev-tools enabled
+* [Prerequisite] You must have Node and Node Package Manager (npm) which will then install the required javascript libraries. On OS X [I find nvm](http://stackoverflow.com/a/28025834) to be the best way.
+* Clone or fork this github repo: `git clone git@github.com:jameshadfield/phandango.git`
+* Run `npm install` inside the phandango directory
+* [optional] Run the tests with `npm run test`
+* `npm run start` bundles the javascript and serves it to `localhost:8080` with dev-tools enabled and will automagically update the bundle when you edit a file.
 * `npm run build` produces a production-ready bundle available at index.html
 
-##### Branching
+##### Pull request checklist
 
-* Branch off `master`
-* Ensure `eslint` is working in your editor
-* Write`.md` files using [markdownlivepreview](http://markdownlivepreview.com/)
-* Include bundle in all commits by first running `npm run build`
-
-##### Merging into `master`
-
-* Modify version in `package.json`
-* Modify version in `js/version.js`
-
-##### Deployment to `gh-pages`
-
-* Add the bundle from the master branch via `git checkout master dist/phandango.js`
-* if `index.html` has changed (`git diff gh-pages master index.html`) then: `git checkout master index.htm` and make sure google analytics are not commented out
-* manually checkout any newly required images / fonts (CSS is bundled).
+* Modify version in `package.json` & `js/version.js`
+* Build
