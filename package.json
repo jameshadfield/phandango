@@ -38,7 +38,7 @@
     "node-libs-browser": "^1.0.0",
     "object-assign": "4.0.1",
     "papaparse": "^4.1.2",
-    "phylocanvas": "git://github.com/jameshadfield/phylocanvas.git#e2c8d41",
+    "phylocanvas": "git+https://git@github.com/jameshadfield/phylocanvas.git#e2c8d41",
     "phylocanvas-plugin-context-menu": "phylocanvas/phylocanvas-plugin-context-menu",
     "raw-loader": "^0.5.1",
     "react": "^0.14.3",
