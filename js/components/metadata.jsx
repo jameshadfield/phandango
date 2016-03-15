@@ -34,6 +34,7 @@ export const Metadata = React.createClass({
     this.canvas.addEventListener('mouseout',
       () => {this.setState({ displayInfoActive: false });},
       true);
+    window.addEventListener('pdf', this.pdfdraw, false);
     this.forceUpdate();
   },
 
@@ -47,6 +48,19 @@ export const Metadata = React.createClass({
     this.numActiveHeaders = props.metadata.toggles.filter((e)=>e).length;
     this.calculateXOffsets = this.calculateXOffsetsMaker(this.numActiveHeaders);
     this.drawSquares(this.canvas.getContext('2d'), props.activeTaxa, props.metadata.toggles, props.metadata.data, props.metadata.colours);
+  },
+
+
+ pdfdraw: function(){
+    this.canvasPos = this.canvas.getBoundingClientRect();
+    console.log("printing metadata");
+    console.log(this.canvasPos);
+    window.pdfdoc.save();
+    window.pdfdoc.translate(this.canvasPos.left,this.canvasPos.top);
+    window.pdfdoc.rect(0, 0, this.canvasPos.right-this.canvasPos.left, this.canvasPos.bottom-this.canvasPos.top);
+    window.pdfdoc.clip();
+    this.drawSquares(window.pdfdoc, this.props.activeTaxa, this.props.metadata.toggles, this.props.metadata.data, this.props.metadata.colours, true);
+    window.pdfdoc.restore();
   },
 
   render() {
@@ -224,7 +238,7 @@ function _calculateXOffsetsMaker(numActiveHeaders) { // closure
 }
 
 // outer loop: vertical (taxa in tree), inner loop: horisontal (meta column)
-function _drawSquares(context, activeTaxa, toggles, data, colours) {
+function _drawSquares(context, activeTaxa, toggles, data, colours, pdfoutput=false) {
   // console.log(context, activeTaxa, toggles, data, colours);
   const taxas = Object.keys(activeTaxa);
   for (let i = 0; i < taxas.length; i++) {
@@ -241,7 +255,14 @@ function _drawSquares(context, activeTaxa, toggles, data, colours) {
       const [ xLeft, blockWidth ] = this.calculateXOffsets(xIdx);
       if (data[taxa] && data[taxa][j] !== undefined) { // taxa may not have metadata!
         context.save();
-        context.fillStyle = colours[j][data[taxa][j]];
+        if (pdfoutput===true){
+          context.fillColor(colours[j][data[taxa][j]]);
+    window.pdfdoc.rect(0, 0, this.canvasPos.right-this.canvasPos.left, this.canvasPos.bottom-this.canvasPos.top);
+    window.pdfdoc.clip();
+        }
+        else{
+          context.fillStyle = colours[j][data[taxa][j]];
+        }
         context.fillRect(xLeft, yValues[0], blockWidth, yValues[1] - yValues[0]);
         context.restore();
       // } else if (data[taxa]) {

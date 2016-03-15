@@ -36,7 +36,8 @@ export const Blocks = React.createClass({
         true);
     }
     this.redraw(this.props, this.state);
-    window.addEventListener('pdf', () => {console.log('pdf printing blocks');}, false);
+    //window.addEventListener('pdf', this.pdfdraw, false);
+    window.addEventListener('pdf', this.svgdraw, false);
   },
 
   shouldComponentUpdate() {
@@ -103,13 +104,45 @@ export const Blocks = React.createClass({
     );
   },
 
-  redraw: function (props, state) {
+
+  svgdraw: function(){
+    this.canvasPos = this.canvas.getBoundingClientRect();
+    console.log("printing blocks");
+    console.log(this.canvasPos);
+    window.svgCtx.save();
+    window.svgCtx.translate(this.canvasPos.left,this.canvasPos.top);
+    window.svgCtx.rect(0, 0, this.canvasPos.right-this.canvasPos.left, this.canvasPos.bottom-this.canvasPos.top);
+    window.svgCtx.clip();
+    this.redraw(this.props, this.state, "svg");
+    window.svgCtx.restore();
+  },
+
+  pdfdraw: function(){
+    this.canvasPos = this.canvas.getBoundingClientRect();
+    console.log("printing blocks");
+    console.log(this.canvasPos);
+    window.pdfdoc.save();
+    window.pdfdoc.translate(this.canvasPos.left,this.canvasPos.top);
+    window.pdfdoc.rect(0, 0, this.canvasPos.right-this.canvasPos.left, this.canvasPos.bottom-this.canvasPos.top);
+    window.pdfdoc.clip();
+    this.redraw(this.props, this.state, true);
+    window.pdfdoc.restore();
+  },
+
+  redraw: function (props, state, pdfoutput=false) {
     // expensive way to handle resizing
     this.initCanvasXY();
-    const context = this.canvas.getContext('2d');
+    let context = this.canvas.getContext('2d');
+    if (pdfoutput===true){
+      context=window.pdfdoc;
+    }
+    if (pdfoutput==="svg"){
+      context=window.svgCtx;
+    }
+
     const blocks = computeBlocksInView(props.data, props.visibleGenome, this.canvas, props.activeTaxa, props.blocksArePerTaxa);
     this.clearCanvas();
-    drawBlocks(context, blocks, props.blockFillAlpha);
+    drawBlocks(context, blocks, props.blockFillAlpha, pdfoutput);
     if (state.hovered) {
       this.drawBorder(context, state.hovered, 'purple');
     }
@@ -180,14 +213,29 @@ export const Blocks = React.createClass({
 //   return undefined;
 // }
 
-function drawBlocks(context, blocks, alpha) {
+function drawBlocks(context, blocks, alpha, pdfoutput) {
   for (let i = 0; i < blocks.length; i++) {
     context.save();
-    // context.beginPath() // does what?
-    context.fillStyle = blocks[i].fill;
-    context.globalAlpha = alpha;
+    
+    if (pdfoutput===true){
+      context.fillColor(blocks[i].fill.toLowerCase());
+      context.fillOpacity(alpha);
+    }
+    else{
+      context.fillStyle = blocks[i].fill;
+      context.beginPath() // does what?
+      context.globalAlpha = alpha;
+    }
+    //context.rect(blocks[i].x1, blocks[i].y1, blocks[i].x2 - blocks[i].x1, blocks[i].y2 - blocks[i].y1);
     context.fillRect(blocks[i].x1, blocks[i].y1, blocks[i].x2 - blocks[i].x1, blocks[i].y2 - blocks[i].y1);
+    //context.fill();
     context.restore();
+  }
+  if (pdfoutput===true){
+    context.fillOpacity(1);
+  }
+  else{
+    context.globalAlpha = 1;
   }
 }
 

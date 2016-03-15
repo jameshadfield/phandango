@@ -19,6 +19,31 @@ import { Spinner } from '../components/spinner';
 import { notificationNew, notificationSeen } from '../actions/notifications';
 import { goToPage, toggleMetaKey, showBlocks, increaseSpinner } from '../actions/general';
 
+import C2S from '../misc/canvas2svg';
+
+
+function base64ToArrayBuffer(base64) {
+  var binary_string =  window.atob(base64);
+  var len = binary_string.length;
+  var bytes = new Uint8Array( len );
+  for (var i = 0; i < len; i++) {
+    bytes[i] = binary_string.charCodeAt(i);
+  }
+  return bytes.buffer;
+}
+
+function registerFonts() {
+  window.pdfdoc.registerFont('Lato-Light', base64ToArrayBuffer(require("base64!../../font/lato/Lato-Light.ttf")));
+}
+
+
+// import pdfkit from 'pdfkit';
+// import pdfkit from 'transform?brfs!pdfkit';
+
+
+
+//let window.pdfdoc;
+
 /*
 Connect the containers which will be displayed here to redux store / dispatch etc
 Note that the MainReactElement doesn't itself access store/state as it itself
@@ -68,6 +93,16 @@ https://developer.mozilla.org/en-US/docs/Web/Guide/Events/Creating_and_triggerin
 This is a one-off thing and so it uses events rather than the flux approach
 */
 const pdfEvent = new Event('pdf');
+
+// const xhr = new XMLHttpRequest();
+// xhr.open("GET", "/font/lato/Lato-Light.ttf", true);
+// xhr.responseType = "arraybuffer";
+// let latoFont;
+// xhr.onload = function(oEvent) {
+//     latoFont = xhr.response; // Note: not xhr.responseText
+// };
+
+// xhr.send(null);
 
 /*
 The purposes of the MainReactElement:
@@ -167,7 +202,47 @@ export const MainReactElement = React.createClass({ displayName: 'Main_React_Ele
       break;
     // pdf triggered via 'p'
     case 80: // p
+
+
+
+      window.svgCtx = new C2S(window.innerWidth, window.innerHeight);
+
+      window.pdfdoc = new PDFDocument({size: [window.innerWidth, window.innerHeight]});
+      registerFonts();
+      window.pdfdoc.info = {
+        Producer: 'Phandango',
+        Creator: 'Phandango',
+        CreationDate: new Date()
+      };
+      window.pdfstream = window.pdfdoc.pipe(blobStream());
+      window.pdfdoc.save();
+      window.pdfdoc.translate(5,window.innerHeight-105);
+      window.pdfdoc.fillColor("#ED1C24", 0.8);
+      window.pdfdoc.fillRect(0,11.844,38.904,65.98);
+      window.pdfdoc.fillColor("#ED1C24", 0.8);
+      window.pdfdoc.fillRect(40.019,23.688,36.052,64.949);
+      window.pdfdoc.fillColor("#1C75BC", 0.8);
+      window.pdfdoc.fillRect(77.071,11.844,18.5,54.137);
+      window.pdfdoc.fillColor("#1C75BC", 0.8);
+      window.pdfdoc.fillRect(96.585,23.688,16.652,64.949);
+      window.pdfdoc.fillColor("#1C75BC", 0.8);
+      window.pdfdoc.fillRect(114.758,0,18.146,65.98);
+      window.pdfdoc.fillColor("#ED1C24", 0.8);
+      window.pdfdoc.fillRect(133.969,11.844,39.768,65.465);
+      window.pdfdoc.font('Lato-Light');
+      window.pdfdoc.fontSize(36);
+      window.pdfdoc.fillColor("#FFFFFF");
+      window.pdfdoc.text("phandango", 0, 20, { align: 'left' });
+      window.pdfdoc.restore();
       window.dispatchEvent(pdfEvent);
+      window.pdfdoc.end();
+      window.pdfstream.on('finish', function() {
+        var url = window.pdfstream.toBlobURL();
+        window.open(url);
+      });
+      var mySVG = window.svgCtx.getSerializedSvg(true);
+      console.log(mySVG);
+      debugger;
       break;
     // for testing only:
     // case 27: // esc
