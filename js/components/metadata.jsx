@@ -34,7 +34,8 @@ export const Metadata = React.createClass({
     this.canvas.addEventListener('mouseout',
       () => {this.setState({ displayInfoActive: false });},
       true);
-    window.addEventListener('pdf', this.pdfdraw, false);
+   //window.addEventListener('pdf', this.pdfdraw, false);
+    window.addEventListener('pdf', this.svgdraw, false);
     this.forceUpdate();
   },
 
@@ -50,6 +51,17 @@ export const Metadata = React.createClass({
     this.drawSquares(this.canvas.getContext('2d'), props.activeTaxa, props.metadata.toggles, props.metadata.data, props.metadata.colours);
   },
 
+ svgdraw: function(){
+    this.canvasPos = this.canvas.getBoundingClientRect();
+    console.log("printing metadata");
+    window.svgCtx.save();
+    window.svgCtx.translate(this.canvasPos.left,this.canvasPos.top);
+    window.svgCtx.rect(0, 0, this.canvasPos.right-this.canvasPos.left, this.canvasPos.bottom-this.canvasPos.top);
+    window.svgCtx.stroke();
+    window.svgCtx.clip();
+    this.drawSquares(window.svgCtx, this.props.activeTaxa, this.props.metadata.toggles, this.props.metadata.data, this.props.metadata.colours);
+    window.svgCtx.restore();
+  },
 
  pdfdraw: function(){
     this.canvasPos = this.canvas.getBoundingClientRect();

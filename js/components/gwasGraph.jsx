@@ -19,6 +19,7 @@ export const Gwas = React.createClass({
     this.mouse = new Mouse(this.canvas, this.props.dispatch, this.onClickCallback); // set up listeners
     if (this.props.visibleGenome[1]) {
       this.drawWrapper(this.props);
+      window.addEventListener('pdf', this.svgdraw, false);
     }
   },
 
@@ -33,14 +34,30 @@ export const Gwas = React.createClass({
     }
   },
 
-  drawWrapper(props) {
+  svgdraw: function(){
+    this.canvasPos = this.canvas.getBoundingClientRect();
+    console.log("printing GWAS plot");
+    window.svgCtx.save();
+    var currentWidth=window.svgCtx.width;
+    window.svgCtx.width=this.canvas.width;
+    window.svgCtx.translate(this.canvasPos.left,this.canvasPos.top);
+    window.svgCtx.rect(0, 0, this.canvasPos.right-this.canvasPos.left, this.canvasPos.bottom-this.canvasPos.top);
+    window.svgCtx.stroke();
+    window.svgCtx.clip();
+    this.drawWrapper(this.props, "svg");
+    window.svgCtx.restore();
+    window.svgCtx.width=currentWidth;
+  },
+
+  drawWrapper(props, pdfoutput=false) {
     this.initCanvasXY();
     this.clearCanvas();
-    this.drawData(this.canvas, props.visibleGenome, props.values, props.max);
+    this.drawData(this.canvas, props.visibleGenome, props.values, props.max, pdfoutput);
     this.drawGraphAxis(this.canvas, {
       yMaxValue: props.max,
       numTicks: 4,
       dottedLines: [ 5 ],
+      pdfoutput: pdfoutput,
     });
   },
 
@@ -61,8 +78,11 @@ export const Gwas = React.createClass({
   clearCanvas: helper.clearCanvas,
   drawGraphAxis: drawGraphAxis,
 
-  drawData(canvas, visibleGenome, shapes, max) {
-    const context = canvas.getContext('2d');
+  drawData(canvas, visibleGenome, shapes, max, pdfoutput=false) {
+    let context = canvas.getContext('2d');
+    if (pdfoutput==="svg"){
+      context=window.svgCtx;
+    }
     const yScaleMultiplier = parseFloat( (canvas.height - 5) / max );
     const basesVisible = visibleGenome[1] - visibleGenome[0];
     for (let i = 0; i < shapes.length; i++) {
@@ -73,7 +93,7 @@ export const Gwas = React.createClass({
         // what are the (canvas) co-ords to draw to?
         const x = parseInt(( shapes[i].featurex - visibleGenome[0] ) / basesVisible * canvas.width, 10);
         const y = canvas.height - (shapes[i].featurey * yScaleMultiplier);
-        const rY = basesVisible > 1000000 ? 1 : basesVisible > 100000 ? 2 : basesVisible > 50000 ? 3 : basesVisible > 10000 ? 4 : 5; // eslint-disable-line no-nested-ternary
+        const rY = basesVisible > 100000 ? 1 : basesVisible > 10000 ? 2 : basesVisible > 1000 ? 3 : 4; // eslint-disable-line no-nested-ternary
         let rX;
         if (shapes[i].radiusX) {
           rX = parseInt(shapes[i].radiusX / basesVisible * canvas.width, 10);
@@ -83,18 +103,24 @@ export const Gwas = React.createClass({
         } else {
           rX = rY;
         }
-        this.drawEllipse(context, x, y, rX, rY, shapes[i].fill);
+        // if (pdfoutput) {
+        //  console.log(window.svgCtx.getSerializedSvg(true));
+        // }
+        this.drawEllipse(context, x, y, rX, shapes[i].fill);
+        // if (pdfoutput) {
+        //  console.log(window.svgCtx.getSerializedSvg(true));
+        // }
       }
     }
   },
 
-  drawEllipse(context, x, y, rX, rY, fill) {
+  drawEllipse(context, x, y, rX, fill) {
     context.fillStyle = fill;
     // context.strokeStyle = this.stroke;
     // context.lineWidth = this.strokeWidth;
     context.beginPath();
     // void ctx.ellipse(x, y, radiusX, radiusY, rotation, startAngle, endAngle, anticlockwise);
-    context.ellipse(x, y, rX, rY, 0, 0, 2 * Math.PI);
+    context.arc(x, y, rX, 0, 2 * Math.PI);
     // context.arc(x, y, rX, 0, 2 * Math.PI, false);
     // if (this.selected) {
       // context.stroke();

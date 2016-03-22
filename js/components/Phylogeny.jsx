@@ -21,6 +21,7 @@ export const Phylogeny = React.createClass({
     this.phylocanvas.padding = 0;
     this.phylocanvas.resizeToContainer();
     this.attachListenersToPhylocanvas(this.props.dispatch);
+    window.addEventListener('pdf', this.svgdraw, false);
     if (this.props.newickString) {
       this.phylocanvas.load(this.props.newickString);
     }
@@ -36,6 +37,61 @@ export const Phylogeny = React.createClass({
     // this.phylocanvas.resizeToContainer();
     this.phylocanvas.draw(true);  // forces phylocanvas.fitInPanel()
   },
+
+
+  svgdraw: function(){
+
+    function setCanvasToBranches(branch, newCanvas){
+      branch.canvas=newCanvas;
+      for (var i = 0; i < branch.children.length; i++) {
+        setCanvasToBranches(branch.children[i], newCanvas)
+      }
+    }
+
+    this.canvasPos = this.phylocanvas.canvas.canvas.getBoundingClientRect();
+    console.log("printing tree");
+
+    window.svgCtx.save();
+    const tempPhylocanvas=this.phylocanvas.canvas;
+    var currentWidth=window.svgCtx.width;
+    var currentHeight=window.svgCtx.height;
+    this.phylocanvas.canvas=window.svgCtx;
+
+    //Have to change the sie of the canvas so that phylocanvas draws the tree the right shape
+    this.phylocanvas.canvas.width=this.canvasPos.width;
+    this.phylocanvas.canvas.height=this.canvasPos.height;
+    //Translate and slip must happen after phylocanvas clears the rectangle, so has been added to this.phylocanvas.draw code
+    
+    this.phylocanvas.canvas.translate(this.canvasPos.left,this.canvasPos.top);
+    var current = this.phylocanvas.canvas.__closestGroupOrSvg()
+    var transform=current.getAttribute("transform")
+    this.phylocanvas.canvas.rect(0,0, this.canvasPos.width, this.canvasPos.height);
+    this.phylocanvas.canvas.stroke();
+    this.phylocanvas.canvas.clip();
+    // this.phylocanvas.canvas.__addTransform(transform);
+
+
+    // debugger;
+    
+
+    setCanvasToBranches(this.phylocanvas.root, this.phylocanvas.canvas);
+    this.phylocanvas.canvas.canvas.onselectstart = function () { return false; };
+    this.phylocanvas.canvas.fillStyle = '#000000';
+    this.phylocanvas.canvas.strokeStyle = '#000000';
+    this.phylocanvas.canvas.save();
+    this.phylocanvas.branchColour='black';
+    
+    this.phylocanvas.draw(true, true, this.canvasPos.left, this.canvasPos.top, this.canvasPos.width, this.canvasPos.height);
+    window.svgCtx.restore();
+    //Need to restore the size of the canvas
+    window.svgCtx.width=currentWidth;
+    window.svgCtx.height=currentHeight;
+    // debugger
+    this.phylocanvas.canvas=tempPhylocanvas;
+    setCanvasToBranches(this.phylocanvas.root, this.phylocanvas.canvas);
+    
+  },
+
 
   render: function () {
     return (

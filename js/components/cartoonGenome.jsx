@@ -14,12 +14,13 @@ export const Cartoon = React.createClass({
   },
 
   componentDidMount: function () {
-    this.redraw(this.props);
-    window.addEventListener('pdf', this.pdfdraw, false);
+    this.redraw(this.canvas.getContext('2d'), this.props);
+    // window.addEventListener('pdf', this.pdfdraw, false);
+    window.addEventListener('pdf', this.svgdraw, false);
   },
 
   componentWillUpdate(props) {
-    this.redraw(props);
+    this.redraw(this.canvas.getContext('2d'), props);
   },
 
   render() {
@@ -34,18 +35,20 @@ export const Cartoon = React.createClass({
     );
   },
 
-  pdfdraw: function(){
+  svgdraw: function(){
     this.canvasPos = this.canvas.getBoundingClientRect();
     console.log("printing cartoon");
-    window.pdfdoc.save();
-    window.pdfdoc.translate(this.canvasPos.left,this.canvasPos.top);
-    window.pdfdoc.rect(0, 0, this.canvasPos.right-this.canvasPos.left, this.canvasPos.bottom-this.canvasPos.top);
-    window.pdfdoc.clip();
-    this.redraw(this.props, true);
-    window.pdfdoc.restore();
+    window.svgCtx.save();
+    window.svgCtx.translate(this.canvasPos.left,this.canvasPos.top);
+    window.svgCtx.rect(0, 0, this.canvasPos.right-this.canvasPos.left, this.canvasPos.bottom-this.canvasPos.top);
+    window.svgCtx.stroke();
+    window.svgCtx.clip();
+    this.redraw(window.svgCtx, this.props);
+    window.svgCtx.restore();
   },
 
-  redraw: function (props, pdfoutput=false) {
+
+  redraw: function (context, props) {
     this.initCanvasXY(); // expensive way to handle resizing
     this.clearCanvas(); // needed????
     const gutter = 10; // pixels of blank space on either side
@@ -58,35 +61,25 @@ export const Cartoon = React.createClass({
     if (xViewLength < 1) {
       xViewLength = 1;
     }
-    let context = this.canvas.getContext('2d');
-    if (pdfoutput===true){
-      context=window.pdfdoc;
-    }
+    
     context.save();
     context.translate(0.5,0.5);
-    // draw a horisontal line
+    // draw a horizontal line
     context.strokeStyle = 'black';
     context.lineWidth = 1;
 
-    if (pdfoutput==false){
-      context.beginPath();
-    }
+    context.beginPath();
+    
     context.moveTo(xStartLine, yMiddle);
     context.lineTo(xLineFinish, yMiddle);
     context.stroke();
 
     // shade a box
   
-    if (pdfoutput===true){
-      context.fillOpacity(0.2);
-    }
-    else{
-      context.globalAlpha = 0.2;
-    }
+    context.globalAlpha = 0.2;
+    
     context.fillStyle = 'black';
-    //context.rect(xViewStart, parseInt(this.canvas.height / 4, 10), xViewLength, parseInt(this.canvas.height / 2, 10))
     context.fillRect(xViewStart, parseInt(this.canvas.height / 4, 10), xViewLength, parseInt(this.canvas.height / 2, 10));
-    //context.fill();
     context.globalAlpha = 1;
 
     context.restore();

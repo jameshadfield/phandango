@@ -32,9 +32,9 @@ function base64ToArrayBuffer(base64) {
   return bytes.buffer;
 }
 
-function registerFonts() {
-  window.pdfdoc.registerFont('Lato-Light', base64ToArrayBuffer(require("base64!../../font/lato/Lato-Light.ttf")));
-}
+// function registerFonts() {
+//   window.pdfdoc.registerFont('Lato-Light', base64ToArrayBuffer(require("base64!../../font/lato/Lato-Light.ttf")));
+// }
 
 
 // import pdfkit from 'pdfkit';
@@ -207,42 +207,56 @@ export const MainReactElement = React.createClass({ displayName: 'Main_React_Ele
 
       window.svgCtx = new C2S(window.innerWidth, window.innerHeight);
 
-      window.pdfdoc = new PDFDocument({size: [window.innerWidth, window.innerHeight]});
-      registerFonts();
-      window.pdfdoc.info = {
-        Producer: 'Phandango',
-        Creator: 'Phandango',
-        CreationDate: new Date()
-      };
-      window.pdfstream = window.pdfdoc.pipe(blobStream());
-      window.pdfdoc.save();
-      window.pdfdoc.translate(5,window.innerHeight-105);
-      window.pdfdoc.fillColor("#ED1C24", 0.8);
-      window.pdfdoc.fillRect(0,11.844,38.904,65.98);
-      window.pdfdoc.fillColor("#ED1C24", 0.8);
-      window.pdfdoc.fillRect(40.019,23.688,36.052,64.949);
-      window.pdfdoc.fillColor("#1C75BC", 0.8);
-      window.pdfdoc.fillRect(77.071,11.844,18.5,54.137);
-      window.pdfdoc.fillColor("#1C75BC", 0.8);
-      window.pdfdoc.fillRect(96.585,23.688,16.652,64.949);
-      window.pdfdoc.fillColor("#1C75BC", 0.8);
-      window.pdfdoc.fillRect(114.758,0,18.146,65.98);
-      window.pdfdoc.fillColor("#ED1C24", 0.8);
-      window.pdfdoc.fillRect(133.969,11.844,39.768,65.465);
-      window.pdfdoc.font('Lato-Light');
-      window.pdfdoc.fontSize(36);
-      window.pdfdoc.fillColor("#FFFFFF");
-      window.pdfdoc.text("phandango", 0, 20, { align: 'left' });
-      window.pdfdoc.restore();
+      //Add logo in canvas. Would be better to include as an image or exclude. Using non-standard fonts is not ideal.
+
+      window.svgCtx.save();
+      window.svgCtx.globalAlpha=0.8;
+      window.svgCtx.translate(5,window.innerHeight-105);
+      window.svgCtx.fillStyle = "#ED1C24";
+      window.svgCtx.fillRect(0,11.844,38.904,65.98);
+      window.svgCtx.fillStyle = "#ED1C24";
+      window.svgCtx.fillRect(40.019,23.688,36.052,64.949);
+      window.svgCtx.fillStyle = "#1C75BC";
+      window.svgCtx.fillRect(77.071,11.844,18.5,54.137);
+      window.svgCtx.fillStyle = "#1C75BC";
+      window.svgCtx.fillRect(96.585,23.688,16.652,64.949);
+      window.svgCtx.fillStyle = "#1C75BC";
+      window.svgCtx.fillRect(114.758,0,18.146,65.98);
+      window.svgCtx.fillStyle = "#ED1C24";
+      window.svgCtx.fillRect(133.969,11.844,39.768,65.465);
+      window.svgCtx.globalAlpha=1.0;
+      window.svgCtx.font="36px Lato";
+      //window.svgCtx.font="36px Helvetica";
+      window.svgCtx.textBaseline = 'middle';
+      window.svgCtx.textAlign = 'left';
+      window.svgCtx.fillStyle = "#FFFFFF";
+      window.svgCtx.fillText("phandango", 0, 55);
+      window.svgCtx.restore();
+
       window.dispatchEvent(pdfEvent);
-      window.pdfdoc.end();
-      window.pdfstream.on('finish', function() {
-        var url = window.pdfstream.toBlobURL();
-        window.open(url);
-      });
+
+      // // Clip a rectangular area
+      // window.svgCtx.rect(50,20,200,120);
+      // window.svgCtx.stroke();
+      // window.svgCtx.clip();
+      // // Draw red rectangle after clip()
+      // window.svgCtx.fillStyle="red";
+      // window.svgCtx.fillRect(0,0,150,100);
+
+
       var mySVG = window.svgCtx.getSerializedSvg(true);
-      console.log(mySVG);
-      debugger;
+
+      //console.log(mySVG);
+      var a = document.createElement("a");
+      const windowURL = window.URL || window.webkitURL;
+      var myURL = windowURL.createObjectURL(new Blob([mySVG], {type: 'text/plain;charset=utf-8'}));
+      a.href = myURL;
+      a.download="Phandango.svg";
+      a.click();
+      // window.open(a);
+      window.URL.revokeObjectURL(myURL);
+      //window.location.href = myURL;
+      //debugger;
       break;
     // for testing only:
     // case 27: // esc

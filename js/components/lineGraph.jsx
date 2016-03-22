@@ -20,7 +20,8 @@ export const Line = React.createClass({
   componentDidMount: function () { // don't use fat arrow
     this.mouse = new Mouse(this.canvas, this.props.dispatch, this.onClickCallback); // set up listeners
     this.drawWrapper(this.props);
-    window.addEventListener('pdf', this.pdfdraw, false);
+    //window.addEventListener('pdf', this.pdfdraw, false);
+    window.addEventListener('pdf', this.svgdraw, false);
   },
 
   shouldComponentUpdate() {
@@ -31,7 +32,17 @@ export const Line = React.createClass({
     this.drawWrapper(props);
   },
 
-
+  svgdraw: function(){
+    this.canvasPos = this.canvas.getBoundingClientRect();
+    console.log("printing line graph");
+    window.svgCtx.save();
+    window.svgCtx.translate(this.canvasPos.left,this.canvasPos.top);
+    window.svgCtx.rect(0, 0, this.canvasPos.right-this.canvasPos.left, this.canvasPos.bottom-this.canvasPos.top);
+    window.svgCtx.stroke();
+    window.svgCtx.clip();
+    this.drawWrapper(this.props, "svg");
+    window.svgCtx.restore();
+  },
 
   pdfdraw: function(){
     this.canvasPos = this.canvas.getBoundingClientRect();
@@ -80,8 +91,8 @@ export const Line = React.createClass({
 
   drawLineGraph(canvas, visibleGenome, values, max, colour="orange", pdfoutput=false) {
     let context = this.canvas.getContext('2d');
-    if (pdfoutput===true){
-      context=window.pdfdoc;
+    if (pdfoutput==="svg"){
+      context=window.svgCtx;
     }
     const yScaleMultiplier = parseFloat( canvas.height / max );
 
@@ -97,7 +108,7 @@ export const Line = React.createClass({
     context.moveTo(0, canvas.height);
     // crawl across the x axis by pixel :)
     for (let x = 1; x <= canvas.width; x++) {
-      const genomeX = parseInt(visibleGenome[0] + (x / canvas.width) * (visibleGenome[1] - visibleGenome[0]), 10);
+      const genomeX = parseInt((visibleGenome[0] + (x / canvas.width) * (visibleGenome[1] - visibleGenome[0]))-1, 10);
       const y = canvas.height - (values[genomeX] * yScaleMultiplier);
       context.lineTo(x, y );
     }

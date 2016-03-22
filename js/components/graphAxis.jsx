@@ -16,8 +16,8 @@ export function drawGraphAxis(canvas, {
   pdfoutput = false,
 }) {
   let context = this.canvas.getContext('2d');
-  if (pdfoutput===true){
-    context=window.pdfdoc;
+  if (pdfoutput==="svg"){
+    context=window.svgCtx;
   }
   drawOutline(canvas, context, pdfoutput);
   // if yMaxValue is 0 then return immediately
@@ -29,7 +29,8 @@ export function drawGraphAxis(canvas, {
     }
   }
   // find numerical values of ticks to display
-  const chunk = parseInt(yMaxValue / numTicks, 10);
+  const chunk = Math.ceil(parseFloat(yMaxValue / numTicks, 10));
+  yMaxValue=chunk*numTicks
   const tickNums = [ ...Array(numTicks) ].map(
     (cv, idx) => (idx + 1) * chunk
   );
@@ -39,23 +40,15 @@ export function drawGraphAxis(canvas, {
 
   // draw text of ticks
   context.save();
-  if (pdfoutput===true){
-      context.font("Helvetica");
-      context.fontSize(12);
-      context.fillColor("black");
-      for (let i = 0; i < numTicks; ++i) {
-        context.text(tickNums[i] + suffix, 5, tickPixels[i]-5, { align: 'left' });
-      }
-    }
-  else {
-    context.fillStyle = 'black';
-    context.textBaseline = 'middle';
-    context.textAlign = 'left';
-    context.font = '12px Helvetica';
-    for (let i = 0; i < numTicks; ++i) {
-      context.fillText(tickNums[i] + suffix, 5, tickPixels[i]);
-    }
+
+  context.fillStyle = 'black';
+  context.textBaseline = 'middle';
+  context.textAlign = 'left';
+  context.font = '12px Helvetica';
+  for (let i = 0; i < numTicks; ++i) {
+    context.fillText(tickNums[i] + suffix, 5, tickPixels[i]);
   }
+  
   context.restore();
 }
 
@@ -124,13 +117,8 @@ function drawTicksAtPx(context, vals, pdfoutput=false, tickLengthPx = 5) {
 function drawDottedLine(canvas, context, yValPx, pdfoutput=false, colour = 'red', dash = [ 5, 10 ]) {
   context.save();
   context.strokeStyle = colour;
-  if (pdfoutput===true){
-    context.dash(dash);
-  }
-  else{
-    context.setLineDash(dash);
-    context.beginPath();
-  }
+  context.setLineDash(dash);
+  context.beginPath();
   context.moveTo(0, yValPx);
   context.lineTo(canvas.width, yValPx);
   context.stroke();

@@ -40,7 +40,7 @@ export const Annotation = React.createClass({
     this.canvasPos = this.canvas.getBoundingClientRect();
     this.initCanvasXY();
     this.clearCanvas();
-    this.redraw(props, state);
+    this.redraw(this.canvas.getContext('2d'), props, state);
   },
 
   onMouseMove(e) {
@@ -145,46 +145,30 @@ export const Annotation = React.createClass({
     this.canvasPos = this.canvas.getBoundingClientRect();
     console.log("printing annotation");
     window.svgCtx.save();
+    var currentWidth=window.svgCtx.width;
+    window.svgCtx.width=this.canvas.width;
     window.svgCtx.translate(this.canvasPos.left,this.canvasPos.top);
     window.svgCtx.rect(0, 0, this.canvasPos.right-this.canvasPos.left, this.canvasPos.bottom-this.canvasPos.top);
+    window.svgCtx.stroke();
     window.svgCtx.clip();
-    this.redraw(this.props, this.state, "svg");
+    this.redraw(window.svgCtx, this.props, this.state);
     window.svgCtx.restore();
+    window.svgCtx.width=currentWidth;
   },
 
 
-  pdfdraw: function(){
-    this.canvasPos = this.canvas.getBoundingClientRect();
-    console.log("printing annotation");
-    window.pdfdoc.save();
-    window.pdfdoc.translate(this.canvasPos.left,this.canvasPos.top);
-    window.pdfdoc.rect(0, 0, this.canvasPos.right-this.canvasPos.left, this.canvasPos.bottom-this.canvasPos.top);
-    window.pdfdoc.clip();
-    this.redraw(this.props, this.state, true);
-    window.pdfdoc.restore();
-  },
-
-
-  redraw: function (props, state, pdfoutput=false) {
-    
-    let context = this.canvas.getContext('2d');
-    if (pdfoutput===true){
-      context=window.pdfdoc;
-    }
-    if (pdfoutput==="svg"){
-      context=window.svgCtx;
-    }
+  redraw: function (context, props, state) {
 
     this.clearCanvas();
     context.save();
     context.translate(0.5,0.5);
 
     const currentContigs = getArrowsInScope(props.data[1], props.visibleGenome, this.canvas, true);
-    drawContigs(context, currentContigs, props.visibleGenome[1] - props.visibleGenome[0] < 100000, pdfoutput);
+    drawContigs(context, currentContigs, props.visibleGenome[1] - props.visibleGenome[0] < 100000);
     const currentArrows = getArrowsInScope(props.data[0], props.visibleGenome, this.canvas);
 
-    drawArrows(context, currentArrows, props.visibleGenome[1] - props.visibleGenome[0] < 100000, pdfoutput);
-    drawScale(context, this.canvas.width, props.visibleGenome, parseInt(this.canvas.height / 2, 10), pdfoutput);
+    drawArrows(context, currentArrows, props.visibleGenome[1] - props.visibleGenome[0] < 100000);
+    drawScale(context, this.canvas.width, props.visibleGenome, parseInt(this.canvas.height / 2, 10));
 
     if (state.geneSelected !== undefined) {
       if (getArrowsInScope([ state.geneSelected ], props.visibleGenome, this.canvas).length > 0) {
@@ -226,89 +210,48 @@ function getClicked(mx, my, data, visibleGenome, canvas, isContig=false) {
 }
 
 
-function drawContigs(context, contigs, shouldDrawBorder, pdfoutput) {
+function drawContigs(context, contigs, shouldDrawBorder) {
   for (let i = 0; i < contigs.length; i++) {
-    if (pdfoutput===true){
-      context.fillColor(contigs[i].fill.toLowerCase());
-      context.strokeColor(contigs[i].stroke.toLowerCase());
-      //context.lineWidth(contigs[i].strokeWidth);
-    }
-    else{
-      context.fillStyle = contigs[i].fill;
-      context.strokeStyle = contigs[i].stroke;
-      context.lineWidth = contigs[i].strokeWidth;
-      context.beginPath();
-    }
-
-    //context.fillRect(contigs[i].x, contigs[i].y, contigs[i].w, contigs[i].h);
+    
+    context.fillStyle = contigs[i].fill;
+    context.strokeStyle = contigs[i].stroke;
+    context.lineWidth = contigs[i].strokeWidth;
+    context.beginPath();
     
     context.moveTo(contigs[i].coordinates[0][0], contigs[i].coordinates[0][1]);
     for (let j = 1; j < contigs[i].coordinates.length; j++) {
       context.lineTo(contigs[i].coordinates[j][0], contigs[i].coordinates[j][1]);
     }
-    if (pdfoutput===true){
-      context.lineTo(contigs[i].coordinates[0][0], contigs[i].coordinates[0][1]);
-      context.fill('non-zero');
-    }
-    else { 
-      context.closePath();
-    }
+    
+    context.closePath();
+    
     if (shouldDrawBorder) {
-      if (pdfoutput===true){
-        //context.fillAndStroke();
         context.stroke();
-      }
-      else{
-        context.stroke();
-        context.fill();
-      }
     }
-    else{
-      context.fill();
-    }
+    context.fill();
+    
   }
 }
 
 
-function drawArrows(context, arrows, shouldDrawBorder, pdfoutput) {
+function drawArrows(context, arrows, shouldDrawBorder) {
   for (let i = 0; i < arrows.length; i++) {
-    if (pdfoutput===true){
-      context.fillColor(arrows[i].fill.toLowerCase());
-      context.strokeColor(arrows[i].stroke.toLowerCase());
-      //context.lineWidth(arrows[i].strokeWidth);
-    }
-    else{
-      context.fillStyle = arrows[i].fill;
-      context.strokeStyle = arrows[i].stroke;
-      context.lineWidth = arrows[i].strokeWidth;
-      context.beginPath();
-    }
     
+    context.fillStyle = arrows[i].fill;
+    context.strokeStyle = arrows[i].stroke;
+    context.lineWidth = arrows[i].strokeWidth;
+    context.beginPath();
     
     context.moveTo(arrows[i].coordinates[0][0], arrows[i].coordinates[0][1]);
     for (let j = 1; j < arrows[i].coordinates.length; j++) {
       context.lineTo(arrows[i].coordinates[j][0], arrows[i].coordinates[j][1]);
     }
-    if (pdfoutput===true){
-      context.lineTo(arrows[i].coordinates[0][0], arrows[i].coordinates[0][1]);
-      context.fill('non-zero');
-    }
-    else { 
-      context.closePath();
-    }
+    context.closePath();
+    
     if (shouldDrawBorder) {
-      if (pdfoutput===true){
-        //context.fillAndStroke();
-        context.stroke();
-      }
-      else{
-        context.stroke();
-        context.fill();
-      }
+      context.stroke();
     }
-    else{
-      context.fill();
-    }
+    context.fill();
   }
 }
 
@@ -363,6 +306,16 @@ function getArrowsInScope(arrows, visibleGenome, canvas, isContig=false) {
       arrowsInScope[i].y = middleHeight - arrowsInScope[i].h / 2;
     }
 
+
+    if (arrowsInScope[i].x<0) {
+      arrowsInScope[i].w=arrowsInScope[i].w-(0-arrowsInScope[i].x);
+      arrowsInScope[i].x=0;
+    }
+    if (arrowsInScope[i].x+arrowsInScope[i].w>canvasWidth) {
+      arrowsInScope[i].w=canvasWidth-arrowsInScope[i].x;
+    }
+
+
     arrowsInScope[i].coordinates = [];
     arrowsInScope[i].coordinates.push([ arrowsInScope[i].x, arrowsInScope[i].y ]);
     arrowsInScope[i].coordinates.push([ arrowsInScope[i].x, arrowsInScope[i].y + arrowsInScope[i].h ]);
@@ -373,18 +326,13 @@ function getArrowsInScope(arrows, visibleGenome, canvas, isContig=false) {
 }
 
 
-function drawScale(context, canvasWidth, visibleGenome, scaleYvalue, pdfoutput, numticksOpt=6) {
+function drawScale(context, canvasWidth, visibleGenome, scaleYvalue, numticksOpt=6) {
   // console.log(context)
   
-  if (pdfoutput===true){
-    context.strokeColor('black');
-    //context.lineWidth(1);
-  }
-  else {
-    context.strokeStyle = 'black';
-    context.lineWidth = 1;
-    context.beginPath();
-  }
+  context.strokeStyle = 'black';
+  context.lineWidth = 1;
+  context.beginPath();
+  
   // draw the horisontal line
   context.moveTo(0, scaleYvalue);
   // console.log('context.lineTo('+canvasWidth+','+scaleYvalue+')')
@@ -395,8 +343,8 @@ function drawScale(context, canvasWidth, visibleGenome, scaleYvalue, pdfoutput, 
 
   // draw the tick marks
   const numticks = numticksOpt;
-  const tickDistancePixels = parseInt(canvasWidth / (numticks - 1), 10);
-  const tickDistanceBases = parseInt((visibleGenome[1] - visibleGenome[0]) / (numticks - 1), 10);
+  const tickDistancePixels = parseFloat(canvasWidth / (numticks - 1), 10);
+  const tickDistanceBases = parseFloat((visibleGenome[1] - visibleGenome[0]) / (numticks - 1), 10);
   for (let ticknum = 0; ticknum < numticks; ticknum++) {
     const tickpos = tickDistancePixels * ticknum;
     let tickval = visibleGenome[0] + tickDistanceBases * ticknum;
@@ -407,36 +355,23 @@ function drawScale(context, canvasWidth, visibleGenome, scaleYvalue, pdfoutput, 
       tickval = String(+ tickval.toFixed(roundto)) + 'Mb';
     } else if (tickval >= 1000) { // kb
       tickval = tickval / 1000;
-      tickval = String(+ tickval.toFixed(2)) + 'kb';
+      tickval = String(+ tickval.toFixed(roundto)) + 'kb';
     } else { // bp
-      tickval = String(+ tickval.toFixed(2)) + 'bp';
+      tickval = String(+ tickval.toFixed(roundto)) + 'bp';
     }
     // console.log('tick position: '+tickpos+' tick value '+tickval)
-    if (pdfoutput===false){
-      context.beginPath();
-    }
+    context.beginPath();
     context.moveTo(tickpos, scaleYvalue);
     context.lineTo(tickpos, scaleYvalue + 10);
     context.stroke();
     context.save();
-    if (pdfoutput===true){
-      context.translate(tickpos-3, scaleYvalue + 112 );//the -3 is to try to adjust the font to the baseline. the -112 = -10 for the length of the tic, -2 for a bit of padding and -100 which allows me to set the textbox width to 100 and align to the right
-      context.rotate(270, {origin: [0, 0 ]});
-      context.font("Helvetica");
-      context.fontSize(12);
-      context.fillColor("black");
-      //context.text(tickval, {align: "right"});
-      context.text(tickval, 0, 0, { align: 'right', width: 100 });
-    }
-    else {
-      context.translate(tickpos, scaleYvalue + 12 );
-      context.rotate(Math.PI * 1.5);
-      context.fillStyle = 'black';
-      context.textBaseline = 'middle';
-      context.textAlign = 'right';
-      context.font = '12px Helvetica';
-      context.fillText(tickval, 0, 0);
-    }
+    context.translate(tickpos, scaleYvalue + 12 );
+    context.rotate(Math.PI * 1.5);
+    context.fillStyle = 'black';
+    context.textBaseline = 'middle';
+    context.textAlign = 'right';
+    context.font = '12px Helvetica';
+    context.fillText(tickval, 0, 0);
     context.restore();
   }
 }
