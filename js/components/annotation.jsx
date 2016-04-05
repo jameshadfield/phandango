@@ -159,9 +159,18 @@ export const Annotation = React.createClass({
 
   redraw: function (context, props, state) {
 
-    this.clearCanvas();
     context.save();
-    context.translate(0.5,0.5);
+
+    // const padding = 10;
+    // debugger;
+    // this.canvas.width=this.canvas.width-(padding*2);
+    // this.canvas.height=this.canvas.height-(padding*2);
+    // debugger;
+    // context.translate(0, padding);
+
+    this.clearCanvas();
+    // context.save();
+    // context.translate(0.5,0.5);
 
     const currentContigs = getArrowsInScope(props.data[1], props.visibleGenome, this.canvas, true);
     drawContigs(context, currentContigs, props.visibleGenome[1] - props.visibleGenome[0] < 100000);

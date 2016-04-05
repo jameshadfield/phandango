@@ -802,7 +802,7 @@
      * 2. remove all the childNodes of the root g element
      */
     ctx.prototype.__clearCanvas = function() {
-        debugger;
+        
         var current = this.__closestGroupOrSvg(),
             transform = current.getAttribute("transform");
         var rootGroup = this.__root.childNodes[1];
