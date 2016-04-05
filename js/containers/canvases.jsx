@@ -1,6 +1,7 @@
 import { connect } from 'react-redux';
 import React from 'react';
 import { Annotation } from '../components/annotation';
+import { Row1Drag } from '../components/resize';
 import { Phylogeny } from '../components/phylogeny';
 import { Blocks } from '../components/blocks';
 import { Metadata } from '../components/metadata';
@@ -15,6 +16,10 @@ The children of this component are top level components that
 render to the screen (e.g. Annotation, Blocks, Phylogeny)
 These connect statements control which props they get
 */
+const ConnectedRow1Drag = connect((state)=>({
+  initialPosPerc: state.layout.rowPercs[0],
+  maxPosPerc: state.layout.rowPercs[1]+state.layout.rowPercs[0],
+}))(Row1Drag);
 const ConnectedAnnotation = connect((state)=>({
   visibleGenome: state.genomeInfo.visibleGenome,
   data: state.annotation.data,
@@ -94,6 +99,31 @@ export const CanvasContainer = React.createClass({ displayName: 'CanvasContainer
       return false;
     }
 
+
+    const vresizers = [];
+    const vresizertops=[];
+    var count=0;
+    for (var i=0; i<3; i++){
+      var vresizertop=this.props.rowPercs[i]+count;
+      var toremove=((i+1)*7)-4
+      vresizertops[i]='calc('+this.makeVh(vresizertop)+' - '+toremove.toString()+'px)'
+      count=vresizertop;
+    }
+    vresizers[0]= <ConnectedRow1Drag style={{position: "absolute", width: "100%", height:"8", cursor: "row-resize", left:"0", top: vresizertops[0]}} key={'row1drag'} />;
+    vresizers[1]= <div style={{position: "absolute", width: "100%", height:"8", cursor: "row-resize", left:"0", top: vresizertops[1]}} key={'row2drag'} />;
+
+
+    const hresizers = [];
+    const hresizerlefts=[];
+    var count=0;
+    for (var i=0; i<3; i++){
+      hresizerlefts[i]=this.props.colPercs[i]+count;
+      count=hresizerlefts[i];
+    }
+    hresizers[0]= <div style={{position: "absolute", width: "8", height:"100%", cursor: "col-resize", left: this.percentize(hresizerlefts[0]), top: "0"}} key={'column1drag'} />;
+    hresizers[1]= <div style={{position: "absolute", width: "8", height:"100%", cursor: "col-resize", left: this.percentize(hresizerlefts[1]), top: "0"}} key={'column2drag'} />;
+    // debugger;
+
     // top row (small genome / ??? / annotation)
     const topRow = [];
     if (active.blocks || active.annotation) {
@@ -107,6 +137,7 @@ export const CanvasContainer = React.createClass({ displayName: 'CanvasContainer
     } else {
       topRow[2] = <div style={this.getStyle(2, 0)} key={'annotation'} />;
     }
+
 
     const middleRow = [];
     // tree
@@ -130,7 +161,7 @@ export const CanvasContainer = React.createClass({ displayName: 'CanvasContainer
       middleRow[2] = <div style={this.getStyle(2, 1)} key={'blocks'} />;
     }
 
-    // needs imporvement
+    // needs improvement
     const plots = [];
     if ('gwas' in active.plots ) {
       plots[0] = <ConnectedGwas style={this.getStyle(2, 2)} key={'gwas'} />;
@@ -165,6 +196,8 @@ export const CanvasContainer = React.createClass({ displayName: 'CanvasContainer
 
         {logo}
 
+        {vresizers}
+        {hresizers}
       </div>
     );
   },
