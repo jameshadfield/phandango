@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import React from 'react';
 import { Annotation } from '../components/annotation';
-import { Row1Drag } from '../components/resize';
+import { Drag } from '../components/resize';
 import { Phylogeny } from '../components/phylogeny';
 import { Blocks } from '../components/blocks';
 import { Metadata } from '../components/metadata';
@@ -10,16 +10,23 @@ import { Line } from '../components/lineGraph';
 import { Gwas } from '../components/gwasGraph';
 import { Cartoon } from '../components/cartoonGenome';
 import { StaticLogo } from '../components/logo';
+import { layoutChange } from '../actions/general';
 
 /*
 The children of this component are top level components that
 render to the screen (e.g. Annotation, Blocks, Phylogeny)
 These connect statements control which props they get
 */
-const ConnectedRow1Drag = connect((state)=>({
-  initialPosPerc: state.layout.rowPercs[0],
-  maxPosPerc: state.layout.rowPercs[1]+state.layout.rowPercs[0],
-}))(Row1Drag);
+const ConnectedDrag = connect(
+    (state)=>({
+      rowPercs: state.layout.rowPercs,
+      colPercs: state.layout.colPercs,
+    })
+    // (dispatch)=>({
+    //   onYChange: (col, idx, e, value) =>
+    //   dispatch(layoutChange(col, idx, parseInt(value, 10))),
+    // })
+  )(Drag);
 const ConnectedAnnotation = connect((state)=>({
   visibleGenome: state.genomeInfo.visibleGenome,
   data: state.annotation.data,
@@ -100,30 +107,6 @@ export const CanvasContainer = React.createClass({ displayName: 'CanvasContainer
     }
 
 
-    const vresizers = [];
-    const vresizertops=[];
-    var count=0;
-    for (var i=0; i<3; i++){
-      var vresizertop=this.props.rowPercs[i]+count;
-      var toremove=((i+1)*7)-4
-      vresizertops[i]='calc('+this.makeVh(vresizertop)+' - '+toremove.toString()+'px)'
-      count=vresizertop;
-    }
-    vresizers[0]= <ConnectedRow1Drag style={{position: "absolute", width: "100%", height:"8", cursor: "row-resize", left:"0", top: vresizertops[0]}} key={'row1drag'} />;
-    vresizers[1]= <div style={{position: "absolute", width: "100%", height:"8", cursor: "row-resize", left:"0", top: vresizertops[1]}} key={'row2drag'} />;
-
-
-    const hresizers = [];
-    const hresizerlefts=[];
-    var count=0;
-    for (var i=0; i<3; i++){
-      hresizerlefts[i]=this.props.colPercs[i]+count;
-      count=hresizerlefts[i];
-    }
-    hresizers[0]= <div style={{position: "absolute", width: "8", height:"100%", cursor: "col-resize", left: this.percentize(hresizerlefts[0]), top: "0"}} key={'column1drag'} />;
-    hresizers[1]= <div style={{position: "absolute", width: "8", height:"100%", cursor: "col-resize", left: this.percentize(hresizerlefts[1]), top: "0"}} key={'column2drag'} />;
-    // debugger;
-
     // top row (small genome / ??? / annotation)
     const topRow = [];
     if (active.blocks || active.annotation) {
@@ -183,6 +166,44 @@ export const CanvasContainer = React.createClass({ displayName: 'CanvasContainer
           <StaticLogo />
         </div>
       );
+    }
+
+    // vertical resizer divs
+    const vresizers = [];
+    const vresizertops = [];
+    let count = 0;
+    const numVResizers = 2;
+    for (let i = 0; i < numVResizers + 1; i++) {
+      const vresizertop = this.props.rowPercs[i] + count;
+      const toremove = ((i + 1) * 7) - 4;
+      vresizertops[i] = 'calc(' + this.makeVh(vresizertop) + ' - ' + toremove.toString() + 'px)';
+      vresizers[i] = (
+        <ConnectedDrag
+          style={{ position: 'absolute', width: '100%', height: '9', cursor: 'row-resize', left: '0', top: vresizertops[i] }}
+          index={i}
+          isCol={false}
+          key={'row' + i.toString() + 'drag'}
+          />
+      );
+      count = vresizertop;
+    }
+
+    // horizontal resizer divs
+    const hresizers = [];
+    const hresizerlefts = [];
+    count = 0;
+    const numHResizers = 2;
+    for (let i = 0; i < numHResizers + 1; i++) {
+      hresizerlefts[i] = this.props.colPercs[i] + count;
+      hresizers[i] = (
+        <ConnectedDrag
+          style={{ position: 'absolute', width: '9', height: '100%', cursor: 'col-resize', left: this.percentize(hresizerlefts[i]), top: '0' }}
+          index={i}
+          isCol={true}
+          key={'column' + i.toString() + 'drag'}
+        />
+      );
+      count = hresizerlefts[i];
     }
 
     return (

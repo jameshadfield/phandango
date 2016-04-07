@@ -26,7 +26,6 @@ export const Cartoon = React.createClass({
     this.redraw(this.canvas.getContext('2d'), props);
   },
 
-
   componentWillUnmount() {
     window.removeEventListener('pdf', this.svgdraw, false);
   },

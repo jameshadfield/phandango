@@ -28,14 +28,11 @@ export const Phylogeny = React.createClass({
     }
   },
 
-  componentWillUpdate(props) {
+  componentDidUpdate(props) {
     if (props.newickString) {
       this.phylocanvas.load(props.newickString);
     }
-  },
-
-  componentDidUpdate() {
-    // this.phylocanvas.resizeToContainer();
+    this.phylocanvas.resizeToContainer();
     this.phylocanvas.draw(true);  // forces phylocanvas.fitInPanel()
   },
 

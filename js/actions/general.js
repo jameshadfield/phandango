@@ -27,6 +27,11 @@ export function layoutChange(col, idx, perc) {
   return ({ type, idx, perc });
 }
 
+export function layoutPercentChange(col, idx, perc) {
+  const type = (col) ? 'layoutColPercentChange' : 'layoutRowPercentChange';
+  return ({ type, idx, perc });
+}
+
 export function turnOffCanvas(name) {
   return ({ type: 'turnOffCanvas', name });
 }

@@ -79,13 +79,19 @@ export function layout(state = init, action) {
     newState = merge({}, state);
     newState.colPercs = distributeNewPercs(newState.colPercs, action.perc, action.idx);
     // newState.colPercs[action.idx] = action.perc;
-
-
     return newState;
   case 'layoutRowChange':
     newState = merge({}, state);
     // newState.rowPercs[action.idx] = action.perc;
     newState.rowPercs = distributeNewPercs(newState.rowPercs, action.perc, action.idx);
+    return newState;
+  case 'layoutRowPercentChange':
+    newState = merge({}, state);
+    newState.rowPercs = changePercs(newState.rowPercs, action.perc, action.idx);
+    return newState;
+  case 'layoutColPercentChange':
+    newState = merge({}, state);
+    newState.colPercs = changePercs(newState.colPercs, action.perc, action.idx);
     return newState;
   // de-re-activate things
   case 'turnOffCanvas':
@@ -145,6 +151,33 @@ function distributeNewPercs(oldVals, newVal, newIdx) {
 
   newVals[0] -= newVals.reduce(add, 0) - 100;
 
+  return newVals;
+}
+
+function changePercs(oldVals, newVal, newIdx) {
+  const newVals = [ ...oldVals ];
+  newVals[newIdx] = newVal;
+
+  if (newIdx+1==oldVals.length){
+    return oldVals;
+  }
+
+  var valChange=newVal-oldVals[newIdx]
+
+  // // newVals[newIdx] += valChange;
+  newVals[newIdx+1] = oldVals[newIdx+1]-valChange;
+
+  var oldtot=0.0
+  for (var i=0; i<oldVals.length; i++){
+    oldtot=oldtot+oldVals[i];
+  }
+
+  var newtot=0.0
+  for (var i=0; i<newVals.length; i++){
+    newtot=newtot+newVals[i];
+  }
+
+  // console.log("changePercs", newVal, oldVals, newVals, oldtot, newtot)
   return newVals;
 }
 
