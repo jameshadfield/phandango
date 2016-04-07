@@ -38,7 +38,14 @@ export const Annotation = React.createClass({
     return true;
   },
 
-  componentDidUpdate(props, state) {
+  // componentDidUpdate(props, state) {
+  //   this.canvasPos = this.canvas.getBoundingClientRect();
+  //   this.initCanvasXY();
+  //   this.clearCanvas();
+  //   this.redraw(this.canvas.getContext('2d'), props, state);
+  // },
+
+  componentWillUpdate(props, state) {
     this.canvasPos = this.canvas.getBoundingClientRect();
     this.initCanvasXY();
     this.clearCanvas();
