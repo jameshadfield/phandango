@@ -83,6 +83,10 @@ function MainText() {
         Phandango runs entirely on the client (i.e. your computer) so none of your results are sent to any servers. If you would like your data to become one of the examples then <a href="mailto:jh22@sanger.ac.uk">let me know</a>.
       </p>
 
+      <p>
+        To save your data as a SVG press <code>p</code>. Open the SVG in wither Chrome or Illustrator etc. Note there are some issues with fonts we're still trying to fix!
+      </p>
+
       <div className="dots"></div>
 
       <h3>Data formats currently visualised</h3>
