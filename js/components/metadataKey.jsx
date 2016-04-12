@@ -15,7 +15,9 @@ export const MetadataKey = React.createClass({
 
   componentDidMount: function () { // don't use fat arrow
     this.forceUpdate();
+    window.addEventListener('pdf', this.svgdraw, false);
   },
+
 
   componentWillUpdate(props) {
     if (!props.metadata.toggles) {
@@ -27,7 +29,11 @@ export const MetadataKey = React.createClass({
     const blockWidth = 50;
     const numCols = props.metadata.toggles.reduce((pv, cv) => cv ? pv + 1 : pv, 0);
     const xVals = this.calculateXValuesForColumns(this.canvas, numCols, blockWidth);
-    this.draw(this.canvas, props.metadata, xVals, blockWidth);
+    this.draw(this.canvas.getContext('2d'), this.canvas.width, this.canvas.height, props.metadata, xVals, blockWidth);
+  },
+
+  componentWillUnmount() {
+    window.removeEventListener('pdf', this.svgdraw, false);
   },
 
   render() {
@@ -42,13 +48,30 @@ export const MetadataKey = React.createClass({
     );
   },
 
+  svgdraw() {
+    this.canvasPos = this.canvas.getBoundingClientRect();
+    console.log('printing metadata key to SVG');
+    window.svgCtx.save();
+    window.svgCtx.translate(this.canvasPos.left, this.canvasPos.top);
+    window.svgCtx.rect(0, 0, this.canvasPos.right - this.canvasPos.left, this.canvasPos.bottom - this.canvasPos.top);
+    window.svgCtx.stroke();
+    window.svgCtx.clip();
+
+    // now the bits specific to metadata key
+    const blockWidth = 50;
+    const numCols = this.props.metadata.toggles.reduce((pv, cv) => cv ? pv + 1 : pv, 0);
+    const xVals = this.calculateXValuesForColumns(this.canvas, numCols, blockWidth);
+    this.draw(window.svgCtx, this.canvas.width, this.canvas.height, this.props.metadata, xVals, blockWidth);
+
+    window.svgCtx.restore();
+  },
+
   /* draw() draws the coloured squares and text which form the metadata key (canvas)
    * {int} colIdx - index of active columns to draw (xVals gives offsets)
    * {int} headerIdx - index of header in metadata (may be toggled off / on)
    * {int} valueIdx - index of the value within each header
    */
-  draw(canvas, metadata, xVals, blockWidth) {
-    const context = canvas.getContext('2d');
+  draw(context, canvasWidth, canvasHeight, metadata, xVals, blockWidth) {
     let colIdx = 0; // like headerIdx but doesn't increase if toggled off
     for (let headerIdx = 0; headerIdx < metadata.toggles.length; headerIdx++) {
       if (metadata.toggles[headerIdx]) {
@@ -57,12 +80,23 @@ export const MetadataKey = React.createClass({
         context.fillStyle = 'black';
         context.textBaseline = 'middle';
         context.textAlign = 'left';
-        context.font = '24px Helvetica';
+
         const headerName = metadata.headerNames[headerIdx];
-        context.fillText(headerName, xVals[colIdx][1], 20);
+
+        let headerFontSize = 18;
+        context.font = String(headerFontSize) + 'px Helvetica';
+
+        const availableLengthForHeader = parseInt(canvasWidth / metadata.toggles.length, 10);
+
+        while (context.measureText(headerName).width > availableLengthForHeader && headerFontSize >= 12) {
+          headerFontSize -= 1;
+          context.font = String(headerFontSize) + 'px Helvetica';
+        }
+
+        context.fillText(headerName, xVals[colIdx][0], 20);
 
         const numVals = metadata.values[headerIdx].length;
-        const yHeight = parseInt( (canvas.height - yTopPx) / numVals, 10);
+        const yHeight = parseInt( (canvasHeight - yTopPx) / numVals, 10);
 
         for (let valueIdx = 0; valueIdx < numVals; valueIdx++) {
           // console.log(xVals[colIdx])

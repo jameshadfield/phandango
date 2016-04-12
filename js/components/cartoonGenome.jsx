@@ -12,11 +12,20 @@ export const Cartoon = React.createClass({
   },
 
   componentDidMount: function () {
-    this.redraw(this.props);
+    this.initCanvasXY(); // expensive way to handle resizing
+    this.redraw(this.canvas.getContext('2d'), this.props);
+    window.addEventListener('pdf', this.svgdraw, false);
   },
 
   componentWillUpdate(props) {
-    this.redraw(props);
+    this.initCanvasXY(); // expensive way to handle resizing
+    this.clearCanvas(); // needed????
+    this.redraw(this.canvas.getContext('2d'), props);
+  },
+
+
+  componentWillUnmount() {
+    window.removeEventListener('pdf', this.svgdraw, false);
   },
 
   render() {
@@ -31,9 +40,20 @@ export const Cartoon = React.createClass({
     );
   },
 
-  redraw: function (props) {
-    this.initCanvasXY(); // expensive way to handle resizing
-    this.clearCanvas(); // needed????
+  svgdraw() {
+    this.canvasPos = this.canvas.getBoundingClientRect();
+    console.log('printing cartoon to SVG');
+    window.svgCtx.save();
+    window.svgCtx.translate(this.canvasPos.left, this.canvasPos.top);
+    window.svgCtx.rect(0, 0, this.canvasPos.right - this.canvasPos.left, this.canvasPos.bottom - this.canvasPos.top);
+    window.svgCtx.stroke();
+    window.svgCtx.clip();
+    this.redraw(window.svgCtx, this.props);
+    window.svgCtx.restore();
+  },
+
+
+  redraw: function (context, props) {
     const gutter = 10; // pixels of blank space on either side
     const yMiddle = parseInt(this.canvas.height / 2, 10);
     const xStartLine  = gutter;
@@ -44,18 +64,22 @@ export const Cartoon = React.createClass({
     if (xViewLength < 1) {
       xViewLength = 1;
     }
-    const context = this.canvas.getContext('2d');
+
     context.save();
-    // draw a horisontal line
+    context.translate(0.5, 0.5);
+    // draw a horizontal line
     context.strokeStyle = 'black';
     context.lineWidth = 1;
+
     context.beginPath();
     context.moveTo(xStartLine, yMiddle);
     context.lineTo(xLineFinish, yMiddle);
     context.stroke();
 
     // shade a box
+
     context.globalAlpha = 0.2;
+
     context.fillStyle = 'black';
     context.fillRect(xViewStart, parseInt(this.canvas.height / 4, 10), xViewLength, parseInt(this.canvas.height / 2, 10));
     context.globalAlpha = 1;

@@ -13,35 +13,42 @@ export function drawGraphAxis(canvas, {
   yMaxValue = '100',
   numTicks = 4,
   dottedLines = false,
+  pdfoutput = false,
 }) {
-  const context = canvas.getContext('2d');
-  drawOutline(canvas, context);
+  let context = this.canvas.getContext('2d');
+  if (pdfoutput) {
+    context = window.svgCtx;
+  }
+  drawOutline(canvas, context, pdfoutput);
   // if yMaxValue is 0 then return immediately
   if (!yMaxValue) {return;}
   // horisontal dotted lines
   if (dottedLines) {
     for (const i of dottedLines) {
-      drawDottedLine(canvas, context, valToPx(canvas, i, yMaxValue));
+      drawDottedLine(canvas, context, valToPx(canvas, i, yMaxValue), pdfoutput);
     }
   }
   // find numerical values of ticks to display
-  const chunk = parseInt(yMaxValue / numTicks, 10);
+  const chunk = Math.ceil(parseFloat(yMaxValue / numTicks, 10));
+  // yMaxValue = chunk * numTicks;
   const tickNums = [ ...Array(numTicks) ].map(
     (cv, idx) => (idx + 1) * chunk
   );
   // draw ticks (not the text, just the tick)
   const tickPixels = valToPx(canvas, tickNums, yMaxValue);
-  drawTicksAtPx(context, tickPixels);
+  drawTicksAtPx(context, tickPixels, pdfoutput);
 
   // draw text of ticks
   context.save();
+
   context.fillStyle = 'black';
   context.textBaseline = 'middle';
   context.textAlign = 'left';
   context.font = '12px Helvetica';
   for (let i = 0; i < numTicks; ++i) {
-    context.fillText(tickNums[i] + suffix, 5, tickPixels[i].toString());
+    context.fillText(tickNums[i] + suffix, 5, tickPixels[i]);
   }
+
   context.restore();
 }
 
@@ -69,9 +76,11 @@ function valToPx(canvas, value, yMaxVal) {
  * @param canvas
  * @param context
  */
-function drawOutline(canvas, context) {
+function drawOutline(canvas, context, pdfoutput = false) {
   context.save();
-  context.beginPath();
+  if (!pdfoutput) {
+    context.beginPath();
+  }
   context.moveTo(canvas.width, canvas.height);
   context.lineTo(0, canvas.height); // bottom line
   context.lineTo(0, 0); // left hand axis (move to top left)
@@ -84,9 +93,11 @@ function drawOutline(canvas, context) {
  * @param vals {array of nums} - positions in pixels (y axis, measured from top) to draw lines
  * @param (optional) tickLengthPx - extends right (into the graph!)
  */
-function drawTicksAtPx(context, vals, tickLengthPx = 5) {
+function drawTicksAtPx(context, vals, pdfoutput = false, tickLengthPx = 5) {
   // we are starting at 0,0 (i.e. TOP LEFT)
-  context.beginPath();
+  if (!pdfoutput) {
+    context.beginPath();
+  }
   context.moveTo(0, 0);
   for (let i = 0; i < vals.length; i++) {
     context.lineTo(0, vals[i]);
@@ -103,7 +114,7 @@ function drawTicksAtPx(context, vals, tickLengthPx = 5) {
  * @param (optional) colour {string}
  * @param (optional) dash {array of 2 nums} - dash style (line length, gap length)
  */
-function drawDottedLine(canvas, context, yValPx, colour = 'red', dash = [ 5, 10 ]) {
+function drawDottedLine(canvas, context, yValPx, pdfoutput = false, colour = 'red', dash = [ 5, 10 ]) {
   context.save();
   context.strokeStyle = colour;
   context.setLineDash(dash);

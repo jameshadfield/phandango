@@ -19,6 +19,41 @@ import { Spinner } from '../components/spinner';
 import { notificationNew, notificationSeen } from '../actions/notifications';
 import { goToPage, toggleMetaKey, showBlocks, increaseSpinner } from '../actions/general';
 
+import C2S from '../misc/canvas2svg';
+
+/* efforts to get fonts working... i think (SH16)
+// function base64ToArrayBuffer(base64) {
+//   const binaryString =  window.atob(base64);
+//   const len = binaryString.length;
+//   const bytes = new Uint8Array( len );
+//   for (let i = 0; i < len; i++) {
+//     bytes[i] = binaryString.charCodeAt(i);
+//   }
+//   return bytes.buffer;
+// }
+
+// function registerFonts() {
+//   window.pdfdoc.registerFont('Lato-Light', base64ToArrayBuffer(require("base64!../../font/lato/Lato-Light.ttf")));
+// }
+
+
+// import pdfkit from 'pdfkit';
+// import pdfkit from 'transform?brfs!pdfkit';
+
+// let window.pdfdoc;
+
+// const xhr = new XMLHttpRequest();
+// xhr.open("GET", "/font/lato/Lato-Light.ttf", true);
+// xhr.responseType = "arraybuffer";
+// let latoFont;
+// xhr.onload = function(oEvent) {
+//     latoFont = xhr.response; // Note: not xhr.responseText
+// };
+
+// xhr.send(null);
+
+*/
+
 /*
 Connect the containers which will be displayed here to redux store / dispatch etc
 Note that the MainReactElement doesn't itself access store/state as it itself
@@ -63,6 +98,11 @@ const ConnectedHeader = connect(
   })
 )(Header);
 
+/* PDF event
+https://developer.mozilla.org/en-US/docs/Web/Guide/Events/Creating_and_triggering_events
+This is a one-off thing and so it uses events rather than the flux approach
+*/
+const pdfEvent = new Event('pdf');
 
 /*
 The purposes of the MainReactElement:
@@ -160,6 +200,10 @@ export const MainReactElement = React.createClass({ displayName: 'Main_React_Ele
     case 75: // k
       this.props.dispatch(toggleMetaKey());
       break;
+    // pdf / svg triggered via 'p'
+    case 80: // p
+      this.produceSVG();
+      break;
     // for testing only:
     // case 27: // esc
     //   this.props.dispatch({ type: 'clearAllData' });
@@ -167,6 +211,23 @@ export const MainReactElement = React.createClass({ displayName: 'Main_React_Ele
     default:
       return;
     }
+  },
+
+  produceSVG() {
+    window.svgCtx = new C2S(window.innerWidth, window.innerHeight);
+    window.dispatchEvent(pdfEvent);
+
+    const mySVG = window.svgCtx.getSerializedSvg(true);
+    // console.log(mySVG);
+
+    const a = document.createElement('a');
+    const windowURL = window.URL || window.webkitURL;
+    const myURL = windowURL.createObjectURL(new Blob([ mySVG ], { type: 'text/plain;charset=utf-8' }));
+    a.href = myURL;
+    a.download = 'Phandango.svg';
+    a.click();
+    // window.open(a);
+    window.URL.revokeObjectURL(myURL);
   },
 
   filesDropped(e) {

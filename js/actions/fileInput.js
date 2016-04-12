@@ -133,11 +133,11 @@ const goDispatch = (dispatch, getState, parsedData, dataType, filename) => {
   let dispatchObj = { type: dataType + 'Data', fileName: filename };
   switch (dataType) {
   case 'annotation':
-    dispatch({ ...dispatchObj, data: parsedData[1], genomeLength: parsedData[0][1] });
+    dispatch({ ...dispatchObj, data: [ parsedData[1], parsedData[2] ], genomeLength: parsedData[0][1] });
     break;
   case 'gubbins':
     dispatch({ ...dispatchObj, data: parsedData[1], genomeLength: parsedData[0][1] });
-    // dispatch an action to check the genoneLength is the same...
+    // dispatch an action to check the genomeLength is the same...
 
     // if bratNextGen is loaded then we want to switch to merged view
     // else just make the line graph for this one...

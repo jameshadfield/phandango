@@ -35,16 +35,23 @@ export const Blocks = React.createClass({
         () => {this.setState({ hovered: undefined });},
         true);
     }
-    this.redraw(this.props, this.state);
+    this.redraw(this.canvas.getContext('2d'), this.props, this.state);
+    window.addEventListener('pdf', this.svgdraw, false);
   },
 
-  shouldComponentUpdate() {
-    return true;
-  },
+  // shouldComponentUpdate() {
+  //   return true;
+  // },
 
   componentWillUpdate(props, state) {
+    this.initCanvasXY();
+    this.clearCanvas();
     this.canvasPos = this.canvas.getBoundingClientRect();
-    this.redraw(props, state);
+    this.redraw(this.canvas.getContext('2d'), props, state);
+  },
+
+  componentWillUnmount() {
+    window.removeEventListener('pdf', this.svgdraw, false);
   },
 
   onClickCallback(mx, my) {
@@ -102,12 +109,23 @@ export const Blocks = React.createClass({
     );
   },
 
-  redraw: function (props, state) {
-    // expensive way to handle resizing
-    this.initCanvasXY();
-    const context = this.canvas.getContext('2d');
+  svgdraw() {
+    this.canvasPos = this.canvas.getBoundingClientRect();
+    console.log('printing blocks to SVG');
+    window.svgCtx.save();
+    const currentWidth = window.svgCtx.width;
+    window.svgCtx.width = this.canvas.width;
+    window.svgCtx.translate(this.canvasPos.left, this.canvasPos.top);
+    window.svgCtx.rect(0, 0, this.canvasPos.right - this.canvasPos.left, this.canvasPos.bottom - this.canvasPos.top);
+    window.svgCtx.stroke();
+    window.svgCtx.clip();
+    this.redraw(window.svgCtx, this.props, this.state);
+    window.svgCtx.restore();
+    window.svgCtx.width = currentWidth;
+  },
+
+  redraw: function (context, props, state) {
     const blocks = computeBlocksInView(props.data, props.visibleGenome, this.canvas, props.activeTaxa, props.blocksArePerTaxa);
-    this.clearCanvas();
     drawBlocks(context, blocks, props.blockFillAlpha);
     if (state.hovered) {
       this.drawBorder(context, state.hovered, 'purple');
@@ -131,15 +149,13 @@ export const Blocks = React.createClass({
         my >= blocks[idx].y1 &&
         my <= (blocks[idx].y2)
         ) {
-        return (
-          {
-            x1: blocks[idx].x1,
-            x2: blocks[idx].x2,
-            y1: blocks[idx].y1,
-            y2: blocks[idx].y2,
-            info: blocks[idx].info,
-          }
-        );
+        return ({
+          x1: blocks[idx].x1,
+          x2: blocks[idx].x2,
+          y1: blocks[idx].y1,
+          y2: blocks[idx].y2,
+          info: blocks[idx].info,
+        });
         // blocks[idx]; // reference
       }
     }
@@ -180,14 +196,17 @@ export const Blocks = React.createClass({
 // }
 
 function drawBlocks(context, blocks, alpha) {
+  context.globalAlpha = alpha;
+  context.save();
   for (let i = 0; i < blocks.length; i++) {
-    context.save();
-    // context.beginPath() // does what?
     context.fillStyle = blocks[i].fill;
-    context.globalAlpha = alpha;
+    context.beginPath(); // does what?
+    // context.rect(blocks[i].x1, blocks[i].y1, blocks[i].x2 - blocks[i].x1, blocks[i].y2 - blocks[i].y1);
     context.fillRect(blocks[i].x1, blocks[i].y1, blocks[i].x2 - blocks[i].x1, blocks[i].y2 - blocks[i].y1);
-    context.restore();
+    // context.fill();
   }
+  context.restore();
+  context.globalAlpha = 1;
 }
 
 // function drawBorderAndText(context, arrow, middleCanvasWidth, scaleYvalue) {
@@ -255,6 +274,7 @@ function computeYValuesForTaxa(taxaList, activeTaxa) {
 function computeBlocksInView(rawBlocks, visibleGenomeCoords, canvas, activeTaxa, blocksArePerTaxa) {
   const basesVisible = visibleGenomeCoords[1] - visibleGenomeCoords[0];
   const trimmedBlocks = [];
+  const canvasWidth = canvas.width;
 
   // if it's an object of arrays then...
   if (blocksArePerTaxa) {
@@ -274,6 +294,14 @@ function computeBlocksInView(rawBlocks, visibleGenomeCoords, canvas, activeTaxa,
         newBlock.x2 = parseInt( (newBlock.endBase - visibleGenomeCoords[0])  / basesVisible * canvas.width, 10);
         newBlock.y1 = yPx[0];
         newBlock.y2 = yPx[1];
+
+        if (newBlock.x1 < 0) {
+          newBlock.x1 = 0;
+        }
+        if (newBlock.x2 > canvasWidth) {
+          newBlock.x2 = canvasWidth;
+        }
+
         trimmedBlocks.push(newBlock);
       }
     }
@@ -295,6 +323,13 @@ function computeBlocksInView(rawBlocks, visibleGenomeCoords, canvas, activeTaxa,
       const newBlock = rawBlocks[i]; // pass by reference
       newBlock.x1 = parseInt( (newBlock.startBase - visibleGenomeCoords[0]) / basesVisible * canvas.width, 10);
       newBlock.x2 = parseInt( (newBlock.endBase - visibleGenomeCoords[0])  / basesVisible * canvas.width, 10);
+
+      if (newBlock.x1 < 0) {
+        newBlock.x1 = 0;
+      }
+      if (newBlock.x2 > canvasWidth) {
+        newBlock.x2 = canvasWidth;
+      }
 
       // how many pixels?  if 2 or 1 or 0 then don't bother
       // if ((newBlock.x2 - newBlock.x1) <= 2) {continue;}

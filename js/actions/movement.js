@@ -35,6 +35,7 @@ export function genomePan(fracCanvasPan) {
 }
 
 export function genomeZoom(delta, fracInCanvas) {
+  const minimumBp = 1000;
   // console.log('genomeZoom. delta:', delta, 'fracInCanvas:', fracInCanvas);
   // THUNK
   return function (dispatch, getState) {
@@ -43,6 +44,11 @@ export function genomeZoom(delta, fracInCanvas) {
     // if we are trying to zoom out, but can already see entire genome:
     if (visibleGenome[0] === 0 && visibleGenome[1] === genomeLength && delta < 0) {
       dispatch( notificationNew('can\'t zoom out: whole genome in view'));
+      return;
+    }
+    // if we are trying to zoom in too far:
+    if (visibleGenome[1] - visibleGenome[0] === minimumBp && delta > 0) {
+      dispatch( notificationNew('can\'t zoom in to less than 1000bp'));
       return;
     }
     const multiplier = 2;   // each zoom shows X times as much / half as much of the viewport
@@ -57,12 +63,13 @@ export function genomeZoom(delta, fracInCanvas) {
       newVisibleGenome = [ baseAtMouseX - parseInt(bpLeftOfMouseX * multiplier, 10), baseAtMouseX + parseInt(bpRightOfMouseX * multiplier, 10) ];
     }
     // need some checking here -- don't want to zoom in too much and don't want to zoom out too much!
-    if (newVisibleGenome[1] - newVisibleGenome[0] < 1000) {
-      dispatch( notificationNew('can\'t zoom in to less than 1000bp'));
-      return;
+    if (newVisibleGenome[1] - newVisibleGenome[0] < minimumBp) {
+      newVisibleGenome = [ baseAtMouseX - minimumBp / 2, baseAtMouseX + minimumBp / 2 ];
+      // return;
     }
-    if (newVisibleGenome[0] < 0) {newVisibleGenome[0] = 0;}
-    if (newVisibleGenome[1] > genomeLength) {newVisibleGenome[1] = genomeLength;}
+    if (newVisibleGenome[0] < 0) {newVisibleGenome[0] = 0; if (newVisibleGenome[1] < minimumBp) { newVisibleGenome[1] = minimumBp; } }
+    if (newVisibleGenome[1] > genomeLength) {newVisibleGenome[1] = genomeLength; if (newVisibleGenome[0] > genomeLength - minimumBp) { newVisibleGenome[0] = genomeLength - minimumBp; } }
+
     // console.log('Now viewing ' + newVisibleGenome[0] + ' - ' + newVisibleGenome[1] + 'bp');
     dispatch({ type: 'updateVisibleGenome', visibleGenome: newVisibleGenome });
   };

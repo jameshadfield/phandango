@@ -6,20 +6,20 @@ export const colourDB = {
   block: {
     gubbinsLeaf: 'blue',
     gubbinsNode: 'red',
-    gubbinsPerTaxa: 'DodgerBlue',
+    gubbinsPerTaxa: 'dodgerblue',
     bratNextGen: {
-      default: 'DarkOrange',
+      default: 'darkorange',
     },
-    merge: 'LimeGreen',
-    roary: 'MediumBlue',
-    unknown: 'Black', // how does this happen?
+    merge: 'limegreen',
+    roary: 'mediumblue',
+    unknown: 'black', // how does this happen?
   },
   line: {
     // subline: '#bbbbbb', // currently hard-coded in lineGraph.jsx
-    gubbins: 'Black',
-    gubbinsPerTaxa: 'DodgerBlue',
-    bratNextGen: 'DarkOrange',
-    roary: 'MediumBlue',
+    gubbins: 'black',
+    gubbinsPerTaxa: 'dodgerblue',
+    bratNextGen: 'darkorange',
+    roary: 'mediumblue',
   },
   artemis: {
     0: 'white',
@@ -39,7 +39,7 @@ export const colourDB = {
   },
 };
 
-export function Arrow(featurestart, featureend, direction, fill, stroke, strokeWidth, info) {
+export function Arrow(featurestart, featureend, direction, fill, stroke, strokeWidth, info, contig, contigstart, contigend) {
   // This is a very simple and unsafe constructor.
   // All we're doing is checking if the values exist.
   // 'x || 0' just means 'if there is a value for x, use that. Otherwise use 0.'
@@ -48,8 +48,11 @@ export function Arrow(featurestart, featureend, direction, fill, stroke, strokeW
   this.stroke = stroke || 'black';
   this.strokeWidth = strokeWidth || 1;
   this.info = info || '';
+  this.contig = contig || '';
   this.featurestart = featurestart || 0;
   this.featureend = featureend || 0;
+  this.contigstart = contigstart || 0;
+  this.contigend = contigend || 0;
   this.x = 0;
   this.y = 0;
   this.w = 1;
@@ -58,6 +61,14 @@ export function Arrow(featurestart, featureend, direction, fill, stroke, strokeW
   this.ID = '';
   this.product = '';
   this.fields = {};
+
+  // if (this.fill==='#53FFE9'){
+  //   console.log(this.contigstart, this.contigend);}
+
+  this.fields.Contig = this.contig;
+  this.fields['Contig coordinates'] = this.contigstart + '..' + this.contigend;
+  this.fields['Genome coordinates'] = parseInt(this.featurestart, 10) + '..' + parseInt(this.featureend, 10);
+  this.fields.Length = this.featureend - this.featurestart;
 
   const infoparts = this.info.split(';');
   // console.log(infoparts);
@@ -91,6 +102,29 @@ export function Arrow(featurestart, featureend, direction, fill, stroke, strokeW
       }
     }
   }
+}
+
+
+export function Contig(featurestart, featureend, fill, stroke, strokeWidth, contigName, length) {
+  // This is a very simple and unsafe constructor.
+  // All we're doing is checking if the values exist.
+  // 'x || 0' just means 'if there is a value for x, use that. Otherwise use 0.'
+  this.fill = fill || '#AAAAAA';
+  this.stroke = stroke || 'black';
+  this.strokeWidth = strokeWidth || 1;
+  this.contigName = contigName || '';
+  this.featurestart = featurestart || 0;
+  this.featureend = featureend || 0;
+  this.length = length || 0;
+  this.x = 0;
+  this.y = 0;
+  this.w = 1;
+  this.h = 10;
+  this.direction = 'None';
+  this.coordinates = [];
+  this.fields = {};
+  this.fields.Contig = this.contigName;
+  this.fields.Length = this.length;
 }
 
 /* Block constructor

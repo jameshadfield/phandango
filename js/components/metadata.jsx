@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import { getMouse } from '../misc/mouse';
 import * as helper from '../misc/helperFunctions';
 import { InfoTip } from './infoTip';
@@ -34,6 +35,7 @@ export const Metadata = React.createClass({
     this.canvas.addEventListener('mouseout',
       () => {this.setState({ displayInfoActive: false });},
       true);
+    window.addEventListener('pdf', this.svgdraw, false);
     this.forceUpdate();
   },
 
@@ -47,6 +49,11 @@ export const Metadata = React.createClass({
     this.numActiveHeaders = props.metadata.toggles.filter((e)=>e).length;
     this.calculateXOffsets = this.calculateXOffsetsMaker(this.numActiveHeaders);
     this.drawSquares(this.canvas.getContext('2d'), props.activeTaxa, props.metadata.toggles, props.metadata.data, props.metadata.colours);
+  },
+
+
+  componentWillUnmount() {
+    window.removeEventListener('pdf', this.svgdraw, false);
   },
 
   render() {
@@ -77,6 +84,7 @@ export const Metadata = React.createClass({
         />
         {info}
         <Headers
+          ref={(d) => this._headerDiv = d}
           y={0}
           toggles={this.props.metadata.toggles}
           headerNames={this.props.metadata.headerNames}
@@ -85,6 +93,24 @@ export const Metadata = React.createClass({
         />
       </div>
     );
+  },
+
+  svgdraw() {
+    this.canvasPos = this.canvas.getBoundingClientRect();
+    console.log('printing metadata to SVG');
+    window.svgCtx.save();
+    window.svgCtx.translate(this.canvasPos.left, this.canvasPos.top);
+    window.svgCtx.rect(0, 0, this.canvasPos.right - this.canvasPos.left, this.canvasPos.bottom - this.canvasPos.top);
+    window.svgCtx.stroke();
+    window.svgCtx.clip();
+    this.drawSquares(window.svgCtx, this.props.activeTaxa, this.props.metadata.toggles, this.props.metadata.data, this.props.metadata.colours);
+    window.svgCtx.restore();
+
+    /* draw the headers by serializing the HTML element and injecting it into
+     * canvas2svg
+     */
+    const headerHtmlString = (new XMLSerializer).serializeToString(ReactDOM.findDOMNode(this._headerDiv));
+    window.svgCtx.injectHTML(headerHtmlString);
   },
 
   // by specifying the funtions here
@@ -253,5 +279,3 @@ function _drawSquares(context, activeTaxa, toggles, data, colours) {
     }
   }
 }
-
-
