@@ -13,20 +13,6 @@ const defaultDataPrefix = 'https://cdn.rawgit.com/jameshadfield/phandango/exampl
 const examples = [
 
   {
-    name: 'Gubbins (Legionella pneumophila ST578)',
-    imgPath: 'img/legionellaST578.png',
-    caption: 'Outbreak investigation of 46 Legionella pneumophila strains (ST578) linked to recurrent outbreaks in a single location (Alcoy, Spain) over 11 years showed that 16 recombination events are responsible for almost 98% of the SNPs detected in the core genome and an apparent acceleration in the evolutionary rate. This analysis is vitally important for public health interventions in Legionella outbreaks and is a great example of how non-vertical processes have a major role in the short-term evolution of pathogens and environmental bacteria alike.',
-    citeURLs: [ 'http://www.nature.com/ng/journal/v46/n11/full/ng.3114.html' ],
-    citeCaptions: [ <span>Sánchez-Busó <em>et al.</em> Nature Genetics 2014</span> ],
-    paths: [
-      defaultDataPrefix + 'LegionellaST578/st578_3120genes_Final.tre',
-      defaultDataPrefix + 'LegionellaST578/st578_metadata.csv',
-      defaultDataPrefix + 'LegionellaST578/lpa.gff',
-      defaultDataPrefix + 'LegionellaST578/st578_3120genes_rec.gff',
-    ],
-  },
-
-  {
     name: 'Gubbins + BRAT NextGen (PMEN1 data)',
     imgPath: 'img/merge.png',
     caption: 'An exploration of recombination in 240 Streptococcus pneumoniae (PMEN1 lineage) genomes using both Gubbins & BRAT NextGen reveals an enrichment for horisontal gene transfer affecting major antigens and results in a number of capsule-switching events. Hint: go to the settings page (or use the shortcut keys z, x, c & v.) to toggle between gubbins & BRAT NextGen.',
@@ -61,6 +47,32 @@ const examples = [
   },
 
   {
+    name: 'Bacterial GWAS (Strep Pneumo)',
+    imgPath: 'img/Chewapreecha.png',
+    caption: 'A genome-wide association study to identify SNPs and indels that could confer beta-lactam non-susceptibility using 3,085 Thai and 616 USA pneumococcal isolates as independent datasets for the variant discovery. Use the settings panel (press s) to resize the panels as you wish.',
+    citeURLs: [ 'http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1004547' ],
+    citeCaptions: [ <span>Chewapreecha <em>et al.</em> PLOS Genetics 2014</span> ],
+    paths: [
+      defaultDataPrefix + 'PMEN1_recombination/Spn23f.gff',
+      defaultDataPrefix + 'PneumoGWAS/Maela.MA.cmh.unadjusted.plot',
+    ],
+  },
+
+  {
+    name: 'Gubbins (Legionella pneumophila ST578)',
+    imgPath: 'img/legionellaST578.png',
+    caption: 'Outbreak investigation of 46 Legionella pneumophila strains (ST578) linked to recurrent outbreaks in a single location (Alcoy, Spain) over 11 years showed that 16 recombination events are responsible for almost 98% of the SNPs detected in the core genome and an apparent acceleration in the evolutionary rate. This analysis is vitally important for public health interventions in Legionella outbreaks and is a great example of how non-vertical processes have a major role in the short-term evolution of pathogens and environmental bacteria alike.',
+    citeURLs: [ 'http://www.nature.com/ng/journal/v46/n11/full/ng.3114.html' ],
+    citeCaptions: [ <span>Sánchez-Busó <em>et al.</em> Nature Genetics 2014</span> ],
+    paths: [
+      defaultDataPrefix + 'LegionellaST578/st578_3120genes_Final.tre',
+      defaultDataPrefix + 'LegionellaST578/st578_metadata.csv',
+      defaultDataPrefix + 'LegionellaST578/lpa.gff',
+      defaultDataPrefix + 'LegionellaST578/st578_3120genes_rec.gff',
+    ],
+  },
+
+  {
     name: 'ROARY pan-genome (Salmonella Weltevreden)',
     imgPath: 'img/roary.png',
     caption: 'S. Weltevreden is an emerging cause of diarrheal and invasive disease in humans residing in tropical regions and little is known about its genetic diversity. Here, genome analysis of more than 100 isolates demonstrated that the population of S. Weltevreden can be segregated into two main phylogenetic clusters, one associated predominantly with continental Southeast Asia and the other more internationally dispersed. Here you can explore the pan genome content of the speices and see how it differs between lineages.',
@@ -70,18 +82,6 @@ const examples = [
       defaultDataPrefix + 'roary_S.Weltevreden/sw_chr_gubbins.tre',
       defaultDataPrefix + 'roary_S.Weltevreden/sw_metadata.csv',
       defaultDataPrefix + 'roary_S.Weltevreden/gene_presence_absence.csv',
-    ],
-  },
-
-  {
-    name: 'Bacterial GWAS (Strep Pneumo)',
-    imgPath: 'img/Chewapreecha.png',
-    caption: 'A genome-wide association study to identify SNPs and indels that could confer beta-lactam non-susceptibility using 3,085 Thai and 616 USA pneumococcal isolates as independent datasets for the variant discovery. Use the settings panel (press s) to resize the panels as you wish.',
-    citeURLs: [ 'http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1004547' ],
-    citeCaptions: [ <span>Chewapreecha <em>et al.</em> PLOS Genetics 2014</span> ],
-    paths: [
-      defaultDataPrefix + 'PMEN1_recombination/Spn23f.gff',
-      defaultDataPrefix + 'PneumoGWAS/Maela.MA.cmh.unadjusted.plot',
     ],
   },
 
