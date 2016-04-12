@@ -65,6 +65,9 @@ export const Phylogeny = React.createClass({
     const currentHeight = window.svgCtx.height;
     this.phylocanvas.canvas = window.svgCtx;
 
+    // Have to change the font to Helvetica or it won't open in Illustrator
+    this.phylocanvas.font = 'Helvetica';
+
     // Have to change the sie of the canvas so that phylocanvas draws the tree the right shape
     this.phylocanvas.canvas.width = this.canvasPos.width;
     this.phylocanvas.canvas.height = this.canvasPos.height;

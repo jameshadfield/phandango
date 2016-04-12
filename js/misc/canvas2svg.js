@@ -1192,7 +1192,9 @@
      * follows https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Drawing_DOM_objects_into_a_canvas
      */
     ctx.prototype.injectHTML = function(htmlString){
-        var parent = this.__closestGroupOrSvg();
+        // var parent = this.__closestGroupOrSvg();
+        // debugger;
+        var parent = this.__root;
         var group = this.__createElement('foreignObject');
         group.innerHTML = htmlString;
         parent.appendChild(group);
