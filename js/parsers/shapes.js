@@ -65,10 +65,10 @@ export function Arrow(featurestart, featureend, direction, fill, stroke, strokeW
   // if (this.fill==='#53FFE9'){
   //   console.log(this.contigstart, this.contigend);}
 
-  this.fields['Contig']=this.contig;
-  this.fields['Contig coordinates']=this.contigstart+".."+this.contigend;
-  this.fields['Genome coordinates']=parseInt(this.featurestart)+".."+parseInt(this.featureend);
-  this.fields['Length']=this.featureend-this.featurestart;
+  this.fields.Contig = this.contig;
+  this.fields['Contig coordinates'] = this.contigstart + '..' + this.contigend;
+  this.fields['Genome coordinates'] = parseInt(this.featurestart, 10) + '..' + parseInt(this.featureend, 10);
+  this.fields.Length = this.featureend - this.featurestart;
 
   const infoparts = this.info.split(';');
   // console.log(infoparts);
@@ -120,12 +120,11 @@ export function Contig(featurestart, featureend, fill, stroke, strokeWidth, cont
   this.y = 0;
   this.w = 1;
   this.h = 10;
-  this.direction="None";
+  this.direction = 'None';
   this.coordinates = [];
-  this.fields={};
-  this.fields['Contig']=this.contigName;
-  this.fields['Length']=this.length;
-
+  this.fields = {};
+  this.fields.Contig = this.contigName;
+  this.fields.Length = this.length;
 }
 
 /* Block constructor

@@ -1,4 +1,4 @@
-import merge from 'lodash/object/merge';
+import merge from 'lodash/merge';
 import { notificationNew } from './notifications';
 // PARSERS:
 import { gffParser } from '../parsers/gff';
@@ -133,7 +133,7 @@ const goDispatch = (dispatch, getState, parsedData, dataType, filename) => {
   let dispatchObj = { type: dataType + 'Data', fileName: filename };
   switch (dataType) {
   case 'annotation':
-    dispatch({ ...dispatchObj, data: [parsedData[1], parsedData[2]], genomeLength: parsedData[0][1] });
+    dispatch({ ...dispatchObj, data: [ parsedData[1], parsedData[2] ], genomeLength: parsedData[0][1] });
     break;
   case 'gubbins':
     dispatch({ ...dispatchObj, data: parsedData[1], genomeLength: parsedData[0][1] });

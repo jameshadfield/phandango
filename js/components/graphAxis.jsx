@@ -16,8 +16,8 @@ export function drawGraphAxis(canvas, {
   pdfoutput = false,
 }) {
   let context = this.canvas.getContext('2d');
-  if (pdfoutput==="svg"){
-    context=window.svgCtx;
+  if (pdfoutput) {
+    context = window.svgCtx;
   }
   drawOutline(canvas, context, pdfoutput);
   // if yMaxValue is 0 then return immediately
@@ -30,7 +30,7 @@ export function drawGraphAxis(canvas, {
   }
   // find numerical values of ticks to display
   const chunk = Math.ceil(parseFloat(yMaxValue / numTicks, 10));
-  yMaxValue=chunk*numTicks
+  // yMaxValue = chunk * numTicks;
   const tickNums = [ ...Array(numTicks) ].map(
     (cv, idx) => (idx + 1) * chunk
   );
@@ -48,7 +48,7 @@ export function drawGraphAxis(canvas, {
   for (let i = 0; i < numTicks; ++i) {
     context.fillText(tickNums[i] + suffix, 5, tickPixels[i]);
   }
-  
+
   context.restore();
 }
 
@@ -76,10 +76,10 @@ function valToPx(canvas, value, yMaxVal) {
  * @param canvas
  * @param context
  */
-function drawOutline(canvas, context, pdfoutput=false) {
+function drawOutline(canvas, context, pdfoutput = false) {
   context.save();
-  if (pdfoutput===false){
-   context.beginPath();
+  if (!pdfoutput) {
+    context.beginPath();
   }
   context.moveTo(canvas.width, canvas.height);
   context.lineTo(0, canvas.height); // bottom line
@@ -93,9 +93,9 @@ function drawOutline(canvas, context, pdfoutput=false) {
  * @param vals {array of nums} - positions in pixels (y axis, measured from top) to draw lines
  * @param (optional) tickLengthPx - extends right (into the graph!)
  */
-function drawTicksAtPx(context, vals, pdfoutput=false, tickLengthPx = 5) {
+function drawTicksAtPx(context, vals, pdfoutput = false, tickLengthPx = 5) {
   // we are starting at 0,0 (i.e. TOP LEFT)
-  if (pdfoutput===false){
+  if (!pdfoutput) {
     context.beginPath();
   }
   context.moveTo(0, 0);
@@ -114,7 +114,7 @@ function drawTicksAtPx(context, vals, pdfoutput=false, tickLengthPx = 5) {
  * @param (optional) colour {string}
  * @param (optional) dash {array of 2 nums} - dash style (line length, gap length)
  */
-function drawDottedLine(canvas, context, yValPx, pdfoutput=false, colour = 'red', dash = [ 5, 10 ]) {
+function drawDottedLine(canvas, context, yValPx, pdfoutput = false, colour = 'red', dash = [ 5, 10 ]) {
   context.save();
   context.strokeStyle = colour;
   context.setLineDash(dash);

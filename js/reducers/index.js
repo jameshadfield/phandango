@@ -1,4 +1,4 @@
-import merge from 'lodash/object/merge';
+import merge from 'lodash/merge';
 import { combineReducers } from 'redux';
 import { genomeInfo } from './genomeInfo';
 import { layout } from './layout';

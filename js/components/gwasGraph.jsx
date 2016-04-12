@@ -13,14 +13,15 @@ export const Gwas = React.createClass({
     max: React.PropTypes.number.isRequired,
     visibleGenome: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
     style: React.PropTypes.object.isRequired,
+    dispatch: React.PropTypes.func.isRequired,
   },
 
   componentDidMount: function () { // don't use fat arrow
     this.mouse = new Mouse(this.canvas, this.props.dispatch, this.onClickCallback); // set up listeners
     if (this.props.visibleGenome[1]) {
       this.drawWrapper(this.props);
-      window.addEventListener('pdf', this.svgdraw, false);
     }
+    window.addEventListener('pdf', this.svgdraw, false);
   },
 
   shouldComponentUpdate() {
@@ -34,34 +35,6 @@ export const Gwas = React.createClass({
     }
   },
 
-  svgdraw: function(){
-    this.canvasPos = this.canvas.getBoundingClientRect();
-    console.log("printing GWAS plot");
-    window.svgCtx.save();
-    var currentWidth=window.svgCtx.width;
-    window.svgCtx.width=this.canvas.width;
-    window.svgCtx.translate(this.canvasPos.left,this.canvasPos.top);
-    window.svgCtx.rect(0, 0, this.canvasPos.right-this.canvasPos.left, this.canvasPos.bottom-this.canvasPos.top);
-    window.svgCtx.stroke();
-    window.svgCtx.clip();
-    this.drawWrapper(this.props, "svg");
-    window.svgCtx.restore();
-    window.svgCtx.width=currentWidth;
-  },
-
-  drawWrapper(props, pdfoutput=false) {
-    this.initCanvasXY();
-    this.clearCanvas();
-    this.drawData(this.canvas, props.visibleGenome, props.values, props.max, pdfoutput);
-    this.drawGraphAxis(this.canvas, {
-      yMaxValue: props.max,
-      numTicks: 4,
-      dottedLines: [ 5 ],
-      pdfoutput: pdfoutput,
-    });
-  },
-
-
   render() {
     return (
       <div>
@@ -74,14 +47,42 @@ export const Gwas = React.createClass({
     );
   },
 
+  svgdraw() {
+    this.canvasPos = this.canvas.getBoundingClientRect();
+    console.log('printing GWAS plot to SVG');
+    window.svgCtx.save();
+    const currentWidth = window.svgCtx.width;
+    window.svgCtx.width = this.canvas.width;
+    window.svgCtx.translate(this.canvasPos.left, this.canvasPos.top);
+    window.svgCtx.rect(0, 0, this.canvasPos.right - this.canvasPos.left, this.canvasPos.bottom - this.canvasPos.top);
+    window.svgCtx.stroke();
+    window.svgCtx.clip();
+    this.drawWrapper(this.props, true);
+    window.svgCtx.restore();
+    window.svgCtx.width = currentWidth;
+  },
+
+  drawWrapper(props, pdfoutput = false) {
+    this.initCanvasXY();
+    this.clearCanvas();
+    this.drawData(this.canvas, props.visibleGenome, props.values, props.max, pdfoutput);
+    this.drawGraphAxis(this.canvas, {
+      yMaxValue: props.max,
+      numTicks: 4,
+      dottedLines: [ 5 ],
+      pdfoutput,
+    });
+  },
+
+
   initCanvasXY: helper.initCanvasXY,
   clearCanvas: helper.clearCanvas,
   drawGraphAxis: drawGraphAxis,
 
-  drawData(canvas, visibleGenome, shapes, max, pdfoutput=false) {
+  drawData(canvas, visibleGenome, shapes, max, pdfoutput = false) {
     let context = canvas.getContext('2d');
-    if (pdfoutput==="svg"){
-      context=window.svgCtx;
+    if (pdfoutput) {
+      context = window.svgCtx;
     }
     const yScaleMultiplier = parseFloat( (canvas.height - 5) / max );
     const basesVisible = visibleGenome[1] - visibleGenome[0];
@@ -103,13 +104,7 @@ export const Gwas = React.createClass({
         } else {
           rX = rY;
         }
-        // if (pdfoutput) {
-        //  console.log(window.svgCtx.getSerializedSvg(true));
-        // }
         this.drawEllipse(context, x, y, rX, shapes[i].fill);
-        // if (pdfoutput) {
-        //  console.log(window.svgCtx.getSerializedSvg(true));
-        // }
       }
     }
   },

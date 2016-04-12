@@ -35,7 +35,6 @@ export function genomePan(fracCanvasPan) {
 }
 
 export function genomeZoom(delta, fracInCanvas) {
-
   const minimumBp = 1000;
   // console.log('genomeZoom. delta:', delta, 'fracInCanvas:', fracInCanvas);
   // THUNK
@@ -65,12 +64,12 @@ export function genomeZoom(delta, fracInCanvas) {
     }
     // need some checking here -- don't want to zoom in too much and don't want to zoom out too much!
     if (newVisibleGenome[1] - newVisibleGenome[0] < minimumBp) {
-      newVisibleGenome = [ baseAtMouseX - minimumBp/2, baseAtMouseX + minimumBp/2 ];
-      //return;
+      newVisibleGenome = [ baseAtMouseX - minimumBp / 2, baseAtMouseX + minimumBp / 2 ];
+      // return;
     }
-    if (newVisibleGenome[0] < 0) {newVisibleGenome[0] = 0; if (newVisibleGenome[1]<minimumBp){ newVisibleGenome[1] = minimumBp};}
-    if (newVisibleGenome[1] > genomeLength) {newVisibleGenome[1] = genomeLength; if (newVisibleGenome[0]>genomeLength-minimumBp){ newVisibleGenome[0] = genomeLength-minimumBp};}
-    
+    if (newVisibleGenome[0] < 0) {newVisibleGenome[0] = 0; if (newVisibleGenome[1] < minimumBp) { newVisibleGenome[1] = minimumBp; } }
+    if (newVisibleGenome[1] > genomeLength) {newVisibleGenome[1] = genomeLength; if (newVisibleGenome[0] > genomeLength - minimumBp) { newVisibleGenome[0] = genomeLength - minimumBp; } }
+
     // console.log('Now viewing ' + newVisibleGenome[0] + ' - ' + newVisibleGenome[1] + 'bp');
     dispatch({ type: 'updateVisibleGenome', visibleGenome: newVisibleGenome });
   };

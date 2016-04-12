@@ -56,19 +56,21 @@ export const MetadataKey = React.createClass({
         // header text
         context.fillStyle = 'black';
         context.textBaseline = 'middle';
-        context.textAlign = 'center';
-        
+        context.textAlign = 'left';
+
         const headerName = metadata.headerNames[headerIdx];
 
+        let headerFontSize = 18;
+        context.font = String(headerFontSize) + 'px Helvetica';
 
-        var headerFontSize=18;
-        context.font = String(headerFontSize)+'px Helvetica';
-        while (context.measureText(headerName).width>blockWidth*2 && headerFontSize>=12){
-          headerFontSize-=1;
-          context.font = String(headerFontSize)+'px Helvetica';
+        const availableLengthForHeader = parseInt(canvas.width / metadata.toggles.length, 10);
+
+        while (context.measureText(headerName).width > availableLengthForHeader && headerFontSize >= 12) {
+          headerFontSize -= 1;
+          context.font = String(headerFontSize) + 'px Helvetica';
         }
 
-        context.fillText(headerName, xVals[colIdx][0]+blockWidth, 20);
+        context.fillText(headerName, xVals[colIdx][0], 20);
 
         const numVals = metadata.values[headerIdx].length;
         const yHeight = parseInt( (canvas.height - yTopPx) / numVals, 10);

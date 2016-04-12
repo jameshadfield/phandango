@@ -36,7 +36,6 @@ export const Blocks = React.createClass({
         true);
     }
     this.redraw(this.canvas.getContext('2d'), this.props, this.state);
-    //window.addEventListener('pdf', this.pdfdraw, false);
     window.addEventListener('pdf', this.svgdraw, false);
   },
 
@@ -104,22 +103,20 @@ export const Blocks = React.createClass({
     );
   },
 
-
-  svgdraw: function(){
+  svgdraw() {
     this.canvasPos = this.canvas.getBoundingClientRect();
-    console.log("printing blocks");
+    console.log('printing blocks to SVG');
     window.svgCtx.save();
-    var currentWidth=window.svgCtx.width;
-    window.svgCtx.width=this.canvas.width;
-    window.svgCtx.translate(this.canvasPos.left,this.canvasPos.top);
-    window.svgCtx.rect(0, 0, this.canvasPos.right-this.canvasPos.left, this.canvasPos.bottom-this.canvasPos.top);
+    const currentWidth = window.svgCtx.width;
+    window.svgCtx.width = this.canvas.width;
+    window.svgCtx.translate(this.canvasPos.left, this.canvasPos.top);
+    window.svgCtx.rect(0, 0, this.canvasPos.right - this.canvasPos.left, this.canvasPos.bottom - this.canvasPos.top);
     window.svgCtx.stroke();
     window.svgCtx.clip();
     this.redraw(window.svgCtx, this.props, this.state);
     window.svgCtx.restore();
-    window.svgCtx.width=currentWidth;
+    window.svgCtx.width = currentWidth;
   },
-
 
   redraw: function (context, props, state) {
     // expensive way to handle resizing
@@ -150,15 +147,13 @@ export const Blocks = React.createClass({
         my >= blocks[idx].y1 &&
         my <= (blocks[idx].y2)
         ) {
-        return (
-          {
-            x1: blocks[idx].x1,
-            x2: blocks[idx].x2,
-            y1: blocks[idx].y1,
-            y2: blocks[idx].y2,
-            info: blocks[idx].info,
-          }
-        );
+        return ({
+          x1: blocks[idx].x1,
+          x2: blocks[idx].x2,
+          y1: blocks[idx].y1,
+          y2: blocks[idx].y2,
+          info: blocks[idx].info,
+        });
         // blocks[idx]; // reference
       }
     }
@@ -202,17 +197,14 @@ function drawBlocks(context, blocks, alpha) {
   context.globalAlpha = alpha;
   context.save();
   for (let i = 0; i < blocks.length; i++) {
-    
     context.fillStyle = blocks[i].fill;
-    context.beginPath() // does what?
-    //context.rect(blocks[i].x1, blocks[i].y1, blocks[i].x2 - blocks[i].x1, blocks[i].y2 - blocks[i].y1);
+    context.beginPath(); // does what?
+    // context.rect(blocks[i].x1, blocks[i].y1, blocks[i].x2 - blocks[i].x1, blocks[i].y2 - blocks[i].y1);
     context.fillRect(blocks[i].x1, blocks[i].y1, blocks[i].x2 - blocks[i].x1, blocks[i].y2 - blocks[i].y1);
-    //context.fill();
-    
+    // context.fill();
   }
   context.restore();
   context.globalAlpha = 1;
-  
 }
 
 // function drawBorderAndText(context, arrow, middleCanvasWidth, scaleYvalue) {
@@ -301,11 +293,11 @@ function computeBlocksInView(rawBlocks, visibleGenomeCoords, canvas, activeTaxa,
         newBlock.y1 = yPx[0];
         newBlock.y2 = yPx[1];
 
-        if (newBlock.x1<0) {
-          newBlock.x1=0;
+        if (newBlock.x1 < 0) {
+          newBlock.x1 = 0;
         }
-        if (newBlock.x2>canvasWidth) {
-          newBlock.x2=canvasWidth;
+        if (newBlock.x2 > canvasWidth) {
+          newBlock.x2 = canvasWidth;
         }
 
         trimmedBlocks.push(newBlock);
@@ -330,11 +322,11 @@ function computeBlocksInView(rawBlocks, visibleGenomeCoords, canvas, activeTaxa,
       newBlock.x1 = parseInt( (newBlock.startBase - visibleGenomeCoords[0]) / basesVisible * canvas.width, 10);
       newBlock.x2 = parseInt( (newBlock.endBase - visibleGenomeCoords[0])  / basesVisible * canvas.width, 10);
 
-      if (newBlock.x1<0) {
-        newBlock.x1=0;
+      if (newBlock.x1 < 0) {
+        newBlock.x1 = 0;
       }
-      if (newBlock.x2>canvasWidth) {
-        newBlock.x2=canvasWidth;
+      if (newBlock.x2 > canvasWidth) {
+        newBlock.x2 = canvasWidth;
       }
 
       // how many pixels?  if 2 or 1 or 0 then don't bother

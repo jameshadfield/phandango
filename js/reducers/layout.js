@@ -1,4 +1,4 @@
-import merge from 'lodash/object/merge';
+import merge from 'lodash/merge';
 
 const startingValues = {
   colPercs: [ 20, 11, 69 ],

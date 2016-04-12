@@ -25,9 +25,11 @@ export const Annotation = React.createClass({
     this.mouse = new Mouse(this.canvas, this.props.dispatch, this.onClickCallback); // set up listeners
     this.canvas.addEventListener('mousemove', this.onMouseMove, true);
     this.canvas.addEventListener('mouseout',
-      () => {this.setState({ geneHovered: undefined });this.setState({ contigHovered: undefined })},
+      () => {
+        this.setState({ geneHovered: undefined });
+        this.setState({ contigHovered: undefined });
+      },
       true);
-    // window.addEventListener('pdf', this.pdfdraw, false);
     window.addEventListener('pdf', this.svgdraw, false);
     this.forceUpdate();
   },
@@ -120,7 +122,7 @@ export const Annotation = React.createClass({
         disp: this.state.contigHovered.fields,
       });
     }
-    //if (contigs[0]) {console.log(contigs[0].disp)} else {console.log(contigs)}
+
     return (
       <div>
         <canvas
@@ -141,42 +143,32 @@ export const Annotation = React.createClass({
   initCanvasXY: helper.initCanvasXY,
   clearCanvas: helper.clearCanvas,
 
-  svgdraw: function(){
+  svgdraw() {
     this.canvasPos = this.canvas.getBoundingClientRect();
-    console.log("printing annotation");
+    console.log('printing annotation to SVG');
     window.svgCtx.save();
-    var currentWidth=window.svgCtx.width;
-    window.svgCtx.width=this.canvas.width;
-    window.svgCtx.translate(this.canvasPos.left,this.canvasPos.top);
-    window.svgCtx.rect(0, 0, this.canvasPos.right-this.canvasPos.left, this.canvasPos.bottom-this.canvasPos.top);
+    const currentWidth = window.svgCtx.width;
+    window.svgCtx.width = this.canvas.width;
+    window.svgCtx.translate(this.canvasPos.left, this.canvasPos.top);
+    window.svgCtx.rect(0, 0, this.canvasPos.right - this.canvasPos.left, this.canvasPos.bottom - this.canvasPos.top);
     window.svgCtx.stroke();
     window.svgCtx.clip();
     this.redraw(window.svgCtx, this.props, this.state);
     window.svgCtx.restore();
-    window.svgCtx.width=currentWidth;
+    window.svgCtx.width = currentWidth;
   },
 
 
   redraw: function (context, props, state) {
-
     context.save();
-
-    // const padding = 10;
-    // debugger;
-    // this.canvas.width=this.canvas.width-(padding*2);
-    // this.canvas.height=this.canvas.height-(padding*2);
-    // debugger;
-    // context.translate(0, padding);
-
     this.clearCanvas();
-    // context.save();
-    // context.translate(0.5,0.5);
 
     const currentContigs = getArrowsInScope(props.data[1], props.visibleGenome, this.canvas, true);
     drawContigs(context, currentContigs, props.visibleGenome[1] - props.visibleGenome[0] < 100000);
-    const currentArrows = getArrowsInScope(props.data[0], props.visibleGenome, this.canvas);
 
+    const currentArrows = getArrowsInScope(props.data[0], props.visibleGenome, this.canvas);
     drawArrows(context, currentArrows, props.visibleGenome[1] - props.visibleGenome[0] < 100000);
+
     drawScale(context, this.canvas.width, props.visibleGenome, parseInt(this.canvas.height / 2, 10));
 
     if (state.geneSelected !== undefined) {
@@ -201,7 +193,7 @@ export const Annotation = React.createClass({
 });
 
 /* return the arrow which encompases mx, my */
-function getClicked(mx, my, data, visibleGenome, canvas, isContig=false) {
+function getClicked(mx, my, data, visibleGenome, canvas, isContig = false) {
   const currentArrows = getArrowsInScope(data, visibleGenome, canvas, isContig);
 
   for (let i = 0; i < currentArrows.length; i++) {
@@ -221,42 +213,39 @@ function getClicked(mx, my, data, visibleGenome, canvas, isContig=false) {
 
 function drawContigs(context, contigs, shouldDrawBorder) {
   for (let i = 0; i < contigs.length; i++) {
-    
     context.fillStyle = contigs[i].fill;
     context.strokeStyle = contigs[i].stroke;
     context.lineWidth = contigs[i].strokeWidth;
     context.beginPath();
-    
+
     context.moveTo(contigs[i].coordinates[0][0], contigs[i].coordinates[0][1]);
     for (let j = 1; j < contigs[i].coordinates.length; j++) {
       context.lineTo(contigs[i].coordinates[j][0], contigs[i].coordinates[j][1]);
     }
-    
+
     context.closePath();
-    
+
     if (shouldDrawBorder) {
-        context.stroke();
+      context.stroke();
     }
     context.fill();
-    
   }
 }
 
 
 function drawArrows(context, arrows, shouldDrawBorder) {
   for (let i = 0; i < arrows.length; i++) {
-    
     context.fillStyle = arrows[i].fill;
     context.strokeStyle = arrows[i].stroke;
     context.lineWidth = arrows[i].strokeWidth;
     context.beginPath();
-    
+
     context.moveTo(arrows[i].coordinates[0][0], arrows[i].coordinates[0][1]);
     for (let j = 1; j < arrows[i].coordinates.length; j++) {
       context.lineTo(arrows[i].coordinates[j][0], arrows[i].coordinates[j][1]);
     }
     context.closePath();
-    
+
     if (shouldDrawBorder) {
       context.stroke();
     }
@@ -279,16 +268,15 @@ function drawBorder(context, arrow, colour = '#CC302E') {
 }
 
 
-function getArrowsInScope(arrows, visibleGenome, canvas, isContig=false) {
+function getArrowsInScope(arrows, visibleGenome, canvas, isContig = false) {
   const canvasWidth = canvas.width;
   const arrowsInScope = [];
   const middleHeight = parseInt(canvas.height / 2, 10);
-  const gapToArrows = middleHeight/6;
+  const gapToArrows = middleHeight / 6;
 
-  const maxLengthToDisplayFeatures=5000000;
-  // console.log(visibleGenome[1], visibleGenome[0], visibleGenome[1]-visibleGenome[0], maxLengthToDisplayFeatures, (visibleGenome[1]-visibleGenome[0])>maxLengthToDisplayFeatures);
+  const maxLengthToDisplayFeatures = 5000000;
 
-  if ((visibleGenome[1]-visibleGenome[0])>maxLengthToDisplayFeatures && isContig===false){
+  if ((visibleGenome[1] - visibleGenome[0]) > maxLengthToDisplayFeatures && isContig === false) {
     return [];
   }
 
@@ -300,9 +288,9 @@ function getArrowsInScope(arrows, visibleGenome, canvas, isContig=false) {
     }
   }
   for (let i = 0; i < arrowsInScope.length; i++) {
-    arrowsInScope[i].h = (middleHeight/2) - gapToArrows;
-    if (isContig===true) {
-      arrowsInScope[i].h=arrowsInScope[i].h/2
+    arrowsInScope[i].h = (middleHeight / 2) - gapToArrows;
+    if (isContig === true) {
+      arrowsInScope[i].h = arrowsInScope[i].h / 2;
     }
     arrowsInScope[i].x = (arrowsInScope[i].featurestart - visibleGenome[0]) / (visibleGenome[1] - visibleGenome[0]) * canvasWidth;
     arrowsInScope[i].w = (arrowsInScope[i].featureend - arrowsInScope[i].featurestart) / (visibleGenome[1] - visibleGenome[0]) * canvasWidth;
@@ -315,15 +303,13 @@ function getArrowsInScope(arrows, visibleGenome, canvas, isContig=false) {
       arrowsInScope[i].y = middleHeight - arrowsInScope[i].h / 2;
     }
 
-
-    if (arrowsInScope[i].x<0) {
-      arrowsInScope[i].w=arrowsInScope[i].w-(0-arrowsInScope[i].x);
-      arrowsInScope[i].x=0;
+    if (arrowsInScope[i].x < 0) {
+      arrowsInScope[i].w = arrowsInScope[i].w - (0 - arrowsInScope[i].x);
+      arrowsInScope[i].x = 0;
     }
-    if (arrowsInScope[i].x+arrowsInScope[i].w>canvasWidth) {
-      arrowsInScope[i].w=canvasWidth-arrowsInScope[i].x;
+    if (arrowsInScope[i].x + arrowsInScope[i].w > canvasWidth) {
+      arrowsInScope[i].w = canvasWidth - arrowsInScope[i].x;
     }
-
 
     arrowsInScope[i].coordinates = [];
     arrowsInScope[i].coordinates.push([ arrowsInScope[i].x, arrowsInScope[i].y ]);
@@ -335,13 +321,13 @@ function getArrowsInScope(arrows, visibleGenome, canvas, isContig=false) {
 }
 
 
-function drawScale(context, canvasWidth, visibleGenome, scaleYvalue, numticksOpt=6) {
+function drawScale(context, canvasWidth, visibleGenome, scaleYvalue, numticksOpt = 6) {
   // console.log(context)
-  
+
   context.strokeStyle = 'black';
   context.lineWidth = 1;
   context.beginPath();
-  
+
   // draw the horisontal line
   context.moveTo(0, scaleYvalue);
   // console.log('context.lineTo('+canvasWidth+','+scaleYvalue+')')

@@ -54,7 +54,7 @@ module.exports = {
         test: /\.css?$/,
         loaders: [ 'style', 'raw' ],
         include: __dirname,
-      }
+      },
     ],
   },
   resolve: {

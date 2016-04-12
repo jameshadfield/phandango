@@ -21,16 +21,16 @@ import { goToPage, toggleMetaKey, showBlocks, increaseSpinner } from '../actions
 
 import C2S from '../misc/canvas2svg';
 
-
-function base64ToArrayBuffer(base64) {
-  var binary_string =  window.atob(base64);
-  var len = binary_string.length;
-  var bytes = new Uint8Array( len );
-  for (var i = 0; i < len; i++) {
-    bytes[i] = binary_string.charCodeAt(i);
-  }
-  return bytes.buffer;
-}
+/* efforts to get fonts working... i think (SH16)
+// function base64ToArrayBuffer(base64) {
+//   const binaryString =  window.atob(base64);
+//   const len = binaryString.length;
+//   const bytes = new Uint8Array( len );
+//   for (let i = 0; i < len; i++) {
+//     bytes[i] = binaryString.charCodeAt(i);
+//   }
+//   return bytes.buffer;
+// }
 
 // function registerFonts() {
 //   window.pdfdoc.registerFont('Lato-Light', base64ToArrayBuffer(require("base64!../../font/lato/Lato-Light.ttf")));
@@ -40,9 +40,19 @@ function base64ToArrayBuffer(base64) {
 // import pdfkit from 'pdfkit';
 // import pdfkit from 'transform?brfs!pdfkit';
 
+// let window.pdfdoc;
 
+// const xhr = new XMLHttpRequest();
+// xhr.open("GET", "/font/lato/Lato-Light.ttf", true);
+// xhr.responseType = "arraybuffer";
+// let latoFont;
+// xhr.onload = function(oEvent) {
+//     latoFont = xhr.response; // Note: not xhr.responseText
+// };
 
-//let window.pdfdoc;
+// xhr.send(null);
+
+*/
 
 /*
 Connect the containers which will be displayed here to redux store / dispatch etc
@@ -93,16 +103,6 @@ https://developer.mozilla.org/en-US/docs/Web/Guide/Events/Creating_and_triggerin
 This is a one-off thing and so it uses events rather than the flux approach
 */
 const pdfEvent = new Event('pdf');
-
-// const xhr = new XMLHttpRequest();
-// xhr.open("GET", "/font/lato/Lato-Light.ttf", true);
-// xhr.responseType = "arraybuffer";
-// let latoFont;
-// xhr.onload = function(oEvent) {
-//     latoFont = xhr.response; // Note: not xhr.responseText
-// };
-
-// xhr.send(null);
 
 /*
 The purposes of the MainReactElement:
@@ -200,63 +200,9 @@ export const MainReactElement = React.createClass({ displayName: 'Main_React_Ele
     case 75: // k
       this.props.dispatch(toggleMetaKey());
       break;
-    // pdf triggered via 'p'
+    // pdf / svg triggered via 'p'
     case 80: // p
-
-
-
-      window.svgCtx = new C2S(window.innerWidth, window.innerHeight);
-
-      //Add logo in canvas. Would be better to include as an image or exclude. Using non-standard fonts is not ideal.
-
-      window.svgCtx.save();
-      window.svgCtx.globalAlpha=0.8;
-      window.svgCtx.translate(5,window.innerHeight-105);
-      window.svgCtx.fillStyle = "#ED1C24";
-      window.svgCtx.fillRect(0,11.844,38.904,65.98);
-      window.svgCtx.fillStyle = "#ED1C24";
-      window.svgCtx.fillRect(40.019,23.688,36.052,64.949);
-      window.svgCtx.fillStyle = "#1C75BC";
-      window.svgCtx.fillRect(77.071,11.844,18.5,54.137);
-      window.svgCtx.fillStyle = "#1C75BC";
-      window.svgCtx.fillRect(96.585,23.688,16.652,64.949);
-      window.svgCtx.fillStyle = "#1C75BC";
-      window.svgCtx.fillRect(114.758,0,18.146,65.98);
-      window.svgCtx.fillStyle = "#ED1C24";
-      window.svgCtx.fillRect(133.969,11.844,39.768,65.465);
-      window.svgCtx.globalAlpha=1.0;
-      window.svgCtx.font="36px Lato";
-      //window.svgCtx.font="36px Helvetica";
-      window.svgCtx.textBaseline = 'middle';
-      window.svgCtx.textAlign = 'left';
-      window.svgCtx.fillStyle = "#FFFFFF";
-      window.svgCtx.fillText("phandango", 0, 55);
-      window.svgCtx.restore();
-
-      window.dispatchEvent(pdfEvent);
-
-      // // Clip a rectangular area
-      // window.svgCtx.rect(50,20,200,120);
-      // window.svgCtx.stroke();
-      // window.svgCtx.clip();
-      // // Draw red rectangle after clip()
-      // window.svgCtx.fillStyle="red";
-      // window.svgCtx.fillRect(0,0,150,100);
-
-
-      var mySVG = window.svgCtx.getSerializedSvg(true);
-
-      //console.log(mySVG);
-      var a = document.createElement("a");
-      const windowURL = window.URL || window.webkitURL;
-      var myURL = windowURL.createObjectURL(new Blob([mySVG], {type: 'text/plain;charset=utf-8'}));
-      a.href = myURL;
-      a.download="Phandango.svg";
-      a.click();
-      // window.open(a);
-      window.URL.revokeObjectURL(myURL);
-      //window.location.href = myURL;
-      //debugger;
+      this.produceSVG();
       break;
     // for testing only:
     // case 27: // esc
@@ -265,6 +211,23 @@ export const MainReactElement = React.createClass({ displayName: 'Main_React_Ele
     default:
       return;
     }
+  },
+
+  produceSVG() {
+    window.svgCtx = new C2S(window.innerWidth, window.innerHeight);
+    window.dispatchEvent(pdfEvent);
+
+    const mySVG = window.svgCtx.getSerializedSvg(true);
+    // console.log(mySVG);
+
+    const a = document.createElement('a');
+    const windowURL = window.URL || window.webkitURL;
+    const myURL = windowURL.createObjectURL(new Blob([ mySVG ], { type: 'text/plain;charset=utf-8' }));
+    a.href = myURL;
+    a.download = 'Phandango.svg';
+    a.click();
+    // window.open(a);
+    window.URL.revokeObjectURL(myURL);
   },
 
   filesDropped(e) {
