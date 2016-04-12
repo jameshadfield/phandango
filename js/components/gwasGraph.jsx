@@ -35,6 +35,10 @@ export const Gwas = React.createClass({
     }
   },
 
+  componentWillUnmount() {
+    window.removeEventListener('pdf', this.svgdraw, false);
+  },
+
   render() {
     return (
       <div>

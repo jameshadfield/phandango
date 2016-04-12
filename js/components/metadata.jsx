@@ -50,6 +50,11 @@ export const Metadata = React.createClass({
     this.drawSquares(this.canvas.getContext('2d'), props.activeTaxa, props.metadata.toggles, props.metadata.data, props.metadata.colours);
   },
 
+
+  componentWillUnmount() {
+    window.removeEventListener('pdf', this.svgdraw, false);
+  },
+
   render() {
     let info = false;
     if (this.state.displayInfoActive) {

@@ -45,6 +45,10 @@ export const Annotation = React.createClass({
     this.redraw(this.canvas.getContext('2d'), props, state);
   },
 
+  componentWillUnmount() {
+    window.removeEventListener('pdf', this.svgdraw, false);
+  },
+
   onMouseMove(e) {
     const mouse = getMouse(e, this.canvas);
     this.setState({

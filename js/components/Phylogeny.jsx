@@ -38,6 +38,10 @@ export const Phylogeny = React.createClass({
     this.phylocanvas.draw(true);  // forces phylocanvas.fitInPanel()
   },
 
+  componentWillUnmount() {
+    window.removeEventListener('pdf', this.svgdraw, false);
+  },
+
   render: function () {
     return (
       <div style={this.props.style} id="phyloDiv"></div>

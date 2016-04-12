@@ -48,6 +48,10 @@ export const Blocks = React.createClass({
     this.redraw(this.canvas.getContext('2d'), props, state);
   },
 
+  componentWillUnmount() {
+    window.removeEventListener('pdf', this.svgdraw, false);
+  },
+
   onClickCallback(mx, my) {
     // we can dispatch here as well if necessary!
     this.setState({

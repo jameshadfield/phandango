@@ -31,6 +31,10 @@ export const Line = React.createClass({
     this.drawWrapper(props);
   },
 
+  componentWillUnmount() {
+    window.removeEventListener('pdf', this.svgdraw, false);
+  },
+
   render() {
     return (
       <div>
