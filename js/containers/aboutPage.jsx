@@ -100,7 +100,7 @@ function MainText() {
       <p>
         <strong>Genome annotation</strong> file in GFF3 format ending in <code>.gff</code>. Converting embl files to GFF3 is a bit of a dark art but can often be done in using <a href="https://www.sanger.ac.uk/resources/software/artemis/">Artemis</a> or <a href="http://www.ebi.ac.uk/Tools/sfc/emboss_seqret/help/">seqret</a> via&emsp;
           <code>
-            seqret -sequence GFF_FILE -feature -fformat embl -fopenfile EMBL_FILE -osformat gff -auto
+          seqret -sequence EMBL_FILE_NAME -feature -fformat embl -fopenfile GFF_FILE_NAME -osformat gff –auto
           </code>
           <br/>
           All of the semi-colon seperated fields are read and displayed and if the colour field is set then you'll get colours!
@@ -144,7 +144,7 @@ function MainText() {
            #CHR&emsp;SNP&emsp;BP&emsp;minLOG10(P)&emsp;log10(p)&emsp;r^2
            </code>
            <br/>
-            We use the 3rd column as the genome co-ordinate, the 5th column as the <em>p</em> value and the 6th as the R^2 value (which changes the colour).
+            We use the 3rd column as the genome co-ordinate, the 4th column as the <em>p</em> value and the 5th as the R^2 value (which changes the colour).
         </li>
 
         <li>

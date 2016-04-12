@@ -12,12 +12,14 @@ A interactive viewer for population-scale genomic data linked together by a phyl
 #### Motivation
 This was originally written to help explore recombination in populations of bacteria using [gubbins](https://github.com/sanger-pathogens/gubbins) in the context of the bacteria's phylogeny. We found that the ability to interact with the data allows much easier and faster understanding. It has since been expanded to visualise a number of other formats and data types, with more on the way.
 
-#### What's new (v0.5.5)
+#### What's new (v0.6.x)
+* SVG output by pressing "p"
+* Multi-contig GFF parsing
+
+#### What's new (v0.5.x)
 * Safari support
 * The type (ordinal / continuous) of metadata columns can be specified in the CSV file
 * Multiple new examples
-
-#### What's new (v0.5.0)
 * BratNextGen parsing and overlay with gubbins.
 * Tree default display is much better & you can zoom horizontally by holding down cmd / ctrl)
 * Roary fragments are now displayed
