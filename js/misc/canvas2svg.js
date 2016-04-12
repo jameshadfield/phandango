@@ -756,7 +756,6 @@
         this.closePath();
     };
 
-
     /**
      * adds a rectangle element
      */
@@ -802,7 +801,7 @@
      * 2. remove all the childNodes of the root g element
      */
     ctx.prototype.__clearCanvas = function() {
-        
+
         var current = this.__closestGroupOrSvg(),
             transform = current.getAttribute("transform");
         var rootGroup = this.__root.childNodes[1];
@@ -1188,5 +1187,15 @@
     if (typeof module === "object" && typeof module.exports === "object") {
         module.exports = ctx;
     }
+
+    /* the following added by james hadfield jh22@sanger.ac.uk 12 april 2016
+     * follows https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Drawing_DOM_objects_into_a_canvas
+     */
+    ctx.prototype.injectHTML = function(htmlString){
+        var parent = this.__closestGroupOrSvg();
+        var group = this.__createElement('foreignObject');
+        group.innerHTML = htmlString;
+        parent.appendChild(group);
+    };
 
 }());

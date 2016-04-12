@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import { getMouse } from '../misc/mouse';
 import * as helper from '../misc/helperFunctions';
 import { InfoTip } from './infoTip';
@@ -83,6 +84,7 @@ export const Metadata = React.createClass({
         />
         {info}
         <Headers
+          ref={(d) => this._headerDiv = d}
           y={0}
           toggles={this.props.metadata.toggles}
           headerNames={this.props.metadata.headerNames}
@@ -103,6 +105,12 @@ export const Metadata = React.createClass({
     window.svgCtx.clip();
     this.drawSquares(window.svgCtx, this.props.activeTaxa, this.props.metadata.toggles, this.props.metadata.data, this.props.metadata.colours);
     window.svgCtx.restore();
+
+    /* draw the headers by serializing the HTML element and injecting it into
+     * canvas2svg
+     */
+    const headerHtmlString = (new XMLSerializer).serializeToString(ReactDOM.findDOMNode(this._headerDiv));
+    window.svgCtx.injectHTML(headerHtmlString);
   },
 
   // by specifying the funtions here
