@@ -19,6 +19,7 @@ export const Line = React.createClass({
 
   componentDidMount: function () { // don't use fat arrow
     this.mouse = new Mouse(this.canvas, this.props.dispatch, this.onClickCallback); // set up listeners
+    this.initCanvasXY();
     this.drawWrapper(this.props);
     window.addEventListener('pdf', this.svgdraw, false);
   },
@@ -28,6 +29,8 @@ export const Line = React.createClass({
   },
 
   componentWillUpdate(props) {
+    this.initCanvasXY(); // expensive way to handle resizing
+    this.clearCanvas();
     this.drawWrapper(props);
   },
 
@@ -60,8 +63,6 @@ export const Line = React.createClass({
   },
 
   drawWrapper(props, pdfoutput = false) {
-    this.initCanvasXY(); // expensive way to handle resizing
-    this.clearCanvas();
     for (let idx = 0; idx < props.values.length; idx++) {
       this.drawLineGraph(this.canvas, props.visibleGenome, props.values[idx], props.max, props.lineColours[idx], pdfoutput);
     }

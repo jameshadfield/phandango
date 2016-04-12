@@ -165,7 +165,6 @@ export const Annotation = React.createClass({
 
   redraw: function (context, props, state) {
     context.save();
-    this.clearCanvas();
 
     const currentContigs = getArrowsInScope(props.data[1], props.visibleGenome, this.canvas, true);
     drawContigs(context, currentContigs, props.visibleGenome[1] - props.visibleGenome[0] < 100000);

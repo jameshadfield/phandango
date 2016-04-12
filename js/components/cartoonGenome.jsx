@@ -12,11 +12,14 @@ export const Cartoon = React.createClass({
   },
 
   componentDidMount: function () {
+    this.initCanvasXY(); // expensive way to handle resizing
     this.redraw(this.canvas.getContext('2d'), this.props);
     window.addEventListener('pdf', this.svgdraw, false);
   },
 
   componentWillUpdate(props) {
+    this.initCanvasXY(); // expensive way to handle resizing
+    this.clearCanvas(); // needed????
     this.redraw(this.canvas.getContext('2d'), props);
   },
 
@@ -51,8 +54,6 @@ export const Cartoon = React.createClass({
 
 
   redraw: function (context, props) {
-    this.initCanvasXY(); // expensive way to handle resizing
-    this.clearCanvas(); // needed????
     const gutter = 10; // pixels of blank space on either side
     const yMiddle = parseInt(this.canvas.height / 2, 10);
     const xStartLine  = gutter;

@@ -39,11 +39,13 @@ export const Blocks = React.createClass({
     window.addEventListener('pdf', this.svgdraw, false);
   },
 
-  shouldComponentUpdate() {
-    return true;
-  },
+  // shouldComponentUpdate() {
+  //   return true;
+  // },
 
   componentWillUpdate(props, state) {
+    this.initCanvasXY();
+    this.clearCanvas();
     this.canvasPos = this.canvas.getBoundingClientRect();
     this.redraw(this.canvas.getContext('2d'), props, state);
   },
@@ -123,11 +125,7 @@ export const Blocks = React.createClass({
   },
 
   redraw: function (context, props, state) {
-    // expensive way to handle resizing
-    this.initCanvasXY();
-
     const blocks = computeBlocksInView(props.data, props.visibleGenome, this.canvas, props.activeTaxa, props.blocksArePerTaxa);
-    this.clearCanvas();
     drawBlocks(context, blocks, props.blockFillAlpha);
     if (state.hovered) {
       this.drawBorder(context, state.hovered, 'purple');
