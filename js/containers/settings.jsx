@@ -7,6 +7,7 @@ import {
   toggleMetadataColumn,
   toggleOffAllMetaHeaders,
   showBlocks,
+  toggleLogo,
 } from '../actions/general';
 import { route } from '../actions/general';
 import Slider from 'material-ui/lib/slider';
@@ -62,6 +63,8 @@ const Layout = React.createClass({
     rowPercs: PropTypes.arrayOf(PropTypes.number).isRequired,
     onSliderChange: PropTypes.func.isRequired,
     className: PropTypes.string,
+    toggleLogo: PropTypes.func.isRequired,
+    logoIsOn: PropTypes.bool.isRequired,
   },
 
   // componentWillReceiveProps(newProps) {
@@ -109,6 +112,17 @@ const Layout = React.createClass({
         {Columns}
         <h4>rows:</h4>
         {Rows}
+        {/* toggle on / off the logo */}
+        <h4>other:</h4>
+        <Toggle
+          name="master"
+          value="master"
+          labelPosition="right"
+          label="Phandango logo on / off"
+          disabled={false}
+          defaultToggled={this.props.logoIsOn}
+          onToggle={this.props.toggleLogo}
+        />
       </div>
     );
   },
@@ -119,10 +133,13 @@ const ConnectedLayout = connect(
   (state)=>({
     colPercs: state.layout.colPercs,
     rowPercs: state.layout.rowPercs,
+    logoIsOn: state.layout.logoIsOn,
   }),
   (dispatch)=>({
     onSliderChange: (col, idx, e, value) =>
       dispatch(layoutChange(col, idx, parseInt(value, 10))),
+    toggleLogo: () =>
+      dispatch(toggleLogo()),
   })
 )(Layout);
 

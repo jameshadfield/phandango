@@ -64,6 +64,7 @@ const ConnectedCanvasContainer = connect((state)=>({
   active: state.layout.active,
   colPercs: state.layout.colPercs,
   rowPercs: state.layout.rowPercs,
+  logoIsOn: state.layout.logoIsOn,
 }))(CanvasContainer);
 const ConnectedSettings = connect()(Settings);
 const ConnectedLandingPage = connect(

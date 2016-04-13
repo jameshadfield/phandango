@@ -18,6 +18,7 @@ const init = {
   },
   colPercs: startingValues.colPercs,
   rowPercs: startingValues.rowPercs,
+  logoIsOn: true,
 };
 
 
@@ -104,6 +105,10 @@ export function layout(state = init, action) {
     if (state.active.meta) {
       newState.active.metaKey = !state.active.metaKey;
     }
+    return newState;
+  case 'toggleLogo':
+    newState = merge({}, state);
+    newState.logoIsOn = !newState.logoIsOn;
     return newState;
   default:
     return state;

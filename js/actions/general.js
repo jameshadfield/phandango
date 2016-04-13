@@ -47,6 +47,10 @@ export function toggleMetaKey() {
   return ({ type: 'toggleMetaKey' });
 }
 
+export function toggleLogo() {
+  return ({ type: 'toggleLogo' });
+}
+
 /* showBlocks is a thunk in order to gain access to dispatch for multiple dispatches */
 export function showBlocks(name) {
   return function (dispatch, getState) {

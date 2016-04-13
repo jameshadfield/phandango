@@ -59,6 +59,7 @@ export const CanvasContainer = React.createClass({ displayName: 'CanvasContainer
     active: React.PropTypes.object.isRequired,
     colPercs: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
     rowPercs: React.PropTypes.array.isRequired,
+    logoIsOn: React.PropTypes.bool.isRequired,
   },
 
   componentDidMount: function () {
@@ -137,15 +138,10 @@ export const CanvasContainer = React.createClass({ displayName: 'CanvasContainer
       plots[0] = <ConnectedLine style={this.getStyle(2, 2)} key={'line'} />;
     }
 
-    return (
-      <div id="canvassesDiv" ref={(c) => this.node = c}>
-        <div className="newline" />
-        {topRow}
-        <div className="newline" />
-        {middleRow}
-        <div className="newline" />
-        {plots}
-
+    // logo on / off
+    let logo = null;
+    if (this.props.logoIsOn) {
+      logo = (
         <div id="staticLogo" style={{
           position: 'absolute',
           bottom: '5px',
@@ -155,6 +151,19 @@ export const CanvasContainer = React.createClass({ displayName: 'CanvasContainer
         }}>
           <StaticLogo />
         </div>
+      );
+    }
+
+    return (
+      <div id="canvassesDiv" ref={(c) => this.node = c}>
+        <div className="newline" />
+        {topRow}
+        <div className="newline" />
+        {middleRow}
+        <div className="newline" />
+        {plots}
+
+        {logo}
 
       </div>
     );
