@@ -5,13 +5,14 @@ import {
   turnOffCanvas,
   turnOnCanvas,
   toggleMetadataColumn,
-  toggleOffAllMetaHeaders,
+  toggleAllMetaColumns,
   showBlocks,
   toggleLogo,
 } from '../actions/general';
 import { route } from '../actions/general';
 import Slider from 'material-ui/lib/slider';
 import Toggle from 'material-ui/lib/toggle';
+import FlatButton from 'material-ui/lib/flat-button';
 
 /*
  * Settings: Main Settings Container
@@ -160,7 +161,7 @@ const Metadata = React.createClass({
     className: PropTypes.string,
     toggleMeta: PropTypes.func.isRequired,
     toggleMetaHeader: PropTypes.func.isRequired,
-    toggleOffAllMetaHeaders: PropTypes.func.isRequired,
+    toggleAllMetaColumns: PropTypes.func.isRequired,
   },
 
   // componentWillReceiveProps(newProps) {
@@ -185,14 +186,13 @@ const Metadata = React.createClass({
           onToggle={this.props.toggleMeta.bind(this, this.props.active)}
         />
         <hr/>
-        <Toggle
-          name="master"
-          value="master"
-          labelPosition="right"
-          label="Toggle off all columns"
-          disabled={false}
-          defaultToggled={allTogglesOff}
-          onToggle={this.props.toggleOffAllMetaHeaders}
+        <FlatButton
+          label="Turn off all columns"
+          onClick={this.props.toggleAllMetaColumns.bind(this, false)}
+        />
+        <FlatButton
+          label="Turn on all columns"
+          onClick={this.props.toggleAllMetaColumns.bind(this, true)}
         />
         <hr/>
         <div className = {this.props.active ? '' : 'hidden'}>
@@ -230,8 +230,8 @@ const ConnectedMetadata = connect(
     toggleMetaHeader: (currentValue, headerIdx) => {
       dispatch(toggleMetadataColumn(headerIdx, !currentValue));
     },
-    toggleOffAllMetaHeaders: () => {
-      dispatch(toggleOffAllMetaHeaders());
+    toggleAllMetaColumns: (newBool) => {
+      dispatch(toggleAllMetaColumns(newBool));
     },
   })
 )(Metadata);

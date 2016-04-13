@@ -36,10 +36,10 @@ export function metadata(state = initialMetadataState, action) {
     const newState = cloneDeep(state, true);
     newState.toggles[action.idx] = action.newValue;
     return newState;
-  case 'toggleOffAllMetaHeaders':
+  case 'toggleAllMetaColumns':
     const newStateX = cloneDeep(state, true);
     for (let idx = 0; idx < newStateX.toggles.length; idx++) {
-      newStateX.toggles[idx] = false;
+      newStateX.toggles[idx] = action.newBool;
     }
     return newStateX;
   case 'bratNextGenData':
