@@ -4,7 +4,7 @@ import { AnimatedLogo } from '../components/logo';
 import { incomingFile, clearAllData } from '../actions/fileInput';
 import { increaseSpinner } from '../actions/general';
 
-const defaultDataPrefix = 'https://cdn.rawgit.com/jameshadfield/phandango/exampleData/examples/';
+const defaultDataPrefix = 'https://cdn.rawgit.com/jameshadfield/phandangoExampleData/master/';
 
 /* examples
  * a list of maps
@@ -55,6 +55,20 @@ const examples = [
     paths: [
       defaultDataPrefix + 'PMEN1_recombination/Spn23f.gff',
       defaultDataPrefix + 'PneumoGWAS/Maela.MA.cmh.unadjusted.plot',
+    ],
+  },
+
+  {
+    name: 'Gubbins (Neisseria gonorrhoeae)',
+    imgPath: 'img/gubbinsGono.png',
+    caption: 'N. gonorrhoeae with decreased susceptibility to extended spectrum cephalosporins could become untreatable. Here is the recombination and metadata results (including resistance profiles) for 236 isolates collected from sentinel public sexually transmitted disease clinics in the USA. The results  show that Mosaic penA XXXIV had a high positive predictive value for cefR and a major lineage of cefRS strains spread eastward, predominantly through a sexual network of men who have sex with men.',
+    citeURLs: [ 'http://www.thelancet.com/journals/laninf/article/PIIS1473-3099(13)70693-5/abstract' ],
+    citeCaptions: [ <span>Grad <em>et al.,</em> Lancet Indec Dis 2014</span> ],
+    paths: [
+      defaultDataPrefix + 'gubbinsGono/original_set.FA1090.final_tree.figtree.tre',
+      defaultDataPrefix + 'gubbinsGono/ESC_resistance_groups.csv',
+      defaultDataPrefix + 'gubbinsGono/Neisseria_gonorrhoeae_strain_FA_1090_v1.gff',
+      defaultDataPrefix + 'gubbinsGono/original_set.FA1090.recombination_predictions.gff',
     ],
   },
 

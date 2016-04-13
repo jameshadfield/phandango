@@ -93,6 +93,9 @@ function MainText() {
       <p/>
       Data formats in bioinformatics can be problematic so phandango tries to warn you if things aren't looking right. Take a look at <a href="https://github.com/jameshadfield/phandango#roadmap">the roadmap</a> for things coming in the future.
       <p>
+      <strong>All of the files used in the examples are available in this <a href="https://github.com/jameshadfield/phandangoExampleData">GitHub repository</a></strong>
+      </p>
+      <p>
         <strong>Phylogenies</strong> form the backbone of the visualization as they link together all the other data. Trees must be in <a href="http://evolution.genetics.washington.edu/phylip/newicktree.html">Newick format</a> (which is the standard output from software such as <a href="http://sco.h-its.org/exelixis/software.html">RAxML</a>). If you need to convert your tree to a different format try using <a href="http://tree.bio.ed.ac.uk/software/figtree/">FigTree</a>. Files must end in <code>.tre</code> or <code>.tree</code>. We try to identify (and raise an error) if Nexus files are used, and parsing of these formats is on the to-do list. If you use FigTree check that single quotes haven't been added around the taxa names!
       </p>
 
