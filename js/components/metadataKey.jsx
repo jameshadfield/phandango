@@ -26,10 +26,8 @@ export const MetadataKey = React.createClass({
     // expensive way to handle resizing
     this.initCanvasXY();
     this.clearCanvas();
-    const blockWidth = 50;
-    const numCols = props.metadata.toggles.reduce((pv, cv) => cv ? pv + 1 : pv, 0);
-    const xVals = this.calculateXValuesForColumns(this.canvas, numCols, blockWidth);
-    this.draw(this.canvas.getContext('2d'), this.canvas.width, this.canvas.height, props.metadata, xVals, blockWidth);
+    const [ colIdxsToUse, blockwidth, blockStartValuesX, textStartValuesX ] = this.calculateColumnData(this.canvas, props.metadata.toggles, props.metadata.info);
+    this.draw(this.canvas.getContext('2d'), this.canvas.width, this.canvas.height, props.metadata, colIdxsToUse, blockwidth, blockStartValuesX, textStartValuesX);
   },
 
   componentWillUnmount() {
@@ -58,77 +56,104 @@ export const MetadataKey = React.createClass({
     window.svgCtx.clip();
 
     // now the bits specific to metadata key
-    const blockWidth = 50;
-    const numCols = this.props.metadata.toggles.reduce((pv, cv) => cv ? pv + 1 : pv, 0);
-    const xVals = this.calculateXValuesForColumns(this.canvas, numCols, blockWidth);
-    this.draw(window.svgCtx, this.canvas.width, this.canvas.height, this.props.metadata, xVals, blockWidth);
+    const [ colIdxsToUse, blockwidth, blockStartValuesX, textStartValuesX ] = this.calculateColumnData(this.canvas, this.props.metadata.toggles, this.props.metadata.info);
+    this.draw(window.svgCtx, this.canvas.width, this.canvas.height, this.props.metadata, colIdxsToUse, blockwidth, blockStartValuesX, textStartValuesX);
 
     window.svgCtx.restore();
   },
 
   /* draw() draws the coloured squares and text which form the metadata key (canvas)
-   * {int} colIdx - index of active columns to draw (xVals gives offsets)
-   * {int} headerIdx - index of header in metadata (may be toggled off / on)
-   * {int} valueIdx - index of the value within each header
+   *
+   * indicies:
+   * countIdx - the column count as displayed on the screen (left -> right)
+   * headerIdx - the index of the header in the metadata
+   *
+   * {array of ints} colIdxsToUse - indexes of active columns to draw (values are headerIdxs)
+   * {int} blockwidth - width of coloured block
+   * {array of ints} blockStartValuesX - pixel start values for block in each column (use countIdx)
+   * {array of ints} textStartValuesX - pixel start values for text in each column (use countIdx)
    */
-  draw(context, canvasWidth, canvasHeight, metadata, xVals, blockWidth) {
-    let colIdx = 0; // like headerIdx but doesn't increase if toggled off
-    for (let headerIdx = 0; headerIdx < metadata.toggles.length; headerIdx++) {
-      if (metadata.toggles[headerIdx]) {
-        let yTopPx = 40;
-        // header text
+  draw(context, canvasWidth, canvasHeight, metadata, colIdxsToUse, blockwidth, blockStartValuesX, textStartValuesX) {
+    // let colIdx = 0; // like headerIdx but doesn't increase if toggled off
+    for (let countIdx = 0; countIdx < colIdxsToUse.length; countIdx++) {
+      const headerIdx = colIdxsToUse[countIdx];
+      /* start by printing the headers for each column */
+      let headerName = metadata.headerNames[headerIdx];
+      if (metadata.info[headerIdx].inGroup) {
+        headerName = 'group ' + metadata.info[headerIdx].type + ' ' + String(metadata.info[headerIdx].groupId);
+      }
+      let yTopPx = 40; /* margin to print column headers */
+      context.fillStyle = 'black';
+      context.textBaseline = 'middle';
+      context.textAlign = 'left';
+      let headerFontSize = 18;
+      context.font = String(headerFontSize) + 'px Helvetica';
+      const availableLengthForHeader = parseInt(canvasWidth / colIdxsToUse.length, 10);
+      while (context.measureText(headerName).width > availableLengthForHeader && headerFontSize >= 12) {
+        headerFontSize -= 1;
+        context.font = String(headerFontSize) + 'px Helvetica';
+      }
+      context.fillText(headerName, blockStartValuesX[countIdx], 20); /* blockStart... not textStart for header */
+
+      /* now move onto printing each row - a coloured block + text */
+      const numVals = metadata.values[headerIdx].length;
+      const yHeight = parseInt( (canvasHeight - yTopPx) / numVals, 10);
+
+      for (let valueIdx = 0; valueIdx < numVals; valueIdx++) {
+        /* the text */
         context.fillStyle = 'black';
         context.textBaseline = 'middle';
         context.textAlign = 'left';
+        context.font = '12px Helvetica';
+        const text = metadata.values[headerIdx][valueIdx];
+        context.fillText(text, textStartValuesX[countIdx], yTopPx + yHeight / 2);
 
-        const headerName = metadata.headerNames[headerIdx];
+        /* the block */
+        context.save(); // needed?
+        context.fillStyle = metadata.colours[headerIdx][valueIdx];
+        // context.globalAlpha = 0.3;
+        context.fillRect(blockStartValuesX[countIdx], yTopPx, blockwidth, yHeight);
+        context.restore();
 
-        let headerFontSize = 18;
-        context.font = String(headerFontSize) + 'px Helvetica';
-
-        const availableLengthForHeader = parseInt(canvasWidth / metadata.toggles.length, 10);
-
-        while (context.measureText(headerName).width > availableLengthForHeader && headerFontSize >= 12) {
-          headerFontSize -= 1;
-          context.font = String(headerFontSize) + 'px Helvetica';
-        }
-
-        context.fillText(headerName, xVals[colIdx][0], 20);
-
-        const numVals = metadata.values[headerIdx].length;
-        const yHeight = parseInt( (canvasHeight - yTopPx) / numVals, 10);
-
-        for (let valueIdx = 0; valueIdx < numVals; valueIdx++) {
-          // console.log(xVals[colIdx])
-          context.save(); // needed?
-          context.fillStyle = metadata.colours[headerIdx][valueIdx];
-          // context.globalAlpha = 0.3;
-          context.fillRect(xVals[colIdx][0], yTopPx, blockWidth, yHeight);
-          context.restore();
-
-          // now for the text
-          context.fillStyle = 'black';
-          context.textBaseline = 'middle';
-          context.textAlign = 'left';
-          context.font = '12px Helvetica';
-          const text = metadata.values[headerIdx][valueIdx];
-          context.fillText(text, xVals[colIdx][1], yTopPx + yHeight / 2);
-          yTopPx += yHeight;
-        }
-        colIdx++;
+        yTopPx += yHeight;
       }
     }
   },
 
-
-  calculateXValuesForColumns(canvas, numColumns, blockWidth) {
-    const pxPerCol = parseInt(canvas.width / numColumns, 10);
-    const ret = [];
-    for (let i = 0; i < numColumns; i++) {
-      const leftPx = i * pxPerCol;
-      ret.push([ leftPx, leftPx + blockWidth + 10 ]);
+  calculateColumnData(canvas, toggles, info) {
+    const maximumAllowableNumColumns = parseInt(canvas.width / 100, 10);
+    let colIdxsToUse = [];
+    const groupsSeen = [];
+    for (let idx = 0; idx < toggles.length; idx++) {
+      if (toggles[idx]) {
+        if (info[idx].inGroup) {
+          if (groupsSeen.indexOf(info[idx].groupId) === -1) {
+            // group not already seen
+            groupsSeen.push(info[idx].groupId);
+            colIdxsToUse.push(idx);
+          }
+        } else {
+          // not in a group
+          colIdxsToUse.push(idx);
+        }
+      }
     }
-    return ret;
+    if (colIdxsToUse.length > maximumAllowableNumColumns) {
+      colIdxsToUse = colIdxsToUse.slice(0, maximumAllowableNumColumns);
+    }
+    const pixelsPerColumn = parseInt(canvas.width / colIdxsToUse.length, 10);
+    let blockwidth = parseInt(pixelsPerColumn / 4, 10);
+    if (blockwidth > 50) {
+      blockwidth = 50;
+    }
+    const blockStartValuesX = [];
+    const textStartValuesX = [];
+    for (let i = 0; i < colIdxsToUse.length; i++) {
+      const leftPx = i * pixelsPerColumn;
+      blockStartValuesX.push(leftPx);
+      textStartValuesX.push(leftPx + blockwidth + 10);
+    }
+    return [ colIdxsToUse, blockwidth, blockStartValuesX, textStartValuesX ];
   },
 
   initCanvasXY: helper.initCanvasXY,

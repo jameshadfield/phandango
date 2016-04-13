@@ -60,12 +60,15 @@ export const Metadata = React.createClass({
     let info = false;
     if (this.state.displayInfoActive) {
       const disp = {
-        taxa: this.state.displayInfo.taxa,
+        taxon: this.state.displayInfo.taxa,
         // this.state.displayInfo.header: this.state.displayInfo.value,
         // header: this.state.displayInfo.header,
         // value: this.state.displayInfo.value,
         // type: this.state.displayInfo.info,
       };
+      if (this.state.displayInfo.group) {
+        disp.group = this.state.displayInfo.group;
+      }
       disp[this.state.displayInfo.header] = this.state.displayInfo.value;
       info = (
         <InfoTip
@@ -218,12 +221,15 @@ function mouseMove(e) {
     const headerIdx = this.props.metadata.headerNames.indexOf(header);
     const valueIdx = this.props.metadata.data[taxa][headerIdx];
     const value = this.props.metadata.values[headerIdx][valueIdx];
-    let iinfo = '';
-    if (this.props.metadata.info[headerIdx].binary) {
-      iinfo += ' binary ';
+    // let iinfo = '';
+    // if (this.props.metadata.info[headerIdx].binary) {
+    //   iinfo += ' binary ';
+    // }
+    // iinfo += this.props.metadata.info[headerIdx].type;
+    const info = { x: mouse.fixedX, y: mouse.fixedY, taxa, header, value };
+    if (this.props.metadata.info[headerIdx].inGroup) {
+      info.group = this.props.metadata.info[headerIdx].type + ' ' + String(this.props.metadata.info[headerIdx].groupId);
     }
-    iinfo += this.props.metadata.info[headerIdx].type;
-    const info = { x: mouse.fixedX, y: mouse.fixedY, taxa, header, value, info: iinfo };
     this.setState({
       displayInfoActive: true,
       displayInfo: info,
