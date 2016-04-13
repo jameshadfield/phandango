@@ -5,6 +5,7 @@ import {
   turnOffCanvas,
   turnOnCanvas,
   toggleMetadataColumn,
+  toggleOffAllMetaHeaders,
   showBlocks,
 } from '../actions/general';
 import { route } from '../actions/general';
@@ -142,6 +143,7 @@ const Metadata = React.createClass({
     className: PropTypes.string,
     toggleMeta: PropTypes.func.isRequired,
     toggleMetaHeader: PropTypes.func.isRequired,
+    toggleOffAllMetaHeaders: PropTypes.func.isRequired,
   },
 
   // componentWillReceiveProps(newProps) {
@@ -150,6 +152,7 @@ const Metadata = React.createClass({
 
   render() {
     if ( (!this.props.fileName) || this.props.fileName === 'not loaded') { return false; }
+    const allTogglesOff = this.props.toggles.every( function (e) {return e === false;} );
     return (
       <div className={this.props.className}>
         <h3>Metadata</h3>
@@ -159,10 +162,20 @@ const Metadata = React.createClass({
           name="master"
           value="master"
           labelPosition="right"
-          label="Turn off metadata"
+          label="Turn off panel"
           disabled={false}
           defaultToggled={this.props.active}
           onToggle={this.props.toggleMeta.bind(this, this.props.active)}
+        />
+        <hr/>
+        <Toggle
+          name="master"
+          value="master"
+          labelPosition="right"
+          label="Toggle off all columns"
+          disabled={false}
+          defaultToggled={allTogglesOff}
+          onToggle={this.props.toggleOffAllMetaHeaders}
         />
         <hr/>
         <div className = {this.props.active ? '' : 'hidden'}>
@@ -199,6 +212,9 @@ const ConnectedMetadata = connect(
     },
     toggleMetaHeader: (currentValue, headerIdx) => {
       dispatch(toggleMetadataColumn(headerIdx, !currentValue));
+    },
+    toggleOffAllMetaHeaders: () => {
+      dispatch(toggleOffAllMetaHeaders());
     },
   })
 )(Metadata);

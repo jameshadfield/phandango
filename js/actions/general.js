@@ -39,6 +39,10 @@ export function toggleMetadataColumn(idx, newValue) {
   return ({ type: 'toggleMetadataColumn', idx, newValue });
 }
 
+export function toggleOffAllMetaHeaders() {
+  return ({ type: 'toggleOffAllMetaHeaders' });
+}
+
 export function toggleMetaKey() {
   return ({ type: 'toggleMetaKey' });
 }

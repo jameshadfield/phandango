@@ -1,5 +1,4 @@
-import clone from 'lodash/clone';
-
+import cloneDeep from 'lodash/cloneDeep';
 
 const initialMetadataState = {
   data: {},
@@ -34,12 +33,18 @@ export function metadata(state = initialMetadataState, action) {
   case 'toggleMetadataColumn':
     // const newState = { ...state }; // DON'T DO THIS. NOT PURE.
     // const newState = merge({}, state);
-    const newState = clone(state, true);
+    const newState = cloneDeep(state, true);
     newState.toggles[action.idx] = action.newValue;
     return newState;
+  case 'toggleOffAllMetaHeaders':
+    const newStateX = cloneDeep(state, true);
+    for (let idx = 0; idx < newStateX.toggles.length; idx++) {
+      newStateX.toggles[idx] = false;
+    }
+    return newStateX;
   case 'bratNextGenData':
-    const stateWithBrat = appendBratData(clone(state, true), action.metadata);
-    stateWithBrat.rawBratData = clone(action.metadata, true);
+    const stateWithBrat = appendBratData(cloneDeep(state, true), action.metadata);
+    stateWithBrat.rawBratData = cloneDeep(action.metadata, true);
     return stateWithBrat;
   default:
     return state;
