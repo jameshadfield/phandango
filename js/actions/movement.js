@@ -2,7 +2,7 @@ import { notificationNew } from './notifications';
 
 // why are these thunks? they're not async
 
-export function genomePan(fracCanvasPan) {
+export function genomePan(fracCanvasPan, smallGenome = false) {
   // THUNK
   return function (dispatch, getState) {
     const visibleGenome = getState().genomeInfo.visibleGenome;
@@ -11,9 +11,14 @@ export function genomePan(fracCanvasPan) {
       dispatch( notificationNew('can\'t drag (whole genome in view)'));
       return;
     }
-    const bpToMove = (visibleGenome[1] - visibleGenome[0]) * fracCanvasPan;
+    let bpToMove = (visibleGenome[1] - visibleGenome[0]) * fracCanvasPan;
+    if (smallGenome) {
+      bpToMove = genomeLength * fracCanvasPan;
+    }
+
     let newLeft = visibleGenome[0] + bpToMove;
     let newRight = visibleGenome[1] + bpToMove;
+
     if (newLeft < 0 || newRight > genomeLength) {
       dispatch( notificationNew('can\'t drag (already at edge of genome)'));
       if (newLeft < 0) {
@@ -30,6 +35,7 @@ export function genomePan(fracCanvasPan) {
         newRight = genomeLength;
       }
     }
+
     dispatch({ type: 'updateVisibleGenome', visibleGenome: [ newLeft, newRight ] });
   };
 }

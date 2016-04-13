@@ -1,5 +1,6 @@
 import React from 'react';
 import * as helper from '../misc/helperFunctions';
+import { Mouse } from '../misc/mouse';
 
 /*
   cartoon genome
@@ -9,9 +10,11 @@ export const Cartoon = React.createClass({
     visibleGenome: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
     genomeLength: React.PropTypes.number.isRequired,
     style: React.PropTypes.object.isRequired,
+    dispatch: React.PropTypes.func.isRequired,
   },
 
   componentDidMount: function () {
+    this.mouse = new Mouse(this.canvas, this.props.dispatch, function () { }, true); // set up listeners
     this.initCanvasXY(); // expensive way to handle resizing
     this.redraw(this.canvas.getContext('2d'), this.props);
     window.addEventListener('pdf', this.svgdraw, false);

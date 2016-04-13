@@ -1,7 +1,7 @@
 // time to attach listeners to the gubbins canvas
 import { genomePan, genomeZoom } from '../actions/movement';
 
-export function Mouse(canvas, dispatch, onClickCallback) {
+export function Mouse(canvas, dispatch, onClickCallback, smallGenome = false) {
   const myState = this;
   this.dragging = false;
   this.zooming = false;
@@ -42,7 +42,11 @@ export function Mouse(canvas, dispatch, onClickCallback) {
       const mx = mouse.x;
       const my = mouse.y;
       const dragOffsetx = mx - myState.dragoffx;
-      dispatch(genomePan(-dragOffsetx / canvas.width));
+      if (smallGenome) {
+        dispatch(genomePan(dragOffsetx / (canvas.width * 0.8), true));
+      } else {
+        dispatch(genomePan(-dragOffsetx / canvas.width));
+      }
       myState.dragoffx = mx;
       myState.dragoffy = my;
       return;
@@ -66,7 +70,11 @@ export function Mouse(canvas, dispatch, onClickCallback) {
     // console.log('zooming! original mouse delta:', delta, 'e:', e);
     delta = delta > 0 ? 1 : -1; // 1: zoom in, -1: out
     myState.zooming = true;
-    dispatch(genomeZoom(delta, mx / canvas.width));
+    if (smallGenome) {
+      dispatch(genomeZoom(delta, 0.5)); /* always zoom into center of visible */
+    } else {
+      dispatch(genomeZoom(delta, mx / canvas.width));
+    }
     myState.zooming = false;
   }, false);
 }
