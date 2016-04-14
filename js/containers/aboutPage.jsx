@@ -28,20 +28,24 @@ function LeftPanel() {
         <AnimatedLogo w={300} h={150} interval={10000}/>
       </div>
       <br/>
-      <h3 className="view">
-        <img style={{ verticalAlign: 'middle' }} src="img/GitHub-Mark-32px.png"/>
-        <a style={{ verticalAlign: 'middle' }} href="https://github.com/jameshadfield/phandango">&nbsp;&nbsp;&nbsp;View the project on GitHub</a>
-      </h3>
 
       <p className="light">
         Drag your data onto the window to start!
       </p>
 
+      <h3 className="view">
+        <img style={{ verticalAlign: 'middle' }} src="img/GitHub-Mark-32px.png"/>
+        <a style={{ verticalAlign: 'middle' }} href="https://github.com/jameshadfield/phandango">&nbsp;&nbsp;&nbsp;View on GitHub</a>
+      </h3>
+
       <p className="light">
         <strong>Designed & built</strong> by&nbsp;
         <a href="mailto:jh22@sanger.ac.uk">James Hadfield</a> and&nbsp;
         <a href="mailto:sh16@sanger.ac.uk">Simon Harris</a> at the&nbsp;
-        <a href="http://www.sanger.ac.uk/">Wellcome Trust Sanger Institute</a>
+        <a href="http://www.sanger.ac.uk/">Wellcome Trust Sanger Institute</a> with advice from Richard Goater and <a href="http://www.sanger.ac.uk/science/collaboration/centre-global-pathogen-surveillance-cgps">The Centre for Genomic Pathogen Surveillance (CGPS)</a>
+      </p>
+      <p className="light">
+        <strong>Version:</strong>&nbsp;{version}
       </p>
       <p className="light">
         <strong>Uses:</strong>&nbsp;
@@ -58,9 +62,6 @@ function LeftPanel() {
       <p className="light">
         <strong>Roadmap:</strong>&nbsp;
         <a href="https://github.com/jameshadfield/phandango#roadmap">here</a>
-      </p>
-      <p className="light">
-        <strong>Version:</strong>&nbsp;{version}
       </p>
       <p className="light">
         <strong>License:</strong> <a href="https://tldrlegal.com/license/mit-license#summary">MIT</a>
@@ -84,7 +85,7 @@ function MainText() {
       </p>
 
       <p>
-        To save your data as a SVG press <code>p</code>. Open the SVG in wither Chrome or Illustrator etc. Note there are some issues with fonts we're still trying to fix!
+        To save your data as a SVG press <code>p</code>. Open the SVG in either Chrome or Illustrator etc. Note there are some issues with fonts we're still trying to fix!
       </p>
 
       <div className="dots"></div>
