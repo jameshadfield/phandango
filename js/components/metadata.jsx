@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { getMouse } from '../misc/mouse';
 import * as helper from '../misc/helperFunctions';
 import { InfoTip } from './infoTip';
+import { dom2svg } from '../misc/html2svg';
 
 /*
   The Metadata component
@@ -112,8 +113,18 @@ export const Metadata = React.createClass({
     /* draw the headers by serializing the HTML element and injecting it into
      * canvas2svg
      */
-    const headerHtmlString = (new XMLSerializer).serializeToString(ReactDOM.findDOMNode(this._headerDiv));
-    window.svgCtx.injectHTML(headerHtmlString);
+    // const headerHtmlString = (new XMLSerializer).serializeToString(ReactDOM.findDOMNode(this._headerDiv));
+    // window.svgCtx.injectHTML(headerHtmlString);
+
+    /* draw the headers by parsing the DOM element
+     * turning the divs into SVG code
+     * and injecting this via a custom functino in
+     * canvas2svg
+     */
+    // console.log(ReactDOM.findDOMNode(this._headerDiv));
+    // console.log(headerHtmlString);
+    const svgString = dom2svg(ReactDOM.findDOMNode(this._headerDiv));
+    window.svgCtx.injectSVG(svgString);
   },
 
   // by specifying the funtions here
