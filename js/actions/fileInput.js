@@ -173,8 +173,8 @@ const goDispatch = (dispatch, getState, parsedData, dataType, filename) => {
     break;
   case 'roary':
     // we have 3 dispatches -- the blocks, annotation and linegraph!
-    dispatch({ ...dispatchObj, data: parsedData[0], type: 'annotationData' });
-    dispatch({ ...dispatchObj, data: parsedData[1], genomeLength: parsedData[2] });
+    dispatch({ ...dispatchObj, data: [ parsedData[0], parsedData[1] ], type: 'annotationData' });
+    dispatch({ ...dispatchObj, data: parsedData[2], genomeLength: parsedData[3] });
     dispatch(clearLineGraph());
     dispatch(computeLineGraph());
     break;

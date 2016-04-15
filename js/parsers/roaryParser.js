@@ -1,5 +1,5 @@
 import Papa from 'papaparse';
-import { Arrow, Block, colourDB } from './shapes';
+import { Arrow, Block, Contig, colourDB } from './shapes';
 import chroma from 'chroma-js';
 
 /* ROARY parser
@@ -19,13 +19,11 @@ import chroma from 'chroma-js';
 //   return a - b;
 // }
 
-
-
 export function roaryParser(csvString) {
   const papa = Papa.parse(csvString);
   const arrows = [];
   // const blocks = [];
-  const geneLen = 100;
+  const geneLen = 20;
   const tmp = {};
 
   /* so we crawl the rows. Each row forms a gene (+ side arrow)
@@ -63,15 +61,18 @@ export function roaryParser(csvString) {
     // if the fragment hasn't changed we simply continue...
     if (papa.data[rowIdx][6] !== fragmentId) {
       // save the previous fragment
-      fragments.push( new Arrow(
-        fragmentOpen * geneLen,
-        rowIdx * geneLen,
-        '-',
-        fragmentColours(fragmentId).hex(),
-        'black',
-        1,
-        'fragment=' + fragmentId
-      ));
+      fragments.push(
+        new Contig(
+          fragmentOpen * geneLen, // featurestart
+          rowIdx * geneLen, // featureend
+          fragmentColours(fragmentId).hex(), // fill
+          'black', // stroke
+          1, // strokeWidth
+          'fragment ' + fragmentId, // contigName
+          (rowIdx - fragmentOpen) * geneLen // length
+        )
+      );
+
       // start a new fragment
       fragmentOpen = rowIdx;
       fragmentId = papa.data[rowIdx][6];
@@ -92,15 +93,17 @@ export function roaryParser(csvString) {
   }
 
   // now that we've gone through all the rows close the final fragment!
-  fragments.push( new Arrow(
-    fragmentOpen * geneLen,
-    papa.data.length * geneLen,
-    '-',
-    fragmentColours(fragmentId).hex(),
-    'black',
-    1,
-    'fragment=' + fragmentId
-  ));
+  fragments.push(
+    new Contig(
+      fragmentOpen * geneLen, // featurestart
+      papa.data.length * geneLen, // featureend
+      fragmentColours(fragmentId).hex(), // fill
+      'black', // stroke
+      1, // strokeWidth
+      'fragment ' + fragmentId, // contigName
+      (papa.data.length - fragmentOpen) * geneLen // length
+    )
+  );
 
   const blocks = {};
   let uniqId = 0;
@@ -134,7 +137,7 @@ export function roaryParser(csvString) {
     }
   });
 
-  return [ arrows.concat(fragments), blocks, papa.data.length * geneLen ];
+  return [ arrows, fragments, blocks, papa.data.length * geneLen ];
 }
 
 
