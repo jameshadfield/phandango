@@ -1200,4 +1200,13 @@
         parent.appendChild(group);
     };
 
+    ctx.prototype.injectSVG = function(svgString){
+        // var parent = this.__closestGroupOrSvg();
+        // debugger;
+        var parent = this.__root;
+        var group = this.__createElement('g');
+        group.innerHTML = svgString;
+        parent.appendChild(group);
+    };
+
 }());
