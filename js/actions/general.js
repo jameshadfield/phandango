@@ -22,11 +22,6 @@ export function goToPage(name) {
   };
 }
 
-export function layoutChange(col, idx, perc) {
-  const type = col ? 'layoutColChange' : 'layoutRowChange';
-  return ({ type, idx, perc });
-}
-
 export function layoutPercentChange(col, idx, perc) {
   const type = (col) ? 'layoutColPercentChange' : 'layoutRowPercentChange';
   return ({ type, idx, perc });
