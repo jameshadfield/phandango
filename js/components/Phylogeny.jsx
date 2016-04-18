@@ -33,7 +33,8 @@ export const Phylogeny = React.createClass({
       this.phylocanvas.load(props.newickString);
     }
     this.phylocanvas.resizeToContainer();
-    this.phylocanvas.draw(true);  // forces phylocanvas.fitInPanel()
+    // this.phylocanvas.fitInPanel()
+    this.phylocanvas.draw();  // draw(true) forces phylocanvas.fitInPanel()
   },
 
   componentWillUnmount() {

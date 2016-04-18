@@ -177,7 +177,7 @@ function changePercs(oldVals, newVal, newIdx) {
     newtot=newtot+newVals[i];
   }
 
-  // console.log("changePercs", newVal, oldVals, newVals, oldtot, newtot)
+  //console.log("changePercs", newVal, oldVals, newVals, oldtot, newtot)
   return newVals;
 }
 

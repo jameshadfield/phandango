@@ -47,7 +47,7 @@ export const LandingPage = React.createClass({
 });
 
 
-/* previous attempt to center vertially failed when the screen became smaller than the hieght!
+/* previous attempt to center vertially failed when the screen became smaller than the height!
       <div id="outer">
         <div className="center centeredVertically ">
           ...

@@ -173,13 +173,25 @@ export const CanvasContainer = React.createClass({ displayName: 'CanvasContainer
     const vresizertops = [];
     let count = 0;
     const numVResizers = 2;
+    var iconOffset=7.5
+    if (numVResizers % 2 == 0){
+      iconOffset=(numVResizers/2)*15;
+    }
     for (let i = 0; i < numVResizers + 1; i++) {
       const vresizertop = this.props.rowPercs[i] + count;
       const toremove = ((i + 1) * 7) - 4;
+      var leftPos = ((window.innerWidth/2)-iconOffset)+(i*15);
+      var background= "url('img/Drag_circle_both.png') no-repeat center center";
+      if (i===0){
+        background= "url('img/Drag_circle_up.png') no-repeat center center";
+      }
+      else if (i===numVResizers-1){
+        background= "url('img/Drag_circle_down.png') no-repeat center center";
+      }
       vresizertops[i] = 'calc(' + this.makeVh(vresizertop) + ' - ' + toremove.toString() + 'px)';
       vresizers[i] = (
         <ConnectedDrag
-          style={{ position: 'absolute', width: '100%', height: '9', cursor: 'row-resize', left: '0', top: vresizertops[i] }}
+          style={{ position: 'absolute', width: '15', height: '15', cursor: 'row-resize', background: background, left:leftPos, top: vresizertops[i] }}
           index={i}
           isCol={false}
           key={'row' + i.toString() + 'drag'}
@@ -193,11 +205,24 @@ export const CanvasContainer = React.createClass({ displayName: 'CanvasContainer
     const hresizerlefts = [];
     count = 0;
     const numHResizers = 2;
+    var iconOffset=7.5
+    if (numVResizers % 2 == 0){
+      iconOffset=(numHResizers/2)*15;
+    }
     for (let i = 0; i < numHResizers + 1; i++) {
       hresizerlefts[i] = this.props.colPercs[i] + count;
+      var topPos = ((window.innerHeight/2)-iconOffset)+(i*15);
+      var background= "url('img/Drag_circle_both.png') no-repeat center center";
+      if (i===0){
+        background= "url('img/Drag_circle_left.png') no-repeat center center";
+      }
+      else if (i===numHResizers-1){
+        background= "url('img/Drag_circle_right.png') no-repeat center center";
+      }
+      var leftPos = (window.innerWidth*(hresizerlefts[i]/100))-7.5;
       hresizers[i] = (
         <ConnectedDrag
-          style={{ position: 'absolute', width: '9', height: '100%', cursor: 'col-resize', left: this.percentize(hresizerlefts[i]), top: '0' }}
+          style={{ position: 'absolute', width: '15', height: '15', cursor: 'col-resize', background: background, left: leftPos, top: topPos }}
           index={i}
           isCol={true}
           key={'column' + i.toString() + 'drag'}

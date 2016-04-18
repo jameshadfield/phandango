@@ -2,7 +2,7 @@ import isEqual from 'lodash/isEqual';
 
 /*    setYValues
 When a change in phylocanvas is detected we need to
-update the store with the y positions of teh taxa
+update the store with the y positions of the taxa
 which are in view.
 It's more complicated because phylocanvas updates
 all the time, even when nothing changes.

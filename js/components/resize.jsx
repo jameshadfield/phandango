@@ -116,7 +116,7 @@ getInitialState: function () {
     return (
       <div>
         <canvas
-          id="RowDrag"
+          id="Drag"
           ref={(c) => this.canvas = c}
           style={this.props.style}
         />
