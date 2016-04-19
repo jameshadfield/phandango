@@ -18,7 +18,7 @@ export const Line = React.createClass({
   },
 
   componentDidMount: function () { // don't use fat arrow
-    this.mouse = new Mouse(this.canvas, this.props.dispatch, this.onClickCallback); // set up listeners
+    this.mouse = new Mouse(this.canvas, this.props.dispatch, function () {}); // set up listeners
     this.initCanvasXY();
     this.drawWrapper(this.props);
     window.addEventListener('pdf', this.svgdraw, false);

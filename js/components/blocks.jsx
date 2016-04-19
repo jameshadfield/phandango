@@ -76,6 +76,7 @@ export const Blocks = React.createClass({
   },
 
   render() {
+    // console.log('blocks render');
     const blocksToDisplayInfo = [];
     // if (this.state.selected) {
     //   selected.push({

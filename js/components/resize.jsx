@@ -1,13 +1,23 @@
 import React from 'react';
-import { Mouse } from '../misc/mouse';
 import { layoutPercentChange } from '../actions/general';
+import { changePercs } from '../reducers/layout';
+
+/* an explanation of state vs props for this component
+ *
+ * props relate to the actual div percentages
+ * state is used when we are dragging the handles
+ * and represents the future div percentages
+ * when handles are released, this.state.dragging -> false
+ * and an action propogates which ends up changing the props
+ */
 
 export const Drag = React.createClass({
   propTypes: {
     rowPercs: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
     colPercs: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
     dispatch: React.PropTypes.func.isRequired,
-    style: React.PropTypes.object.isRequired,
+    index: React.PropTypes.number.isRequired,
+    isCol: React.PropTypes.bool.isRequired,
   },
 
   getDefaultProps: function () {
@@ -16,20 +26,18 @@ export const Drag = React.createClass({
     };
   },
 
-  // set up some initial states, although these shouldn't be used
   getInitialState: function () {
     return {
-      index: this.props.index,
-      isCol: this.props.isCol,
-      rowPos: this.props.rowPercs[this.props.style.index],
+      rowPercs: this.props.rowPercs,
+      colPercs: this.props.colPercs,
       dragging: false,
     };
   },
 
   componentDidMount: function () {
-    this.mouse = new Mouse(this.canvas, this.props.dispatch, function () { }); // set up listener for mousedown on the div
-    this.canvas.addEventListener('mousedown', this.onMouseDown, true);
-    this.forceUpdate();
+    this.div.addEventListener('mousedown', this.onMouseDown, true);
+    window.addEventListener('resize', this.resizeFn, false);
+    this.resizeFn();
   },
 
   // set up some document event listeners when dragging to catch the mouse move and mouse up
@@ -43,14 +51,16 @@ export const Drag = React.createClass({
     }
   },
 
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.resizeFn, false);
+  },
+
   // calculate relative position to the mouse and set dragging=true
   onMouseDown: function (e) {
     // only left mouse button
     if (e.button !== 0) {
       return;
     }
-    // const canvasPos = this.canvas.getBoundingClientRect();
-    // var pos = 100 * (canvasPos.top / window.innerHeight);
     this.setState({
       dragging: true,
     });
@@ -62,53 +72,115 @@ export const Drag = React.createClass({
     this.setState({ dragging: false });
     e.stopPropagation();
     e.preventDefault();
-    // on mouse up we want to dispatch changes to the layout (either rowPercs or colPercs)
-    this.props.dispatch(layoutPercentChange(this.state.isCol, this.state.index, this.state.pos));
+    this.props.dispatch(layoutPercentChange(this.props.isCol, this.props.index, this.state.pos));
   },
 
   onMouseMove: function (e) {
     if (!this.state.dragging) {
       return;
     }
-    /* calculate the appropriate div and mouse positions in % */
-    const myPercs = this.state.isCol ? this.props.colPercs.slice(0) : this.props.rowPercs.slice(0);
-    const myPos = this.state.isCol ? 100 * (e.pageX / window.innerWidth) : 100 * (e.pageY / window.innerHeight);
-
-    /* Calculate the new position from the mouse position
-     * handle edge cases where you drag a panel to zero size.
-     * Need to work out how to handle this when the dragging divs are on top of each other
-     */
-
-    if ((this.state.index < myPercs.length - 1) && (myPos > this.cumulativePosition(this.state.index + 1, myPercs))) {
-      /* handle the case where you drag to or past the next div - i.e. the next div becomes zero size */
+    let pos; /* measured in percentages */
+    if (this.props.isCol) {
+      /* COLUMN */
+      pos = 100 * (e.pageX / window.innerWidth);
+      for (let i = 0; i < this.props.index; i++) {
+        pos -= this.state.colPercs[i];
+      }
       this.setState({
-        pos: this.cumulativePosition(this.state.index + 1, myPercs),
-      });
-    } else if ((this.state.index > 0) && (myPos < this.cumulativePosition(this.state.index - 1, myPercs))) {
-      /* handle the case where you drag to or past the previous div -i.e. to zero size */
-      this.setState({
-        pos: 0,
+        colPercs: changePercs(this.state.colPercs, pos, this.props.index),
+        pos,
       });
     } else {
+      /* ROW */
+      pos = 100 * (e.pageY / window.innerHeight);
+      for (let i = 0; i < this.props.index; i++) {
+        pos -= this.state.rowPercs[i];
+      }
       this.setState({
-        pos: myPos - this.cumulativePosition(this.state.index - 1, myPercs),
+        rowPercs: changePercs(this.state.rowPercs, pos, this.props.index),
+        pos,
       });
     }
 
-    /* dispatch the changes to the layout (either rowPercs or colPercs) */
-    this.props.dispatch(layoutPercentChange(this.state.isCol, this.state.index, this.state.pos));
     e.stopPropagation();
     e.preventDefault();
   },
 
   render: function () {
+    const margin = parseInt(getComputedStyle(document.body, null).margin, 10);
+    const colPercs = this.state.dragging ? this.state.colPercs : this.props.colPercs;
+    const rowPercs = this.state.dragging ? this.state.rowPercs : this.props.rowPercs;
+    const z = 1000000; /* ridiculous */
+    const halfIcon = 7.5;
+    let leftPos;
+    let topPos;
+    let percAbove = 0;
+    /* calculate the topPos and leftPos of this div */
+    if (this.props.isCol) {
+      let percLeft = 0;
+      for (let i = 0; i <= this.props.index; i++) {
+        percLeft += colPercs[i];
+      }
+      leftPos = (window.innerWidth * (percLeft / 100)) - halfIcon + margin;
+      topPos = (window.innerHeight / 2); // + (this.props.index * 15);
+    } else {
+      // const toremove = ((this.props.index + 1) * 7) - 4; // WTF
+      leftPos = (window.innerWidth / 2); // + (this.props.index * 50);
+      for (let i = 0; i <= this.props.index; i++) {
+        percAbove += rowPercs[i];
+      }
+      topPos = 'calc(' + this.makeVh(percAbove) + ' - ' + halfIcon.toString() + 'px + ' + margin.toString() + 'px - ' + ((percAbove / 100) * 3).toString() + 'px)';
+    }
+    let line = null;
+    if (this.state.dragging) {
+      if (this.props.isCol) {
+        line = (
+          <div
+            style = {{
+              height: '100%',
+              width: '2px', /* Line width */
+              backgroundColor: 'black',
+              left: leftPos + halfIcon - 1,
+              zIndex: z,
+              position: 'absolute',
+              top: 0,
+              // left: leftPos,
+            }}
+          />
+        );
+      } else {
+        line = (
+          <div
+            style = {{
+              width: '100%',
+              height: '2px', /* Line width */
+              backgroundColor: 'black',
+              left: 0,
+              zIndex: z,
+              position: 'absolute',
+              top: 'calc(' + this.makeVh(percAbove) + ' + ' + margin.toString() + 'px - ' + ((percAbove / 100) * 3).toString() + 'px - 2px)',
+            }}
+          />
+        );
+      }
+    }
     return (
       <div>
-        <canvas
-          id="Drag"
-          ref={(c) => this.canvas = c}
-          style={this.props.style}
+        <div
+          className = "dragHandle"
+          ref={(c) => this.div = c}
+          style = {{
+            position: 'absolute',
+            width: '15',
+            height: '15',
+            cursor: this.props.isCol ? 'col-resize' : 'row-resize',
+            // background: background,
+            left: leftPos,
+            top: topPos,
+            zIndex: z,
+          }}
         />
+        {line}
       </div>
     );
   },
@@ -121,5 +193,13 @@ export const Drag = React.createClass({
     }
     // console.log("cumPos", index, percs, cumPos)
     return cumPos;
+  },
+
+  makeVh: function (n) {
+    return (n.toString() + 'vh');
+  },
+
+  resizeFn: function () {
+    this.forceUpdate();
   },
 });

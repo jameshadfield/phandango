@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import {
-  layoutChange,
+  layoutPercentChange,
   turnOffCanvas,
   turnOnCanvas,
   toggleMetadataColumn,
@@ -137,8 +137,10 @@ const ConnectedLayout = connect(
     logoIsOn: state.layout.logoIsOn,
   }),
   (dispatch)=>({
+    // onSliderChange: (col, idx, e, value) =>
+    //   dispatch(layoutChange(col, idx, parseInt(value, 10))),
     onSliderChange: (col, idx, e, value) =>
-      dispatch(layoutChange(col, idx, parseInt(value, 10))),
+      dispatch(layoutPercentChange(col, idx, parseInt(value, 10))),
     toggleLogo: () =>
       dispatch(toggleLogo()),
   })

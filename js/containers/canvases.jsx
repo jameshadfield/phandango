@@ -70,16 +70,29 @@ export const CanvasContainer = React.createClass({ displayName: 'CanvasContainer
   },
 
   componentDidMount: function () {
-    window.onresize = this._resizeFn;
+    window.addEventListener('resize', this.resizeFn, false);
   },
-  componentWillUnmount: function () {
-    window.onresize = null;
+
+  componentWillUpdate() {
+    /* changing the key apparently causes
+     * all the children to re-render
+     * thus avoiding any canvas stretching when things update
+     * https://github.com/facebook/react/issues/3038
+     */
+    this.keyIdx += 1;
+    this.key = 'canvases' + this.keyIdx;
   },
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.resizeFn, false);
+  },
+
   getStyle: function (colIdx, rowIdx) {
     const sty = {
       width: this.percentize(this.props.colPercs[colIdx]),
-      height: 'calc(' + this.makeVh(this.props.rowPercs[rowIdx]) + ' - 7px)',
+      height: 'calc(' + this.makeVh(this.props.rowPercs[rowIdx]) + ' - 3px)',
       position: 'relative',
+      margin: '0',
     };
     if (colIdx < 2) {
       sty.float = 'left';
@@ -163,69 +176,28 @@ export const CanvasContainer = React.createClass({ displayName: 'CanvasContainer
       );
     }
 
-    // vertical resizer divs
+    /* resizing divs */
     const vresizers = [];
-    const vresizertops = [];
-    let count = 0;
-    const numVResizers = 2;
-    let iconOffset = 7.5;
-    if (numVResizers % 2 === 0) {
-      iconOffset = (numVResizers / 2) * 15;
-    }
-    for (let i = 0; i < numVResizers + 1; i++) {
-      const vresizertop = this.props.rowPercs[i] + count;
-      const toremove = ((i + 1) * 7) - 4;
-      const leftPos = ((window.innerWidth / 2) - iconOffset) + (i * 15);
-      let background = "url('img/Drag_circle_both.png') no-repeat center center";
-      if (i === 0) {
-        background =  "url('img/Drag_circle_up.png') no-repeat center center";
-      } else if (i === numVResizers - 1) {
-        background = "url('img/Drag_circle_down.png') no-repeat center center";
-      }
-      vresizertops[i] = 'calc(' + this.makeVh(vresizertop) + ' - ' + toremove.toString() + 'px)';
+    for (let i = 0; i < 2; i++) {
       vresizers[i] = (
         <ConnectedDrag
-          style={{ position: 'absolute', width: '15', height: '15', cursor: 'row-resize', background: background, left: leftPos, top: vresizertops[i] }}
           index={i}
           isCol={false}
-          key={'row' + i.toString() + 'drag'}
-          />
+          key={'row' + i.toString() + 'drag'}/>
       );
-      count = vresizertop;
     }
-
-    // horizontal resizer divs
     const hresizers = [];
-    const hresizerlefts = [];
-    count = 0;
-    const numHResizers = 2;
-    iconOffset = 7.5;
-    if (numVResizers % 2 === 0) {
-      iconOffset = (numHResizers / 2) * 15;
-    }
-    for (let i = 0; i < numHResizers + 1; i++) {
-      hresizerlefts[i] = this.props.colPercs[i] + count;
-      const topPos = ((window.innerHeight / 2) - iconOffset) + (i * 15);
-      let background = "url('img/Drag_circle_both.png') no-repeat center center";
-      if (i === 0) {
-        background = "url('img/Drag_circle_left.png') no-repeat center center";
-      } else if (i === numHResizers - 1) {
-        background = "url('img/Drag_circle_right.png') no-repeat center center";
-      }
-      const leftPos = (window.innerWidth * (hresizerlefts[i] / 100)) - 7.5;
+    for (let i = 0; i < 2; i++) {
       hresizers[i] = (
         <ConnectedDrag
-          style={{ position: 'absolute', width: '15', height: '15', cursor: 'col-resize', background: background, left: leftPos, top: topPos }}
           index={i}
           isCol={true}
-          key={'column' + i.toString() + 'drag'}
-        />
+          key={'col' + i.toString() + 'drag'}/>
       );
-      count = hresizerlefts[i];
     }
 
     return (
-      <div id="canvassesDiv" ref={(c) => this.node = c}>
+      <div id="canvassesDiv" ref={(c) => this.node = c} key={this.key}>
         <div className="newline" />
         {topRow}
         <div className="newline" />
@@ -241,7 +213,11 @@ export const CanvasContainer = React.createClass({ displayName: 'CanvasContainer
     );
   },
 
-  _resizeFn: function () {
+  keyIdx: 0,
+
+  key: 'canvases0',
+
+  resizeFn: function () {
     this.forceUpdate(); // is this enough?
   },
 

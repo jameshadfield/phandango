@@ -46,12 +46,16 @@ export function layout(state = init, action) {
   case 'computeLineGraph':
     newState = merge({}, state);
     newState.active.plots.line = true;
-    newState.rowPercs[2] = 15;
+    if (newState.rowPercs[2] < startingValues.rowPercs[2]) {
+      newState.rowPercs = changePercs(newState.rowPercs, startingValues.rowPercs[2], 2);
+    }
     return newState;
   case 'gwasData':
     newState = merge({}, state);
     newState.active.plots.gwas = true;
-    newState.rowPercs[2] = 15;
+    if (newState.rowPercs[2] < startingValues.rowPercs[2]) {
+      newState.rowPercs = changePercs(newState.rowPercs, startingValues.rowPercs[2], 2);
+    }
     return newState;
   case 'treeData':
     newState = merge({}, state);
@@ -75,16 +79,16 @@ export function layout(state = init, action) {
     newState.rowPercs = calculateNewPercs(state.rowPercs, 1, false);
     return newState;
   // modify percentages
-  case 'layoutColChange':
-    newState = merge({}, state);
-    newState.colPercs = distributeNewPercs(newState.colPercs, action.perc, action.idx);
-    // newState.colPercs[action.idx] = action.perc;
-    return newState;
-  case 'layoutRowChange':
-    newState = merge({}, state);
-    // newState.rowPercs[action.idx] = action.perc;
-    newState.rowPercs = distributeNewPercs(newState.rowPercs, action.perc, action.idx);
-    return newState;
+  // case 'layoutColChange':
+  //   newState = merge({}, state);
+  //   newState.colPercs = distributeNewPercs(newState.colPercs, action.perc, action.idx);
+  //   // newState.colPercs[action.idx] = action.perc;
+  //   return newState;
+  // case 'layoutRowChange':
+  //   newState = merge({}, state);
+  //   // newState.rowPercs[action.idx] = action.perc;
+  //   newState.rowPercs = distributeNewPercs(newState.rowPercs, action.perc, action.idx);
+  //   return newState;
   case 'layoutRowPercentChange':
     newState = merge({}, state);
     newState.rowPercs = changePercs(newState.rowPercs, action.perc, action.idx);
@@ -137,57 +141,62 @@ function calculateNewPercs(old, idxAdded, column) {
 
 function add(a, b) {return (a + b);} // http://stackoverflow.com/questions/1230233/how-to-find-the-sum-of-an-array-of-numbers
 
-function distributeNewPercs(oldVals, newVal, newIdx) {
-  const newVals = [ ...oldVals ];
-  newVals[newIdx] = newVal;
-  const spaceToFill = oldVals[newIdx] - newVal;
+// function distributeNewPercs(oldVals, newVal, newIdx) {
+//   const newVals = [ ...oldVals ];
+//   newVals[newIdx] = newVal;
+//   const spaceToFill = oldVals[newIdx] - newVal;
 
-  for (let i = 0; i < oldVals.length; i++) {
-    if (i === newIdx) {
-      continue;
-    }
-    newVals[i] = parseInt(oldVals[i] + spaceToFill * (oldVals[i] / 100), 10);
-  }
+//   for (let i = 0; i < oldVals.length; i++) {
+//     if (i === newIdx) {
+//       continue;
+//     }
+//     newVals[i] = parseInt(oldVals[i] + spaceToFill * (oldVals[i] / 100), 10);
+//   }
 
-  newVals[0] -= newVals.reduce(add, 0) - 100;
+//   newVals[0] -= newVals.reduce(add, 0) - 100;
 
-  return newVals;
-}
+//   return newVals;
+// }
 
-function changePercs(oldVals, newVal, newIdx) {
-  const newVals = [ ...oldVals ];
-  newVals[newIdx] = newVal;
-
-  if (newIdx+1==oldVals.length){
+export function changePercs(oldVals, nv, idx) {
+  const newVal = parseInt(nv, 10);
+  if (newVal === oldVals[idx]) {
     return oldVals;
   }
 
-  var valChange=newVal-oldVals[newIdx]
+  const newVals = [ ...oldVals ];
+  newVals[idx] = newVal;
 
-  // // newVals[newIdx] += valChange;
-  newVals[newIdx+1] = oldVals[newIdx+1]-valChange;
-
-  var oldtot=0.0
-  for (var i=0; i<oldVals.length; i++){
-    oldtot=oldtot+oldVals[i];
+  if (newVals[idx] < 0) {
+    newVals[idx] = 0;
   }
 
-  var newtot=0.0
-  for (var i=0; i<newVals.length; i++){
-    newtot=newtot+newVals[i];
+  // if (newIdx + 1 === oldVals.length) {
+  //   return oldVals;
+  // }
+
+  const delta = newVals[idx] - oldVals[idx];
+  /* delta > 0 iff element getting bigger */
+
+  /* now distribute delta to the previous or next element */
+  if (idx === oldVals.length - 1) {
+    /* i.e. we've modified the final element */
+    newVals[idx - 1] -= delta;
+  } else if (idx === 0) {
+    /* we've modified the top element */
+    newVals[1] -= delta;
+  } else {
+    /* we've modified a middle element
+     * remember the drag handle is below the element
+     * so always change the subsequent element
+     */
+    newVals[idx + 1] -= delta;
   }
 
-  //console.log("changePercs", newVal, oldVals, newVals, oldtot, newtot)
+  if (newVals.some((cv) => cv < 0)) {
+    return oldVals;
+  }
+
+  // console.log('changePercs (idx ', idx, ') ', delta, newVal, oldVals, newVals, oldVals.reduce(add, 0), newVals.reduce(add, 0));
   return newVals;
 }
-
-/*
-all cases in change values to defaults (set by constants, not in state)
-and the rest are scaled apropriately!
-metadata / blocks don't change anything
-plots add X% to rows and the rest accomodate them (scale by (100-X))
-annotation same as plots
-blocks adds X% to cols and meta (if E) and tree scale
-
-tree only 100,100
-*/
