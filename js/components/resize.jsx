@@ -20,12 +20,6 @@ export const Drag = React.createClass({
     isCol: React.PropTypes.bool.isRequired,
   },
 
-  getDefaultProps: function () {
-    return {
-      rowPercs: [ 15, 70, 15 ],
-    };
-  },
-
   getInitialState: function () {
     return {
       rowPercs: this.props.rowPercs,

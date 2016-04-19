@@ -1,10 +1,27 @@
 import merge from 'lodash/merge';
 
 const startingValues = {
-  colPercs: [ 20, 11, 69 ],
+  colPercs: [ 100, 0, 0 ],
+  rowPercs: [ 15, 77.5, 7.5 ],
+};
+
+const loadedValues = {
+  colPercs: [ 20, 15, 65 ],
   rowPercs: [ 15, 70, 15 ],
 };
 
+const idealCols = {
+  three: [ 20, 15, 65 ],
+  noMeta: [ 25, 0, 75 ],
+  noBlocks: [ 30, 70, 0 ],
+  noBlocksButKey: [ 30, 30, 40 ],
+};
+
+const idealRows = {
+  three: [ 15, 70, 15 ],
+  noGraph: [ 15, 78, 7 ],
+  noTree: [ 15, 5, 80 ],
+};
 
 const init = {
   active: {
@@ -33,62 +50,69 @@ export function layout(state = init, action) {
   case 'annotationData':
     newState = merge({}, state);
     newState.active.annotation = true;
-    newState.colPercs = calculateNewPercs(state.colPercs, 2, true);
-    newState.rowPercs = calculateNewPercs(state.rowPercs, 0, false);
+    newState.colPercs = newState.active.meta ? idealCols.three : idealCols.noMeta;
+    newState.rowPercs = idealRows.three;
     return newState;
   case 'roaryData': // fallthrough
   case 'gubbinsData':
     newState = merge({}, state);
     newState.active.blocks = true;
-    newState.colPercs = calculateNewPercs(state.colPercs, 2, true);
-    newState.rowPercs = calculateNewPercs(state.rowPercs, 1, false);
+    newState.colPercs = newState.active.meta ? idealCols.three : idealCols.noMeta;
     return newState;
   case 'computeLineGraph':
     newState = merge({}, state);
     newState.active.plots.line = true;
-    if (newState.rowPercs[2] < startingValues.rowPercs[2]) {
-      newState.rowPercs = changePercs(newState.rowPercs, startingValues.rowPercs[2], 2);
+    if (newState.rowPercs[2] < loadedValues.rowPercs[2]) {
+      newState.rowPercs = changePercs(newState.rowPercs, loadedValues.rowPercs[2], 2);
     }
     return newState;
   case 'gwasData':
     newState = merge({}, state);
     newState.active.plots.gwas = true;
-    if (newState.rowPercs[2] < startingValues.rowPercs[2]) {
-      newState.rowPercs = changePercs(newState.rowPercs, startingValues.rowPercs[2], 2);
+    if (newState.rowPercs[2] < loadedValues.rowPercs[2]) {
+      newState.rowPercs = changePercs(newState.rowPercs, loadedValues.rowPercs[2], 2);
     }
     return newState;
   case 'treeData':
     newState = merge({}, state);
     newState.active.tree = true;
-    newState.colPercs = calculateNewPercs(state.colPercs, 0, true);
-    newState.rowPercs = calculateNewPercs(state.rowPercs, 1, false);
+    if (!newState.colPercs[0]) {
+      newState.colPercs = newState.active.meta ? idealCols.three : idealCols.noMeta;
+    }
+    if (!newState.rowPercs[1]) {
+      newState.rowPercs = idealRows.three;
+    }
     return newState;
   case 'bratNextGenData':
     // copy and paste job of both blocks and metadata -- to imporve!
     newState = merge({}, state);
     newState.active.meta = true;
     newState.active.blocks = true;
-    newState.colPercs = calculateNewPercs(state.colPercs, 2, true);
-    newState.rowPercs = calculateNewPercs(state.rowPercs, 1, false);
-    newState.colPercs = calculateNewPercs(state.colPercs, 1, true);
+    newState.colPercs = idealCols.three;
+    // newState.colPercs = calculateNewPercs(state.colPercs, 2, true);
+    // newState.rowPercs = calculateNewPercs(state.rowPercs, 1, false);
+    // newState.colPercs = calculateNewPercs(state.colPercs, 1, true);
     return newState;
   case 'metaData':
     newState = merge({}, state);
     newState.active.meta = true;
-    newState.colPercs = calculateNewPercs(state.colPercs, 1, true);
-    newState.rowPercs = calculateNewPercs(state.rowPercs, 1, false);
+    /* we just want to ensure room for headers & middle panel (w+h) */
+    if (newState.rowPercs[0] < loadedValues.rowPercs[0]) {
+      newState.rowPercs = changePercs(newState.rowPercs, loadedValues.rowPercs[0], 0);
+    }
+    if (newState.rowPercs[1] < loadedValues.rowPercs[1]) {
+      newState.rowPercs = changePercs(newState.rowPercs, loadedValues.rowPercs[1], 1);
+    }
+    if (newState.colPercs[2]) {
+      /* plots / blocks / annotations have been loaded */
+      if (newState.colPercs[1] < loadedValues.colPercs[1]) {
+        newState.colPercs = changePercs(newState.colPercs, loadedValues.colPercs[1], 1);
+      }
+    } else {
+      newState.colPercs[0] = 30;
+      newState.colPercs[1] = 100 - newState.colPercs[0];
+    }
     return newState;
-  // modify percentages
-  // case 'layoutColChange':
-  //   newState = merge({}, state);
-  //   newState.colPercs = distributeNewPercs(newState.colPercs, action.perc, action.idx);
-  //   // newState.colPercs[action.idx] = action.perc;
-  //   return newState;
-  // case 'layoutRowChange':
-  //   newState = merge({}, state);
-  //   // newState.rowPercs[action.idx] = action.perc;
-  //   newState.rowPercs = distributeNewPercs(newState.rowPercs, action.perc, action.idx);
-  //   return newState;
   case 'layoutRowPercentChange':
     newState = merge({}, state);
     newState.rowPercs = changePercs(newState.rowPercs, action.perc, action.idx);
@@ -112,8 +136,14 @@ export function layout(state = init, action) {
   case 'toggleMetaKey':
     newState = merge({}, state);
     // if metadata is currently active, then we can toggle:
+    newState.active.blocks = true;
     if (state.active.meta) {
       newState.active.metaKey = !state.active.metaKey;
+      if (newState.active.metaKey && !newState.colPercs[2]) {
+        newState.colPercs = idealCols.noBlocksButKey;
+      } else if (!newState.active.metaKey && !newState.active.annotation) {
+        newState.colPercs = idealCols.noBlocks;
+      }
     }
     return newState;
   case 'toggleLogo':
@@ -125,38 +155,7 @@ export function layout(state = init, action) {
   }
 }
 
-
-function calculateNewPercs(old, idxAdded, column) {
-  let ret;
-  if (old[idxAdded]) {
-    // console.log('what should I do?');
-    ret = old;
-  } else {
-    [ ...ret ] = old;
-    ret[idxAdded] = column ? startingValues.colPercs[idxAdded] : startingValues.rowPercs[idxAdded];
-    // divy up the newly added value and remove it from the current ones (right?)
-  }
-  return ret;
-}
-
-function add(a, b) {return (a + b);} // http://stackoverflow.com/questions/1230233/how-to-find-the-sum-of-an-array-of-numbers
-
-// function distributeNewPercs(oldVals, newVal, newIdx) {
-//   const newVals = [ ...oldVals ];
-//   newVals[newIdx] = newVal;
-//   const spaceToFill = oldVals[newIdx] - newVal;
-
-//   for (let i = 0; i < oldVals.length; i++) {
-//     if (i === newIdx) {
-//       continue;
-//     }
-//     newVals[i] = parseInt(oldVals[i] + spaceToFill * (oldVals[i] / 100), 10);
-//   }
-
-//   newVals[0] -= newVals.reduce(add, 0) - 100;
-
-//   return newVals;
-// }
+// function add(a, b) {return (a + b);} // http://stackoverflow.com/questions/1230233/how-to-find-the-sum-of-an-array-of-numbers
 
 export function changePercs(oldVals, nv, idx) {
   const newVal = parseInt(nv, 10);
@@ -170,10 +169,6 @@ export function changePercs(oldVals, nv, idx) {
   if (newVals[idx] < 0) {
     newVals[idx] = 0;
   }
-
-  // if (newIdx + 1 === oldVals.length) {
-  //   return oldVals;
-  // }
 
   const delta = newVals[idx] - oldVals[idx];
   /* delta > 0 iff element getting bigger */
