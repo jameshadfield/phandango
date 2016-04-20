@@ -48,6 +48,8 @@ function phylogeny(state = initialPhylogenyState, action) {
       newickString: action.data,
       fileName: action.fileName,
     });
+  case 'clearTree':
+    return initialPhylogenyState;
   case 'updatedTaxaPositions':
     const ret = merge({}, state);
     ret.activeTaxa = action.activeTaxa;

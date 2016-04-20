@@ -47,12 +47,46 @@ export function layout(state = init, action) {
     const r = init;
     r.active.plots = {};
     return r;
+
+  case 'clearMetadata':
+    newState = merge({}, state);
+    newState.active.meta = false;
+    newState.colPercs = removeElement(newState.colPercs, 1);
+    return newState;
+
+  case 'clearAnnotationData':
+    newState = merge({}, state);
+    newState.active.annotation = false;
+    newState.colPercs = removeElement(newState.colPercs, 2);
+    return newState;
+
+  case 'clearBlockData':
+    newState = merge({}, state);
+    newState.active.blocks = false;
+    return newState;
+
+  case 'clearPlotData':
+    newState = merge({}, state);
+    newState.active.plots.gwas = false;
+    newState.active.plots.line = false;
+    newState.rowPercs = removeElement(newState.rowPercs, 2);
+    return newState;
+
+  case 'clearTree':
+    newState = merge({}, state);
+    newState.active.plots.tree = false;
+    newState.active.meta = false;
+    newState.colPercs = removeElement(newState.colPercs, 0);
+    newState.colPercs = removeElement(newState.colPercs, 1);
+    return newState;
+
   case 'annotationData':
     newState = merge({}, state);
     newState.active.annotation = true;
     newState.colPercs = newState.active.meta ? idealCols.three : idealCols.noMeta;
     // newState.rowPercs = idealRows.three;
     return newState;
+
   case 'roaryData': // fallthrough
   case 'gubbinsData':
     newState = merge({}, state);
@@ -188,6 +222,46 @@ export function changePercs(oldVals, nv, idx) {
      * so always change the subsequent element
      */
     newVals[idx + 1] -= delta;
+  }
+
+  if (newVals.some((cv) => cv < 0)) {
+    return oldVals;
+  }
+
+  if (newVals.reduce(add, 0) > 100) {
+    return oldVals;
+  }
+
+  // console.log('changePercs (idx ', idx, ') ', delta, newVal, oldVals, newVals, oldVals.reduce(add, 0), newVals.reduce(add, 0));
+  return newVals;
+}
+
+
+
+export function removeElement(oldVals, idx) {
+
+  if (oldVals[idx] === 0) {
+    return oldVals;
+  }
+
+  const newVals = [ ...oldVals ];
+  newVals[idx] = 0;
+
+  const delta = oldVals[idx];
+  /* delta > 0 iff element getting bigger */
+
+  /* now distribute delta to the previous and next elements proportionately */
+  var oldTotal=0.0
+  for (var i=0; i<oldVals.length; i++){
+    if (i!=idx){
+      oldTotal+=oldVals[i]
+    }
+  }
+
+  for (var i=0; i<oldVals.length; i++){
+    if (i!=idx){
+      newVals[i]=(oldVals[i]/oldTotal)*100
+    }
   }
 
   if (newVals.some((cv) => cv < 0)) {

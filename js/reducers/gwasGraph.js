@@ -4,6 +4,8 @@ export function gwasGraph(state = initialState, action) {
   switch (action.type) {
   case 'clearAllData':
     return initialState;
+  case 'clearPlotData':
+    return initialState;
   case 'gwasData':
     return ({
       values: action.data,

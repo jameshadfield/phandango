@@ -6,6 +6,12 @@ import {
   turnOnCanvas,
   toggleMetadataColumn,
   toggleAllMetaColumns,
+  clearMetadata,
+  clearAllData,
+  clearTree,
+  clearAnnotationData,
+  clearBlockData,
+  clearPlotData,
   showBlocks,
   toggleLogo,
 } from '../actions/general';
@@ -13,6 +19,9 @@ import { route } from '../actions/general';
 import Slider from 'material-ui/lib/slider';
 import Toggle from 'material-ui/lib/toggle';
 import FlatButton from 'material-ui/lib/flat-button';
+import Clear from 'material-ui/lib/svg-icons/content/clear';
+import Add from 'material-ui/lib/svg-icons/content/add';
+import Remove from 'material-ui/lib/svg-icons/content/remove';
 
 /*
  * Settings: Main Settings Container
@@ -66,6 +75,7 @@ const Layout = React.createClass({
     className: PropTypes.string,
     toggleLogo: PropTypes.func.isRequired,
     logoIsOn: PropTypes.bool.isRequired,
+    clearAllData: PropTypes.func.isRequired,
   },
 
   // componentWillReceiveProps(newProps) {
@@ -109,6 +119,21 @@ const Layout = React.createClass({
     return (
       <div className={this.props.className}>
         <h3>Panel Layout</h3>
+        <hr/>
+        <FlatButton
+          label="Clear all data"
+          labelPosition="after"
+          icon={<Clear />}
+          onClick={this.props.clearAllData.bind(this)}
+        />
+        <hr/>
+        <FlatButton
+          label="Clear tree"
+          labelPosition="after"
+          icon={<Clear />}
+          onClick={this.props.clearTree.bind(this)}
+        />
+        <hr/>
         <h4>columns:</h4>
         {Columns}
         <h4>rows:</h4>
@@ -143,6 +168,12 @@ const ConnectedLayout = connect(
       dispatch(layoutPercentChange(col, idx, parseInt(value, 10))),
     toggleLogo: () =>
       dispatch(toggleLogo()),
+    clearAllData: () => {
+      dispatch(clearAllData());
+    },
+    clearTree: () => {
+      dispatch(clearTree());
+    },
   })
 )(Layout);
 
@@ -164,6 +195,7 @@ const Metadata = React.createClass({
     toggleMeta: PropTypes.func.isRequired,
     toggleMetaHeader: PropTypes.func.isRequired,
     toggleAllMetaColumns: PropTypes.func.isRequired,
+    clearMetadata: PropTypes.func.isRequired,
   },
 
   // componentWillReceiveProps(newProps) {
@@ -175,6 +207,13 @@ const Metadata = React.createClass({
     return (
       <div className={this.props.className}>
         <h3>Metadata</h3>
+        <hr/>
+        <FlatButton
+          label="Clear metadata"
+          labelPosition="after"
+          icon={<Clear />}
+          onClick={this.props.clearMetadata.bind(this)}
+        />
         <hr/>
         {/* main on-off switch */}
         <Toggle
@@ -189,10 +228,14 @@ const Metadata = React.createClass({
         <hr/>
         <FlatButton
           label="Turn off all columns"
+          labelPosition="after"
+          icon={<Remove />}
           onClick={this.props.toggleAllMetaColumns.bind(this, false)}
         />
         <FlatButton
           label="Turn on all columns"
+          labelPosition="after"
+          icon={<Add />}
           onClick={this.props.toggleAllMetaColumns.bind(this, true)}
         />
         <hr/>
@@ -233,6 +276,9 @@ const ConnectedMetadata = connect(
     },
     toggleAllMetaColumns: (newBool) => {
       dispatch(toggleAllMetaColumns(newBool));
+    },
+    clearMetadata: () => {
+      dispatch(clearMetadata());
     },
   })
 )(Metadata);
@@ -295,6 +341,27 @@ const Blocks = (props) => {
     <div className={props.className}>
       <h3>Block options:</h3>
       <hr/>
+      <FlatButton
+        label="Clear annotation data"
+        labelPosition="after"
+        icon={<Clear />}
+        onClick={props.clearAnnotationData.bind(this)}
+      />
+      <hr/>
+      <FlatButton
+        label="Clear block data"
+        labelPosition="after"
+        icon={<Clear />}
+        onClick={props.clearBlockData.bind(this)}
+      />
+      <hr/>
+      <FlatButton
+        label="Clear plot data"
+        labelPosition="after"
+        icon={<Clear />}
+        onClick={props.clearPlotData.bind(this)}
+      />
+      <hr/>
       <h4>Data to display:</h4>
       {Object.keys(available).map((dataName, idx) => {
         let newLabel = dataName;
@@ -320,6 +387,9 @@ Blocks.propTypes = {
   dataAvailable: PropTypes.object,
   currentDataType: PropTypes.string,
   show: PropTypes.func,
+  clearAnnotationData: PropTypes.func,
+  clearBlockData: PropTypes.func,
+  clearPlotData: PropTypes.func,
 };
 
 const ConnectedBlocks = connect(
@@ -331,6 +401,15 @@ const ConnectedBlocks = connect(
   (dispatch)=>({
     show: (name) => {
       dispatch(showBlocks(name));
+    },
+    clearAnnotationData: () => {
+      dispatch(clearAnnotationData());
+    },
+    clearBlockData: () => {
+      dispatch(clearBlockData());
+    },
+    clearPlotData: () => {
+      dispatch(clearPlotData());
     },
   })
 )(Blocks);

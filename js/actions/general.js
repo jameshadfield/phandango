@@ -43,12 +43,36 @@ export function toggleAllMetaColumns(newBool) {
   return ({ type: 'toggleAllMetaColumns', newBool });
 }
 
+export function clearAllData() {
+  return ({ type: 'clearAllData' });
+}
+
+export function clearTree() {
+  return ({ type: 'clearTree' });
+}
+
+export function clearMetadata() {
+  return ({ type: 'clearMetadata' });
+}
+
 export function toggleMetaKey() {
   return ({ type: 'toggleMetaKey' });
 }
 
 export function toggleLogo() {
   return ({ type: 'toggleLogo' });
+}
+
+export function clearAnnotationData() {
+  return ({ type: 'clearAnnotationData' });
+}
+
+export function clearBlockData() {
+  return ({ type: 'clearBlockData' });
+}
+
+export function clearPlotData() {
+  return ({ type: 'clearPlotData' });
 }
 
 /* showBlocks is a thunk in order to gain access to dispatch for multiple dispatches */

@@ -42,6 +42,8 @@ export function metadata(state = initialMetadataState, action) {
       newStateX.toggles[idx] = action.newBool;
     }
     return newStateX;
+  case 'clearMetadata':
+    return initialMetadataState;
   case 'bratNextGenData':
     const stateWithBrat = appendBratData(cloneDeep(state, true), action.metadata);
     stateWithBrat.rawBratData = cloneDeep(action.metadata, true);
