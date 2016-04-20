@@ -51,7 +51,7 @@ export function layout(state = init, action) {
     newState = merge({}, state);
     newState.active.annotation = true;
     newState.colPercs = newState.active.meta ? idealCols.three : idealCols.noMeta;
-    newState.rowPercs = idealRows.three;
+    // newState.rowPercs = idealRows.three;
     return newState;
   case 'roaryData': // fallthrough
   case 'gubbinsData':
@@ -69,7 +69,9 @@ export function layout(state = init, action) {
   case 'gwasData':
     newState = merge({}, state);
     newState.active.plots.gwas = true;
-    if (newState.rowPercs[2] < loadedValues.rowPercs[2]) {
+    if (!newState.active.tree) {
+      newState.rowPercs = idealRows.noTree;
+    } else if (newState.rowPercs[2] < loadedValues.rowPercs[2]) {
       newState.rowPercs = changePercs(newState.rowPercs, loadedValues.rowPercs[2], 2);
     }
     return newState;
@@ -155,7 +157,7 @@ export function layout(state = init, action) {
   }
 }
 
-// function add(a, b) {return (a + b);} // http://stackoverflow.com/questions/1230233/how-to-find-the-sum-of-an-array-of-numbers
+function add(a, b) {return (a + b);} // http://stackoverflow.com/questions/1230233/how-to-find-the-sum-of-an-array-of-numbers
 
 export function changePercs(oldVals, nv, idx) {
   const newVal = parseInt(nv, 10);
@@ -189,6 +191,10 @@ export function changePercs(oldVals, nv, idx) {
   }
 
   if (newVals.some((cv) => cv < 0)) {
+    return oldVals;
+  }
+
+  if (newVals.reduce(add, 0) > 100) {
     return oldVals;
   }
 

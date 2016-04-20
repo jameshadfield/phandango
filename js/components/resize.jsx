@@ -104,7 +104,7 @@ export const Drag = React.createClass({
     const margin = parseInt(getComputedStyle(document.body, null).margin, 10);
     const colPercs = this.state.dragging ? this.state.colPercs : this.props.colPercs;
     const rowPercs = this.state.dragging ? this.state.rowPercs : this.props.rowPercs;
-    const z = 1000000; /* ridiculous */
+    const z = 90;
     const halfIcon = 7.5;
     let leftPos;
     let topPos;

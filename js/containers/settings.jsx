@@ -39,7 +39,7 @@ export const Settings = React.createClass({
     const panelClassName = 'col-xs-3 bgwhite border noOverflow';
     // <ConnectedLoadedComponents className={panelClassName} />
     return (
-      <div className="fullpage padding10 content" style={{ zIndex: 100 }} ref={(c) => this.node = c} key="myKey">
+      <div className="fullpage padding10 content" style={{ zIndex: 1000 }} ref={(c) => this.node = c} key="myKey">
         <div className="row" >
           <ConnectedLayout className={panelClassName} />
           <ConnectedMetadata className={panelClassName} />
@@ -172,7 +172,6 @@ const Metadata = React.createClass({
 
   render() {
     if ( (!this.props.fileName) || this.props.fileName === 'not loaded') { return false; }
-    const allTogglesOff = this.props.toggles.every( function (e) {return e === false;} );
     return (
       <div className={this.props.className}>
         <h3>Metadata</h3>

@@ -7,7 +7,7 @@ renders a div with text
 export const InfoTip = ({ x, y, disp }) => {
   const style = {
     position: 'absolute',
-    zIndex: 10,
+    zIndex: 100,
     left: x,
     top: y,
     background: 'black',
