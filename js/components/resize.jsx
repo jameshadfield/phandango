@@ -57,6 +57,7 @@ export const Drag = React.createClass({
     }
     this.setState({
       dragging: true,
+      pos: undefined,
     });
     e.stopPropagation();
     e.preventDefault();
@@ -66,7 +67,9 @@ export const Drag = React.createClass({
     this.setState({ dragging: false });
     e.stopPropagation();
     e.preventDefault();
-    this.props.dispatch(layoutPercentChange(this.props.isCol, this.props.index, this.state.pos));
+    if (this.state.pos) {
+      this.props.dispatch(layoutPercentChange(this.props.isCol, this.props.index, this.state.pos));
+    }
   },
 
   onMouseMove: function (e) {
