@@ -43,8 +43,13 @@ export function toggleAllMetaColumns(newBool) {
   return ({ type: 'toggleAllMetaColumns', newBool });
 }
 
-export function clearAllData() {
-  return ({ type: 'clearAllData' });
+export function clearAllData(returnToLandingPage) {
+  return function (dispatch) {
+    dispatch({ type: 'clearAllData' });
+    if (returnToLandingPage) {
+      dispatch({ type: 'newPage', name: 'landing' });
+    }
+  };
 }
 
 export function clearTree() {

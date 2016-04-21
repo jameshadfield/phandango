@@ -50,7 +50,7 @@ export function gffParser(gffString) {
             colour: node ? colourDB.block.gubbinsNode : colourDB.block.gubbinsLeaf,
             taxa: taxa,
             node: node,
-            info: { Coordinates:  words[3]+".."+words[4], NLL: parseInt(nll, 10), nSNPs: numSnps, nTaxa: taxa.length},
+            info: { Coordinates: words[3] + '..' + words[4], NLL: parseInt(nll, 10), nSNPs: numSnps, nTaxa: taxa.length },
           })
         );
       } else {

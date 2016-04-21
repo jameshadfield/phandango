@@ -15,7 +15,7 @@ import {
   showBlocks,
   toggleLogo,
 } from '../actions/general';
-import { route } from '../actions/general';
+// import { route } from '../actions/general';
 import Slider from 'material-ui/lib/slider';
 import Toggle from 'material-ui/lib/toggle';
 import FlatButton from 'material-ui/lib/flat-button';
@@ -34,13 +34,13 @@ export const Settings = React.createClass({
   },
   componentDidMount: function () {
     // modal-like "click to close"
-    this.node.addEventListener('click', (e) => {
-      // react id of div: this.node._reactInternalComponent._rootNodeID
-      // react id of where click was fired: e.target.attributes[1].nodeValue
-      if (e.target.attributes[1].nodeValue === this.node._reactInternalComponent._rootNodeID) {
-        this.props.dispatch(route('canvases'));
-      }
-    }, false);
+    // this.node.addEventListener('click', (e) => {
+    //   // react id of div: this.node._reactInternalComponent._rootNodeID
+    //   // react id of where click was fired: e.target.attributes[1].nodeValue
+    //   if (e.target.attributes[1].nodeValue === this.node._reactInternalComponent._rootNodeID) {
+    //     this.props.dispatch(route('canvases'));
+    //   }
+    // }, false);
   },
 
   render: function () {
@@ -76,6 +76,7 @@ const Layout = React.createClass({
     toggleLogo: PropTypes.func.isRequired,
     logoIsOn: PropTypes.bool.isRequired,
     clearAllData: PropTypes.func.isRequired,
+    clearTree: PropTypes.func.isRequired,
   },
 
   // componentWillReceiveProps(newProps) {
@@ -124,7 +125,7 @@ const Layout = React.createClass({
           label="Clear all data"
           labelPosition="after"
           icon={<Clear />}
-          onClick={this.props.clearAllData.bind(this)}
+          onClick={this.props.clearAllData}
         />
         <hr/>
         <FlatButton
@@ -149,10 +150,10 @@ const Layout = React.createClass({
           defaultToggled={this.props.logoIsOn}
           onToggle={this.props.toggleLogo}
         />
+        <p/>
       </div>
     );
   },
-
 });
 
 const ConnectedLayout = connect(
@@ -169,7 +170,7 @@ const ConnectedLayout = connect(
     toggleLogo: () =>
       dispatch(toggleLogo()),
     clearAllData: () => {
-      dispatch(clearAllData());
+      dispatch(clearAllData(true));
     },
     clearTree: () => {
       dispatch(clearTree());

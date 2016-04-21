@@ -9,8 +9,8 @@ export function genomeInfo(state = initialInfo, action) {
   switch (action.type) {
   case 'clearAllData':
     return initialInfo;
-  case 'clearAnnotationData':
-    return initialInfo;
+  // case 'clearAnnotationData':
+  //   return initialInfo;
   case 'annotationData': // fallthrough
   case 'roaryData': // fallthrough
   case 'gubbinsData':
