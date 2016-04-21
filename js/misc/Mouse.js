@@ -61,7 +61,9 @@ export function Mouse(canvas, dispatch, onClickCallback, smallGenome = false) {
     }
   }, true);
 
-  canvas.addEventListener('mousewheel', function (e) {
+  var mousewheelevt=(/Firefox/i.test(navigator.userAgent))? "DOMMouseScroll" : "mousewheel" //FF doesn't recognize mousewheel as of FF3.x
+  
+  canvas.addEventListener(mousewheelevt, function (e) {
     e.preventDefault();
     if (myState.zooming) return;
     const mouse = myState.getMouse(e, canvas);

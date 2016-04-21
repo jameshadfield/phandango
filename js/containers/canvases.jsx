@@ -72,6 +72,8 @@ export const CanvasContainer = React.createClass({ displayName: 'CanvasContainer
 
   componentDidMount: function () {
     // window.addEventListener('resize', this.resizeFn, false);
+    // document.documentElement.style.overflow = 'hidden';  // firefox, chrome
+    // document.body.scroll = "no"; // ie only
   },
 
   // componentWillUpdate() {
