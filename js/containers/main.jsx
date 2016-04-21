@@ -224,11 +224,20 @@ export const MainReactElement = React.createClass({ displayName: 'Main_React_Ele
     const a = document.createElement('a');
     const windowURL = window.URL || window.webkitURL;
     const myURL = windowURL.createObjectURL(new Blob([ mySVG ], { type: 'text/plain;charset=utf-8' }));
-    a.href = myURL;
-    a.download = 'Phandango.svg';
+    // a.href = myURL;
+    // a.download = 'Phandango.svg';
+
+    a.setAttribute("href", myURL);
+    a.setAttribute("download", 'Phandango.svg');
+    document.body.appendChild(a);
     a.click();
-    // window.open(a);
-    window.URL.revokeObjectURL(myURL);
+    setTimeout(function(){
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(myURL);  
+    }, 100);
+    // document.body.removeChild(a);
+    // // window.open(a);
+    // window.URL.revokeObjectURL(myURL);
   },
 
   filesDropped(e) {
