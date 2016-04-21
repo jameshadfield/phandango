@@ -93,7 +93,8 @@ export const Drag = React.createClass({
   },
 
   render: function () {
-    const margin = parseInt(getComputedStyle(document.body, null).margin, 10);
+    const leftMargin = parseInt(getComputedStyle(document.body, null).getPropertyValue("margin-left"), 10);
+    const topMargin = parseInt(getComputedStyle(document.body, null).getPropertyValue("margin-top"), 10);
     const z = 90;
     const halfIcon = 7.5;
     let leftPos;
@@ -106,7 +107,7 @@ export const Drag = React.createClass({
       for (let i = 0; i <= this.props.index; i++) {
         percLeft += percs[i];
       }
-      leftPos = (window.innerWidth * (percLeft / 100)) - halfIcon + margin;
+      leftPos = (window.innerWidth * (percLeft / 100)) - halfIcon + leftMargin;
       topPos = (window.innerHeight / 2); // + (this.props.index * 15);
     } else {
       const percs = this.state.dragging ? this.state.percs : this.props.rowPercs;
@@ -115,9 +116,10 @@ export const Drag = React.createClass({
       for (let i = 0; i <= this.props.index; i++) {
         percAbove += percs[i];
       }
-      topPos = 'calc(' + this.makeVh(percAbove) + ' - ' + halfIcon.toString() + 'px + ' + margin.toString() + 'px - ' + ((percAbove / 100) * 3).toString() + 'px)';
+      topPos = 'calc(' + this.makeVh(percAbove) + ' - ' + halfIcon.toString() + 'px + ' + topMargin.toString() + 'px - ' + ((percAbove / 100) * 3).toString() + 'px)';
     }
     let line = null;
+
     if (this.state.dragging) {
       if (this.props.isCol) {
         line = (
@@ -144,7 +146,7 @@ export const Drag = React.createClass({
               left: 0,
               zIndex: z,
               position: 'absolute',
-              top: 'calc(' + this.makeVh(percAbove) + ' + ' + margin.toString() + 'px - ' + ((percAbove / 100) * 3).toString() + 'px - 2px)',
+              top: 'calc(' + this.makeVh(percAbove) + ' + ' + topMargin.toString() + 'px - ' + ((percAbove / 100) * 3).toString() + 'px - 2px)',
             }}
           />
         );
