@@ -53,6 +53,7 @@ export const Settings = React.createClass({
           <ConnectedLayout className={panelClassName} />
           <ConnectedMetadata className={panelClassName} />
           <ConnectedBlocks className={panelClassName} />
+          <ConnectedLoadedComponents className={panelClassName} />
         </div>
       </div>
     );
@@ -289,44 +290,50 @@ const ConnectedMetadata = connect(
  * Loaded components container:
  * just a list of what's loaded and the associated filenames
 */
-// const DisplayFileName = ({ active, component, file }) => (
-//   <p style={ active ? {} : { textDecoration: 'line-through' } }>
-//     <strong>{component}:</strong> {file.split('/').slice(-1)[0]}
-//   </p>
-// );
-// DisplayFileName.propTypes =  {
-//   active: PropTypes.bool,
-//   component: PropTypes.string,
-//   file: PropTypes.string,
-// };
+const DisplayFileName = ({ active, component, file }) => (
+  <p style={ active ? {} : { textDecoration: 'line-through' } }>
+    <strong>{component}:</strong> {file.split('/').slice(-1)[0]}
+  </p>
+);
+DisplayFileName.propTypes =  {
+  active: PropTypes.bool,
+  component: PropTypes.string,
+  file: PropTypes.string,
+};
 
-// const LoadedComponents = (props) => (
-//   <div className={props.className}>
-//     <h3>Loaded Data:</h3>
-//     <hr/>
-//     <DisplayFileName component="Phylogeny" file={props.phylogeny} active={props.active.tree} />
-//     <DisplayFileName component="Metadata" file={props.metadata} active={props.active.meta} />
-//     <DisplayFileName component="Annotation" file={props.annotation} active={props.active.annotation} />
-//   </div>
-// );
-// LoadedComponents.propTypes = {
-//   className: PropTypes.string,
-//   active: PropTypes.arrayOf(PropTypes.bool).isRequired, // which components are loaded...
-//   metadata: PropTypes.string,
-//   annotation: PropTypes.string,
-//   phylogeny: PropTypes.string,
-//   plots: PropTypes.arrayOf(PropTypes.string),
-//   blocks: PropTypes.arrayOf(PropTypes.string),
-// };
+const LoadedComponents = (props) => (
+  <div className={props.className}>
+    <h3>Loaded Data:</h3>
+    <hr/>
+    <DisplayFileName component="Phylogeny" file={props.phylogeny} active={props.active.tree} />
+    <DisplayFileName component="Metadata" file={props.metadata} active={props.active.meta} />
+    <DisplayFileName component="Annotation" file={props.annotation} active={props.active.annotation} />
+    {Object.keys(props.blocks).map((dataName, idx) => {
+      return (
+        <DisplayFileName component={dataName} key={idx} file={props.blocks[dataName]} active={true} />
+      );
+    })}
+  </div>
+);
+LoadedComponents.propTypes = {
+  className: PropTypes.string,
+  active: PropTypes.object.isRequired, // which components are loaded...
+  metadata: PropTypes.string,
+  annotation: PropTypes.string,
+  phylogeny: PropTypes.string,
+  plots: PropTypes.arrayOf(PropTypes.string),
+  blocks: PropTypes.object,
+};
 
-// const ConnectedLoadedComponents = connect(
-//   (state)=>({
-//     active: state.layout.active,
-//     phylogeny: state.phylogeny.fileName,
-//     metadata: state.metadata.fileName,
-//     annotation: state.annotation.fileName,
-//   })
-// )(LoadedComponents);
+const ConnectedLoadedComponents = connect(
+  (state)=>({
+    active: state.layout.active,
+    phylogeny: state.phylogeny.fileName,
+    metadata: state.metadata.fileName,
+    annotation: state.annotation.fileName,
+    blocks: state.blocks.fileNames,
+  })
+)(LoadedComponents);
 
 
 /* ConnectedBlocks component!

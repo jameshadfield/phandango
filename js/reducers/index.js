@@ -36,6 +36,8 @@ function annotation(state = { data: [], fileName: '' }, action) {
   switch (action.type) {
   case 'annotationData':
     return { data: action.data, fileName: action.fileName };
+  case 'clearAnnotationData':
+    return { data: [], fileName: '' };
   default:
     return state;
   }
