@@ -43,7 +43,7 @@ export function Mouse(canvas, dispatch, onClickCallback, smallGenome = false) {
       const my = mouse.y;
       const dragOffsetx = mx - myState.dragoffx;
       if (smallGenome) {
-        dispatch(genomePan(dragOffsetx / (canvas.width * 0.8), true));
+        dispatch(genomePan(dragOffsetx / (canvas.width - 20), true));
       } else {
         dispatch(genomePan(-dragOffsetx / canvas.width));
       }
