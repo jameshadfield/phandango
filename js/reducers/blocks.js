@@ -45,6 +45,10 @@ export function blocks(state = initialBlockState, action) {
     ret.dataAvailable.gubbins = true;
     ret.dataAvailable.gubbinsPerTaxa = true;
     ret.fileNames.gubbins = action.fileName;
+    if (ret.fileNames.gubbinsPerTaxa!=action.fileName){
+      ret.gubbinsPerTaxa = {};
+      ret.fileNames.gubbinsPerTaxa = action.fileName;
+    }
     return ret;
   case 'roaryData':
     ret.blocks = action.data;
@@ -97,6 +101,8 @@ export function blocks(state = initialBlockState, action) {
       ret.dataType = 'gubbins';
       ret.blocksArePerTaxa = false;
       ret.blockFillAlpha = 0.4;
+      // ret.gubbinsPerTaxa = collapseGubbins(ret.gubbins);
+      
     } else if (action.name === 'gubbinsPerTaxa') {
       // console.log('showing gubbinsPerTaxa data now...');
       ret = {};
@@ -111,7 +117,7 @@ export function blocks(state = initialBlockState, action) {
       ret.dataType = 'gubbinsPerTaxa';
       ret.blocksArePerTaxa = true;
       ret.blockFillAlpha = 1;
-      if (!Object.keys(ret.gubbinsPerTaxa).length) {
+      if (!Object.keys(ret.gubbinsPerTaxa).length || Object.keys(ret.gubbinsPerTaxa).length===0) {
         ret.gubbinsPerTaxa = collapseGubbins(ret.gubbins);
         // ret.dataAvailable.gubbinsPerTaxa = true;
       }
@@ -155,9 +161,9 @@ function mergeBratNextGenAndGubbins(state) {
   ret.blocksArePerTaxa = true;
   ret.blockFillAlpha = 1;
   ret.merged = state.merged;
-  if (!Object.keys(ret.merged).length) {
+  if (!Object.keys(ret.merged).length || !ret.gubbinsPerTaxa.length || ret.gubbinsPerTaxa.length===0) {
     /* remember that bratNextGen is, by default, perTaxa, but we have to collapse gubbins */
-    if (!ret.gubbinsPerTaxa.length) {
+    if (!ret.gubbinsPerTaxa.length || ret.gubbinsPerTaxa.length===0) {
       ret.gubbinsPerTaxa = collapseGubbins(ret.gubbins);
       // ret.dataAvailable.gubbinsPerTaxa = true;
     }

@@ -34,12 +34,13 @@ export function lineGraph(state = initialState, action) {
       subValues: undefined,
     };
 
-    if (ret.preComputedValues[action.blockType]) {
+    if (ret.preComputedValues[action.blockType] && ret.preComputedValues[action.blockType].fileName===action.fileName) {
+      // console.log("Same data, not recomputing line graph", action.fileName, action.blockType);
       ret.max = ret.preComputedValues[action.blockType].max;
       ret.values = [ ret.preComputedValues[action.blockType].values ];
       ret.lineColours = [ colourDB.line[action.blockType] ];
     } else {
-      // console.log('computing plot value for ', action.blockType);
+      // console.log("Changed data, recomputing line graph", action.fileName, action.blockType);
       const plotValues = computeLine(action.genomeLength, action.blocksArePerTaxa, action.blocks);
       ret.max = findMaxValueOfArray(plotValues);
       ret.values = [ plotValues ];
@@ -47,6 +48,7 @@ export function lineGraph(state = initialState, action) {
       ret.preComputedValues[action.blockType] = {
         max: ret.max,
         values: plotValues,
+        fileName: action.fileName
       };
     }
     return ret;

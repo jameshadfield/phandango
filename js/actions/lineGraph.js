@@ -9,6 +9,7 @@ export function computeLineGraph(wait) {
           blocks: getState().blocks.blocks,
           blocksArePerTaxa: getState().blocks.blocksArePerTaxa,
           genomeLength: getState().genomeInfo.genomeLength,
+          fileName: getState().blocks.fileNames[getState().blocks.dataType],
         }
       );}, 100);
     } else {
@@ -18,6 +19,7 @@ export function computeLineGraph(wait) {
         blocks: getState().blocks.blocks,
         blocksArePerTaxa: getState().blocks.blocksArePerTaxa,
         genomeLength: getState().genomeInfo.genomeLength,
+        fileName: getState().blocks.fileNames[getState().blocks.dataType],
       });
     }
   };
@@ -28,15 +30,16 @@ export function computeMergedLineGraph(blockTypes) {
   return function (dispatch, getState) {
     // check the lines have been calculated!
     for (const blockType of blockTypes) {
-      if (!getState().lineGraph.preComputedValues[blockType]) {
+      // if (!getState().lineGraph.preComputedValues[blockType]) {
         dispatch({
           type: 'computeLineGraph',
           blockType,
           blocks: getState().blocks[blockType],
           blocksArePerTaxa: true,
           genomeLength: getState().genomeInfo.genomeLength,
+          fileName: getState().blocks.fileNames[blockType],
         });
-      }
+      // }
     }
     // now we know the lines have been calculated...
     dispatch({
