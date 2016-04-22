@@ -22,8 +22,6 @@ export const Drag = React.createClass({
 
   getInitialState: function () {
     return {
-      rowPercs: this.props.rowPercs,
-      colPercs: this.props.colPercs,
       dragging: false,
     };
   },
@@ -58,6 +56,7 @@ export const Drag = React.createClass({
     this.setState({
       dragging: true,
       pos: undefined,
+      percs: this.props.isCol ? this.props.colPercs : this.props.rowPercs,
     });
     e.stopPropagation();
     e.preventDefault();
@@ -77,36 +76,24 @@ export const Drag = React.createClass({
       return;
     }
     let pos; /* measured in percentages */
-    if (this.props.isCol) {
-      /* COLUMN */
-      pos = 100 * (e.pageX / window.innerWidth);
-      for (let i = 0; i < this.props.index; i++) {
-        pos -= this.state.colPercs[i];
-      }
-      this.setState({
-        colPercs: changePercs(this.state.colPercs, pos, this.props.index),
-        pos,
-      });
-    } else {
-      /* ROW */
-      pos = 100 * (e.pageY / window.innerHeight);
-      for (let i = 0; i < this.props.index; i++) {
-        pos -= this.state.rowPercs[i];
-      }
-      this.setState({
-        rowPercs: changePercs(this.state.rowPercs, pos, this.props.index),
-        pos,
-      });
+    // this.state.percs has been set now!
+    pos = this.props.isCol ? 100 * (e.pageX / window.innerWidth) : 100 * (e.pageY / window.innerHeight);
+    for (let i = 0; i < this.props.index; i++) {
+      pos -= this.state.percs[i];
     }
 
+    // console.log(pos, this.props.index, this.state.colPercs, changePercs(this.state.colPercs, pos, this.props.index));
+
+    this.setState({
+      percs: changePercs(this.state.percs, pos, this.props.index),
+      pos,
+    });
     e.stopPropagation();
     e.preventDefault();
   },
 
   render: function () {
     const margin = parseInt(getComputedStyle(document.body, null).margin, 10);
-    const colPercs = this.state.dragging ? this.state.colPercs : this.props.colPercs;
-    const rowPercs = this.state.dragging ? this.state.rowPercs : this.props.rowPercs;
     const z = 90;
     const halfIcon = 7.5;
     let leftPos;
@@ -114,17 +101,19 @@ export const Drag = React.createClass({
     let percAbove = 0;
     /* calculate the topPos and leftPos of this div */
     if (this.props.isCol) {
+      const percs = this.state.dragging ? this.state.percs : this.props.colPercs;
       let percLeft = 0;
       for (let i = 0; i <= this.props.index; i++) {
-        percLeft += colPercs[i];
+        percLeft += percs[i];
       }
       leftPos = (window.innerWidth * (percLeft / 100)) - halfIcon + margin;
       topPos = (window.innerHeight / 2); // + (this.props.index * 15);
     } else {
+      const percs = this.state.dragging ? this.state.percs : this.props.rowPercs;
       // const toremove = ((this.props.index + 1) * 7) - 4; // WTF
       leftPos = (window.innerWidth / 2); // + (this.props.index * 50);
       for (let i = 0; i <= this.props.index; i++) {
-        percAbove += rowPercs[i];
+        percAbove += percs[i];
       }
       topPos = 'calc(' + this.makeVh(percAbove) + ' - ' + halfIcon.toString() + 'px + ' + margin.toString() + 'px - ' + ((percAbove / 100) * 3).toString() + 'px)';
     }
