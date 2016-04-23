@@ -4,6 +4,7 @@ import { setYValues } from '../actions/phylocanvasBridge';
 import { computeSubLineGraph } from '../actions/lineGraph';
 import PhyloCanvas from 'phylocanvas';
 import ContextMenuPlugin from 'phylocanvas-plugin-context-menu';
+import isEqual from 'lodash/isEqual';
 PhyloCanvas.plugin(ContextMenuPlugin);
 
 
@@ -12,6 +13,7 @@ export const Phylogeny = React.createClass({
     newickString: React.PropTypes.string,
     style: React.PropTypes.object,
     dispatch: React.PropTypes.func.isRequired,
+    active: React.PropTypes.object.isRequired,
   },
 
   componentDidMount: function () {
@@ -29,12 +31,24 @@ export const Phylogeny = React.createClass({
     }
   },
 
-  componentDidUpdate() {
-    // if (props.newickString) {
-    //   this.phylocanvas.load(props.newickString);
-    // }
-    this.redraw();
+  componentWillReceiveProps(nextProps) {
+    if (!isEqual(nextProps.newickString, this.props.newickString)) {
+      this.phylocanvas.load(nextProps.newickString);
+    } else if (!isEqual(nextProps.active, this.props.active)) {
+      this.phylocanvas.resizeToContainer();
+      this.phylocanvas.draw(true);
+    } else { // style change
+      this.phylocanvas.resizeToContainer();
+      this.phylocanvas.draw();
+    }
+    this.props.dispatch(setYValues(this.phylocanvas));
   },
+
+  // componentDidUpdate() {
+  //   this.phylocanvas.resizeToContainer();
+  //   this.phylocanvas.draw();
+  //   this.props.dispatch(setYValues(this.phylocanvas));
+  // },
 
   componentWillUnmount() {
     window.removeEventListener('pdf', this.svgdraw, false);
@@ -44,12 +58,6 @@ export const Phylogeny = React.createClass({
     return (
       <div style={this.props.style} id="phyloDiv"></div>
     );
-  },
-
-  redraw() {
-    this.phylocanvas.resizeToContainer();
-    // this.phylocanvas.fitInPanel()
-    this.phylocanvas.draw(true);  // draw(true) forces phylocanvas.fitInPanel()
   },
 
   svgdraw() {

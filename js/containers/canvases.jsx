@@ -28,6 +28,7 @@ const ConnectedAnnotation = connect((state)=>({
 }))(Annotation);
 const ConnectedPhylogeny = connect((state)=>({
   newickString: state.phylogeny.newickString,
+  active: state.layout.active,
 }))(Phylogeny);
 const ConnectedBlocks = connect((state)=>({
   visibleGenome: state.genomeInfo.visibleGenome,
