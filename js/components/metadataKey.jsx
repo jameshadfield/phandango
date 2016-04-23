@@ -16,6 +16,7 @@ export const MetadataKey = React.createClass({
   componentDidMount: function () { // don't use fat arrow
     this.forceUpdate();
     window.addEventListener('pdf', this.svgdraw, false);
+    window.addEventListener('resize', this.resizeFn, false);
   },
 
 
@@ -32,6 +33,7 @@ export const MetadataKey = React.createClass({
 
   componentWillUnmount() {
     window.removeEventListener('pdf', this.svgdraw, false);
+    window.removeEventListener('resize', this.resizeFn, false);
   },
 
   render() {
@@ -44,6 +46,10 @@ export const MetadataKey = React.createClass({
         />
       </div>
     );
+  },
+
+  resizeFn: function () {
+    this.forceUpdate();
   },
 
   svgdraw() {

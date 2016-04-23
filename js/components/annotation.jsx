@@ -31,6 +31,7 @@ export const Annotation = React.createClass({
       },
       true);
     window.addEventListener('pdf', this.svgdraw, false);
+    window.addEventListener('resize', this.resizeFn, false);
     this.forceUpdate();
   },
 
@@ -54,6 +55,7 @@ export const Annotation = React.createClass({
 
   componentWillUnmount() {
     window.removeEventListener('pdf', this.svgdraw, false);
+    window.removeEventListener('resize', this.resizeFn, false);
   },
 
   onMouseMove(e) {
@@ -153,6 +155,10 @@ export const Annotation = React.createClass({
 
   initCanvasXY: helper.initCanvasXY,
   clearCanvas: helper.clearCanvas,
+
+  resizeFn: function () {
+    this.forceUpdate();
+  },
 
   svgdraw() {
     this.canvasPos = this.canvas.getBoundingClientRect();

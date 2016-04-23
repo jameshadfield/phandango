@@ -29,14 +29,13 @@ export const Metadata = React.createClass({
    * the initial render()
    */
   componentDidMount: function () { // don't use fat arrow
-    // this.canvas = ReactDOM.findDOMNode(this); // replaced by ref
-    // this.initCanvasXY();
     this.canvas.addEventListener('mousemove', this.mouseMove, true);
     // when the mouse leaves we need to remove any selection
     this.canvas.addEventListener('mouseout',
       () => {this.setState({ displayInfoActive: false });},
       true);
     window.addEventListener('pdf', this.svgdraw, false);
+    window.addEventListener('resize', this.resizeFn, false);
     this.forceUpdate();
   },
 
@@ -54,6 +53,7 @@ export const Metadata = React.createClass({
 
   componentWillUnmount() {
     window.removeEventListener('pdf', this.svgdraw, false);
+    window.removeEventListener('resize', this.resizeFn, false);
   },
 
   render() {
@@ -96,6 +96,10 @@ export const Metadata = React.createClass({
         />
       </div>
     );
+  },
+
+  resizeFn: function () {
+    this.forceUpdate();
   },
 
   svgdraw() {

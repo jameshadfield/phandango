@@ -70,21 +70,26 @@ export const CanvasContainer = React.createClass({ displayName: 'CanvasContainer
   },
 
   componentDidMount: function () {
-    window.addEventListener('resize', this.resizeFn, false);
+    // window.addEventListener('resize', this.resizeFn, false);
   },
 
-  componentWillUpdate() {
-    /* changing the key apparently causes
-     * all the children to re-render
-     * thus avoiding any canvas stretching when things update
-     * https://github.com/facebook/react/issues/3038
-     */
-    this.keyIdx += 1;
-    this.key = 'canvases' + this.keyIdx;
+  // componentWillUpdate() {
+  //   /* changing the key apparently causes
+  //    * all the children to re-render
+  //    * thus avoiding any canvas stretching when things update
+  //    * https://github.com/facebook/react/issues/3038
+  //    */
+  //   this.keyIdx += 1;
+  //   this.key = 'canvases' + this.keyIdx;
+  // },
+
+  componentDidUpdate() {
+    console.log('canvases.jsx did update');
+    window.dispatchEvent(new Event('resize')); // same event as window resizing :)
   },
 
   componentWillUnmount() {
-    window.removeEventListener('resize', this.resizeFn, false);
+    // window.removeEventListener('resize', this.resizeFn, false);
   },
 
   getStyle: function (colIdx, rowIdx) {

@@ -22,6 +22,7 @@ export const Gwas = React.createClass({
       this.drawWrapper(this.props);
     }
     window.addEventListener('pdf', this.svgdraw, false);
+    window.addEventListener('resize', this.resizeFn, false);
   },
 
   shouldComponentUpdate() {
@@ -37,6 +38,7 @@ export const Gwas = React.createClass({
 
   componentWillUnmount() {
     window.removeEventListener('pdf', this.svgdraw, false);
+    window.removeEventListener('resize', this.resizeFn, false);
   },
 
   render() {
@@ -49,6 +51,10 @@ export const Gwas = React.createClass({
         />
       </div>
     );
+  },
+
+  resizeFn: function () {
+    this.forceUpdate();
   },
 
   svgdraw() {

@@ -18,6 +18,7 @@ export const Cartoon = React.createClass({
     this.initCanvasXY(); // expensive way to handle resizing
     this.redraw(this.canvas.getContext('2d'), this.props);
     window.addEventListener('pdf', this.svgdraw, false);
+    window.addEventListener('resize', this.resizeFn, false);
   },
 
   componentWillUpdate(props) {
@@ -28,6 +29,7 @@ export const Cartoon = React.createClass({
 
   componentWillUnmount() {
     window.removeEventListener('pdf', this.svgdraw, false);
+    window.removeEventListener('resize', this.resizeFn, false);
   },
 
   render() {
@@ -40,6 +42,10 @@ export const Cartoon = React.createClass({
         />
       </div>
     );
+  },
+
+  resizeFn: function () {
+    this.forceUpdate();
   },
 
   svgdraw() {

@@ -37,6 +37,7 @@ export const Blocks = React.createClass({
     }
     this.redraw(this.canvas.getContext('2d'), this.props, this.state);
     window.addEventListener('pdf', this.svgdraw, false);
+    window.addEventListener('resize', this.resizeFn, false);
   },
 
   // shouldComponentUpdate() {
@@ -52,6 +53,7 @@ export const Blocks = React.createClass({
 
   componentWillUnmount() {
     window.removeEventListener('pdf', this.svgdraw, false);
+    window.removeEventListener('resize', this.resizeFn, false);
   },
 
   onClickCallback(mx, my) {
@@ -108,6 +110,10 @@ export const Blocks = React.createClass({
         )}
       </div>
     );
+  },
+
+  resizeFn: function () {
+    this.forceUpdate();
   },
 
   svgdraw() {

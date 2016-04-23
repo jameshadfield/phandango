@@ -15,6 +15,7 @@ export const Phylogeny = React.createClass({
   },
 
   componentDidMount: function () {
+    console.log('PC did mount');
     this.phylocanvas = PhyloCanvas.createTree(ReactDOM.findDOMNode(this), { fillCanvas: true });
     this.phylocanvas.setTreeType('rectangular');
     this.phylocanvas.setNodeSize(0);
@@ -28,13 +29,11 @@ export const Phylogeny = React.createClass({
     }
   },
 
-  componentDidUpdate(props) {
-    if (props.newickString) {
-      this.phylocanvas.load(props.newickString);
-    }
-    this.phylocanvas.resizeToContainer();
-    // this.phylocanvas.fitInPanel()
-    this.phylocanvas.draw();  // draw(true) forces phylocanvas.fitInPanel()
+  componentDidUpdate() {
+    // if (props.newickString) {
+    //   this.phylocanvas.load(props.newickString);
+    // }
+    this.redraw();
   },
 
   componentWillUnmount() {
@@ -45,6 +44,12 @@ export const Phylogeny = React.createClass({
     return (
       <div style={this.props.style} id="phyloDiv"></div>
     );
+  },
+
+  redraw() {
+    this.phylocanvas.resizeToContainer();
+    // this.phylocanvas.fitInPanel()
+    this.phylocanvas.draw(true);  // draw(true) forces phylocanvas.fitInPanel()
   },
 
   svgdraw() {
