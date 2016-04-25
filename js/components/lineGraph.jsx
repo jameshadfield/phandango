@@ -72,7 +72,7 @@ export const Line = React.createClass({
     for (let idx = 0; idx < props.values.length; idx++) {
       this.drawLineGraph(this.canvas, props.visibleGenome, props.values[idx], props.max, props.lineColours[idx], pdfoutput);
     }
-    if (props.subValues) {
+    if (props.subValues && props.subValues.length!=0) {
       this.drawLineGraph(this.canvas, props.visibleGenome, props.subValues, props.max, 'gray', pdfoutput);
     }
     this.drawGraphAxis(this.canvas, {
