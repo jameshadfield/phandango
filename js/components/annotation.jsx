@@ -376,7 +376,13 @@ function drawScale(context, canvasWidth, visibleGenome, scaleYvalue, numticksOpt
     context.lineTo(tickpos, scaleYvalue + 10);
     context.stroke();
     context.save();
-    context.translate(tickpos, scaleYvalue + 12 );
+    let offset = 0;
+    if (ticknum === 0) {
+      offset = 5;
+    } else if (ticknum + 1 === numticks) {
+      offset = -5;
+    }
+    context.translate(tickpos + offset, scaleYvalue + 12 );
     context.rotate(Math.PI * 1.5);
     context.fillStyle = 'black';
     context.textBaseline = 'middle';

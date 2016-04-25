@@ -46,7 +46,8 @@ export function drawGraphAxis(canvas, {
   context.textAlign = 'left';
   context.font = '12px Helvetica';
   for (let i = 0; i < numTicks; ++i) {
-    context.fillText(tickNums[i] + suffix, 5, tickPixels[i]);
+    const offset = i + 1 === numTicks ? 5 : 0;
+    context.fillText(tickNums[i] + suffix, 5, tickPixels[i] + offset);
   }
 
   context.restore();
