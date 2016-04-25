@@ -5,6 +5,14 @@ export function Mouse(canvas, dispatch, onClickCallback, smallGenome = false) {
   const myState = this;
   this.dragging = false;
   this.zooming = false;
+  this.debounceTimer = null;
+  this.shouldZoom = true;
+
+  this.debounce = function (time = 100) {
+    this.shouldZoom = false;
+    // clearTimeout(this.debounceTimer);
+    this.debounceTimer = setTimeout(() => this.shouldZoom = true, time);
+  };
 
   canvas.addEventListener('selectstart', function (e) {
     e.preventDefault(); return false;
@@ -61,22 +69,45 @@ export function Mouse(canvas, dispatch, onClickCallback, smallGenome = false) {
     // const my = mouse.y;
     // var mousex = mx - canvas.offsetLeft;
     // var mousey = my - canvas.offsetTop;
-    let delta = 0; // 1 || -1. 1: zoom in
-    if (e.wheelDelta) { /* IE/Opera. */
-      delta = e.wheelDelta / 120;
-    } else if (e.detail) { /** Mozilla case. */
-      delta = -e.detail / 3;
-    }
-    // console.log('zooming! original mouse delta:', delta, 'e:', e);
-    delta = delta > 0 ? 1 : -1; // 1: zoom in, -1: out
+    // let delta = 0; // 1 || -1. 1: zoom in
+    // if (e.wheelDelta) { /* IE/Opera. */
+    //   delta = e.wheelDelta / 120;
+    // } else if (e.detail) { /** Mozilla case. */
+    //   delta = -e.detail / 3;
+    // }
+    // // console.log('zooming! original mouse delta:', delta, 'e:', e);
+    // delta = delta > 0 ? 1 : -1; // 1: zoom in, -1: out
+    const delta = normalizeMousewheel(e);
+    // console.log('delta:', delta);
     myState.zooming = true;
-    if (smallGenome) {
-      dispatch(genomeZoom(delta, 0.5)); /* always zoom into center of visible */
-    } else {
-      dispatch(genomeZoom(delta, mx / canvas.width));
+
+    if (myState.shouldZoom) {
+      if (smallGenome) {
+        dispatch(genomeZoom(delta, 0.5)); /* always zoom into center of visible */
+      } else {
+        dispatch(genomeZoom(delta, mx / canvas.width));
+      }
     }
+    myState.debounce(30); // modify myState.shouldZoom on a bounce timer
     myState.zooming = false;
   }, false);
+}
+
+
+// http://stackoverflow.com/questions/5527601/normalizing-mousewheel-speed-across-browsers
+function normalizeMousewheel(e) {
+  let d = e.detail;
+  let w = e.wheelDelta;
+  const n = 225;
+  const n1 = n - 1;
+
+  // Normalize delta
+  const f = w / d;
+  d = d ? w ? d / f : -d / 1.35 : w / 120;
+  // Quadratic scale if |d| > 1
+  d = d < 1 ? d < -1 ? (-Math.pow(d, 2) - n1) / n : d : (Math.pow(d, 2) + n1) / n;
+  // Delta *should* not be greater than 2...
+  return (Math.min(Math.max(d / 2, -1), 1));
 }
 
 

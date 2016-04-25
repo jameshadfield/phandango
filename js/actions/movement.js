@@ -57,17 +57,20 @@ export function genomeZoom(delta, fracInCanvas) {
       dispatch( notificationNew('can\'t zoom in to less than 1000bp'));
       return;
     }
-    const multiplier = 2;   // each zoom shows X times as much / half as much of the viewport
+    // const multiplier = 2;   // each zoom shows X times as much / half as much of the viewport
+    const deltaModifier = 1.5; // has to shift abs(delta) from [0,2] -> (1, x)
+    const multiplier = delta > 0 ? delta + deltaModifier : delta * -1 + deltaModifier;
     // console.log('ZOOM delta '+delta+' fracInCanvas '+fracInCanvas)
     const bpLeftOfMouseX = fracInCanvas * (visibleGenome[1] - visibleGenome[0]);
     const bpRightOfMouseX = (visibleGenome[1] - visibleGenome[0]) - bpLeftOfMouseX;
     const baseAtMouseX = bpLeftOfMouseX + visibleGenome[0];
     let newVisibleGenome;
-    if (delta > 0) {
+    if (delta > 0) { // zooming in
       newVisibleGenome = [ baseAtMouseX - parseInt(bpLeftOfMouseX / multiplier, 10), baseAtMouseX + parseInt(bpRightOfMouseX / multiplier, 10) ];
     } else {
       newVisibleGenome = [ baseAtMouseX - parseInt(bpLeftOfMouseX * multiplier, 10), baseAtMouseX + parseInt(bpRightOfMouseX * multiplier, 10) ];
     }
+
     // need some checking here -- don't want to zoom in too much and don't want to zoom out too much!
     if (newVisibleGenome[1] - newVisibleGenome[0] < minimumBp) {
       newVisibleGenome = [ baseAtMouseX - minimumBp / 2, baseAtMouseX + minimumBp / 2 ];
