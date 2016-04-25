@@ -12,6 +12,17 @@ A interactive viewer for population-scale genomic data linked together by a phyl
 #### Motivation
 This was originally written to help explore recombination in populations of bacteria using [gubbins](https://github.com/sanger-pathogens/gubbins) in the context of the bacteria's phylogeny. We found that the ability to interact with the data allows much easier and faster understanding. It has since been expanded to visualise a number of other formats and data types, with more on the way.
 
+#### What's new (v0.8.x)
+* Firefox support!
+* better zooming on trackpads
+* better phylocanvas layout
+
+#### What's new (v0.7.x)
+* panels can be resized by dragging on the transparent gray circles at the edges of each panel
+* default layout now better represents loaded data
+* you can now drag + zoom on the small genome (top left)
+* more options in the settings panel
+
 #### What's new (v0.6.x)
 * SVG output by pressing "p"
 * Multi-contig GFF parsing
