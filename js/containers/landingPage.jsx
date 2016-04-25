@@ -25,10 +25,6 @@ export const LandingPage = React.createClass({
           Interactive visualization of genome phylogenies
         </h2>
 
-        <h3 className="light">
-          (formerly known as <a href="https://jameshadfield.github.io/phandango/v02x.html">JScandy</a>)
-        </h3>
-
         <AnimatedLogo w={600} h={200} interval={2000} animate={!!navigator.userAgent.match(/WebKit/i)}/>
         <p/>
 
