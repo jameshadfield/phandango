@@ -17,7 +17,7 @@ export const Phylogeny = React.createClass({
   },
 
   componentDidMount: function () {
-    console.log('PC did mount');
+    // console.log('PC did mount');
     this.phylocanvas = PhyloCanvas.createTree(ReactDOM.findDOMNode(this), { fillCanvas: true });
     this.phylocanvas.setTreeType('rectangular');
     this.phylocanvas.setNodeSize(0);
@@ -32,7 +32,7 @@ export const Phylogeny = React.createClass({
   },
 
   componentWillReceiveProps(nextProps) {
-    console.log('PC will receive props')
+    // console.log('PC will receive props')
     if (!isEqual(nextProps.newickString, this.props.newickString)) {
       this.phylocanvas.load(nextProps.newickString);
     } else if (!isEqual(nextProps.active, this.props.active)) {

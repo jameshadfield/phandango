@@ -85,7 +85,7 @@ export const CanvasContainer = React.createClass({ displayName: 'CanvasContainer
   // },
 
   componentDidUpdate() {
-    console.log('canvases.jsx did update');
+    // console.log('canvases.jsx did update');
     window.dispatchEvent(new Event('resize')); // same event as window resizing :)
   },
 
