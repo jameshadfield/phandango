@@ -98,7 +98,7 @@ export const CanvasContainer = React.createClass({ displayName: 'CanvasContainer
       width: this.percentize(this.props.colPercs[colIdx]),
       height: 'calc(' + this.makeVh(this.props.rowPercs[rowIdx]) + ' - 3px)',
       position: 'relative',
-      margin: '0',
+      margin: '0px',
     };
     if (colIdx < 2) {
       sty.float = 'left';

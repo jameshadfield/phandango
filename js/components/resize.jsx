@@ -157,8 +157,8 @@ export const Drag = React.createClass({
           ref={(c) => this.div = c}
           style = {{
             position: 'absolute',
-            width: '15',
-            height: '15',
+            width: '15px',
+            height: '15px',
             cursor: this.props.isCol ? 'col-resize' : 'row-resize',
             // background: background,
             left: leftPos,
