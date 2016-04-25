@@ -32,6 +32,7 @@ export const Phylogeny = React.createClass({
   },
 
   componentWillReceiveProps(nextProps) {
+    console.log('PC will receive props')
     if (!isEqual(nextProps.newickString, this.props.newickString)) {
       this.phylocanvas.load(nextProps.newickString);
     } else if (!isEqual(nextProps.active, this.props.active)) {
@@ -77,6 +78,12 @@ export const Phylogeny = React.createClass({
     const currentHeight = window.svgCtx.height;
     this.phylocanvas.canvas = window.svgCtx;
 
+    // console.log('old device pixel ratio:', window.devicePixelRatio);
+    // console.log('old PC backing store pixel ratio:', this.phylocanvas.canvas.canvas.backingStorePixelRatio);
+    // this.phylocanvas.canvas.backingStorePixelRatio = 1;
+    const oldWindowDevicePixelRatio = window.devicePixelRatio;
+    window.devicePixelRatio = 1;
+
     // Have to change the font to Helvetica or it won't open in Illustrator
     this.phylocanvas.font = 'Helvetica';
 
@@ -110,6 +117,7 @@ export const Phylogeny = React.createClass({
     window.svgCtx.height = currentHeight;
 
     this.phylocanvas.canvas = tempPhylocanvas;
+    window.devicePixelRatio = oldWindowDevicePixelRatio;
     setCanvasToBranches(this.phylocanvas.root, this.phylocanvas.canvas);
   },
 
