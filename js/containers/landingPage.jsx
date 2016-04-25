@@ -6,9 +6,18 @@ import { AnimatedLogo } from '../components/logo';
 export const LandingPage = React.createClass({
   propTypes: {
     goToPage: React.PropTypes.func.isRequired,
+    browserMessage: React.PropTypes.string
   },
 
   render() {
+    let browserMessage = null;
+    if (this.props.browserMessage) {
+      browserMessage = (
+        <strong>
+          Please note, we have not tested phandango on your browser - {this.props.browserMessage}. Let us know if anything is amiss!
+        </strong>
+      );
+    }
     return (
       <div className="center" style={{ paddingTop: '15vh' }}>
 
@@ -27,6 +36,8 @@ export const LandingPage = React.createClass({
         <h2 className="light">
           drop your data on to begin
         </h2>
+
+        {browserMessage}
 
         <p style={{ color: '#225ea8' }}>
           <a className="pointer" onClick={()=>this.props.goToPage('about')}>About (incl. data formats)</a>

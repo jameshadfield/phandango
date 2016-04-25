@@ -115,6 +115,7 @@ export const MainReactElement = React.createClass({ displayName: 'Main_React_Ele
     page: React.PropTypes.string.isRequired,
     dispatch: React.PropTypes.func.isRequired,
     spinner: React.PropTypes.number,
+    browserMessage: React.PropTypes.string,
   },
   componentDidMount: function () {
     document.addEventListener('dragover', (e) => {e.preventDefault();}, false);
@@ -126,7 +127,7 @@ export const MainReactElement = React.createClass({ displayName: 'Main_React_Ele
     switch (this.props.page) {
     case 'landing':
       window.ga('send', 'pageview', '/landing');
-      injectedPage = <ConnectedLandingPage />;
+      injectedPage = <ConnectedLandingPage browserMessage={this.props.browserMessage}/>;
       break;
     case 'about':
       window.ga('send', 'pageview', '/about');
@@ -227,13 +228,13 @@ export const MainReactElement = React.createClass({ displayName: 'Main_React_Ele
     // a.href = myURL;
     // a.download = 'Phandango.svg';
 
-    a.setAttribute("href", myURL);
-    a.setAttribute("download", 'Phandango.svg');
+    a.setAttribute('href', myURL);
+    a.setAttribute('download', 'Phandango.svg');
     document.body.appendChild(a);
     a.click();
-    setTimeout(function(){
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(myURL);  
+    setTimeout(function () {
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(myURL);
     }, 100);
     // document.body.removeChild(a);
     // // window.open(a);

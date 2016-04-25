@@ -93,8 +93,8 @@ export const Drag = React.createClass({
   },
 
   render: function () {
-    const leftMargin = parseInt(getComputedStyle(document.body, null).getPropertyValue("margin-left"), 10);
-    const topMargin = parseInt(getComputedStyle(document.body, null).getPropertyValue("margin-top"), 10);
+    const leftMargin = parseInt(getComputedStyle(document.body, null).getPropertyValue('margin-left'), 10);
+    const topMargin = parseInt(getComputedStyle(document.body, null).getPropertyValue('margin-top'), 10);
     const z = 90;
     const halfIcon = 7.5;
     let leftPos;
