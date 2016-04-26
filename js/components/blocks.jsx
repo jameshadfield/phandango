@@ -156,14 +156,14 @@ export const Blocks = React.createClass({
         my >= blocks[idx].y1 &&
         my <= (blocks[idx].y2)
         ) {
-        return ({
-          x1: blocks[idx].x1,
-          x2: blocks[idx].x2,
-          y1: blocks[idx].y1,
-          y2: blocks[idx].y2,
-          info: blocks[idx].info,
-        });
-        // blocks[idx]; // reference
+        // return ({
+        //   x1: blocks[idx].x1,
+        //   x2: blocks[idx].x2,
+        //   y1: blocks[idx].y1,
+        //   y2: blocks[idx].y2,
+        //   info: blocks[idx].info,
+        // });
+        return (blocks[idx]); // reference
       }
     }
     // nothing selected! (fallthrough)

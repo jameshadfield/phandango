@@ -368,7 +368,7 @@ function drawScale(context, canvasWidth, visibleGenome, scaleYvalue, numticksOpt
       tickval = tickval / 1000;
       tickval = String(+ tickval.toFixed(roundto)) + 'kb';
     } else { // bp
-      tickval = String(+ tickval.toFixed(roundto)) + 'bp';
+      tickval = String(+ tickval.toFixed(0)) + 'bp';
     }
     // console.log('tick position: '+tickpos+' tick value '+tickval)
     context.beginPath();
