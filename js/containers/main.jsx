@@ -220,25 +220,27 @@ export const MainReactElement = React.createClass({ displayName: 'Main_React_Ele
     window.dispatchEvent(pdfEvent);
 
     const mySVG = window.svgCtx.getSerializedSvg(true);
-    // console.log(mySVG);
-
+    let myURL = undefined;
     const a = document.createElement('a');
-    const windowURL = window.URL || window.webkitURL;
-    const myURL = windowURL.createObjectURL(new Blob([ mySVG ], { type: 'text/plain;charset=utf-8' }));
-    // a.href = myURL;
-    // a.download = 'Phandango.svg';
+    if (a.download !== undefined) {
+      const blob = new Blob([ mySVG ], { type: 'text/plain;charset=utf-8' });
+      myURL = window.URL.createObjectURL(blob);
+      a.setAttribute('href', myURL);
+      a.download = 'Phandango.svg';
+    } else {
+      const svgData = 'data:application/svg;charset=utf-8,' + encodeURIComponent(mySVG);
+      a.setAttribute('href', svgData);
+    }
 
-    a.setAttribute('href', myURL);
-    a.setAttribute('download', 'Phandango.svg');
+    // a.setAttribute('target', '_blank');
     document.body.appendChild(a);
     a.click();
     setTimeout(function () {
+      if (myURL) {
+        window.URL.revokeObjectURL(myURL);
+      }
       document.body.removeChild(a);
-      window.URL.revokeObjectURL(myURL);
     }, 100);
-    // document.body.removeChild(a);
-    // // window.open(a);
-    // window.URL.revokeObjectURL(myURL);
   },
 
   filesDropped(e) {
