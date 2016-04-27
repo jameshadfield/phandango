@@ -35,21 +35,22 @@ export const Phylogeny = React.createClass({
     // console.log('PC will receive props')
     if (!isEqual(nextProps.newickString, this.props.newickString)) {
       this.phylocanvas.load(nextProps.newickString);
+      this.props.dispatch(setYValues(this.phylocanvas));
     } else if (!isEqual(nextProps.active, this.props.active)) {
-      this.phylocanvas.resizeToContainer();
+      // timeout needed as the DIV has not yet changed!
+      // so when this fires, the DIV has been flushed to the DOM
+      window.setTimeout(function () {
+        // console.log('timeout hit');
+        this.phylocanvas.resizeToContainer();
+        this.phylocanvas.draw(true);
+        this.props.dispatch(setYValues(this.phylocanvas));
+      }.bind(this), 100);
       this.phylocanvas.draw(true);
     } else { // style change
-      this.phylocanvas.resizeToContainer();
       this.phylocanvas.draw();
+      this.props.dispatch(setYValues(this.phylocanvas));
     }
-    this.props.dispatch(setYValues(this.phylocanvas));
   },
-
-  // componentDidUpdate() {
-  //   this.phylocanvas.resizeToContainer();
-  //   this.phylocanvas.draw();
-  //   this.props.dispatch(setYValues(this.phylocanvas));
-  // },
 
   componentWillUnmount() {
     window.removeEventListener('pdf', this.svgdraw, false);
