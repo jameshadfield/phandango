@@ -175,13 +175,14 @@ const Headers = React.createClass({
         zIndex: 10,
         left: xOffset + parseInt(blocksize / 2, 10) + offsetLeft + heightOfOneLineDiv / 2,
         top: offsetTop + this.props.y - heightOfOneLineDiv,
+        height: heightOfOneLineDiv,
         // background: 'black',
         // color: 'white',
         pointerEvents: 'none',
         transform: 'rotate(270deg)',
         transformOrigin: 'left bottom 0',
       };
-      return <div key={idx} style={style}>{cv}</div>;
+      return <div key={idx} abc={20} style={style}>{cv}</div>;
     });
 
     return (
