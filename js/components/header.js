@@ -34,14 +34,11 @@ export const Header = ({ pageName, goToPage, treeActive, annotationActive }) => 
         <div className={cssClass} onClick={()=>goToPage('settings')} style={unavalStyle}>
           <HeaderEntry name="Settings" active={pageName === 'settings'}/>
         </div>
-        <div className={cssClass} onClick={()=>goToPage('about')}>
-          <HeaderEntry name="About" active={pageName === 'about'}/>
-        </div>
         <div className={cssClass} onClick={()=>goToPage('examples')}>
           <HeaderEntry name="Examples" active={pageName === 'examples'}/>
         </div>
-        <div className={cssClass} onClick={()=>goToPage('help')}>
-          <HeaderEntry name="Help" active={pageName === 'help'}/>
+        <div className={cssClass} onClick={()=>window.open('https://github.com/jameshadfield/phandango/wiki', '_blank')}>
+          <HeaderEntry name="About (wiki)" active={pageName === 'about'}/>
         </div>
         <div className={cssClass} onClick={()=>window.open('https://github.com/jameshadfield/phandango', '_blank')}>
           <HeaderEntry name="GitHub" active={false}/>

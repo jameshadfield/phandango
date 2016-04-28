@@ -7,9 +7,7 @@ import { NotificationDisplay } from '../components/notification';
 import { CanvasContainer } from './canvases';
 import { Settings } from './settings';
 import { LandingPage } from './landingPage';
-import { AboutPage } from './aboutPage';
 import { ExamplesPage } from './examplesPage';
-import { HelpPanel } from '../components/helpPanel';
 
 // misc
 import { Header } from '../components/header';
@@ -129,10 +127,6 @@ export const MainReactElement = React.createClass({ displayName: 'Main_React_Ele
       window.ga('send', 'pageview', '/landing');
       injectedPage = <ConnectedLandingPage browserMessage={this.props.browserMessage}/>;
       break;
-    case 'about':
-      window.ga('send', 'pageview', '/about');
-      injectedPage = <AboutPage />;
-      break;
     case 'settings':
       window.ga('send', 'pageview', '/settings');
       injectedPage = [
@@ -146,10 +140,6 @@ export const MainReactElement = React.createClass({ displayName: 'Main_React_Ele
       break;
     case 'main':
       injectedPage = <ConnectedCanvasContainer />;
-      break;
-    case 'help':
-      window.ga('send', 'pageview', '/help');
-      injectedPage = <HelpPanel />;
       break;
     default:
       injectedPage = false;
@@ -175,14 +165,8 @@ export const MainReactElement = React.createClass({ displayName: 'Main_React_Ele
     case 77: // m
       this.props.dispatch(goToPage('main'));
       break;
-    case 72: // h
-      this.props.dispatch(goToPage('help'));
-      break;
     case 76: // l
       this.props.dispatch(goToPage('landing'));
-      break;
-    case 65: // a
-      this.props.dispatch(goToPage('about'));
       break;
     case 69: // e
       this.props.dispatch(goToPage('examples'));

@@ -36,11 +36,9 @@ export const LandingPage = React.createClass({
         {browserMessage}
 
         <p style={{ color: '#225ea8' }}>
-          <a className="pointer" onClick={()=>this.props.goToPage('about')}>About (incl. data formats)</a>
+          <a className="pointer" onClick={()=>window.open('https://github.com/jameshadfield/phandango/wiki', '_blank')}>About / Help (GitHub wiki)</a>
           <br/><br/>
           <a className="pointer" onClick={()=>this.props.goToPage('examples')}>Example Datasets</a>
-          <br/><br/>
-          <a className="pointer" onClick={()=>this.props.goToPage('help')}>How to use</a>
           <br/><br/>
           <a className="pointer" onClick={()=>window.open('https://github.com/jameshadfield/phandango', '_blank')}>Github (source code)</a>
           <br/><br/>
