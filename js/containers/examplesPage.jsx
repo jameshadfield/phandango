@@ -49,7 +49,7 @@ const examples = [
   {
     name: 'Bacterial GWAS (Strep Pneumo)',
     imgPath: 'img/Chewapreecha.png',
-    caption: 'A genome-wide association study to identify SNPs and indels that could confer beta-lactam non-susceptibility using 3,085 Thai and 616 USA pneumococcal isolates as independent datasets for the variant discovery. Use the settings panel (press s) to resize the panels as you wish.',
+    caption: 'A genome-wide association study to identify SNPs and indels that could confer beta-lactam non-susceptibility using 3,085 Thai and 616 USA pneumococcal isolates as independent datasets for the variant discovery.',
     citeURLs: [ 'http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1004547' ],
     citeCaptions: [ <span>Chewapreecha <em>et al.</em> PLOS Genetics 2014</span> ],
     paths: [
@@ -63,7 +63,7 @@ const examples = [
     imgPath: 'img/gubbinsGono.png',
     caption: 'N. gonorrhoeae with decreased susceptibility to extended spectrum cephalosporins could become untreatable. Here is the recombination and metadata results (including resistance profiles) for 236 isolates collected from sentinel public sexually transmitted disease clinics in the USA. The results  show that Mosaic penA XXXIV had a high positive predictive value for cefR and a major lineage of cefRS strains spread eastward, predominantly through a sexual network of men who have sex with men.',
     citeURLs: [ 'http://www.thelancet.com/journals/laninf/article/PIIS1473-3099(13)70693-5/abstract' ],
-    citeCaptions: [ <span>Grad <em>et al.,</em> Lancet Indec Dis 2014</span> ],
+    citeCaptions: [ <span>Grad <em>et al.,</em> Lancet Infec Dis 2014</span> ],
     paths: [
       defaultDataPrefix + 'gubbinsGono/original_set.FA1090.final_tree.figtree.tre',
       defaultDataPrefix + 'gubbinsGono/ESC_resistance_groups.csv',
