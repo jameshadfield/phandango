@@ -19,7 +19,6 @@ export const MetadataKey = React.createClass({
     window.addEventListener('resize', this.resizeFn, false);
   },
 
-
   componentWillUpdate(props) {
     if (!props.metadata.toggles) {
       return;
@@ -27,8 +26,19 @@ export const MetadataKey = React.createClass({
     // expensive way to handle resizing
     this.initCanvasXY();
     this.clearCanvas();
-    const [ colIdxsToUse, blockwidth, blockStartValuesX, textStartValuesX ] = this.calculateColumnData(this.canvas, props.metadata.toggles, props.metadata.info);
-    this.draw(this.canvas.getContext('2d'), this.canvas.width, this.canvas.height, props.metadata, colIdxsToUse, blockwidth, blockStartValuesX, textStartValuesX);
+
+    const colIdxsToUse = this.columnIndexesToDisplay(this.canvas, props.metadata.toggles, props.metadata.info);
+    const [ blockwidth, blockStartValuesX, textStartValuesX ] = this.calculateWidthsOfColumns(this.canvas, colIdxsToUse.length);
+    this.draw(
+      this.canvas.getContext('2d'),
+      this.canvas.width,
+      this.canvas.height,
+      props.metadata,
+      colIdxsToUse,
+      blockwidth,
+      blockStartValuesX,
+      textStartValuesX
+    );
   },
 
   componentWillUnmount() {
@@ -62,9 +72,18 @@ export const MetadataKey = React.createClass({
     window.svgCtx.clip();
 
     // now the bits specific to metadata key
-    const [ colIdxsToUse, blockwidth, blockStartValuesX, textStartValuesX ] = this.calculateColumnData(this.canvas, this.props.metadata.toggles, this.props.metadata.info);
-    this.draw(window.svgCtx, this.canvas.width, this.canvas.height, this.props.metadata, colIdxsToUse, blockwidth, blockStartValuesX, textStartValuesX);
-
+    const colIdxsToUse = this.columnIndexesToDisplay(this.canvas, this.props.metadata.toggles, this.props.metadata.info);
+    const [ blockwidth, blockStartValuesX, textStartValuesX ] = this.calculateWidthsOfColumns(this.canvas, colIdxsToUse.length);
+    this.draw(
+      window.svgCtx,
+      this.canvas.width,
+      this.canvas.height,
+      this.props.metadata,
+      colIdxsToUse,
+      blockwidth,
+      blockStartValuesX,
+      textStartValuesX
+    );
     window.svgCtx.restore();
   },
 
@@ -80,13 +99,14 @@ export const MetadataKey = React.createClass({
    * {array of ints} textStartValuesX - pixel start values for text in each column (use countIdx)
    */
   draw(context, canvasWidth, canvasHeight, metadata, colIdxsToUse, blockwidth, blockStartValuesX, textStartValuesX) {
-    // let colIdx = 0; // like headerIdx but doesn't increase if toggled off
     for (let countIdx = 0; countIdx < colIdxsToUse.length; countIdx++) {
       const headerIdx = colIdxsToUse[countIdx];
+
       /* start by printing the headers for each column */
       let headerName = metadata.headerNames[headerIdx];
       if (metadata.info[headerIdx].inGroup) {
-        headerName = 'group ' + metadata.info[headerIdx].type + ' ' + String(metadata.info[headerIdx].groupId);
+        headerName = 'group ' + String(metadata.info[headerIdx].groupId);
+        // metadata.info[headerIdx].type + ' ' + );
       }
       let yTopPx = 40; /* margin to print column headers */
       context.fillStyle = 'black';
@@ -101,23 +121,37 @@ export const MetadataKey = React.createClass({
       }
       context.fillText(headerName, blockStartValuesX[countIdx], 20); /* blockStart... not textStart for header */
 
-      /* now move onto printing each row - a coloured block + text */
-      const numVals = metadata.values[headerIdx].length;
+      /* now move onto printing the column of coloured blocks */
+      let numVals;
+      if (metadata.info[headerIdx].inGroup) {
+        numVals = metadata.groups[metadata.info[headerIdx].groupId].values.length;
+      } else {
+        numVals = metadata.values[headerIdx].length;
+      }
       const yHeight = parseInt( (canvasHeight - yTopPx) / numVals, 10);
 
+      /* the column comprises rows for each value */
       for (let valueIdx = 0; valueIdx < numVals; valueIdx++) {
         /* the text */
         context.fillStyle = 'black';
         context.textBaseline = 'middle';
         context.textAlign = 'left';
         context.font = '12px Helvetica';
-        const text = metadata.values[headerIdx][valueIdx];
+        let text;
+        if (metadata.info[headerIdx].inGroup) {
+          text = metadata.groups[metadata.info[headerIdx].groupId].values[valueIdx];
+        } else {
+          text = metadata.values[headerIdx][valueIdx];
+        }
         context.fillText(text, textStartValuesX[countIdx], yTopPx + yHeight / 2);
 
         /* the block */
         context.save(); // needed?
-        context.fillStyle = metadata.colours[headerIdx][valueIdx];
-        // context.globalAlpha = 0.3;
+        if (metadata.info[headerIdx].inGroup) {
+          context.fillStyle = metadata.groups[metadata.info[headerIdx].groupId].colours[valueIdx];
+        } else {
+          context.fillStyle = metadata.colours[headerIdx][valueIdx];
+        }
         context.fillRect(blockStartValuesX[countIdx], yTopPx, blockwidth, yHeight);
         context.restore();
 
@@ -126,40 +160,52 @@ export const MetadataKey = React.createClass({
     }
   },
 
-  calculateColumnData(canvas, toggles, info) {
-    const maximumAllowableNumColumns = parseInt(canvas.width / 100, 10);
+  columnIndexesToDisplay(canvas, toggles, info) {
+    const minPixelsPerColumn = 100;
+    const maximumAllowableNumColumns = parseInt(canvas.width / minPixelsPerColumn, 10);
     let colIdxsToUse = [];
     const groupsSeen = [];
+
+    // first, try to display groups (over individual columns):
     for (let idx = 0; idx < toggles.length; idx++) {
       if (toggles[idx]) {
         if (info[idx].inGroup) {
+          // seen already?
           if (groupsSeen.indexOf(info[idx].groupId) === -1) {
-            // group not already seen
             groupsSeen.push(info[idx].groupId);
             colIdxsToUse.push(idx);
           }
-        } else {
-          // not in a group
-          colIdxsToUse.push(idx);
         }
       }
     }
+
+    // now use the other columns
+    for (let idx = 0; idx < toggles.length; idx++) {
+      if (toggles[idx] && colIdxsToUse.indexOf(idx) === -1 && !info[idx].inGroup) {
+        colIdxsToUse.push(idx);
+      }
+    }
+
     if (colIdxsToUse.length > maximumAllowableNumColumns) {
       colIdxsToUse = colIdxsToUse.slice(0, maximumAllowableNumColumns);
     }
-    const pixelsPerColumn = parseInt(canvas.width / colIdxsToUse.length, 10);
+    return (colIdxsToUse);
+  },
+
+  calculateWidthsOfColumns(canvas, numCols) {
+    const pixelsPerColumn = parseInt(canvas.width / numCols, 10);
     let blockwidth = parseInt(pixelsPerColumn / 4, 10);
     if (blockwidth > 50) {
       blockwidth = 50;
     }
     const blockStartValuesX = [];
     const textStartValuesX = [];
-    for (let i = 0; i < colIdxsToUse.length; i++) {
+    for (let i = 0; i < numCols; i++) {
       const leftPx = i * pixelsPerColumn;
       blockStartValuesX.push(leftPx);
       textStartValuesX.push(leftPx + blockwidth + 10);
     }
-    return [ colIdxsToUse, blockwidth, blockStartValuesX, textStartValuesX ];
+    return [ blockwidth, blockStartValuesX, textStartValuesX ];
   },
 
   initCanvasXY: helper.initCanvasXY,

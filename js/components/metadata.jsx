@@ -48,7 +48,7 @@ export const Metadata = React.createClass({
     this.clearCanvas();
     this.numActiveHeaders = props.metadata.toggles.filter((e)=>e).length;
     this.calculateXOffsets = this.calculateXOffsetsMaker(this.numActiveHeaders);
-    this.drawSquares(this.canvas.getContext('2d'), props.activeTaxa, props.metadata.toggles, props.metadata.data, props.metadata.colours);
+    this.drawSquares(this.canvas.getContext('2d'), props.activeTaxa, props.metadata.toggles, props.metadata.data, props.metadata.colours, props.metadata.groups, props.metadata.info);
   },
 
   componentWillUnmount() {
@@ -110,7 +110,7 @@ export const Metadata = React.createClass({
     window.svgCtx.rect(0, 0, this.canvasPos.right - this.canvasPos.left, this.canvasPos.bottom - this.canvasPos.top);
     window.svgCtx.stroke();
     window.svgCtx.clip();
-    this.drawSquares(window.svgCtx, this.props.activeTaxa, this.props.metadata.toggles, this.props.metadata.data, this.props.metadata.colours);
+    this.drawSquares(window.svgCtx, this.props.activeTaxa, this.props.metadata.toggles, this.props.metadata.data, this.props.metadata.colours, this.props.metadata.groups, this.props.metadata.info);
     window.svgCtx.restore();
 
     /* draw the headers by serializing the HTML element and injecting it into
@@ -235,7 +235,13 @@ function mouseMove(e) {
   if (taxa && header && this.props.metadata.data[taxa]) {
     const headerIdx = this.props.metadata.headerNames.indexOf(header);
     const valueIdx = this.props.metadata.data[taxa][headerIdx];
-    const value = this.props.metadata.values[headerIdx][valueIdx];
+    let value;
+    if (this.props.metadata.info[headerIdx].inGroup) {
+      const groupId = this.props.metadata.info[headerIdx].groupId;
+      value = this.props.metadata.groups[groupId].values[valueIdx];
+    } else {
+      value = this.props.metadata.values[headerIdx][valueIdx];
+    }
     // let iinfo = '';
     // if (this.props.metadata.info[headerIdx].binary) {
     //   iinfo += ' binary ';
@@ -271,7 +277,7 @@ function _calculateXOffsetsMaker(numActiveHeaders) { // closure
 }
 
 // outer loop: vertical (taxa in tree), inner loop: horisontal (meta column)
-function _drawSquares(context, activeTaxa, toggles, data, colours) {
+function _drawSquares(context, activeTaxa, toggles, data, colours, groups, info) {
   // console.log(context, activeTaxa, toggles, data, colours);
   const taxas = Object.keys(activeTaxa);
   for (let i = 0; i < taxas.length; i++) {
@@ -286,9 +292,14 @@ function _drawSquares(context, activeTaxa, toggles, data, colours) {
         continue;
       }
       const [ xLeft, blockWidth ] = this.calculateXOffsets(xIdx);
+      // data format: data[taxon][headerIdx] = index of value in value/colour array
       if (data[taxa] && data[taxa][j] !== undefined) { // taxa may not have metadata!
         context.save();
-        context.fillStyle = colours[j][data[taxa][j]];
+        if (info[j].inGroup) {
+          context.fillStyle = groups[info[j].groupId].colours[data[taxa][j]];
+        } else {
+          context.fillStyle = colours[j][data[taxa][j]];
+        }
         context.fillRect(xLeft, yValues[0], blockWidth, yValues[1] - yValues[0]);
         context.restore();
       // } else if (data[taxa]) {
