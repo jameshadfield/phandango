@@ -172,7 +172,6 @@ export function layout(state = init, action) {
   case 'toggleMetaKey':
     newState = merge({}, state);
     // if metadata is currently active, then we can toggle:
-    newState.active.blocks = true;
     if (state.active.meta) {
       newState.active.metaKey = !state.active.metaKey;
       if (newState.active.metaKey && !newState.colPercs[2]) {
