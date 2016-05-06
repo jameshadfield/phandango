@@ -194,7 +194,7 @@ const Metadata = React.createClass({
     fileName: PropTypes.string,
     active: PropTypes.bool,
     className: PropTypes.string,
-    toggleMeta: PropTypes.func.isRequired,
+    // toggleMeta: PropTypes.func.isRequired,
     toggleMetaHeader: PropTypes.func.isRequired,
     toggleAllMetaColumns: PropTypes.func.isRequired,
     clearMetadata: PropTypes.func.isRequired,
@@ -203,6 +203,18 @@ const Metadata = React.createClass({
   // componentWillReceiveProps(newProps) {
   //   console.log('Metadata received new props:', newProps);
   // },
+
+  /* deleted from render: main on-off switch
+        <Toggle
+          name="master"
+          value="master"
+          labelPosition="right"
+          label="Turn off panel"
+          disabled={false}
+          defaultToggled={this.props.active}
+          onToggle={this.props.toggleMeta.bind(this, this.props.active)}
+        />
+  */
 
   render() {
     if ( (!this.props.fileName) || this.props.fileName === 'not loaded') { return false; }
@@ -215,17 +227,6 @@ const Metadata = React.createClass({
           labelPosition="after"
           icon={<Clear />}
           onClick={this.props.clearMetadata.bind(this)}
-        />
-        <hr/>
-        {/* main on-off switch */}
-        <Toggle
-          name="master"
-          value="master"
-          labelPosition="right"
-          label="Turn off panel"
-          disabled={false}
-          defaultToggled={this.props.active}
-          onToggle={this.props.toggleMeta.bind(this, this.props.active)}
         />
         <hr/>
         <FlatButton
@@ -241,7 +242,7 @@ const Metadata = React.createClass({
           onClick={this.props.toggleAllMetaColumns.bind(this, true)}
         />
         <hr/>
-        <div className = {this.props.active ? '' : 'hidden'}>
+        <div >
           <h4>Toggle columns:</h4>
           {this.props.headerNames.map((name, idx) =>
             <Toggle
@@ -270,9 +271,9 @@ const ConnectedMetadata = connect(
     active: state.layout.active.meta,
   }),
   (dispatch)=>({
-    toggleMeta: (currentValue) => {
-      currentValue ? dispatch(turnOffCanvas('meta')) : dispatch(turnOnCanvas('meta'));
-    },
+    // toggleMeta: (currentValue) => {
+    //   currentValue ? dispatch(turnOffCanvas('meta')) : dispatch(turnOnCanvas('meta'));
+    // },
     toggleMetaHeader: (currentValue, headerIdx) => {
       dispatch(toggleMetadataColumn(headerIdx, !currentValue));
     },

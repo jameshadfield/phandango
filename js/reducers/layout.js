@@ -169,6 +169,31 @@ export function layout(state = init, action) {
     newState = merge({}, state);
     newState.active[action.name] = true;
     return newState;
+  case 'toggleAllMetaColumns':
+    newState = merge({}, state);
+    newState.active.meta = action.newBool;
+    if (action.newBool) { // turning things all on...
+      let percForMeta = idealCols.noBlocks[1];
+      if (newState.active.blocks || newState.active.annotation) {
+        percForMeta = idealCols.three[1];
+      }
+      newState.colPercs = changePercs(newState.colPercs, percForMeta, 1);
+    } else {
+      newState.colPercs = changePercs(newState.colPercs, 0, 1);
+    }
+    return newState;
+  case 'toggleMetadataColumn':
+    if (state.active.meta) {
+      return state;
+    }
+    newState = merge({}, state);
+    newState.active.meta = true;
+    let percForMeta = idealCols.noBlocks[1];
+    if (newState.active.blocks || newState.active.annotation) {
+      percForMeta = idealCols.three[1];
+    }
+    newState.colPercs = changePercs(newState.colPercs, percForMeta, 1);
+    return newState;
   case 'toggleMetaKey':
     newState = merge({}, state);
     // if metadata is currently active, then we can toggle:
