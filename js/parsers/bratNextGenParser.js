@@ -14,6 +14,7 @@ export function bratNextGenParser(gffString) {
     // NB we are keeping colours 1-based (colours[0] is never used)
     const colours = [ undefined ];
     const taxaClusterMap = {};
+    let maxXSeen = 0;
     for (let i = 0; i < numClusters.home; i++) {
       colours.push(colScale(i).hex());
     }
@@ -21,18 +22,18 @@ export function bratNextGenParser(gffString) {
     const shapes = {};
     for (let i = 2; i < lines.length; i++) {
       const words = lines[i].split(/\s+/);
-      if (shapes[words[5]]) {
-        shapes[words[5]].push(
-          new Block(parseInt(words[0], 10), parseInt(words[1], 10), i, { colour: colours[parseInt(words[2], 10)] })
-        );
-      } else {
-        shapes[words[5]] = [
-          new Block(parseInt(words[0], 10), parseInt(words[1], 10), i, { colour: colours[parseInt(words[2], 10)] }),
-        ];
+      if (!shapes[words[5]]) {
+        shapes[words[5]] = [];
+      }
+      shapes[words[5]].push(
+        new Block(parseInt(words[0], 10), parseInt(words[1], 10), i, { colour: colours[parseInt(words[2], 10)] })
+      );
+      if (parseInt(words[1], 10) > maxXSeen) {
+        maxXSeen = parseInt(words[1], 10);
       }
       taxaClusterMap[words[5]] = parseInt(words[3], 10);
     }
-    resolve([ shapes, { taxaClusterMap, colours } ]);
+    resolve([ shapes, { taxaClusterMap, colours }, maxXSeen ]);
   });
 }
 

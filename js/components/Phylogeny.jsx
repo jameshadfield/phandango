@@ -1,12 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { setYValues } from '../actions/phylocanvasBridge';
-import { computeSubLineGraph } from '../actions/lineGraph';
+import { computeSubLineGraph, updateLineGraphData } from '../actions/lineGraph';
 import PhyloCanvas from 'phylocanvas';
 import ContextMenuPlugin from 'phylocanvas-plugin-context-menu';
 import isEqual from 'lodash/isEqual';
 PhyloCanvas.plugin(ContextMenuPlugin);
-
 
 export const Phylogeny = React.createClass({
   propTypes: {
@@ -139,6 +138,7 @@ export const Phylogeny = React.createClass({
     document.getElementById('phyloDiv').addEventListener('subtree', (e) => {
       // console.log('TO DO: subtree drawn. e:', e);
       dispatch(setYValues(this.phylocanvas));
+      dispatch(updateLineGraphData());
     }, false);
 
     document.getElementById('phyloDiv').addEventListener('loaded', () => {

@@ -1,97 +1,98 @@
 import { colourDB } from '../parsers/shapes';
-// import merge from 'lodash/object/merge';
+
+/* all lines to be displayed are contained here in the arrays values
+ * with respective colours in lineColours array
+ * info is only used internally (i.e. not by components)
+ *
+ * cache is an object with keys corresponding to data-types
+ * i.e. rorary / gubbins / gubbinsPerTaxa / bratNextGen
+ * and each object has keys of:
+ *    values
+ *    taxa used to calculate
+ *    maxValue (?)
+ */
 
 const initialState = {
-  preComputedValues: {},
+  cache: {},
   values: [],
   max: 0,
-  subValues: undefined,
   lineColours: [],
+  info: [],
 };
 
 export function lineGraph(state = initialState, action) {
+  let ret = state;
   switch (action.type) {
-  case 'clearAllData':
-    const r = initialState;
-    r.preComputedValues = {};
-    return r;
+  case 'clearAllData': // fallthrough
   case 'clearLineGraph':
-    return ({
-      preComputedValues: state.preComputedValues,
-      values: [],
-      max: 0,
-      subValues: undefined,
-      lineColours: [],
-    });
+    return initialState;
   case 'computeLineGraph':
-    // only ever one line graph here...
-    // console.log('starting line graph computation');
     if (!action.genomeLength) {
       return state;
     }
-    const ret = {
-      preComputedValues: state.preComputedValues,
-      subValues: undefined,
+    ret = {
+      cache: state.cache,
+      values: [],
+      max: 0,
+      lineColours: [],
+      info: [],
     };
+    addLines(ret, action);
+    return ret;
+  case 'computeSubLineGraph':
+    // firstly, remove any subgraphs already here
+    ret = {
+      cache: state.cache,
+      values: [],
+      max: state.max,
+      lineColours: [],
+      info: [],
+    };
+    for (let i = 0; i < state.values.length; i++) {
+      if (!state.info[i].subGraph) {
+        ret.values.push(state.values[i]);
+        ret.lineColours.push(state.lineColours[i]);
+        ret.info.push(state.info[i]);
+      }
+    }
 
-    if (ret.preComputedValues[action.blockType] && ret.preComputedValues[action.blockType].fileName===action.fileName) {
-      // console.log("Same data, not recomputing line graph", action.fileName, action.blockType);
-      ret.max = ret.preComputedValues[action.blockType].max;
-      ret.values = [ ret.preComputedValues[action.blockType].values ];
-      ret.lineColours = [ colourDB.line[action.blockType] ];
-    } else {
-      // console.log("Changed data, recomputing line graph", action.fileName, action.blockType);
-      const plotValues = computeLine(action.genomeLength, action.blocksArePerTaxa, action.blocks);
-      ret.max = findMaxValueOfArray(plotValues);
-      ret.values = [ plotValues ];
-      ret.lineColours = [ colourDB.line[action.blockType] ];
-      ret.preComputedValues[action.blockType] = {
-        max: ret.max,
-        values: plotValues,
-        fileName: action.fileName
-      };
+    // secondly, compute the new subgraph
+    // TODO: multiple graphs
+    if (action.taxa.length) {
+      ret.values.push(computeLine(action.genomeLength, action.blocksArePerTaxa, action.blocks, action.taxa));
+      ret.info.push({ subGraph: true, taxa: action.taxa });
+      ret.lineColours.push('purple');
     }
     return ret;
-  case 'computeMergedLineGraph':
-    const rett = {
-      preComputedValues: state.preComputedValues,
-      subValues: undefined,
-      values: [],
-      lineColours: [],
-      max: 0,
-    };
-    for (const blockType of action.blockTypes) {
-      if (rett.preComputedValues[blockType].max > rett.max) {
-        rett.max = rett.preComputedValues[blockType].max;
-      }
-      rett.values.push(rett.preComputedValues[blockType].values);
-      rett.lineColours.push(colourDB.line[blockType]);
-    }
-    return rett;
-  case 'computeSubLineGraph':
-    let subValues = [];
-    if (action.taxa.length && state.values.length === 1) {
-      subValues = computeLineForSelectedTaxa(action.genomeLength, action.blocksArePerTaxa, action.blocks, action.taxa);
-    }
-    return { ...state, subValues };
   default:
     return state;
   }
 }
 
-function computeLine(genomeLength, blocksArePerTaxa, blocks) {
-  let plotValues = Array(genomeLength).fill(0);
-  if (blocksArePerTaxa) {
-    for (const taxaName of Object.keys(blocks)) {
-      plotValues = addValuesFromBlocks(plotValues, blocks[taxaName], false);
+function addLines(ret, action) {
+  // ret already has cache in it, as well as values[] colours[] e.t.c
+  for (const blockType in action.data) {
+    if (action.data.hasOwnProperty(blockType)) {
+      if (isPlotCached(blockType, action.taxa, ret.cache)) {
+        console.log('line', blockType, 'cache hit :)');
+        ret.values.push(ret.cache[blockType].values);
+        ret.max = ret.cache[blockType].max > ret.max ? ret.cache[blockType].max : ret.max;
+      } else {
+        console.log('calculating line', blockType);
+        const vals = computeLine(action.genomeLength, action.blocksArePerTaxa, action.data[blockType].blocks, action.taxa);
+        const thisMax = findMaxValueOfArray(vals);
+        ret.cache = cachePlot(ret.cache, blockType, action.taxa, vals, thisMax);
+        ret.values.push(vals);
+        ret.max = ret.max > thisMax ? ret.max : thisMax;
+      }
+      ret.lineColours.push(colourDB.line[blockType]);
+      ret.info.push({ subGraph: false });
     }
-  } else {
-    plotValues = addValuesFromBlocks(plotValues, blocks, false);
   }
-  return plotValues;
+  // returns nothing (modifies inputs)
 }
 
-function computeLineForSelectedTaxa(genomeLength, blocksArePerTaxa, blocks, taxaToUse) {
+function computeLine(genomeLength, blocksArePerTaxa, blocks, taxaToUse) {
   let plotValues = Array(genomeLength).fill(0);
   if (blocksArePerTaxa) {
     for (const taxaName of Object.keys(blocks)) {
@@ -139,4 +140,32 @@ function findMaxValueOfArray(arr) {
     }
   }
   return max;
+}
+
+function isPlotCached(blockType, taxa, cache) {
+  if (Object.keys(cache).indexOf(blockType) > -1 && areTaxaSame(taxa, cache[blockType].taxa)) {
+    return true;
+  }
+  return false;
+}
+
+function cachePlot(cache, blockType, taxa, vals, max) {
+  cache[blockType] = {
+    values: vals,
+    max,
+    taxa,
+  };
+  return cache;
+}
+
+function areTaxaSame(taxa1, taxa2) {
+  if (taxa1.length !== taxa2.length) {
+    return false;
+  }
+  for (let i = 0; i < taxa1.length; i++) {
+    if (taxa2.indexOf(taxa1[i]) === -1) {
+      return false;
+    }
+  }
+  return true;
 }

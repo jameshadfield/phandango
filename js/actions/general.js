@@ -1,8 +1,4 @@
-import {
-  computeLineGraph,
-  computeMergedLineGraph,
-  clearLineGraph,
-} from './lineGraph.js';
+import { updateLineGraphData } from './lineGraph.js';
 import { notificationNew } from './notifications';
 
 export function increaseSpinner(value = 1) {
@@ -109,15 +105,10 @@ export function showBlocks(name) {
         return;
       }
     }
-    // dispactch two things here - switch the blocks and subsequently switch the
+    // dispactch two things here - switch the blocks and subsequently switch the lines
     dispatch(increaseSpinner());
     dispatch({ type: 'showBlocks', name: name });
-    if (name === 'merged') {
-      dispatch(clearLineGraph());
-      dispatch(computeMergedLineGraph([ 'gubbinsPerTaxa', 'bratNextGen' ]));
-    } else {
-      dispatch(computeLineGraph());
-    }
+    dispatch(updateLineGraphData());
     dispatch(decreaseSpinner());
   };
 }

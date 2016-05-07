@@ -3,7 +3,7 @@ import { notificationNew } from './notifications';
 // PARSERS:
 import { gffParser } from '../parsers/gff';
 import { metaParser } from '../parsers/metadataParser';
-import { clearLineGraph, computeLineGraph, computeMergedLineGraph } from './lineGraph.js';
+import { updateLineGraphData } from './lineGraph.js';
 import { roaryParser } from '../parsers/roaryParser';
 import { plotParser } from '../parsers/plotParser';
 import { bratNextGenParser } from '../parsers/bratNextGenParser';
@@ -131,35 +131,24 @@ const analyseIncomingData = (fileName, fileContents) => {
  */
 const goDispatch = (dispatch, getState, parsedData, dataType, filename) => {
   let dispatchObj = { type: dataType + 'Data', fileName: filename };
+  // let graphsToShow;
   switch (dataType) {
   case 'annotation':
     dispatch({ ...dispatchObj, data: [ parsedData[1], parsedData[2] ], genomeLength: parsedData[0][1] });
     break;
   case 'gubbins':
     dispatch({ ...dispatchObj, data: parsedData[1], genomeLength: parsedData[0][1] });
-    // dispatch an action to check the genomeLength is the same...
-
-    // if bratNextGen is loaded then we want to switch to merged view
-    // else just make the line graph for this one...
-    dispatch(clearLineGraph());
-    if (getState().blocks.fileNames.bratNextGen) {
+    if (getState().blocks.bratNextGen.length) {
       dispatch({ type: 'showBlocks', name: 'merged' });
-      dispatch(computeMergedLineGraph([ 'gubbinsPerTaxa', 'bratNextGen' ]));
-    } else {
-      dispatch(computeLineGraph());
     }
+    dispatch(updateLineGraphData());
     break;
   case 'bratNextGen':
     dispatch({ ...dispatchObj, data: parsedData[0], metadata: parsedData[1] });
-    // if gubbins is loaded then we want to switch to merged view
-    // else just make the line graph for this one...
-    dispatch(clearLineGraph());
-    if (getState().blocks.fileNames.gubbins) {
+    if (getState().blocks.gubbins.length) {
       dispatch({ type: 'showBlocks', name: 'merged' });
-      dispatch(computeMergedLineGraph([ 'gubbinsPerTaxa', 'bratNextGen' ]));
-    } else {
-      dispatch(computeLineGraph(true));
     }
+    dispatch(updateLineGraphData());
     break;
   case 'meta':
     dispatchObj = merge(dispatchObj, parsedData);
@@ -175,8 +164,7 @@ const goDispatch = (dispatch, getState, parsedData, dataType, filename) => {
     // we have 3 dispatches -- the blocks, annotation and linegraph!
     dispatch({ ...dispatchObj, data: [ parsedData[0], parsedData[1] ], type: 'annotationData' });
     dispatch({ ...dispatchObj, data: parsedData[2], genomeLength: parsedData[3] });
-    dispatch(clearLineGraph());
-    dispatch(computeLineGraph());
+    dispatch(updateLineGraphData());
     break;
   default:
     throw new Error('unexpected fallthrough in goDispatch()');

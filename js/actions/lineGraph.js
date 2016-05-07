@@ -1,50 +1,24 @@
-export function computeLineGraph(wait) {
+export function updateLineGraphData(wait = false) {
+  // console.log('changeLineGraphData action triggered');
   // THUNK
   return function (dispatch, getState) {
-    if (wait) {
-      setTimeout(()=>{
-        dispatch({
-          type: 'computeLineGraph',
-          blockType: getState().blocks.dataType,
-          blocks: getState().blocks.blocks,
-          blocksArePerTaxa: getState().blocks.blocksArePerTaxa,
-          genomeLength: getState().genomeInfo.genomeLength,
-          fileName: getState().blocks.fileNames[getState().blocks.dataType],
-        }
-      );}, 100);
-    } else {
-      dispatch({
-        type: 'computeLineGraph',
-        blockType: getState().blocks.dataType,
-        blocks: getState().blocks.blocks,
-        blocksArePerTaxa: getState().blocks.blocksArePerTaxa,
-        genomeLength: getState().genomeInfo.genomeLength,
-        fileName: getState().blocks.fileNames[getState().blocks.dataType],
-      });
+    let blocksDisplayed = [ getState().blocks.dataType ];
+    if (blocksDisplayed[0] === 'merged') {
+      blocksDisplayed = [ 'gubbinsPerTaxa', 'bratNextGen' ];
     }
-  };
-}
-
-export function computeMergedLineGraph(blockTypes) {
-  // THUNK
-  return function (dispatch, getState) {
-    // check the lines have been calculated!
-    for (const blockType of blockTypes) {
-      // if (!getState().lineGraph.preComputedValues[blockType]) {
-        dispatch({
-          type: 'computeLineGraph',
-          blockType,
-          blocks: getState().blocks[blockType],
-          blocksArePerTaxa: true,
-          genomeLength: getState().genomeInfo.genomeLength,
-          fileName: getState().blocks.fileNames[blockType],
-        });
-      // }
+    // console.log('blocks to use = ', blocksDisplayed, getState().blocks[blocksDisplayed[0]], getState().genomeInfo.genomeLength);
+    const data = {};
+    for (const blockType of blocksDisplayed) {
+      data[blockType] = {};
+      data[blockType].blocks = getState().blocks[blockType];
+      data[blockType].fileName = getState().blocks.fileNames[blockType];
     }
-    // now we know the lines have been calculated...
     dispatch({
-      type: 'computeMergedLineGraph',
-      blockTypes,
+      type: 'computeLineGraph',
+      data,
+      blocksArePerTaxa: blocksDisplayed.length > 1 ? true : getState().blocks.blocksArePerTaxa,
+      genomeLength: getState().genomeInfo.genomeLength,
+      taxa: Object.keys(getState().phylogeny.activeTaxa),
     });
   };
 }
