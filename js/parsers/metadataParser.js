@@ -96,23 +96,6 @@ export function metaParser(csvString) {
     }
   }
 
-  console.log('headerNames');
-  console.log(headerNames);
-  console.log('headerLookupIdx');
-  console.log(headerLookupIdx);
-  console.log('info');
-  console.log(info);
-  console.log('groups');
-  console.log(groups);
-  console.log('rawValueSets');
-  console.log(rawValueSets);
-  console.log('values');
-  console.log(values);
-  console.log('colours');
-  console.log(colours);
-  console.log('data');
-  console.log(data);
-
   return { data, values, colours, headerNames, info, toggles, groups };
 }
 
@@ -288,7 +271,7 @@ function allocateUserColours(papaData, sortedValues, papaValueIdx, papaColourIdx
       // console.log('user colour (', colour, ') not hex 4');
       colour = '#000000'; // blck
     }
-    console.log(value, ' -> ', colour);
+    // console.log(value, ' -> ', colour);
     ret.push(colour);
   }
   return ret;

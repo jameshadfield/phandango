@@ -201,15 +201,11 @@ export const CanvasContainer = React.createClass({ displayName: 'CanvasContainer
     const hresizers = [];
     numResizers = 2; // default
     if (!this.props.active.meta) {
-      console.log('first')
       numResizers -= 1;
     }
     if (!this.props.active.blocks && !this.props.active.annotation && !this.props.active.metaKey) {
-      console.log('second')
       numResizers -= 1;
     }
-    console.log('num hor resizers to use:', numResizers)
-    console.log(this.props.active)
     for (let i = 0; i < numResizers; i++) {
       hresizers[i] = (
         <ConnectedDrag
