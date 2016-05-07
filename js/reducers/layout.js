@@ -20,7 +20,7 @@ const idealCols = {
 const idealRows = {
   three: [ 15, 70, 15 ],
   noGraph: [ 15, 78, 7 ],
-  noTree: [ 15, 5, 80 ],
+  noTree: [ 20, 0, 80 ],
 };
 
 const init = {
@@ -239,7 +239,11 @@ export function changePercs(oldVals, nv, idx) {
     newVals[idx - 1] -= delta;
   } else if (idx === 0) {
     /* we've modified the top element */
-    newVals[1] -= delta;
+    if (newVals[1]) {
+      newVals[1] -= delta;
+    } else {
+      newVals[2] -= delta;
+    }
   } else {
     /* we've modified a middle element
      * remember the drag handle is below the element
