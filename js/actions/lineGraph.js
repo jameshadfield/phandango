@@ -3,8 +3,11 @@ export function updateLineGraphData(wait = false) {
   // THUNK
   return function (dispatch, getState) {
     let blocksDisplayed = [ getState().blocks.dataType ];
+    let percent = false;
     if (blocksDisplayed[0] === 'merged') {
       blocksDisplayed = [ 'gubbinsPerTaxa', 'bratNextGen' ];
+    } else if (blocksDisplayed[0] === 'roary') {
+      percent = true;
     }
     // console.log('blocks to use = ', blocksDisplayed, getState().blocks[blocksDisplayed[0]], getState().genomeInfo.genomeLength);
     const data = {};
@@ -19,6 +22,7 @@ export function updateLineGraphData(wait = false) {
       blocksArePerTaxa: blocksDisplayed.length > 1 ? true : getState().blocks.blocksArePerTaxa,
       genomeLength: getState().genomeInfo.genomeLength,
       taxa: Object.keys(getState().phylogeny.activeTaxa),
+      percent,
     });
   };
 }

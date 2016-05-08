@@ -18,6 +18,7 @@ const initialState = {
   max: 0,
   lineColours: [],
   info: [],
+  displayedAsPercent: false,
 };
 
 export function lineGraph(state = initialState, action) {
@@ -36,18 +37,20 @@ export function lineGraph(state = initialState, action) {
       max: 0,
       lineColours: [],
       info: [],
+      displayedAsPercent: action.percent,
     };
-    addLines(ret, action);
+    addLines(ret, action, ret.displayedAsPercent);
     return ret;
   case 'computeSubLineGraph':
-    // firstly, remove any subgraphs already here
     ret = {
       cache: state.cache,
       values: [],
       max: state.max,
       lineColours: [],
       info: [],
+      displayedAsPercent: state.displayedAsPercent,
     };
+    // add back in all the non-subgraphs in state
     for (let i = 0; i < state.values.length; i++) {
       if (!state.info[i].subGraph) {
         ret.values.push(state.values[i]);
@@ -62,6 +65,10 @@ export function lineGraph(state = initialState, action) {
       ret.values.push(computeLine(action.genomeLength, action.blocksArePerTaxa, action.blocks, action.taxa));
       ret.info.push({ subGraph: true, taxa: action.taxa });
       ret.lineColours.push('purple');
+      if (state.displayedAsPercent) {
+        // console.log('percent-ising subvalues');
+        turnValuesToPercent(ret.values[ret.values.length - 1], action.taxa.length);
+      }
     }
     return ret;
   default:
@@ -69,18 +76,22 @@ export function lineGraph(state = initialState, action) {
   }
 }
 
-function addLines(ret, action) {
+function addLines(ret, action, percent) {
   // ret already has cache in it, as well as values[] colours[] e.t.c
   for (const blockType in action.data) {
     if (action.data.hasOwnProperty(blockType)) {
       if (isPlotCached(blockType, action.taxa, ret.cache)) {
-        console.log('line', blockType, 'cache hit :)');
+        // console.log('line', blockType, 'cache hit :)');
         ret.values.push(ret.cache[blockType].values);
         ret.max = ret.cache[blockType].max > ret.max ? ret.cache[blockType].max : ret.max;
       } else {
-        console.log('calculating line', blockType);
+        // console.log('calculating line', blockType);
         const vals = computeLine(action.genomeLength, action.blocksArePerTaxa, action.data[blockType].blocks, action.taxa);
-        const thisMax = findMaxValueOfArray(vals);
+        if (percent) {
+          // console.log('percent-ising the line');
+          turnValuesToPercent(vals, action.taxa.length);
+        }
+        const thisMax = percent ? 100 : findMaxValueOfArray(vals);
         ret.cache = cachePlot(ret.cache, blockType, action.taxa, vals, thisMax);
         ret.values.push(vals);
         ret.max = ret.max > thisMax ? ret.max : thisMax;
@@ -104,6 +115,13 @@ function computeLine(genomeLength, blocksArePerTaxa, blocks, taxaToUse) {
     plotValues = addValuesFromBlocks(plotValues, blocks, taxaToUse);
   }
   return plotValues;
+}
+
+function turnValuesToPercent(vals, numTaxa) {
+  // modifies argument in place
+  for (let i = 0; i < vals.length; i++) {
+    vals[i] = parseInt(vals[i] * 100 / numTaxa, 10);
+  }
 }
 
 function addValuesFromBlocks(plotValues, blocks, taxaToUse) {
