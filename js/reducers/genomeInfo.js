@@ -12,8 +12,18 @@ export function genomeInfo(state = initialInfo, action) {
   // case 'clearAnnotationData':
   //   return initialInfo;
   case 'annotationData': // fallthrough
-  case 'roaryData': // fallthrough
-  case 'gubbinsData':
+  case 'roaryData':
+    return merge({}, state, {
+      genomeLength: action.genomeLength,
+      visibleGenome: [ 0, action.genomeLength ],
+    });
+  case 'gubbinsData': // fallthrough
+  case 'bratNextGenData':
+    // the difference here is, if an annotation file is already loaded,
+    // we don't want to change the genome length!
+    if (state.genomeLength) {
+      return state;
+    }
     return merge({}, state, {
       genomeLength: action.genomeLength,
       visibleGenome: [ 0, action.genomeLength ],

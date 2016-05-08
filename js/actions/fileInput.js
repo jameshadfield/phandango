@@ -144,7 +144,7 @@ const goDispatch = (dispatch, getState, parsedData, dataType, filename) => {
     dispatch(updateLineGraphData());
     break;
   case 'bratNextGen':
-    dispatch({ ...dispatchObj, data: parsedData[0], metadata: parsedData[1] });
+    dispatch({ ...dispatchObj, data: parsedData[0], metadata: parsedData[1], genomeLength: parsedData[2] });
     if (getState().blocks.gubbins.length) {
       dispatch({ type: 'showBlocks', name: 'merged' });
     }
