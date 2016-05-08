@@ -85,7 +85,7 @@ function addLines(ret, action, percent) {
         ret.values.push(ret.cache[blockType].values);
         ret.max = ret.cache[blockType].max > ret.max ? ret.cache[blockType].max : ret.max;
       } else {
-        // console.log('calculating line', blockType);
+        // console.log('calculating line', blockType, action.taxa.length, 'taxa');
         const vals = computeLine(action.genomeLength, action.blocksArePerTaxa, action.data[blockType].blocks, action.taxa);
         if (percent) {
           // console.log('percent-ising the line');

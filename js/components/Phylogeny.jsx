@@ -131,8 +131,13 @@ export const Phylogeny = React.createClass({
     document.getElementById('phyloDiv').addEventListener('updated', function (e) {
       if (e.property === 'selected') {
         dispatch(computeSubLineGraph(e.nodeIds));
-        // dispatch(setYValues(this.phylocanvas));
       }
+    }, false);
+
+    document.getElementById('phyloDiv').addEventListener('originalTreeRedrawn', function (e) {
+      // for some unknown reason, this.phylocanvas is undefined here. WTF.
+      dispatch(setYValues(e));
+      dispatch(updateLineGraphData());
     }, false);
 
     document.getElementById('phyloDiv').addEventListener('subtree', (e) => {
