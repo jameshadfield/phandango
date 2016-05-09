@@ -15,8 +15,12 @@ export const Phylogeny = React.createClass({
     active: React.PropTypes.object.isRequired,
   },
 
+  // getInitialState: function () {
+  //   return ({ shouldFitToPanel: false });
+  // },
+
   componentDidMount: function () {
-    // console.log('PC did mount');
+    // console.log('phylocanvas did mount -- loading in tree!');
     this.phylocanvas = PhyloCanvas.createTree(ReactDOM.findDOMNode(this), { fillCanvas: true });
     this.phylocanvas.setTreeType('rectangular');
     this.phylocanvas.setNodeSize(0);
@@ -31,24 +35,47 @@ export const Phylogeny = React.createClass({
   },
 
   componentWillReceiveProps(nextProps) {
-    // console.log('PC will receive props')
+    // fires before shouldComponentUpdate
+    // console.log('PC will receive props');
+    // we only need to re-draw phylocanvas here (pre DOM mutation) if
+    // a new newick string
     if (!isEqual(nextProps.newickString, this.props.newickString)) {
+      // console.log('PC will receive props -> loading new newick string');
       this.phylocanvas.load(nextProps.newickString);
       this.props.dispatch(setYValues(this.phylocanvas));
-    } else if (!isEqual(nextProps.active, this.props.active)) {
-      // timeout needed as the DIV has not yet changed!
-      // so when this fires, the DIV has been flushed to the DOM
-      window.setTimeout(function () {
-        // console.log('timeout hit');
-        this.phylocanvas.resizeToContainer();
-        this.phylocanvas.draw(true);
-        this.props.dispatch(setYValues(this.phylocanvas));
-      }.bind(this), 100);
-      this.phylocanvas.draw(true);
-    } else { // style change
-      this.phylocanvas.draw();
-      this.props.dispatch(setYValues(this.phylocanvas));
+    // } else if (!isEqual(nextProps.active, this.props.active)) {
+      // console.log('PC will receive props -> active panels changed');
+      // ideally this would be in componentDidUpdate
+      // but then we can't compare props!
+      // window.requestAnimationFrame(this.resizePhylocanvas);
+      // solution: modify state
+      // this.setState({ shouldFitToPanel: true });
     }
+  },
+
+  shouldComponentUpdate(nextProps) {
+    // we only need to re-render phylocanvas when
+    // the div style (percentages) change
+    // or when the window is resized
+    if (!isEqual(this.props.style, nextProps.style)) {
+      // console.log('phylocanvas. style change -> should update: true');
+      return true;
+    }
+    // console.log('phylocanvas. new props but no style change -> should update: false');
+    return false;
+  },
+
+  // componentDidUpdate() {
+  //   // console.log('phylocanvas did update');
+  //   if (this.state.shouldFitToPanel) {
+  //     window.requestAnimationFrame(this.resizePhylocanvas);
+  //   }
+  //   this.setState({ shouldFitToPanel: false }); // no infinite loop as shouldComponentUpdate ret false
+  // },
+
+  componentDidUpdate() {
+    // console.log('phylocanvas did update');
+    window.requestAnimationFrame(this.resizePhylocanvas);
   },
 
   componentWillUnmount() {
@@ -56,9 +83,17 @@ export const Phylogeny = React.createClass({
   },
 
   render: function () {
+    // console.log('phylocanvas DOM render');
     return (
       <div style={this.props.style} id="phyloDiv"></div>
     );
+  },
+
+  resizePhylocanvas() {
+    // console.log('phylocanvas fit to panel');
+    // this.phylocanvas.resizeToContainer();
+    this.phylocanvas.draw(true); // true -> fitToPanel (i think)
+    this.props.dispatch(setYValues(this.phylocanvas));
   },
 
   svgdraw() {
@@ -119,6 +154,7 @@ export const Phylogeny = React.createClass({
     this.phylocanvas.canvas = tempPhylocanvas;
     window.devicePixelRatio = oldWindowDevicePixelRatio;
     setCanvasToBranches(this.phylocanvas.root, this.phylocanvas.canvas);
+    this.phylocanvas.draw(true);
   },
 
   attachListenersToPhylocanvas: function (dispatch) {
