@@ -10,7 +10,7 @@ export function bratNextGenParser(gffString) {
   return new Promise((resolve) => {
     const lines = gffString.split('\n');
     const numClusters = findNumClusters(lines);
-    const colScale = getColourScale('ordinal', numClusters.home);
+    const colScale = getColourScale('ordinal', Array(numClusters.home));
     // NB we are keeping colours 1-based (colours[0] is never used)
     const colours = [ undefined ];
     const taxaClusterMap = {};

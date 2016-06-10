@@ -51,12 +51,10 @@ export function metaParser(csvString) {
   for (let i = 0; i < numColumns; i++) {
     if (!info[i].inGroup) {
       values[i] = sortValues(rawValueSets[headerLookupIdx[i]], info[i].type);
-      const n = values[i].length;
       if (info[i].type === 'userColours') {
         colours[i] = allocateUserColours(papa.data, values[i], headerLookupIdx[i], info[i].userColour);
       } else {
-        const scale = getColourScale(info[i].type, n);
-        colours[i] = Array(...Array(n)).map((e, idx) => scale(idx).hex());
+        colours[i] = populateColours(info[i].type, values[i]);
       }
     }
   }
@@ -69,11 +67,8 @@ export function metaParser(csvString) {
     }
     const groupType = groups[groupId].type;
     groups[groupId].values = sortValues(pooledValues, groupType);
-    const n = groups[groupId].values.length;
-    const scale = getColourScale(groupType, n);
-    groups[groupId].colours = Array(...Array(n)).map((e, idx) => scale(idx).hex());
+    groups[groupId].colours = populateColours(groupType, groups[groupId].values);
   }
-
 
   /* now, for each and every row of the raw data
    * get the taxon and associate it to the index of the value (and therefore colour)
@@ -104,14 +99,24 @@ https://vis4.net/blog/posts/mastering-multi-hued-color-scales/
 https://github.com/gka/chroma.js
 https://vis4.net/blog/posts/avoid-equidistant-hsv-colors/
 */
-export function getColourScale(type, n) {
+
+function populateColours(type, values) {
+  const scale = getColourScale(type, values);
+  if (type === 'continuous') {
+    return (Array(...Array(values.length)).map((e, idx) => scale(values[idx]).hex()));
+  }
+  return (Array(...Array(values.length)).map((e, idx) => scale(idx).hex()));
+}
+
+export function getColourScale(type, values) {
   switch (type) {
   case 'binary':
     return chroma.scale([ 'purple', 'orange' ]).mode('hsl').domain([ 0, 1 ]);
   case 'ordinal':
-    return chroma.scale('Spectral').mode('hcl').domain([ n, 0 ]);
+    return chroma.scale('Spectral').mode('hcl').domain([ values.length, 0 ]);
   case 'continuous':
-    return chroma.scale([ 'navy', 'orange' ]).mode('lch').domain([ 0, n ]);
+    const numericalValues = values.map(parseFloat).filter( (e) => !isNaN(e) );
+    return chroma.scale([ 'navy', 'orange' ]).mode('lch').domain([ Math.min.apply(null, numericalValues), Math.max.apply(null, numericalValues) ]);
   default:
     throw new Error('getScale fallthrough');
   }
