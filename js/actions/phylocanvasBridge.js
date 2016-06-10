@@ -14,7 +14,7 @@ export function setYValues(phylocanvas) {
   return function (dispatch, getState) {
     const activeTaxa = {};
     const pixelRatio = _getPixelRatio(phylocanvas.canvas.canvas);
-    const heightHalf = phylocanvas.textSize / 2 * phylocanvas.zoom;
+    const heightHalf = phylocanvas.prerenderer.getStep(phylocanvas) / 2 * phylocanvas.zoom / pixelRatio;
 
     const allTaxa = new Array();
     for (let i = 0; i < phylocanvas.leaves.length; i++) {
