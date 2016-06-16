@@ -79,7 +79,7 @@ export const Gwas = React.createClass({
     this.drawGraphAxis(this.canvas, {
       yMaxValue: props.max,
       numTicks: 4,
-      dottedLines: [ 5 ],
+      // dottedLines: [ 5 ],
       pdfoutput,
     });
   },
