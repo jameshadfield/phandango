@@ -1,3 +1,4 @@
+import "babel-polyfill";
 import '../../css/JScandy.css';
 import '../../node_modules/flexboxgrid/css/flexboxgrid.min.css';
 import React from 'react';

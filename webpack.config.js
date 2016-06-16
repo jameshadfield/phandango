@@ -5,6 +5,7 @@ module.exports = {
   // context: path.join(__dirname, 'dev'),
   // entry: All modules are loaded upon startup. The last one is exported.
   entry: [
+    'babel-polyfill',
     './js/containers/app',
   ],
   debug: false,
