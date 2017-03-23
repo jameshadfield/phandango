@@ -28,6 +28,11 @@ export const LandingPage = React.createClass({
         <AnimatedLogo w={600} h={200} interval={2000} animate={!!navigator.userAgent.match(/WebKit/i)}/>
         <p/>
 
+        <h3 className="light">
+          Phandango is now published as <a style={{ color: '#225ea8' }} className="pointer" onClick={()=>window.open('http://biorxiv.org/content/early/2017/03/22/119545', '_blank')}>Hadfield <i>et al.</i>, bioRxiv (2017)</a>
+        </h3>
+
+        <p>&nbsp;</p>
 
         <h2 className="light">
           drop your data on to begin
