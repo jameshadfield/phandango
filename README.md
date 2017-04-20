@@ -2,7 +2,9 @@
 
 ***
 
-## [Load the app](http://jameshadfield.github.io/phandango/) // [Wiki Page](http://github.com/jameshadfield/phandango/wiki)
+## [Load the app](http://phandango.net) 
+
+## [Wiki Page](http://github.com/jameshadfield/phandango/wiki)
 
 If you use phandango in a publication please cite [Hadfield _et al._, bioRxiv (2017) ](http://biorxiv.org/content/early/2017/03/22/119545).
 
