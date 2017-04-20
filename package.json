@@ -1,7 +1,7 @@
 {
   "_comment": "http://browsenpm.org/package.json",
   "name": "phandango",
-  "version": "0.8.5",
+  "version": "0.8.7",
   "scripts": {
     "build": "webpack",
     "start": "webpack-dev-server --config webpack-dev-server.config.js --progress --port 8080 --hot --colors",
@@ -40,7 +40,7 @@
     "object-assign": "4.0.1",
     "papaparse": "~4.1.2",
     "phylocanvas": "git+https://git@github.com/jameshadfield/phylocanvas.git#9911c12",
-    "phylocanvas-plugin-context-menu": "phylocanvas/phylocanvas-plugin-context-menu",
+    "phylocanvas-plugin-context-menu": "git+https://github.com/phylocanvas/phylocanvas-plugin-context-menu.git#1a2ddd25f8a3e1b51ce4de3fc75c0cc0d499f7e7",
     "raw-loader": "~0.5.1",
     "react": "~15.0.1",
     "react-dom": "~15.0.1",
