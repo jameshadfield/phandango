@@ -15,7 +15,7 @@ const examples = [
   {
     name: 'Gubbins + BRAT NextGen (PMEN1 data)',
     imgPath: 'img/merge.png',
-    caption: 'An exploration of recombination in 240 Streptococcus pneumoniae (PMEN1 lineage) genomes using both Gubbins & BRAT NextGen reveals an enrichment for horisontal gene transfer affecting major antigens and results in a number of capsule-switching events. Hint: go to the settings page (or use the shortcut keys z, x, c & v.) to toggle between gubbins & BRAT NextGen.',
+    caption: 'An exploration of recombination in 240 Streptococcus pneumoniae (PMEN1 lineage) genomes using both Gubbins & BRAT NextGen reveals an enrichment for horizontal gene transfer affecting major antigens and results in a number of capsule-switching events. Hint: go to the settings page (or use the shortcut keys z, x, c & v.) to toggle between gubbins & BRAT NextGen results.',
     citeURLs: [
       'https://www.sciencemag.org/content/331/6016/430.abstract',
       'http://nar.oxfordjournals.org/content/early/2011/11/07/nar.gkr928.abstract',
@@ -36,7 +36,7 @@ const examples = [
   {
     name: 'ROARY pan-genome (SPARC data)',
     imgPath: 'img/roary.png',
-    caption: 'These data show the distribution of genes across a sample of 616 pneumococci, isolated from carriage throughout Massachusetts in the years following the introduction of the seven valent anti-pneumococcal polysaccharide conjugate vaccine. Note: this dataset is ~6Mb in size.',
+    caption: 'These data show the distribution of genes across a sample of 616 pneumococci, isolated from carriage throughout Massachusetts in the years following the introduction of the seven valent anti-pneumococcal polysaccharide conjugate vaccine. Note: this dataset is ~6Mb in size so may be slow to load.',
     citeURLs: [ 'http://www.ncbi.nlm.nih.gov/pmc/articles/PMC4622223' ],
     citeCaptions: [ <span>Croucher <em>et al.</em> Scientific Data 2015</span> ],
     paths: [
@@ -89,7 +89,7 @@ const examples = [
   {
     name: 'ROARY pan-genome (Salmonella Weltevreden)',
     imgPath: 'img/roary.png',
-    caption: 'S. Weltevreden is an emerging cause of diarrheal and invasive disease in humans residing in tropical regions and little is known about its genetic diversity. Here, genome analysis of more than 100 isolates demonstrated that the population of S. Weltevreden can be segregated into two main phylogenetic clusters, one associated predominantly with continental Southeast Asia and the other more internationally dispersed. Here you can explore the pan genome content of the speices and see how it differs between lineages.',
+    caption: 'S. Weltevreden is an emerging cause of diarrheal and invasive disease in humans residing in tropical regions and little is known about its genetic diversity. Here, genome analysis of more than 100 isolates demonstrated that the population of S. Weltevreden can be segregated into two main phylogenetic clusters, one associated predominantly with continental Southeast Asia and the other more internationally dispersed. Here you can explore the pan genome content of the species and see how it differs between lineages.',
     citeURLs: [ 'http://journals.plos.org/plosntds/article?id=10.1371/journal.pntd.0004446' ],
     citeCaptions: [ <span>Makendi <em>et al.</em> PLoS Negl Trop Dis 2016</span> ],
     paths: [
@@ -130,7 +130,7 @@ const examples = [
   {
     name: 'Gubbins (PMEN1 data)',
     imgPath: 'img/gubbinsNAR.png',
-    caption: 'The example from the orinal paper: Gubbins is an iterative algorithm that uses spatial scanning statistics to identify loci contain- ing elevated densities of base substitutions suggestive of horizontal sequence transfer while concurrently constructing a maximum likelihood phylogeny based on the putative point mutations out- side these regions of high sequence diversity.',
+    caption: 'The example from the orinal paper: Gubbins is an iterative algorithm that uses spatial scanning statistics to identify loci containing elevated densities of base substitutions suggestive of horizontal sequence transfer while concurrently constructing a maximum likelihood phylogeny based on the putative point mutations outside these regions of high sequence diversity.',
     citeURLs: [
       'http://nar.oxfordjournals.org/content/early/2014/11/20/nar.gku1196.abstract',
     ],
@@ -211,4 +211,3 @@ export const ExamplesPage = React.createClass({
   },
 
 });
-
