@@ -37,7 +37,7 @@ const examples = [
     name: 'ROARY pan-genome (SPARC data)',
     imgPath: 'img/roary.png',
     caption: 'These data show the distribution of genes across a sample of 616 pneumococci, isolated from carriage throughout Massachusetts in the years following the introduction of the seven valent anti-pneumococcal polysaccharide conjugate vaccine. Note: this dataset is ~6Mb in size so may be slow to load.',
-    citeURLs: [ 'http://www.ncbi.nlm.nih.gov/pmc/articles/PMC4622223' ],
+    citeURLs: [ 'https://www.nature.com/articles/sdata201558' ],
     citeCaptions: [ <span>Croucher <em>et al.</em> Scientific Data 2015</span> ],
     paths: [
       defaultDataPrefix + 'SPARC/sparc.phandango.newick',
@@ -156,6 +156,7 @@ const Example = ({ name, paths, callback, caption, imgPath, citeURLs, citeCaptio
       </div>
       <p className="light center-align">{caption}</p>
 
+      <div className="strong center-align">Data adapted from:</div>
       {citeCaptions.map((value, idx) => {
         return (
           <div key={idx} className="light center-align">
@@ -186,9 +187,11 @@ export const ExamplesPage = React.createClass({
         <div className="center">
           <AnimatedLogo w={400} h={150} interval={10000}/>
         </div>
+        <br/>
         <h2 className="light center">
-          Example Datasets - click to load
+          Example Datasets - click the pictures to load
         </h2>
+        <br/>
         <div className="row">
           {examples.map((value, idx) => {
             return (
@@ -198,6 +201,11 @@ export const ExamplesPage = React.createClass({
             );
           })}
         </div>
+
+        <p className="center" style={{ paddingTop: '5vh', paddingBottom: '5vh' }}>
+          The raw data may be accessed at <a href={"https://github.com/jameshadfield/phandangoExampleData"}>github.com/jameshadfield/phandangoExampleData</a> if needed. Please note that downloading this data is not necessary - simply click on the relevant image to load the examples.
+        </p>
+
       </div>
     );
   },
