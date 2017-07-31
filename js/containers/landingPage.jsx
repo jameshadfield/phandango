@@ -28,8 +28,15 @@ export const LandingPage = React.createClass({
         <AnimatedLogo w={600} h={200} interval={2000} animate={!!navigator.userAgent.match(/WebKit/i)}/>
         <p/>
 
+        <br/>
         <h3 className="light">
-          Phandango is now published as <a style={{ color: '#225ea8' }} className="pointer" onClick={()=>window.open('http://biorxiv.org/content/early/2017/03/22/119545', '_blank')}>Hadfield <i>et al.</i>, bioRxiv (2017)</a>
+          {"<< If you use phandango, please cite "}
+          <a style={{ color: '#225ea8' }} className="pointer" onClick={()=>window.open('http://biorxiv.org/content/early/2017/03/22/119545', '_blank')}>Hadfield <i>et al.</i>, bioRxiv (2017)</a>
+          {" >>"}
+          <br/>
+          {"<< "}
+          <a href="mailto:jh22@sanger.ac.uk">Let us know</a>
+          {" if you would like your data to appear as one of the examples >>"}
         </h3>
 
         <p>&nbsp;</p>
@@ -47,7 +54,7 @@ export const LandingPage = React.createClass({
           <br/><br/>
           <a className="pointer" onClick={()=>window.open('https://github.com/jameshadfield/phandango', '_blank')}>Github (source code)</a>
           <br/><br/>
-          <a href="mailto:jh22@sanger.ac.uk">Contact (email)</a>
+
         </p>
         <br/>
         version {version}
