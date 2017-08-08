@@ -14,7 +14,7 @@ import { Header } from '../components/header';
 import { Spinner } from '../components/spinner';
 
 // Actions to be dispatched upon key presses
-import { notificationNew, notificationSeen } from '../actions/notifications';
+import { notificationNew, notificationSeen, checkLoadedDataIsComplete } from '../actions/notifications';
 import { goToPage, toggleMetaKey, showBlocks, increaseSpinner } from '../actions/general';
 
 import C2S from '../misc/canvas2svg';
@@ -114,6 +114,11 @@ export const MainReactElement = React.createClass({ displayName: 'Main_React_Ele
     dispatch: React.PropTypes.func.isRequired,
     spinner: React.PropTypes.number,
     browserMessage: React.PropTypes.string,
+  },
+  componentWillReceiveProps: function (nextProps) {
+    if (this.props.spinner !== nextProps.spinner && nextProps.spinner === 0) {
+      this.props.dispatch(checkLoadedDataIsComplete());
+    }
   },
   componentDidMount: function () {
     document.addEventListener('dragover', (e) => {e.preventDefault();}, false);
