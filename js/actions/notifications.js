@@ -15,7 +15,6 @@ export function notificationSeen() {
 
 export function checkLoadedDataIsComplete() {
   return function (dispatch, getState) {
-    console.log("checkLoadedDataIsComplete")
     const { annotation, metadata, blocks, phylogeny } = getState();
     const d = { type: 'notificationNew', dialog: true };
     const notLoaded = 'not loaded';
@@ -27,9 +26,9 @@ export function checkLoadedDataIsComplete() {
     };
     if (!loaded.phylogeny) {
       if (loaded.blocks) {
-        dispatch({ ...d, title: 'ERROR', msg: "Blocks provided without a tree, so they can't be displayed!" });
+        dispatch({ ...d, title: 'HEADS UP', msg: 'Blocks provided without a tree, so this data cannot be displayed!' });
       } else if (loaded.metadata) {
-        dispatch({ ...d, title: 'ERROR', msg: "Metadata provided without a tree, so the data can't be displayed!" });
+        dispatch({ ...d, title: 'HEADS UP', msg: 'Metadata provided without a tree, so this data cannot be displayed!' });
       }
     }
   };
