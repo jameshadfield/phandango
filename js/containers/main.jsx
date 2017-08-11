@@ -1,6 +1,7 @@
 import { incomingFile } from '../actions/fileInput';
 import { connect } from 'react-redux';
 import React from 'react';
+import PropTypes from 'prop-types';
 import { NotificationDisplay } from '../components/notification';
 
 // Pages to display
@@ -108,24 +109,26 @@ The purposes of the MainReactElement:
 * add global listeners
 * read the current page (@props) and choose display containers accordingly
 */
-export const MainReactElement = React.createClass({ displayName: 'Main_React_Element',
-  propTypes: {
-    page: React.PropTypes.string.isRequired,
-    dispatch: React.PropTypes.func.isRequired,
-    spinner: React.PropTypes.number,
-    browserMessage: React.PropTypes.string,
-  },
-  componentWillReceiveProps: function (nextProps) {
+
+export class MainReactElement extends React.Component {
+  constructor(...args) {
+    super(...args);
+    this.displayName = 'Main_React_Element';
+  }
+  componentDidMount() {
+    document.addEventListener('dragover', (e) => {e.preventDefault();}, false);
+    document.addEventListener('drop', (e) => {
+      e.preventDefault();
+      this.filesDropped(e);
+    }, false);
+    document.addEventListener('keyup', this.keyIncoming.bind(this));
+  }
+  componentWillReceiveProps(nextProps) {
     if (this.props.spinner !== nextProps.spinner && nextProps.spinner === 0) {
       this.props.dispatch(checkLoadedDataIsComplete());
     }
-  },
-  componentDidMount: function () {
-    document.addEventListener('dragover', (e) => {e.preventDefault();}, false);
-    document.addEventListener('drop', this.filesDropped, false);
-    document.addEventListener('keyup', this.keyIncoming);
-  },
-  render: function () {
+  }
+  render() {
     let injectedPage;
     switch (this.props.page) {
     case 'landing':
@@ -150,16 +153,16 @@ export const MainReactElement = React.createClass({ displayName: 'Main_React_Ele
       injectedPage = false;
     }
     return (
-      <div id="mainDiv" ref={(c) => this.node = c}>
+      <div id="mainDiv" ref={(c) => {this.node = c;}}>
         <ConnectedHeader />
         <Spinner key="spinner" active={this.props.spinner} />
         {injectedPage}
         <ConnectedNotifications />
       </div>
     );
-  },
+  }
 
-  keyIncoming: function (event) {
+  keyIncoming(event) {
     // http://www.cambiaresearch.com/articles/15/javascript-char-codes-key-codes
     const key = event.keyCode || event.charCode;
     switch (key) {
@@ -202,7 +205,7 @@ export const MainReactElement = React.createClass({ displayName: 'Main_React_Ele
     default:
       return;
     }
-  },
+  }
 
   produceSVG() {
     window.svgCtx = new C2S(window.innerWidth, window.innerHeight);
@@ -230,7 +233,7 @@ export const MainReactElement = React.createClass({ displayName: 'Main_React_Ele
       }
       document.body.removeChild(a);
     }, 100);
-  },
+  }
 
   filesDropped(e) {
     window.ga('send', 'pageview', '/filesDropped');
@@ -243,5 +246,12 @@ export const MainReactElement = React.createClass({ displayName: 'Main_React_Ele
     for (let i = 0; i < files.length; i++) {
       this.props.dispatch(incomingFile(files[i]));
     }
-  },
-});
+  }
+}
+
+MainReactElement.propTypes = {
+  page: PropTypes.string.isRequired,
+  dispatch: PropTypes.func.isRequired,
+  spinner: PropTypes.number,
+  browserMessage: PropTypes.string,
+};

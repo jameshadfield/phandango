@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 import React from 'react';
+import PropTypes from 'prop-types';
 import { AnimatedLogo } from '../components/logo';
 import version from '../version';
 
@@ -30,7 +31,7 @@ export const UnsupportedBrowser = ({ msg }) => {
             </ul>
           </h3>
 
-          <strong>Why is this?</strong> Different browsers use different syntax to handle events (such as zooming, dragging) as well as niggly things like scroll bars, animations e.t.c. Unfortunately there is lots of code which relies on these things in an interactive app such as this and it's hard to support every browser out there!
+          <strong>Why is this?</strong> Different browsers use different syntax to handle events (such as zooming, dragging) as well as niggly things like scroll bars, animations e.t.c. Unfortunately there is lots of code which relies on these things in an interactive app such as this and its hard to support every browser out there!
           <p>
             <strong>Can you help?</strong> Phandango is open source and <a href="https://github.com/jameshadfield/phandango">is on GitHub</a>. If you can help out and increase browser support that would be great.
           </p>
@@ -43,5 +44,5 @@ export const UnsupportedBrowser = ({ msg }) => {
 };
 
 UnsupportedBrowser.propTypes = {
-  msg: React.PropTypes.string.isRequired,
+  msg: PropTypes.string.isRequired,
 };

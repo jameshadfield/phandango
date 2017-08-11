@@ -1,5 +1,6 @@
 import { connect } from 'react-redux';
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Annotation } from '../components/annotation';
 import { Drag } from '../components/resize';
 import { Phylogeny } from '../components/phylogeny';
@@ -62,19 +63,46 @@ const ConnectedCartoon = connect((state)=>({
   genomeLength: state.genomeInfo.genomeLength,
 }))(Cartoon);
 
-export const CanvasContainer = React.createClass({ displayName: 'CanvasContainer',
-  propTypes: {
-    active: React.PropTypes.object.isRequired,
-    colPercs: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
-    rowPercs: React.PropTypes.array.isRequired,
-    logoIsOn: React.PropTypes.bool.isRequired,
-  },
-
-  componentDidMount: function () {
-    // window.addEventListener('resize', this.resizeFn, false);
-    // document.documentElement.style.overflow = 'hidden';  // firefox, chrome
-    // document.body.scroll = "no"; // ie only
-  },
+export class CanvasContainer extends React.Component {
+  constructor(...args) {
+    super(...args);
+    this.displayName = 'CanvasContainer';
+    this.keyIdx = 0;
+    this.key = 'canvases0';
+    this.resizeFn = () => {
+      this.forceUpdate(); // is this enough?
+    };
+    this.percentize = (n) => {
+      return (n.toString() + '%');
+    };
+    this.makeVh = (n) => {
+      return (n.toString() + 'vh');
+    };
+    this.getStyle = (colIdx, rowIdx) => {
+      const sty = {
+        width: this.percentize(this.props.colPercs[colIdx]),
+        height: 'calc(' + this.makeVh(this.props.rowPercs[rowIdx]) + ' - 3px)',
+        position: 'relative',
+        margin: '0px',
+      };
+      if (colIdx < 2) {
+        sty.float = 'left';
+      } else {
+        sty.float = 'right';
+      }
+      if (colIdx === 0 && rowIdx === 2) {
+        sty.position = 'absolute';
+        sty.bottom = '30px';
+        sty.left = '10px';
+      }
+      return (sty);
+    };
+  }
+  // componentDidMount() {
+  //   window.addEventListener('resize', this.resizeFn, false);
+  //   document.documentElement.style.overflow = 'hidden';  // firefox, chrome
+  //   document.body.scroll = "no"; // ie only
+  // }
 
   // componentWillUpdate() {
   //   /* changing the key apparently causes
@@ -84,45 +112,20 @@ export const CanvasContainer = React.createClass({ displayName: 'CanvasContainer
   //    */
   //   this.keyIdx += 1;
   //   this.key = 'canvases' + this.keyIdx;
-  // },
-
+  // }
   componentDidUpdate() {
     // console.log('canvases.jsx did update');
     window.dispatchEvent(new Event('resize')); // same event as window resizing :)
-  },
-
-  componentWillUnmount() {
-    // window.removeEventListener('resize', this.resizeFn, false);
-  },
-
-  getStyle: function (colIdx, rowIdx) {
-    const sty = {
-      width: this.percentize(this.props.colPercs[colIdx]),
-      height: 'calc(' + this.makeVh(this.props.rowPercs[rowIdx]) + ' - 3px)',
-      position: 'relative',
-      margin: '0px',
-    };
-    if (colIdx < 2) {
-      sty.float = 'left';
-    } else {
-      sty.float = 'right';
-    }
-    if (colIdx === 0 && rowIdx === 2) {
-      sty.position = 'absolute';
-      sty.bottom = '30px';
-      sty.left = '10px';
-    }
-    return (sty);
-  },
-
-  render: function () {
+  }
+  // componentWillUnmount() {
+  //   window.removeEventListener('resize', this.resizeFn, false);
+  // }
+  render() {
     const active = this.props.active;
     // deebug this
     if (!Object.keys(active).some((e)=>active[e])) {
       return false;
     }
-
-
     // top row (small genome / ??? / annotation)
     const topRow = [];
     if (active.blocks || active.annotation) {
@@ -136,8 +139,6 @@ export const CanvasContainer = React.createClass({ displayName: 'CanvasContainer
     } else {
       topRow[2] = <div style={this.getStyle(2, 0)} key={'annotation'} />;
     }
-
-
     const middleRow = [];
     // tree
     if (active.tree) {
@@ -230,22 +231,12 @@ export const CanvasContainer = React.createClass({ displayName: 'CanvasContainer
         {hresizers}
       </div>
     );
-  },
+  }
+}
 
-  keyIdx: 0,
-
-  key: 'canvases0',
-
-  resizeFn: function () {
-    this.forceUpdate(); // is this enough?
-  },
-
-  percentize: function (n) {
-    return (n.toString() + '%');
-  },
-
-  makeVh: function (n) {
-    return (n.toString() + 'vh');
-  },
-
-});
+CanvasContainer.propTypes = {
+  active: PropTypes.object.isRequired,
+  colPercs: PropTypes.arrayOf(PropTypes.number).isRequired,
+  rowPercs: PropTypes.array.isRequired,
+  logoIsOn: PropTypes.bool.isRequired,
+};

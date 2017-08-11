@@ -1,13 +1,10 @@
 /* eslint-disable max-len */
 import React from 'react';
+import PropTypes from 'prop-types';
 import version from '../version';
 import { AnimatedLogo } from '../components/logo';
 
-export const LandingPage = React.createClass({
-  propTypes: {
-    goToPage: React.PropTypes.func.isRequired,
-    browserMessage: React.PropTypes.string
-  },
+export class LandingPage extends React.Component {
 
   render() {
     let browserMessage = null;
@@ -60,9 +57,13 @@ export const LandingPage = React.createClass({
         version {version}
       </div>
     );
-  },
-});
+  }
+}
 
+LandingPage.propTypes = {
+  goToPage: PropTypes.func.isRequired,
+  browserMessage: PropTypes.string,
+};
 
 /* previous attempt to center vertially failed when the screen became smaller than the height!
       <div id="outer">

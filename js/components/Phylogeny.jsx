@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import { setYValues } from '../actions/phylocanvasBridge';
 import { computeSubLineGraph, updateLineGraphData } from '../actions/lineGraph';
@@ -7,19 +8,13 @@ import ContextMenuPlugin from 'phylocanvas-plugin-context-menu';
 import isEqual from 'lodash/isEqual';
 PhyloCanvas.plugin(ContextMenuPlugin);
 
-export const Phylogeny = React.createClass({
-  propTypes: {
-    newickString: React.PropTypes.string,
-    style: React.PropTypes.object,
-    dispatch: React.PropTypes.func.isRequired,
-    active: React.PropTypes.object.isRequired,
-  },
+export class Phylogeny extends React.Component {
 
   // getInitialState: function () {
   //   return ({ shouldFitToPanel: false });
   // },
 
-  componentDidMount: function () {
+  componentDidMount() {
     // console.log('phylocanvas did mount -- loading in tree!');
     this.phylocanvas = PhyloCanvas.createTree(ReactDOM.findDOMNode(this), { fillCanvas: true });
     this.phylocanvas.setTreeType('rectangular');
@@ -27,12 +22,12 @@ export const Phylogeny = React.createClass({
     this.phylocanvas.nodeAlign = true;
     this.phylocanvas.padding = 0;
     this.phylocanvas.resizeToContainer();
-    this.attachListenersToPhylocanvas(this.props.dispatch);
-    window.addEventListener('pdf', this.svgdraw, false);
+    this.attachListenersToPhylocanvas(this, this.props.dispatch);
+    window.addEventListener('pdf', this.svgdraw.bind(this), false);
     if (this.props.newickString) {
       this.phylocanvas.load(this.props.newickString);
     }
-  },
+  }
 
   componentWillReceiveProps(nextProps) {
     // fires before shouldComponentUpdate
@@ -51,7 +46,7 @@ export const Phylogeny = React.createClass({
       // solution: modify state
       // this.setState({ shouldFitToPanel: true });
     }
-  },
+  }
 
   shouldComponentUpdate(nextProps) {
     // we only need to re-render phylocanvas when
@@ -63,38 +58,38 @@ export const Phylogeny = React.createClass({
     }
     // console.log('phylocanvas. new props but no style change -> should update: false');
     return false;
-  },
+  }
 
   // componentDidUpdate() {
   //   // console.log('phylocanvas did update');
   //   if (this.state.shouldFitToPanel) {
-  //     window.requestAnimationFrame(this.resizePhylocanvas);
+  //     window.requestAnimationFrame(this.resizePhylocanvas.bind(this));
   //   }
   //   this.setState({ shouldFitToPanel: false }); // no infinite loop as shouldComponentUpdate ret false
   // },
 
   componentDidUpdate() {
     // console.log('phylocanvas did update');
-    window.requestAnimationFrame(this.resizePhylocanvas);
-  },
+    window.requestAnimationFrame(this.resizePhylocanvas.bind(this));
+  }
 
   componentWillUnmount() {
-    window.removeEventListener('pdf', this.svgdraw, false);
-  },
+    window.removeEventListener('pdf', this.svgdraw.bind(this), false);
+  }
 
-  render: function () {
+  render() {
     // console.log('phylocanvas DOM render');
     return (
       <div style={this.props.style} id="phyloDiv"></div>
     );
-  },
+  }
 
   resizePhylocanvas() {
     // console.log('phylocanvas fit to panel');
     // this.phylocanvas.resizeToContainer();
     this.phylocanvas.draw(true); // true -> fitToPanel (i think)
     this.props.dispatch(setYValues(this.phylocanvas));
-  },
+  }
 
   svgdraw() {
     function setCanvasToBranches(branch, newCanvas) {
@@ -155,9 +150,9 @@ export const Phylogeny = React.createClass({
     window.devicePixelRatio = oldWindowDevicePixelRatio;
     setCanvasToBranches(this.phylocanvas.root, this.phylocanvas.canvas);
     this.phylocanvas.draw(true);
-  },
+  }
 
-  attachListenersToPhylocanvas: function (dispatch) {
+  attachListenersToPhylocanvas(that, dispatch) {
     // once phylocanvas is live we want to have a bunch of listeners which, when subtrees e.t.c. are selected they will update the store Taxa_Locations
     // or when zoom happens then we should do the same!
     // we update the store by listening to an event, triggering an action, dispatching the action e.t.c. (FLUX)
@@ -178,24 +173,30 @@ export const Phylogeny = React.createClass({
 
     document.getElementById('phyloDiv').addEventListener('subtree', (e) => {
       // console.log('TO DO: subtree drawn. e:', e);
-      dispatch(setYValues(this.phylocanvas));
+      dispatch(setYValues(that.phylocanvas));
       dispatch(updateLineGraphData());
     }, false);
 
     document.getElementById('phyloDiv').addEventListener('loaded', () => {
-      dispatch(setYValues(this.phylocanvas));
+      dispatch(setYValues(that.phylocanvas));
     }, false);
 
     // phylocanvas should trigger an event when it
     // actually redraws something
     // but we check for changes in the dispatch
-    this.phylocanvas.on('mousewheel', () => {
-      dispatch(setYValues(this.phylocanvas));
+    that.phylocanvas.on('mousewheel', () => {
+      dispatch(setYValues(that.phylocanvas));
     });
-    this.phylocanvas.on('mousemove', () => {
-      dispatch(setYValues(this.phylocanvas));
+    that.phylocanvas.on('mousemove', () => {
+      dispatch(setYValues(that.phylocanvas));
     });
-  },
+  }
 
-});
+}
 
+Phylogeny.propTypes = {
+  newickString: PropTypes.string,
+  style: PropTypes.object,
+  dispatch: PropTypes.func.isRequired,
+  active: PropTypes.object.isRequired,
+};

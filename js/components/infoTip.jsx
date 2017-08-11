@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 /*  InfoTip
 stateless component
@@ -24,7 +25,7 @@ export const InfoTip = ({ x, y, disp }) => {
 };
 
 InfoTip.propTypes = {
-  x: React.PropTypes.number,
-  y: React.PropTypes.number,
-  disp: React.PropTypes.object,
+  x: PropTypes.number,
+  y: PropTypes.number,
+  disp: PropTypes.object,
 };
