@@ -32,7 +32,7 @@ const rootReducer = combineReducers({
 
 export default rootReducer;
 
-function annotation(state = { data: [], fileName: '' }, action) {
+function annotation(state = { data: [], fileName: 'not loaded' }, action) {
   switch (action.type) {
   case 'annotationData':
     return { data: action.data, fileName: action.fileName };
@@ -88,6 +88,8 @@ function spinner(state = 0, action) {
   case 'decreaseSpinner':
     // console.log('spinner value decreasing via ', action.type);
     return state ? state - 1 : state;
+  case 'notificationNew':
+    return action.type.startsWith('Input error') ? state - 1 : state;
   default:
     return state;
   }
