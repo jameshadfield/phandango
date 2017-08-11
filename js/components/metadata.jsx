@@ -182,7 +182,7 @@ const Headers = React.createClass({
         transform: 'rotate(270deg)',
         transformOrigin: 'left bottom 0',
       };
-      return <div key={idx} abc={20} style={style}>{cv}</div>;
+      return <div key={idx} style={style}>{cv}</div>;
     });
 
     return (
