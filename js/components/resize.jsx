@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { layoutPercentChange } from '../actions/general';
 import { changePercs } from '../reducers/layout';
 
@@ -10,30 +11,80 @@ import { changePercs } from '../reducers/layout';
  * when handles are released, this.state.dragging -> false
  * and an action propogates which ends up changing the props
  */
+export class Drag extends React.Component {
+  constructor(...args) {
+    super(...args);
+    this.state = { dragging: false };
 
-export const Drag = React.createClass({
-  propTypes: {
-    rowPercs: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
-    colPercs: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
-    dispatch: React.PropTypes.func.isRequired,
-    index: React.PropTypes.number.isRequired,
-    isCol: React.PropTypes.bool.isRequired,
-  },
-
-  getInitialState: function () {
-    return {
-      dragging: false,
+    // calculate relative position to the mouse and set dragging=true
+    this.onMouseDown = (e) => {
+      // only left mouse button
+      if (e.button !== 0) {
+        return;
+      }
+      this.setState({
+        dragging: true,
+        pos: undefined,
+        percs: this.props.isCol ? this.props.colPercs : this.props.rowPercs,
+      });
+      e.stopPropagation();
+      e.preventDefault();
     };
-  },
 
-  componentDidMount: function () {
+    this.onMouseUp = (e) => {
+      this.setState({ dragging: false });
+      e.stopPropagation();
+      e.preventDefault();
+      if (this.state.pos) {
+        this.props.dispatch(layoutPercentChange(this.props.isCol, this.props.index, this.state.pos));
+      }
+    };
+
+    this.onMouseMove = (e) => {
+      if (!this.state.dragging) {
+        return;
+      }
+      let pos; /* measured in percentages */
+      // this.state.percs has been set now!
+      pos = this.props.isCol ? 100 * (e.pageX / window.innerWidth) : 100 * (e.pageY / window.innerHeight);
+      for (let i = 0; i < this.props.index; i++) {
+        pos -= this.state.percs[i];
+      }
+      this.setState({
+        percs: changePercs(this.state.percs, pos, this.props.index),
+        pos,
+      });
+      e.stopPropagation();
+      e.preventDefault();
+    };
+
+    /* Function to calculate cumulative position of each div from the sizes of those preceeding them */
+    this.cumulativePosition = (index, percs) => {
+      let cumPos = 0;
+      for (let i = 0; i < index + 1; i++) {
+        cumPos += percs[i];
+      }
+      // console.log("cumPos", index, percs, cumPos)
+      return cumPos;
+    };
+
+    this.makeVh = (n) => {
+      return (n.toString() + 'vh');
+    };
+
+    this.resizeFn = () => {
+      this.forceUpdate();
+    };
+  }
+
+  componentDidMount() {
     this.div.addEventListener('mousedown', this.onMouseDown, true);
     window.addEventListener('resize', this.resizeFn, false);
     this.resizeFn();
-  },
+  }
 
   // set up some document event listeners when dragging to catch the mouse move and mouse up
-  componentDidUpdate: function (props, state) {
+  componentDidUpdate(props, state) {
     if (this.state.dragging && !state.dragging) {
       document.addEventListener('mousemove', this.onMouseMove);
       document.addEventListener('mouseup', this.onMouseUp);
@@ -41,58 +92,13 @@ export const Drag = React.createClass({
       document.removeEventListener('mousemove', this.onMouseMove);
       document.removeEventListener('mouseup', this.onMouseUp);
     }
-  },
+  }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.resizeFn, false);
-  },
+  }
 
-  // calculate relative position to the mouse and set dragging=true
-  onMouseDown: function (e) {
-    // only left mouse button
-    if (e.button !== 0) {
-      return;
-    }
-    this.setState({
-      dragging: true,
-      pos: undefined,
-      percs: this.props.isCol ? this.props.colPercs : this.props.rowPercs,
-    });
-    e.stopPropagation();
-    e.preventDefault();
-  },
-
-  onMouseUp: function (e) {
-    this.setState({ dragging: false });
-    e.stopPropagation();
-    e.preventDefault();
-    if (this.state.pos) {
-      this.props.dispatch(layoutPercentChange(this.props.isCol, this.props.index, this.state.pos));
-    }
-  },
-
-  onMouseMove: function (e) {
-    if (!this.state.dragging) {
-      return;
-    }
-    let pos; /* measured in percentages */
-    // this.state.percs has been set now!
-    pos = this.props.isCol ? 100 * (e.pageX / window.innerWidth) : 100 * (e.pageY / window.innerHeight);
-    for (let i = 0; i < this.props.index; i++) {
-      pos -= this.state.percs[i];
-    }
-
-    // console.log(pos, this.props.index, this.state.colPercs, changePercs(this.state.colPercs, pos, this.props.index));
-
-    this.setState({
-      percs: changePercs(this.state.percs, pos, this.props.index),
-      pos,
-    });
-    e.stopPropagation();
-    e.preventDefault();
-  },
-
-  render: function () {
+  render() {
     const leftMargin = parseInt(getComputedStyle(document.body, null).getPropertyValue('margin-left'), 10);
     const topMargin = parseInt(getComputedStyle(document.body, null).getPropertyValue('margin-top'), 10);
     const z = 90;
@@ -171,23 +177,13 @@ export const Drag = React.createClass({
         {line}
       </div>
     );
-  },
+  }
+}
 
-  /* Function to calculate cumulative position of each div from the sizes of those preceeding them */
-  cumulativePosition: function (index, percs) {
-    let cumPos = 0;
-    for (let i = 0; i < index + 1; i++) {
-      cumPos += percs[i];
-    }
-    // console.log("cumPos", index, percs, cumPos)
-    return cumPos;
-  },
-
-  makeVh: function (n) {
-    return (n.toString() + 'vh');
-  },
-
-  resizeFn: function () {
-    this.forceUpdate();
-  },
-});
+Drag.propTypes = {
+  rowPercs: PropTypes.arrayOf(PropTypes.number).isRequired,
+  colPercs: PropTypes.arrayOf(PropTypes.number).isRequired,
+  dispatch: PropTypes.func.isRequired,
+  index: PropTypes.number.isRequired,
+  isCol: PropTypes.bool.isRequired,
+};

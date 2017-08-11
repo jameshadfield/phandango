@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import Dialog from 'material-ui/lib/dialog';
 import Snackbar from 'material-ui/lib/snackbar';
 
@@ -7,25 +8,18 @@ Whether or not something is displayed depends on this.state.open
 which can be mutatied by (1) redux store change (should only turn on) and
 (2) onRequestClose (which always sets it to false)
 */
-
-export const NotificationDisplay = React.createClass({
-  propTypes: {
-    title: PropTypes.string,
-    message: PropTypes.oneOfType([ PropTypes.string, PropTypes.object ]),
-    dialog: PropTypes.bool.isRequired,
-    open: PropTypes.bool.isRequired,
-    notificationSeen: PropTypes.func,
-    counter: PropTypes.number.isRequired,
-  },
-
-  getInitialState() {
-    return ({ open: false });
-  },
-
+export class NotificationDisplay extends React.Component {
+  constructor(...args) {
+    super(...args);
+    this.state = { open: false };
+    this.requestClose = () => {
+      this.setState({ open: false });
+      this.props.notificationSeen();
+    };
+  }
   componentWillReceiveProps(props) {
     this.setState({ open: props.open });
-  },
-
+  }
   render() {
     let mui;
     if (this.props.dialog) {
@@ -54,11 +48,14 @@ export const NotificationDisplay = React.createClass({
         {mui}
       </g>
     );
-  },
+  }
+}
 
-  requestClose() {
-    this.setState({ open: false });
-    this.props.notificationSeen();
-  },
-
-});
+NotificationDisplay.propTypes = {
+  title: PropTypes.string,
+  message: PropTypes.oneOfType([ PropTypes.string, PropTypes.object ]),
+  dialog: PropTypes.bool.isRequired,
+  open: PropTypes.bool.isRequired,
+  notificationSeen: PropTypes.func,
+  counter: PropTypes.number.isRequired,
+};

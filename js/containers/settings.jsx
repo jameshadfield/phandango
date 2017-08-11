@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
   layoutPercentChange,
@@ -28,11 +29,13 @@ import Remove from 'material-ui/lib/svg-icons/content/remove';
  * is almose a dummy components which renders connected containers
  * @props {Function} dispatch - injected by connect
 */
-export const Settings = React.createClass({
-  propTypes: {
-    dispatch: PropTypes.func.isRequired,
-  },
-  componentDidMount: function () {
+
+export class Settings extends React.Component {
+  constructor(...args) {
+    super(...args);
+  }
+
+  componentDidMount() {
     // modal-like "click to close"
     // this.node.addEventListener('click', (e) => {
     //   // react id of div: this.node._reactInternalComponent._rootNodeID
@@ -41,9 +44,9 @@ export const Settings = React.createClass({
     //     this.props.dispatch(route('canvases'));
     //   }
     // }, false);
-  },
+  }
 
-  render: function () {
+  render() {
     // const panelClassName = 'settings-col';
     const panelClassName = 'col-xs-3 bgwhite border noOverflow';
     // <ConnectedLoadedComponents className={panelClassName} />
@@ -57,9 +60,12 @@ export const Settings = React.createClass({
         </div>
       </div>
     );
-  },
-});
+  }
+}
 
+Settings.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+};
 
 /*
  * Layout container:
@@ -68,23 +74,11 @@ export const Settings = React.createClass({
  * uses the (dumb) component 'slider.jsx' to display the actual slider
 */
 
-const Layout = React.createClass({
-  propTypes: {
-    colPercs: PropTypes.arrayOf(PropTypes.number).isRequired,
-    rowPercs: PropTypes.arrayOf(PropTypes.number).isRequired,
-    onSliderChange: PropTypes.func.isRequired,
-    className: PropTypes.string,
-    toggleLogo: PropTypes.func.isRequired,
-    logoIsOn: PropTypes.bool.isRequired,
-    clearAllData: PropTypes.func.isRequired,
-    clearTree: PropTypes.func.isRequired,
-  },
-
-  // componentWillReceiveProps(newProps) {
-  //   console.log('Layout received new props:', newProps);
-  // },
-
-  render: function () {
+export class Layout extends React.Component {
+  constructor(...args) {
+    super(...args);
+  }
+  render() {
     // console.log('render called. row percs are: ', this.props.rowPercs);
     const sliderStyle = {
       'marginTop': '0px',
@@ -154,8 +148,19 @@ const Layout = React.createClass({
         <p/>
       </div>
     );
-  },
-});
+  }
+}
+
+Layout.propTypes = {
+  colPercs: PropTypes.arrayOf(PropTypes.number).isRequired,
+  rowPercs: PropTypes.arrayOf(PropTypes.number).isRequired,
+  onSliderChange: PropTypes.func.isRequired,
+  className: PropTypes.string,
+  toggleLogo: PropTypes.func.isRequired,
+  logoIsOn: PropTypes.bool.isRequired,
+  clearAllData: PropTypes.func.isRequired,
+  clearTree: PropTypes.func.isRequired,
+};
 
 const ConnectedLayout = connect(
   (state)=>({
@@ -186,24 +191,10 @@ const ConnectedLayout = connect(
  * uses the component 'switch.jsx' to display the toggles
  * controlls the callbacks from the switches
 */
-
-const Metadata = React.createClass({
-  propTypes: {
-    headerNames: PropTypes.arrayOf(PropTypes.string),
-    toggles: PropTypes.arrayOf(PropTypes.bool),
-    fileName: PropTypes.string,
-    active: PropTypes.bool,
-    className: PropTypes.string,
-    // toggleMeta: PropTypes.func.isRequired,
-    toggleMetaHeader: PropTypes.func.isRequired,
-    toggleAllMetaColumns: PropTypes.func.isRequired,
-    clearMetadata: PropTypes.func.isRequired,
-  },
-
-  // componentWillReceiveProps(newProps) {
-  //   console.log('Metadata received new props:', newProps);
-  // },
-
+export class Metadata extends React.Component {
+  constructor(...args) {
+    super(...args);
+  }
   /* deleted from render: main on-off switch
         <Toggle
           name="master"
@@ -215,7 +206,6 @@ const Metadata = React.createClass({
           onToggle={this.props.toggleMeta.bind(this, this.props.active)}
         />
   */
-
   render() {
     if ( (!this.props.fileName) || this.props.fileName === 'not loaded') { return false; }
     return (
@@ -259,9 +249,20 @@ const Metadata = React.createClass({
         </div>
       </div>
     );
-  },
+  }
+}
 
-});
+Metadata.propTypes = {
+  headerNames: PropTypes.arrayOf(PropTypes.string),
+  toggles: PropTypes.arrayOf(PropTypes.bool),
+  fileName: PropTypes.string,
+  active: PropTypes.bool,
+  className: PropTypes.string,
+  // toggleMeta: PropTypes.func.isRequired,
+  toggleMetaHeader: PropTypes.func.isRequired,
+  toggleAllMetaColumns: PropTypes.func.isRequired,
+  clearMetadata: PropTypes.func.isRequired,
+};
 
 const ConnectedMetadata = connect(
   (state)=>({
@@ -422,4 +423,3 @@ const ConnectedBlocks = connect(
     },
   })
 )(Blocks);
-

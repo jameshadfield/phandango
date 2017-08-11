@@ -1,34 +1,78 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 function add(a, b) {return a + b;}
 
-export const AnimatedLogo = React.createClass({
-  propTypes: {
-    interval: React.PropTypes.number,
-    w: React.PropTypes.number.isRequired,
-    h: React.PropTypes.number.isRequired,
-    animate: React.PropTypes.bool,
-  },
+export class AnimatedLogo extends React.Component {
+  constructor(...args) {
+    super(...args);
 
-  getDefaultProps() {
-    return {
-      interval: 5000,
-      animate: true,
+    this.getLetterSpacing = (numBoxes) => {
+      const letterSpacing = Array.apply(1, Array(numBoxes));
+      let count = 0;
+      for (let i = 0; i < numBoxes; i++) {
+        const multiplier = i < 1 ? i : 3;
+        let space = count > 9 ? 0 : Math.round(Math.random() * multiplier);
+        if (count + space > 9) {
+          space = 9 - count;
+        }
+        if (i === 8 && count < 9) {
+          space = 9 - count;
+        }
+        letterSpacing[i] = space;
+        count += space;
+      }
+      return letterSpacing;
     };
-  },
+
+    this.getYPositions = (n, height) => {
+      const ret = Array.apply(0, Array(n));
+      for (let i = 0; i < n; i++) {
+        const top = Math.round(Math.random() * 1 / 4 * height);
+        const bottom = Math.round(height * 2 / 3 + Math.random() * 1 / 3 * height);
+        ret[i] = [ top, bottom - top ];
+      }
+      return ret;
+    };
+
+    this.move = () => {
+      const boxes = this.boxes.children;
+      const numBoxes = boxes.length;
+      const numNewBoxes = numBoxes;
+      const letterSpacing = this.getLetterSpacing(numNewBoxes);
+      const letterWidthPx = Math.round( this.svgElem.width.baseVal.value * 0.9 / 9);
+      const letterBufferLeft = this.props.w > 400 ? -8 : 0;
+      const letterBufferRight = this.props.w > 400 ? 8 : 2;
+      const xOffset = Math.round(0.05 * this.svgElem.width.baseVal.value);
+
+      const yPositions = this.getYPositions(numNewBoxes, this.svgElem.height.baseVal.value);
+
+      for (let boxNum = 0; boxNum < numBoxes; boxNum++) {
+        boxes[boxNum].x.baseVal.value = xOffset + letterSpacing.slice(0, boxNum).reduce(add, 0) * letterWidthPx + letterBufferLeft;
+        boxes[boxNum].width.baseVal.value = letterSpacing[boxNum] * letterWidthPx - letterBufferRight;
+
+        boxes[boxNum].y.baseVal.value = yPositions[boxNum][0];
+        boxes[boxNum].height.baseVal.value = yPositions[boxNum][1];
+
+        const col = letterSpacing[boxNum] === 1 ? '#225ea8' : '#f03b20';
+
+        boxes[boxNum].setAttribute('style', 'fill: ' + col);
+      }
+    };
+  }
 
   componentDidMount() {
     this.move();
     if (this.props.animate) {
       this.intervalId = window.setInterval(this.move, this.props.interval);
     }
-  },
+  }
 
   componentWillUnmount() {
     if (this.intervalId) {
       clearInterval(this.intervalId);
     }
-  },
+  }
 
   render() {
     const fontSize = 56;
@@ -60,62 +104,8 @@ export const AnimatedLogo = React.createClass({
         </g>
       </svg>
     );
-  },
-
-  getLetterSpacing(numBoxes) {
-    const letterSpacing = Array.apply(1, Array(numBoxes));
-    let count = 0;
-    for (let i = 0; i < numBoxes; i++) {
-      const multiplier = i < 1 ? i : 3;
-      let space = count > 9 ? 0 : Math.round(Math.random() * multiplier);
-      if (count + space > 9) {
-        space = 9 - count;
-      }
-      if (i === 8 && count < 9) {
-        space = 9 - count;
-      }
-      letterSpacing[i] = space;
-      count += space;
-    }
-    return letterSpacing;
-  },
-
-  getYPositions(n, height) {
-    const ret = Array.apply(0, Array(n));
-    for (let i = 0; i < n; i++) {
-      const top = Math.round(Math.random() * 1 / 4 * height);
-      const bottom = Math.round(height * 2 / 3 + Math.random() * 1 / 3 * height);
-      ret[i] = [ top, bottom - top ];
-    }
-    return ret;
-  },
-
-  move() {
-    const boxes = this.boxes.children;
-    const numBoxes = boxes.length;
-    const numNewBoxes = numBoxes;
-    const letterSpacing = this.getLetterSpacing(numNewBoxes);
-    const letterWidthPx = Math.round( this.svgElem.width.baseVal.value * 0.9 / 9);
-    const letterBufferLeft = this.props.w > 400 ? -8 : 0;
-    const letterBufferRight = this.props.w > 400 ? 8 : 2;
-    const xOffset = Math.round(0.05 * this.svgElem.width.baseVal.value);
-
-    const yPositions = this.getYPositions(numNewBoxes, this.svgElem.height.baseVal.value);
-
-    for (let boxNum = 0; boxNum < numBoxes; boxNum++) {
-      boxes[boxNum].x.baseVal.value = xOffset + letterSpacing.slice(0, boxNum).reduce(add, 0) * letterWidthPx + letterBufferLeft;
-      boxes[boxNum].width.baseVal.value = letterSpacing[boxNum] * letterWidthPx - letterBufferRight;
-
-      boxes[boxNum].y.baseVal.value = yPositions[boxNum][0];
-      boxes[boxNum].height.baseVal.value = yPositions[boxNum][1];
-
-      const col = letterSpacing[boxNum] === 1 ? '#225ea8' : '#f03b20';
-
-      boxes[boxNum].setAttribute('style', 'fill: ' + col);
-    }
-  },
-});
-
+  }
+}
 
 export const StaticLogo = () => {
   return (
@@ -131,3 +121,12 @@ export const StaticLogo = () => {
     </svg>
   );
 };
+
+AnimatedLogo.propTypes = {
+  interval: PropTypes.number,
+  w: PropTypes.number.isRequired,
+  h: PropTypes.number.isRequired,
+  animate: PropTypes.bool,
+};
+
+AnimatedLogo.defaultProps = { interval: 5000, animate: true };

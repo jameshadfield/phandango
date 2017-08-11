@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Mouse, getMouse } from '../misc/mouse';
 import * as helper from '../misc/helperFunctions';
 import { InfoTip } from './infoTip';
@@ -8,23 +9,98 @@ import { InfoTip } from './infoTip';
   The Blocks component
   Draws gubbins / roary e.t.c
 */
-export const Blocks = React.createClass({
-  propTypes: {
-    visibleGenome: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
-    dispatch: React.PropTypes.func.isRequired,
-    data: React.PropTypes.oneOfType([ React.PropTypes.array, React.PropTypes.object ]).isRequired,
-    style: React.PropTypes.object.isRequired,
-    activeTaxa: React.PropTypes.object.isRequired,
-    shouldMouseOver: React.PropTypes.bool.isRequired,
-    blocksArePerTaxa: React.PropTypes.bool.isRequired,
-    blockFillAlpha: React.PropTypes.number.isRequired,
-  },
+export class Blocks extends React.Component {
+  constructor(...args) {
+    super(...args);
+    this.state = { selected: undefined, hovered: undefined };
 
-  getInitialState: function () {
-    return ({ selected: undefined, hovered: undefined });
-  },
+    this.onClickCallback = (mx, my) => {
+      // we can dispatch here as well if necessary!
+      this.setState({
+        selected: this.findSelected(mx, my),
+      });
+    };
 
-  componentDidMount: function () { // don't use fat arrow
+    this.onMouseMove = (e) => {
+      const mouse = getMouse(e, this.canvas);
+      this.setState({
+        hovered: this.findSelected(mouse.x, mouse.y),
+      });
+    };
+
+    this.getXYOfBlock = (block) => {
+      return ([
+        parseInt( (block.x2) + this.canvasPos.left, 10),
+        parseInt( block.y2 + this.canvasPos.top + 5, 10),
+      ]);
+    };
+
+    this.resizeFn = () => {this.forceUpdate();};
+
+    this.svgdraw = () => {
+      this.canvasPos = this.canvas.getBoundingClientRect();
+      console.log('printing blocks to SVG');
+      window.svgCtx.save();
+      const currentWidth = window.svgCtx.width;
+      window.svgCtx.width = this.canvas.width;
+      window.svgCtx.translate(this.canvasPos.left, this.canvasPos.top);
+      window.svgCtx.rect(0, 0, this.canvasPos.right - this.canvasPos.left, this.canvasPos.bottom - this.canvasPos.top);
+      window.svgCtx.stroke();
+      window.svgCtx.clip();
+      this.redraw(window.svgCtx, this.props, this.state);
+      window.svgCtx.restore();
+      window.svgCtx.width = currentWidth;
+    };
+
+    this.redraw = (context, props, state) => {
+      const blocks = computeBlocksInView(props.data, props.visibleGenome, this.canvas, props.activeTaxa, props.blocksArePerTaxa);
+      drawBlocks(context, blocks, props.blockFillAlpha);
+      if (state.hovered) {
+        this.drawBorder(context, state.hovered, 'purple');
+      }
+    };
+
+    this.initCanvasXY = helper.initCanvasXY;
+    this.clearCanvas = helper.clearCanvas;
+
+    this.findSelected = (mx, my) => {
+      const blocks = computeBlocksInView(this.props.data, this.props.visibleGenome, this.canvas, this.props.activeTaxa);
+      for (let idx = 0; idx < blocks.length; idx++) {
+        if (
+          mx >= blocks[idx].x1 &&
+          mx <= (blocks[idx].x2) &&
+          my >= blocks[idx].y1 &&
+          my <= (blocks[idx].y2)
+          ) {
+          // return ({
+          //   x1: blocks[idx].x1,
+          //   x2: blocks[idx].x2,
+          //   y1: blocks[idx].y1,
+          //   y2: blocks[idx].y2,
+          //   info: blocks[idx].info,
+          // });
+          return (blocks[idx]); // reference
+        }
+      }
+      // nothing selected! (fallthrough)
+      return undefined;
+    };
+
+    this.drawBorder = (context, block, colour, width = 2) => {
+      context.strokeStyle = colour;
+      context.lineWidth = width;
+      context.beginPath();
+      context.lineTo(block.x1, block.y1);
+      context.lineTo(block.x1, block.y2);
+      context.lineTo(block.x2, block.y2);
+      context.lineTo(block.x2, block.y1);
+      context.lineTo(block.x1, block.y1);
+      context.closePath();
+      context.stroke();
+    };
+  }
+
+  componentDidMount() {
     this.initCanvasXY();
     this.mouse = new Mouse(this.canvas, this.props.dispatch, this.onClickCallback); // set up listeners
     // mouse-overs only make sense for gubbins data!
@@ -38,44 +114,19 @@ export const Blocks = React.createClass({
     this.redraw(this.canvas.getContext('2d'), this.props, this.state);
     window.addEventListener('pdf', this.svgdraw, false);
     window.addEventListener('resize', this.resizeFn, false);
-  },
-
-  // shouldComponentUpdate() {
-  //   return true;
-  // },
+  }
 
   componentWillUpdate(props, state) {
     this.initCanvasXY();
     this.clearCanvas();
     this.canvasPos = this.canvas.getBoundingClientRect();
     this.redraw(this.canvas.getContext('2d'), props, state);
-  },
+  }
 
   componentWillUnmount() {
     window.removeEventListener('pdf', this.svgdraw, false);
     window.removeEventListener('resize', this.resizeFn, false);
-  },
-
-  onClickCallback(mx, my) {
-    // we can dispatch here as well if necessary!
-    this.setState({
-      selected: this.findSelected(mx, my),
-    });
-  },
-
-  onMouseMove(e) {
-    const mouse = getMouse(e, this.canvas);
-    this.setState({
-      hovered: this.findSelected(mouse.x, mouse.y),
-    });
-  },
-
-  getXYOfBlock(block) {
-    return ([
-      parseInt( (block.x2) + this.canvasPos.left, 10),
-      parseInt( block.y2 + this.canvasPos.top + 5, 10),
-    ]);
-  },
+  }
 
   render() {
     // console.log('blocks render');
@@ -102,7 +153,7 @@ export const Blocks = React.createClass({
       <div>
         <canvas
           id="Blocks"
-          ref={(c) => this.canvas = c}
+          ref={(c) => {this.canvas = c;}}
           style={this.props.style}
         />
         {blocksToDisplayInfo.map((cv, idx) =>
@@ -110,81 +161,19 @@ export const Blocks = React.createClass({
         )}
       </div>
     );
-  },
+  }
+}
 
-  resizeFn: function () {
-    this.forceUpdate();
-  },
-
-  svgdraw() {
-    this.canvasPos = this.canvas.getBoundingClientRect();
-    console.log('printing blocks to SVG');
-    window.svgCtx.save();
-    const currentWidth = window.svgCtx.width;
-    window.svgCtx.width = this.canvas.width;
-    window.svgCtx.translate(this.canvasPos.left, this.canvasPos.top);
-    window.svgCtx.rect(0, 0, this.canvasPos.right - this.canvasPos.left, this.canvasPos.bottom - this.canvasPos.top);
-    window.svgCtx.stroke();
-    window.svgCtx.clip();
-    this.redraw(window.svgCtx, this.props, this.state);
-    window.svgCtx.restore();
-    window.svgCtx.width = currentWidth;
-  },
-
-  redraw: function (context, props, state) {
-    const blocks = computeBlocksInView(props.data, props.visibleGenome, this.canvas, props.activeTaxa, props.blocksArePerTaxa);
-    drawBlocks(context, blocks, props.blockFillAlpha);
-    if (state.hovered) {
-      this.drawBorder(context, state.hovered, 'purple');
-    }
-  },
-
-  // by specifying the funtions here
-  // react auto-binds 'this'
-  // and it also allows changes in these functions
-  // to be hot-reloaded
-  initCanvasXY: helper.initCanvasXY,
-  clearCanvas: helper.clearCanvas,
-
-
-  findSelected(mx, my) {
-    const blocks = computeBlocksInView(this.props.data, this.props.visibleGenome, this.canvas, this.props.activeTaxa);
-    for (let idx = 0; idx < blocks.length; idx++) {
-      if (
-        mx >= blocks[idx].x1 &&
-        mx <= (blocks[idx].x2) &&
-        my >= blocks[idx].y1 &&
-        my <= (blocks[idx].y2)
-        ) {
-        // return ({
-        //   x1: blocks[idx].x1,
-        //   x2: blocks[idx].x2,
-        //   y1: blocks[idx].y1,
-        //   y2: blocks[idx].y2,
-        //   info: blocks[idx].info,
-        // });
-        return (blocks[idx]); // reference
-      }
-    }
-    // nothing selected! (fallthrough)
-    return undefined;
-  },
-
-  drawBorder(context, block, colour, width = 2) {
-    context.strokeStyle = colour;
-    context.lineWidth = width;
-    context.beginPath();
-    context.lineTo(block.x1, block.y1);
-    context.lineTo(block.x1, block.y2);
-    context.lineTo(block.x2, block.y2);
-    context.lineTo(block.x2, block.y1);
-    context.lineTo(block.x1, block.y1);
-    context.closePath();
-    context.stroke();
-  },
-
-});
-
+Blocks.propTypes = {
+  visibleGenome: PropTypes.arrayOf(PropTypes.number).isRequired,
+  dispatch: PropTypes.func.isRequired,
+  data: PropTypes.oneOfType([ PropTypes.array, PropTypes.object ]).isRequired,
+  style: PropTypes.object.isRequired,
+  activeTaxa: PropTypes.object.isRequired,
+  shouldMouseOver: PropTypes.bool.isRequired,
+  blocksArePerTaxa: PropTypes.bool.isRequired,
+  blockFillAlpha: PropTypes.number.isRequired,
+};
 
 // function getClicked(mx, my, data, visibleGenome, canvas) {
 //   const currentArrows = getArrowsInScope(data, visibleGenome, canvas);

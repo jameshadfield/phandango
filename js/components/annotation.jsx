@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Mouse, getMouse } from '../misc/mouse';
 import * as helper from '../misc/helperFunctions';
 import { InfoTip } from './infoTip';
@@ -9,21 +10,83 @@ import { InfoTip } from './infoTip';
     on a click - the "permanently displayed" gene is put into state
     on a mouseOver the "temporarily displayed" gene is put into state
 */
-export const Annotation = React.createClass({
-  propTypes: {
-    visibleGenome: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
-    dispatch: React.PropTypes.func.isRequired,
-    data: React.PropTypes.array.isRequired,
-    style: React.PropTypes.object.isRequired,
-  },
+export class Annotation extends React.Component {
+  constructor(...args) {
+    super(...args);
+    this.state = { geneSelected: undefined, geneHovered: undefined, contigSelected: undefined, contigHovered: undefined };
+    this.infoUniqKey = 0;
+    this.initCanvasXY = helper.initCanvasXY;
+    this.clearCanvas = helper.clearCanvas;
 
-  getInitialState: function () {
-    return ({ geneSelected: undefined, geneHovered: undefined , contigSelected: undefined, contigHovered: undefined });
-  },
+    /* given an arrow, what are the x or y position to display the annotation at */
+    this.getXYOfSelectedGene = (arrow, xy) => {
+      let ret;
+      /* position at actual gene via: */
+      if (xy) { // xy=1 ==> y co-ordinate
+        ret = parseInt( arrow.coordinates[1][xy] + 5 + this.canvasPos.top, 10);
+      } else {
+        ret = parseInt( (arrow.coordinates[0][xy] + arrow.coordinates[2][xy]) / 2 + this.canvasPos.left, 10);
+      }
+      /* fixed (LHS) */
+      // if (xy) { // xy=1 ==> y co-ordinate
+      //   ret = parseInt( this.canvasPos.bottom - 30, 10);
+      // } else {
+      //   ret = parseInt(this.canvasPos.left + 10, 10);
+      // }
+      return ret;
+    };
 
-  componentDidMount: function () {
-    this.mouse = new Mouse(this.canvas, this.props.dispatch, this.onClickCallback); // set up listeners
-    this.canvas.addEventListener('mousemove', this.onMouseMove, true);
+    this.resizeFn = () => {this.forceUpdate();};
+
+    this.svgdraw = () => {
+      this.canvasPos = this.canvas.getBoundingClientRect();
+      console.log('printing annotation to SVG');
+      window.svgCtx.save();
+      const currentWidth = window.svgCtx.width;
+      window.svgCtx.width = this.canvas.width;
+      window.svgCtx.translate(this.canvasPos.left, this.canvasPos.top);
+      window.svgCtx.rect(0, 0, this.canvasPos.right - this.canvasPos.left, this.canvasPos.bottom - this.canvasPos.top);
+      window.svgCtx.stroke();
+      window.svgCtx.clip();
+      this.redraw(window.svgCtx, this.props, this.state);
+      window.svgCtx.restore();
+      window.svgCtx.width = currentWidth;
+    };
+
+    this.redraw = (context, props, state) => {
+      context.save();
+
+      const currentContigs = getArrowsInScope(props.data[1], props.visibleGenome, this.canvas, true);
+      drawContigs(context, currentContigs, props.visibleGenome[1] - props.visibleGenome[0] < 100000);
+
+      const currentArrows = getArrowsInScope(props.data[0], props.visibleGenome, this.canvas);
+      drawArrows(context, currentArrows, props.visibleGenome[1] - props.visibleGenome[0] < 100000);
+
+      drawScale(context, this.canvas.width, props.visibleGenome, parseInt(this.canvas.height / 2, 10));
+
+      if (state.geneSelected !== undefined) {
+        if (getArrowsInScope([ state.geneSelected ], props.visibleGenome, this.canvas).length > 0) {
+          drawBorder(context, state.geneSelected, 'red');
+        }
+      }
+      if (state.geneHovered !== undefined) {
+        drawBorder(context, state.geneHovered, 'purple');
+      }
+      if (state.contigSelected !== undefined) {
+        if (getArrowsInScope([ state.contigSelected ], props.visibleGenome, this.canvas, true).length > 0) {
+          drawBorder(context, state.contigSelected, 'red');
+        }
+      }
+      if (state.contigHovered !== undefined) {
+        drawBorder(context, state.contigHovered, 'purple');
+      }
+      context.restore();
+    };
+  }
+
+  componentDidMount() {
+    this.mouse = new Mouse(this.canvas, this.props.dispatch, this.onClickCallback.bind(this)); // set up listeners
+    this.canvas.addEventListener('mousemove', this.onMouseMove.bind(this), true);
     this.canvas.addEventListener('mouseout',
       () => {
         this.setState({ geneHovered: undefined });
@@ -33,11 +96,11 @@ export const Annotation = React.createClass({
     window.addEventListener('pdf', this.svgdraw, false);
     window.addEventListener('resize', this.resizeFn, false);
     this.forceUpdate();
-  },
+  }
 
   shouldComponentUpdate() {
     return true;
-  },
+  }
 
   // componentDidUpdate(props, state) {
   //   this.canvasPos = this.canvas.getBoundingClientRect();
@@ -51,12 +114,12 @@ export const Annotation = React.createClass({
     this.initCanvasXY();
     this.clearCanvas();
     this.redraw(this.canvas.getContext('2d'), props, state);
-  },
+  }
 
   componentWillUnmount() {
     window.removeEventListener('pdf', this.svgdraw, false);
     window.removeEventListener('resize', this.resizeFn, false);
-  },
+  }
 
   onMouseMove(e) {
     const mouse = getMouse(e, this.canvas);
@@ -66,7 +129,7 @@ export const Annotation = React.createClass({
     this.setState({
       contigHovered: getClicked(mouse.x, mouse.y, this.props.data[1], this.props.visibleGenome, this.canvas, true),
     });
-  },
+  }
 
   onClickCallback(mx, my) {
     this.setState({
@@ -75,27 +138,9 @@ export const Annotation = React.createClass({
     this.setState({
       contigSelected: getClicked(mx, my, this.props.data[1], this.props.visibleGenome, this.canvas, true),
     });
-  },
+  }
 
-  /* given an arrow, what are the x or y position to display the annotation at */
-  getXYOfSelectedGene(arrow, xy) {
-    let ret;
-    /* position at actual gene via: */
-    if (xy) { // xy=1 ==> y co-ordinate
-      ret = parseInt( arrow.coordinates[1][xy] + 5 + this.canvasPos.top, 10);
-    } else {
-      ret = parseInt( (arrow.coordinates[0][xy] + arrow.coordinates[2][xy]) / 2 + this.canvasPos.left, 10);
-    }
-    /* fixed (LHS) */
-    // if (xy) { // xy=1 ==> y co-ordinate
-    //   ret = parseInt( this.canvasPos.bottom - 30, 10);
-    // } else {
-    //   ret = parseInt(this.canvasPos.left + 10, 10);
-    // }
-    return ret;
-  },
 
-  infoUniqKey: 0,
   render() {
     const genes = [];
     const contigs = [];
@@ -151,62 +196,15 @@ export const Annotation = React.createClass({
         )}
       </div>
     );
-  },
+  }
+}
 
-  initCanvasXY: helper.initCanvasXY,
-  clearCanvas: helper.clearCanvas,
-
-  resizeFn: function () {
-    this.forceUpdate();
-  },
-
-  svgdraw() {
-    this.canvasPos = this.canvas.getBoundingClientRect();
-    console.log('printing annotation to SVG');
-    window.svgCtx.save();
-    const currentWidth = window.svgCtx.width;
-    window.svgCtx.width = this.canvas.width;
-    window.svgCtx.translate(this.canvasPos.left, this.canvasPos.top);
-    window.svgCtx.rect(0, 0, this.canvasPos.right - this.canvasPos.left, this.canvasPos.bottom - this.canvasPos.top);
-    window.svgCtx.stroke();
-    window.svgCtx.clip();
-    this.redraw(window.svgCtx, this.props, this.state);
-    window.svgCtx.restore();
-    window.svgCtx.width = currentWidth;
-  },
-
-
-  redraw: function (context, props, state) {
-    context.save();
-
-    const currentContigs = getArrowsInScope(props.data[1], props.visibleGenome, this.canvas, true);
-    drawContigs(context, currentContigs, props.visibleGenome[1] - props.visibleGenome[0] < 100000);
-
-    const currentArrows = getArrowsInScope(props.data[0], props.visibleGenome, this.canvas);
-    drawArrows(context, currentArrows, props.visibleGenome[1] - props.visibleGenome[0] < 100000);
-
-    drawScale(context, this.canvas.width, props.visibleGenome, parseInt(this.canvas.height / 2, 10));
-
-    if (state.geneSelected !== undefined) {
-      if (getArrowsInScope([ state.geneSelected ], props.visibleGenome, this.canvas).length > 0) {
-        drawBorder(context, state.geneSelected, 'red');
-      }
-    }
-    if (state.geneHovered !== undefined) {
-      drawBorder(context, state.geneHovered, 'purple');
-    }
-    if (state.contigSelected !== undefined) {
-      if (getArrowsInScope([ state.contigSelected ], props.visibleGenome, this.canvas, true).length > 0) {
-        drawBorder(context, state.contigSelected, 'red');
-      }
-    }
-    if (state.contigHovered !== undefined) {
-      drawBorder(context, state.contigHovered, 'purple');
-    }
-    context.restore();
-  },
-
-});
+Annotation.propTypes = {
+  visibleGenome: PropTypes.arrayOf(PropTypes.number).isRequired,
+  dispatch: PropTypes.func.isRequired,
+  data: PropTypes.array.isRequired,
+  style: PropTypes.object.isRequired,
+};
 
 /* return the arrow which encompases mx, my */
 function getClicked(mx, my, data, visibleGenome, canvas, isContig = false) {

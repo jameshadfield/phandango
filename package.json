@@ -16,7 +16,9 @@
   "bugs": {
     "url": "https://github.com/jameshadfield/phandango/issues"
   },
-  "dependencies": {},
+  "dependencies": {
+    "prop-types": "^15.5.10"
+  },
   "devDependencies": {
     "babel-core": "~6.7.7",
     "babel-eslint": "~6.0.3",

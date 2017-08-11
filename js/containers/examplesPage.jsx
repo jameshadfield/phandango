@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 import React from 'react';
+import PropTypes from 'prop-types';
 import { AnimatedLogo } from '../components/logo';
 import { incomingFile, clearAllData } from '../actions/fileInput';
 import { increaseSpinner } from '../actions/general';
@@ -176,12 +177,8 @@ const Example = ({ name, paths, callback, caption, imgPath, citeURLs, citeCaptio
  * Then maps all the examples (defined above) to Example components
  * uses flexboxgrid classes for layout
  */
-export const ExamplesPage = React.createClass({
-  propTypes: {
-    dispatch: React.PropTypes.func.isRequired,
-  },
-
-  render: function () {
+export class ExamplesPage extends React.Component {
+  render() {
     return (
       <div className="bgwhite content">
         <div className="center">
@@ -208,7 +205,7 @@ export const ExamplesPage = React.createClass({
 
       </div>
     );
-  },
+  }
 
   loadExample(paths) {
     this.props.dispatch(clearAllData());
@@ -216,6 +213,10 @@ export const ExamplesPage = React.createClass({
     for (const url of paths) {
       this.props.dispatch(incomingFile(url, true));
     }
-  },
+  }
 
-});
+}
+
+ExamplesPage.propTypes =  {
+  dispatch: PropTypes.func.isRequired,
+};
