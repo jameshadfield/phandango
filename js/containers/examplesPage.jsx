@@ -196,6 +196,16 @@ const Example = ({ name, paths, callback, caption, imgPath, citeURLs, citeCaptio
  * uses flexboxgrid classes for layout
  */
 export class ExamplesPage extends React.Component {
+  constructor(...args) {
+    super(...args);
+    this.loadExample = (paths) => {
+      this.props.dispatch(clearAllData());
+      this.props.dispatch(increaseSpinner(paths.length));
+      for (const url of paths) {
+        this.props.dispatch(incomingFile(url, true));
+      }
+    };
+  }
   render() {
     return (
       <div className="bgwhite content">
@@ -224,15 +234,6 @@ export class ExamplesPage extends React.Component {
       </div>
     );
   }
-
-  loadExample(paths) {
-    this.props.dispatch(clearAllData());
-    this.props.dispatch(increaseSpinner(paths.length));
-    for (const url of paths) {
-      this.props.dispatch(incomingFile(url, true));
-    }
-  }
-
 }
 
 ExamplesPage.propTypes =  {
