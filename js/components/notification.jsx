@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Dialog from 'material-ui/lib/dialog';
-import Snackbar from 'material-ui/lib/snackbar';
+import Dialog from 'material-ui/Dialog';
+import Snackbar from 'material-ui/Snackbar';
 
 /*
 Whether or not something is displayed depends on this.state.open

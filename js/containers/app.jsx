@@ -10,6 +10,7 @@ import { MainReactElement } from './main';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import { UnsupportedBrowser } from '../components/UnsupportedBrowser';
 import { getBrowser } from '../misc/helperFunctions';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 /*  to fix iOS's dreaded 300ms tap delay, we need this plugin
 NOTE Facebook is not planning on supporting tap events (#436)
@@ -48,7 +49,9 @@ if (browser.mobile) {
   }
   elements = [
     <Provider store={store} key={'providerKey'}>
-      <ConnectedMainReactElement browserMessage={browserMessage}/>
+      <MuiThemeProvider>
+        <ConnectedMainReactElement browserMessage={browserMessage}/>
+      </MuiThemeProvider>
     </Provider>,
   ];
   if (process.env.NODE_ENV !== 'production') {

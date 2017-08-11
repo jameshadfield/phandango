@@ -17,12 +17,14 @@ import {
   toggleLogo,
 } from '../actions/general';
 // import { route } from '../actions/general';
-import Slider from 'material-ui/lib/slider';
-import Toggle from 'material-ui/lib/toggle';
-import FlatButton from 'material-ui/lib/flat-button';
-import Clear from 'material-ui/lib/svg-icons/content/clear';
-import Add from 'material-ui/lib/svg-icons/content/add';
-import Remove from 'material-ui/lib/svg-icons/content/remove';
+import Slider from 'material-ui/Slider';
+import Toggle from 'material-ui/Toggle';
+import FlatButton from 'material-ui/FlatButton';
+
+/* icons */
+import Clear from 'material-ui/svg-icons/content/clear';
+import Remove from 'material-ui/svg-icons/content/remove';
+import Add from 'material-ui/svg-icons/content/add';
 
 /*
  * Settings: Main Settings Container
