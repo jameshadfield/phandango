@@ -131,7 +131,7 @@ const examples = [
   {
     name: 'Gubbins (PMEN1 data)',
     imgPath: 'img/gubbinsNAR.png',
-    caption: 'The example from the orinal paper: Gubbins is an iterative algorithm that uses spatial scanning statistics to identify loci containing elevated densities of base substitutions suggestive of horizontal sequence transfer while concurrently constructing a maximum likelihood phylogeny based on the putative point mutations outside these regions of high sequence diversity.',
+    caption: 'The example from the original Gubbins paper, describing an iterative algorithm that uses spatial scanning statistics to identify loci containing elevated densities of base substitutions suggestive of horizontal sequence transfer while concurrently constructing a maximum likelihood phylogeny based on the putative point mutations outside these regions of high sequence diversity.',
     citeURLs: [
       'http://nar.oxfordjournals.org/content/early/2014/11/20/nar.gku1196.abstract',
     ],
@@ -142,6 +142,24 @@ const examples = [
       defaultDataPrefix + 'gubbinsNAR/EVAL.PMEN1.final_tree.tre',
       defaultDataPrefix + 'gubbinsNAR/Spn23f.gff',
       defaultDataPrefix + 'gubbinsNAR/EVAL.PMEN1.recombination_predictions.gff',
+    ],
+  },
+
+  {
+    name: 'Gubbins + Metadata (C. trachomatis data)',
+    imgPath: 'img/gubbinsNAR.png',
+    caption: 'The data underlying a global analysis of 463 Chlamydia trachomatis genomes, which revealed widespread recombination with differing dynamics across lineages. Associated metadata provided.',
+    citeURLs: [
+      'http://genome.cshlp.org/content/27/7/1220.full',
+    ],
+    citeCaptions: [
+      <span>Hadfield <em>et al.</em> Genome Research 2017</span>,
+    ],
+    paths: [
+      defaultDataPrefix + 'gubbinsCTGD/tree.tre',
+      defaultDataPrefix + 'gubbinsCTGD/metadata.csv',
+      defaultDataPrefix + 'gubbinsCTGD/genome.gff',
+      defaultDataPrefix + 'gubbinsCTGD/gubbins.gff',
     ],
   },
 
