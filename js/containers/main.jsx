@@ -236,7 +236,7 @@ export const MainReactElement = React.createClass({ displayName: 'Main_React_Ele
     window.ga('send', 'pageview', '/filesDropped');
     // this.props.dispatch(goToPage('loading'));
     // this.props.dispatch(notificationNew(showHelp());
-    this.props.dispatch(notificationNew('press \'h\' for help!'));
+    this.props.dispatch(notificationNew('press \'s\' to show settings'));
     const files = e.dataTransfer.files;
     e.preventDefault();
     this.props.dispatch(increaseSpinner(files.length));
@@ -245,4 +245,3 @@ export const MainReactElement = React.createClass({ displayName: 'Main_React_Ele
     }
   },
 });
-
