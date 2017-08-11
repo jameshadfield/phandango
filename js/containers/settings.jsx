@@ -83,8 +83,8 @@ export class Layout extends React.Component {
   render() {
     // console.log('render called. row percs are: ', this.props.rowPercs);
     const sliderStyle = {
-      'marginTop': '0px',
-      'marginBottom': '10px',
+      'marginTop': '-20px',
+      'marginBottom': '-40px',
     };
     const colNames = [ 'Left', 'Middle', 'Right' ];
     const Columns = this.props.colPercs.map((cv, idx) =>
