@@ -14,9 +14,13 @@ const defaultDataPrefix = 'https://cdn.rawgit.com/jameshadfield/phandangoExample
 const examples = [
 
   {
-    name: 'Gubbins + BRAT NextGen (PMEN1 data)',
+    name: 'Gubbins + BRAT NextGen',
     imgPath: 'img/examples/croucher_marttinen.png',
-    caption: 'An exploration of recombination in 240 Streptococcus pneumoniae (PMEN1 lineage) genomes using both Gubbins & BRAT NextGen reveals an enrichment for horizontal gene transfer affecting major antigens and results in a number of capsule-switching events. Hint: go to the settings page (or use the shortcut keys z, x, c & v.) to toggle between gubbins & BRAT NextGen results.',
+    caption: (
+      <span>
+        An exploration of recombination in 240 <em>Streptococcus pneumoniae</em> (PMEN1 lineage) genomes using both Gubbins & BRAT NextGen reveals an enrichment for horizontal gene transfer affecting major antigens and results in a number of capsule-switching events. Hint: go to the settings page (or use the shortcut keys z, x, c & v.) to toggle between gubbins & BRAT NextGen results.
+      </span>
+    ),
     citeURLs: [
       'https://www.sciencemag.org/content/331/6016/430.abstract',
       'http://nar.oxfordjournals.org/content/early/2011/11/07/nar.gkr928.abstract',
@@ -35,8 +39,8 @@ const examples = [
   },
 
   {
-    name: 'ROARY pan-genome (SPARC data)',
-    imgPath: 'img/roary.png',
+    name: 'ROARY pan-genome',
+    imgPath: 'img/examples/croucher_roary.png',
     caption: 'These data show the distribution of genes across a sample of 616 pneumococci, isolated from carriage throughout Massachusetts in the years following the introduction of the seven valent anti-pneumococcal polysaccharide conjugate vaccine. Note: this dataset is ~6Mb in size so may be slow to load.',
     citeURLs: [ 'https://www.nature.com/articles/sdata201558' ],
     citeCaptions: [ <span>Croucher <em>et al.</em> Scientific Data 2015</span> ],
@@ -48,7 +52,7 @@ const examples = [
   },
 
   {
-    name: 'Bacterial GWAS (Strep Pneumo)',
+    name: 'Bacterial GWAS',
     imgPath: 'img/examples/chewapreecha.png',
     caption: 'A genome-wide association study to identify SNPs and indels that could confer beta-lactam non-susceptibility using 3,085 Thai and 616 USA pneumococcal isolates as independent datasets for the variant discovery.',
     citeURLs: [ 'http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1004547' ],
@@ -60,11 +64,11 @@ const examples = [
   },
 
   {
-    name: 'Gubbins (Neisseria gonorrhoeae)',
+    name: 'Gubbins + Metadata',
     imgPath: 'img/examples/grad.png',
     caption: (
       <span>
-          <em>N. gonorrhoeae</em> with decreased susceptibility to extended spectrum cephalosporins could become untreatable. Here is the recombination and metadata results (including resistance profiles) for 236 isolates collected from sentinel public sexually transmitted disease clinics in the USA. The results  show that Mosaic penA XXXIV had a high positive predictive value for cefR and a major lineage of cefRS strains spread eastward, predominantly through a sexual network of men who have sex with men.
+          <em>Neisseria gonorrhoeae</em> with decreased susceptibility to extended spectrum cephalosporins could become untreatable. Here is the recombination and metadata results (including resistance profiles) for 236 isolates collected from sentinel public sexually transmitted disease clinics in the USA. The results  show that Mosaic penA XXXIV had a high positive predictive value for cefR and a major lineage of cefRS strains spread eastward, predominantly through a sexual network of men who have sex with men.
       </span>
     ),
     citeURLs: [ 'http://www.thelancet.com/journals/laninf/article/PIIS1473-3099%2813%2970693-5/abstract' ],
@@ -78,9 +82,13 @@ const examples = [
   },
 
   {
-    name: 'Gubbins (Legionella pneumophila ST578)',
+    name: 'Gubbins + Metadata',
     imgPath: 'img/examples/sanchez_buso.png',
-    caption: 'Outbreak investigation of 46 Legionella pneumophila strains (ST578) linked to recurrent outbreaks in a single location (Alcoy, Spain) over 11 years showed that 16 recombination events are responsible for almost 98% of the SNPs detected in the core genome and an apparent acceleration in the evolutionary rate. This analysis is vitally important for public health interventions in Legionella outbreaks and is a great example of how non-vertical processes have a major role in the short-term evolution of pathogens and environmental bacteria alike.',
+    caption: (
+      <span>
+        Outbreak investigation of 46 <em>Legionella pneumophila</em> strains (ST578) linked to recurrent outbreaks in a single location (Alcoy, Spain) over 11 years showed that 16 recombination events are responsible for almost 98% of the SNPs detected in the core genome and an apparent acceleration in the evolutionary rate. This analysis is vitally important for public health interventions in Legionella outbreaks and is a great example of how non-vertical processes have a major role in the short-term evolution of pathogens and environmental bacteria alike.
+      </span>
+    ),
     citeURLs: [ 'http://www.nature.com/ng/journal/v46/n11/full/ng.3114.html' ],
     citeCaptions: [ <span>Sánchez-Busó <em>et al.</em> Nature Genetics 2014</span> ],
     paths: [
@@ -92,9 +100,13 @@ const examples = [
   },
 
   {
-    name: 'ROARY pan-genome (Salmonella Weltevreden)',
+    name: 'ROARY pan-genome',
     imgPath: 'img/examples/makendi.png',
-    caption: 'S. Weltevreden is an emerging cause of diarrheal and invasive disease in humans residing in tropical regions and little is known about its genetic diversity. Here, genome analysis of more than 100 isolates demonstrated that the population of S. Weltevreden can be segregated into two main phylogenetic clusters, one associated predominantly with continental Southeast Asia and the other more internationally dispersed. Here you can explore the pan genome content of the species and see how it differs between lineages.',
+    caption: (
+      <span>
+        <em>Salmonella Weltevreden</em> is an emerging cause of diarrheal and invasive disease in humans residing in tropical regions and little is known about its genetic diversity. Here, genome analysis of more than 100 isolates demonstrated that the population of <em>S. Weltevreden</em> can be segregated into two main phylogenetic clusters, one associated predominantly with continental Southeast Asia and the other more internationally dispersed. Here you can explore the pan genome content of the species and see how it differs between lineages.
+      </span>
+    ),
     citeURLs: [ 'http://journals.plos.org/plosntds/article?id=10.1371/journal.pntd.0004446' ],
     citeCaptions: [ <span>Makendi <em>et al.</em> PLoS Negl Trop Dis 2016</span> ],
     paths: [
@@ -105,11 +117,11 @@ const examples = [
   },
 
   {
-    name: 'BRAT NextGen (Yersinia enterocolitica PG1)',
+    name: 'BRAT NextGen',
     imgPath: 'img/examples/reuter.png',
     caption: (
       <span>
-        This data set is the core genome phylogeny of Yersinia enterocolitica inferred using harvest. The species is split into 6 phylogroups (PGs) with PG1 being non-pathogenic, PG2 being highly-pathogenic, PG3-5 being the most commonly isolated human pathogens, and PG6 being a very rare type only isolated from wild Hares. Here are the recombination regions inffered by BRAT NextGen for PG1 set against the phylogeny generated from a LS-BSR core alignment. Note: this dataset is c. 7Mb in size. This analysis has been repeated for PGs 3-6, and this data may be downloaded for visualisation in phandango <a href="https://github.com/jameshadfield/phandangoExampleData/tree/master/BratNextGen_Yersinnia">here</a>
+        This data set is the core genome phylogeny of <em>Yersinia enterocolitica</em> inferred using <a href="http://harvest.readthedocs.io/en/latest/index.html">harvest</a>. The species is split into 6 phylogroups (PGs) with PG1 being non-pathogenic, PG2 being highly-pathogenic, PG3-5 being the most commonly isolated human pathogens, and PG6 being a very rare type only isolated from wild Hares. Here are the recombination regions inffered by BRAT NextGen for PG1 set against the phylogeny generated from a LS-BSR core alignment. Note: this dataset is c. 7Mb in size. This analysis has been repeated for PGs 3-6, and this data may be downloaded for visualisation in phandango <a href="https://github.com/jameshadfield/phandangoExampleData/tree/master/BratNextGen_Yersinnia">here</a>
       </span>
     ),
     citeURLs: [ 'http://mgen.microbiologyresearch.org/content/journal/mgen/10.1099/mgen.0.000030' ],
@@ -123,7 +135,7 @@ const examples = [
   },
 
   {
-    name: 'Gubbins (PMEN1 data)',
+    name: 'Gubbins',
     imgPath: 'img/examples/croucher_gubbins.png',
     caption: 'The example from the original Gubbins paper, describing an iterative algorithm that uses spatial scanning statistics to identify loci containing elevated densities of base substitutions suggestive of horizontal sequence transfer while concurrently constructing a maximum likelihood phylogeny based on the putative point mutations outside these regions of high sequence diversity.',
     citeURLs: [
@@ -140,7 +152,7 @@ const examples = [
   },
 
   {
-    name: 'Gubbins + Metadata (C. trachomatis data)',
+    name: 'Gubbins + Metadata',
     imgPath: 'img/examples/hadfield.png',
     caption: (
       <span>
@@ -165,7 +177,6 @@ const examples = [
 
 /* Example - the react component which creates an individual example box entirely on passed in props*/
 const Example = ({ name, paths, callback, caption, imgPath, citeURLs, citeCaptions = [] }) => {
-  console.log("CC:", citeCaptions)
   return (
     <div>
       <p className="promo-caption center-align">{name}</p>
@@ -214,7 +225,7 @@ export class ExamplesPage extends React.Component {
         </div>
         <br/>
         <h2 className="light center">
-          Example Datasets - click the pictures to load
+          Example Datasets - click the images to load
         </h2>
         <br/>
         <div className="row">
@@ -228,7 +239,7 @@ export class ExamplesPage extends React.Component {
         </div>
 
         <p className="center" style={{ paddingTop: '5vh', paddingBottom: '5vh' }}>
-          The raw data may be accessed at <a href={"https://github.com/jameshadfield/phandangoExampleData"}>github.com/jameshadfield/phandangoExampleData</a> if needed. Please note that downloading this data is not necessary - simply click on the relevant image to load the examples.
+          The raw data may be accessed at <a href={"https://github.com/jameshadfield/phandangoExampleData"}>github.com/jameshadfield/phandangoExampleData</a>. Please note that downloading this data is not necessary - simply click on the relevant image to load the examples.
         </p>
 
       </div>
