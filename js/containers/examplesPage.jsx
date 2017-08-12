@@ -15,7 +15,7 @@ const examples = [
 
   {
     name: 'Gubbins + BRAT NextGen (PMEN1 data)',
-    imgPath: 'img/merge.png',
+    imgPath: 'img/examples/croucher_marttinen.png',
     caption: 'An exploration of recombination in 240 Streptococcus pneumoniae (PMEN1 lineage) genomes using both Gubbins & BRAT NextGen reveals an enrichment for horizontal gene transfer affecting major antigens and results in a number of capsule-switching events. Hint: go to the settings page (or use the shortcut keys z, x, c & v.) to toggle between gubbins & BRAT NextGen results.',
     citeURLs: [
       'https://www.sciencemag.org/content/331/6016/430.abstract',
@@ -49,7 +49,7 @@ const examples = [
 
   {
     name: 'Bacterial GWAS (Strep Pneumo)',
-    imgPath: 'img/Chewapreecha.png',
+    imgPath: 'img/examples/chewapreecha.png',
     caption: 'A genome-wide association study to identify SNPs and indels that could confer beta-lactam non-susceptibility using 3,085 Thai and 616 USA pneumococcal isolates as independent datasets for the variant discovery.',
     citeURLs: [ 'http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1004547' ],
     citeCaptions: [ <span>Chewapreecha <em>et al.</em> PLOS Genetics 2014</span> ],
@@ -61,9 +61,13 @@ const examples = [
 
   {
     name: 'Gubbins (Neisseria gonorrhoeae)',
-    imgPath: 'img/gubbinsGono.png',
-    caption: 'N. gonorrhoeae with decreased susceptibility to extended spectrum cephalosporins could become untreatable. Here is the recombination and metadata results (including resistance profiles) for 236 isolates collected from sentinel public sexually transmitted disease clinics in the USA. The results  show that Mosaic penA XXXIV had a high positive predictive value for cefR and a major lineage of cefRS strains spread eastward, predominantly through a sexual network of men who have sex with men.',
-    citeURLs: [ 'http://www.thelancet.com/journals/laninf/article/PIIS1473-3099(13)70693-5/abstract' ],
+    imgPath: 'img/examples/grad.png',
+    caption: (
+      <span>
+          <em>N. gonorrhoeae</em> with decreased susceptibility to extended spectrum cephalosporins could become untreatable. Here is the recombination and metadata results (including resistance profiles) for 236 isolates collected from sentinel public sexually transmitted disease clinics in the USA. The results  show that Mosaic penA XXXIV had a high positive predictive value for cefR and a major lineage of cefRS strains spread eastward, predominantly through a sexual network of men who have sex with men.
+      </span>
+    ),
+    citeURLs: [ 'http://www.thelancet.com/journals/laninf/article/PIIS1473-3099%2813%2970693-5/abstract' ],
     citeCaptions: [ <span>Grad <em>et al.,</em> Lancet Infec Dis 2014</span> ],
     paths: [
       defaultDataPrefix + 'gubbinsGono/original_set.FA1090.final_tree.figtree.tre',
@@ -75,7 +79,7 @@ const examples = [
 
   {
     name: 'Gubbins (Legionella pneumophila ST578)',
-    imgPath: 'img/legionellaST578.png',
+    imgPath: 'img/examples/sanchez_buso.png',
     caption: 'Outbreak investigation of 46 Legionella pneumophila strains (ST578) linked to recurrent outbreaks in a single location (Alcoy, Spain) over 11 years showed that 16 recombination events are responsible for almost 98% of the SNPs detected in the core genome and an apparent acceleration in the evolutionary rate. This analysis is vitally important for public health interventions in Legionella outbreaks and is a great example of how non-vertical processes have a major role in the short-term evolution of pathogens and environmental bacteria alike.',
     citeURLs: [ 'http://www.nature.com/ng/journal/v46/n11/full/ng.3114.html' ],
     citeCaptions: [ <span>Sánchez-Busó <em>et al.</em> Nature Genetics 2014</span> ],
@@ -89,7 +93,7 @@ const examples = [
 
   {
     name: 'ROARY pan-genome (Salmonella Weltevreden)',
-    imgPath: 'img/roary.png',
+    imgPath: 'img/examples/makendi.png',
     caption: 'S. Weltevreden is an emerging cause of diarrheal and invasive disease in humans residing in tropical regions and little is known about its genetic diversity. Here, genome analysis of more than 100 isolates demonstrated that the population of S. Weltevreden can be segregated into two main phylogenetic clusters, one associated predominantly with continental Southeast Asia and the other more internationally dispersed. Here you can explore the pan genome content of the species and see how it differs between lineages.',
     citeURLs: [ 'http://journals.plos.org/plosntds/article?id=10.1371/journal.pntd.0004446' ],
     citeCaptions: [ <span>Makendi <em>et al.</em> PLoS Negl Trop Dis 2016</span> ],
@@ -102,35 +106,25 @@ const examples = [
 
   {
     name: 'BRAT NextGen (Yersinia enterocolitica PG1)',
-    imgPath: 'img/BNG_YEnt.png',
-    caption: 'This data set is the core genome phylogeny of Yersinia enterocolitica inferred using harvest. The species is split into 6 phylogroups (PGs) with PG1 being non-pathogenic, PG2 being highly-pathogenic, PG3-5 being the most commonly isolated human pathogens, and PG6 being a very rare type only isolated from wild Hares. Here are the recombination regions inffered by BRAT NextGen for PG1 set against the phylogeny generated from a LS-BSR core alignment. Note: this dataset is ~7Mb in size.',
+    imgPath: 'img/examples/reuter.png',
+    caption: (
+      <span>
+        This data set is the core genome phylogeny of Yersinia enterocolitica inferred using harvest. The species is split into 6 phylogroups (PGs) with PG1 being non-pathogenic, PG2 being highly-pathogenic, PG3-5 being the most commonly isolated human pathogens, and PG6 being a very rare type only isolated from wild Hares. Here are the recombination regions inffered by BRAT NextGen for PG1 set against the phylogeny generated from a LS-BSR core alignment. Note: this dataset is c. 7Mb in size. This analysis has been repeated for PGs 3-6, and this data may be downloaded for visualisation in phandango <a href="https://github.com/jameshadfield/phandangoExampleData/tree/master/BratNextGen_Yersinnia">here</a>
+      </span>
+    ),
     citeURLs: [ 'http://mgen.microbiologyresearch.org/content/journal/mgen/10.1099/mgen.0.000030' ],
     citeCaptions: [ <span>Reuter <em>et al.</em> Microbial Genomics 2015</span> ],
     paths: [
       defaultDataPrefix + 'BratNextGen_Yersinnia/Yent.all.tre',
       defaultDataPrefix + 'BratNextGen_Yersinnia/metadata.csv',
-      defaultDataPrefix + 'BratNextGen_Yersinnia/Non/YentNon.gff',
-      defaultDataPrefix + 'BratNextGen_Yersinnia/Non/Yentnon_recombinations_tabular.txt',
-    ],
-  },
-
-  {
-    name: 'BRAT NextGen (Yersinia enterocolitica PG3-6)',
-    imgPath: 'img/BNG_YEnt.png',
-    caption: 'The same Yersinia enterocolitica data but this time showing the recombinations inferred for PGs 3-6. Interestingly PG1 was shown to be a common donor for these lineages. Note: this dataset is ~6Mb in size.',
-    citeURLs: [ 'http://mgen.microbiologyresearch.org/content/journal/mgen/10.1099/mgen.0.000030' ],
-    citeCaptions: [ <span>Reuter <em>et al.</em> Microbial Genomics 2015</span> ],
-    paths: [
-      defaultDataPrefix + 'BratNextGen_Yersinnia/Yent.all.tre',
-      defaultDataPrefix + 'BratNextGen_Yersinnia/metadata.csv',
-      defaultDataPrefix + 'BratNextGen_Yersinnia/Low/YentLow.gff',
-      defaultDataPrefix + 'BratNextGen_Yersinnia/Low/Yentlow_recombinations_tabular.txt',
+      defaultDataPrefix + 'BratNextGen_Yersinnia/PG1/YentNon.gff',
+      defaultDataPrefix + 'BratNextGen_Yersinnia/PG1/Yentnon_recombinations_tabular.txt',
     ],
   },
 
   {
     name: 'Gubbins (PMEN1 data)',
-    imgPath: 'img/gubbinsNAR.png',
+    imgPath: 'img/examples/croucher_gubbins.png',
     caption: 'The example from the original Gubbins paper, describing an iterative algorithm that uses spatial scanning statistics to identify loci containing elevated densities of base substitutions suggestive of horizontal sequence transfer while concurrently constructing a maximum likelihood phylogeny based on the putative point mutations outside these regions of high sequence diversity.',
     citeURLs: [
       'http://nar.oxfordjournals.org/content/early/2014/11/20/nar.gku1196.abstract',
@@ -147,8 +141,12 @@ const examples = [
 
   {
     name: 'Gubbins + Metadata (C. trachomatis data)',
-    imgPath: 'img/gubbinsNAR.png',
-    caption: 'The data underlying a global analysis of 463 Chlamydia trachomatis genomes, which revealed widespread recombination with differing dynamics across lineages. Associated metadata provided.',
+    imgPath: 'img/examples/hadfield.png',
+    caption: (
+      <span>
+        The data underlying a global analysis of 463 <em>Chlamydia trachomatis</em> genomes, which revealed widespread recombination with differing dynamics across lineages. Associated metadata provided.
+      </span>
+    ),
     citeURLs: [
       'http://genome.cshlp.org/content/27/7/1220.full',
     ],
@@ -167,6 +165,7 @@ const examples = [
 
 /* Example - the react component which creates an individual example box entirely on passed in props*/
 const Example = ({ name, paths, callback, caption, imgPath, citeURLs, citeCaptions = [] }) => {
+  console.log("CC:", citeCaptions)
   return (
     <div>
       <p className="promo-caption center-align">{name}</p>
@@ -175,7 +174,8 @@ const Example = ({ name, paths, callback, caption, imgPath, citeURLs, citeCaptio
       </div>
       <p className="light center-align">{caption}</p>
 
-      <div className="strong center-align">Data adapted from:</div>
+      <div className="strong center-align">Data and splash image(s) adapted from:</div>
+
       {citeCaptions.map((value, idx) => {
         return (
           <div key={idx} className="light center-align">
