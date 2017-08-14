@@ -1,7 +1,13 @@
 #!/usr/bin/env python
-
 import sys
 import pdb
+import argparse
+
+def collect_args():
+    parser = argparse.ArgumentParser(description = "Minimise a ROARY csv file")
+    parser.add_argument('-i', '--fileIn', type = str, required = True, help='Path to ROARY CSV file (required)')
+    parser.add_argument('-o', '--fileOut', type = str, required = True, help='Output path (minimised ROARY CSV) (required)')
+    return parser.parse_args()
 
 def returnCollapsedLine(line):
     fields = splitLine(line)
@@ -18,13 +24,17 @@ def splitLine(line):
         fields[idx] = fields[idx].translate(None, '",')
     return fields
 
-firstLine = True
-with open(sys.argv[1], "rU") as fhi:
-    with open(sys.argv[2],'w') as fho:
-        for line in fhi:
-            if firstLine:
-                firstLine = False
-                fho.write(','.join(splitLine(line)) + "\n");
-            else:
-                fho.write(returnCollapsedLine(line)+"\n")
+def main():
+    args = collect_args()
+    firstLine = True
+    with open(args.fileIn, "rU") as fhi:
+        with open(args.fileOut,'w') as fho:
+            for line in fhi:
+                if firstLine:
+                    firstLine = False
+                    fho.write(','.join(splitLine(line)) + "\n");
+                else:
+                    fho.write(returnCollapsedLine(line) + "\n")
 
+if __name__== "__main__":
+    main()
