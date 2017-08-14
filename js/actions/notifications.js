@@ -25,6 +25,7 @@ export function checkLoadedDataIsComplete() {
       blocks: blocks.blocks.length !== 0,
       gwas: gwasGraph.values.length !== 0,
     };
+    // console.log("LOADED STATUS", "annotation", loaded.annotation, "tree", loaded.phylogeny, "meta", loaded.metadata, "blocks", loaded.blocks, "gwas", loaded.gwas)
     if (!loaded.phylogeny) {
       if (loaded.blocks) {
         dispatch({ ...d, title: 'HEADS UP', msg: 'Blocks provided without a tree, so this data cannot be displayed!' });

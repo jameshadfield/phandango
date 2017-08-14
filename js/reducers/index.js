@@ -78,13 +78,6 @@ function spinner(state = 0, action) {
   case 'increaseSpinner':
     // console.log('spinner value set to ', action.value);
     return action.value;
-  case 'gubbinsData': // fallthrough
-  case 'bratNextGenData': // fallthrough
-  case 'roaryData': // fallthrough
-  case 'treeData': // fallthrough
-  case 'annotationData': // fallthrough
-  case 'gwasData': // fallthrough
-  case 'metaData': // fallthrough
   case 'decreaseSpinner':
     // console.log('spinner value decreasing via ', action.type);
     return state ? state - 1 : state;
