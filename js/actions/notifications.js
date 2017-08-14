@@ -31,7 +31,7 @@ export function checkLoadedDataIsComplete() {
         dispatch({ ...d, title: 'HEADS UP', msg: 'Blocks provided without a tree, so this data cannot be displayed!' });
       } else if (loaded.metadata) {
         dispatch({ ...d, title: 'HEADS UP', msg: 'Metadata provided without a tree, so this data cannot be displayed!' });
-      } else if (loaded.annotation) {
+      } else if (loaded.annotation && !loaded.gwas) {
         dispatch({ ...d, title: 'HEADS UP', msg: 'An annotation is being displayed but without corresponding recombination / pan genome / GWAS / tree data.' });
       }
     } else if (loaded.phylogeny && !loaded.metadata && !loaded.blocks) {
