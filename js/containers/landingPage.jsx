@@ -27,13 +27,11 @@ export class LandingPage extends React.Component {
 
         <br/>
         <h3 className="light">
-          {"<< If you use phandango, please cite "}
-          <a style={{ color: '#225ea8' }} className="pointer" onClick={()=>window.open('http://biorxiv.org/content/early/2017/03/22/119545', '_blank')}>Hadfield <i>et al.</i>, bioRxiv (2017)</a>
-          {" >>"}
+          {"If you use phandango, please cite "}
+          <a style={{ color: '#225ea8' }} className="pointer" onClick={()=>window.open('http://biorxiv.org/content/early/2017/03/22/119545', '_blank')}>Hadfield <i>et al.</i>, bioRxiv (2017).</a>
           <br/>
-          {"<< "}
           <a href="mailto:jh22@sanger.ac.uk">Let us know</a>
-          {" if you would like your data to appear as one of the examples >>"}
+          {" if you would like your data to appear as one of the examples."}
         </h3>
 
         <p>&nbsp;</p>
