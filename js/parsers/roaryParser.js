@@ -23,9 +23,9 @@ export function roaryParser(csvString) {
   const papa = Papa.parse(csvString);
 
   const numEntries = (papa.data.length - 1) * (papa.data[0].length - 10);
-  if (numEntries > 10000000) {
-    throw 'Cannot process ROARY files with over 10M entries (this has ' + numEntries + ')';
-  }
+  // if (numEntries > 10000000) {
+  //   throw 'Cannot process ROARY files with over 10M entries (this has ' + numEntries + ')';
+  // }
 
   const arrows = [];
   // const blocks = [];
