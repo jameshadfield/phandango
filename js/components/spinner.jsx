@@ -1,8 +1,6 @@
 import React from 'react';
 
-export function Spinner({ active }) {
-  // console.log('spinner component created. value: ', active);
-  if (!active) {return (<g/>);}
+export function Spinner() {
   return (
     <div className="sk-fading-circle" id="spinner">
       <div className="sk-circle1 sk-circle"></div>

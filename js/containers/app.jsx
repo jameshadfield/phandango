@@ -11,7 +11,6 @@ import { Provider, connect } from 'react-redux';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
-import { incomingFile } from '../actions/fileInput';
 import PropTypes from 'prop-types';
 import { NotificationDisplay } from '../components/notification';
 
@@ -25,11 +24,9 @@ import { ExamplesPage } from './examplesPage';
 
 // misc
 import { Header } from '../components/header';
-import { Spinner } from '../components/spinner';
+import { notificationSeen } from '../actions/notifications';
 
 // Actions to be dispatched upon key presses
-import { notificationNew, notificationSeen, checkLoadedDataIsComplete } from '../actions/notifications';
-import { goToPage, toggleMetaKey, showBlocks, increaseSpinner } from '../actions/general';
 
 import C2S from '../misc/canvas2svg';
 
@@ -97,19 +94,7 @@ The purposes of the MainReactElement:
 //     super(...args);
 //     this.displayName = 'Main_React_Element';
 //   }
-//   componentDidMount() {
-//     document.addEventListener('dragover', (e) => {e.preventDefault();}, false);
-//     document.addEventListener('drop', (e) => {
-//       e.preventDefault();
-//       this.filesDropped(e);
-//     }, false);
-//     document.addEventListener('keyup', this.keyIncoming.bind(this));
-//   }
-//   componentWillReceiveProps(nextProps) {
-//     if (this.props.spinner !== nextProps.spinner && nextProps.spinner === 0) {
-//       this.props.dispatch(checkLoadedDataIsComplete());
-//     }
-//   }
+
 
 
 //     case 'settings':
@@ -125,50 +110,7 @@ The purposes of the MainReactElement:
 
 //   }
 //
-//   keyIncoming(event) {
-//     // http://www.cambiaresearch.com/articles/15/javascript-char-codes-key-codes
-//     const key = event.keyCode || event.charCode;
-//     switch (key) {
-//     case 83: // s
-//       const p = this.props.page === 'settings' ? 'main' : 'settings';
-//       this.props.dispatch(goToPage(p));
-//       break;
-//     case 77: // m
-//       this.props.dispatch(goToPage('main'));
-//       break;
-//     case 76: // l
-//       this.props.dispatch(goToPage('landing'));
-//       break;
-//     case 69: // e
-//       this.props.dispatch(goToPage('examples'));
-//       break;
-//     case 90: // z
-//       this.props.dispatch(showBlocks('gubbins'));
-//       break;
-//     case 88: // x
-//       this.props.dispatch(showBlocks('gubbinsPerTaxa'));
-//       break;
-//     case 67: // c
-//       this.props.dispatch(showBlocks('bratNextGen'));
-//       break;
-//     case 86: // v
-//       this.props.dispatch(showBlocks('merged'));
-//       break;
-//     case 75: // k
-//       this.props.dispatch(toggleMetaKey());
-//       break;
-//     // pdf / svg triggered via 'p'
-//     case 80: // p
-//       this.produceSVG();
-//       break;
-//     // for testing only:
-//     // case 27: // esc
-//     //   this.props.dispatch({ type: 'clearAllData' });
-//     //   break;
-//     default:
-//       return;
-//     }
-//   }
+
 //
 //   produceSVG() {
 //     window.svgCtx = new C2S(window.innerWidth, window.innerHeight);
@@ -198,18 +140,7 @@ The purposes of the MainReactElement:
 //     }, 100);
 //   }
 //
-//   filesDropped(e) {
-//     window.ga('send', 'pageview', '/filesDropped');
-//     // this.props.dispatch(goToPage('loading'));
-//     // this.props.dispatch(notificationNew(showHelp());
-//     this.props.dispatch(notificationNew('press \'s\' to show settings'));
-//     const files = e.dataTransfer.files;
-//     e.preventDefault();
-//     this.props.dispatch(increaseSpinner(files.length));
-//     for (let i = 0; i < files.length; i++) {
-//       this.props.dispatch(incomingFile(files[i]));
-//     }
-//   }
+
 // }
 //
 // MainReactElement.propTypes = {
@@ -251,10 +182,10 @@ render(
     }
     <Provider store={store} key={'providerKey'}>
       <BrowserRouter>
-        {/* <MuiThemeProvider> */}
+        <MuiThemeProvider>
           <div>
-            {/* <Monitor/> */}
-            {/* <ConnectedHeader /> */}
+            <Monitor/>
+            <ConnectedHeader />
             {/* <Spinner key="spinner" active={this.props.spinner} /> */}
             <Switch>
               <Route exact path="/" component={ConnectedLandingPage}/>
@@ -262,9 +193,9 @@ render(
               <Route path="/main" component={ConnectedCanvasContainer}/>
               <Route path="/*" component={ConnectedLandingPage}/>
             </Switch>
-            {/* <ConnectedNotifications /> */}
+            <ConnectedNotifications />
           </div>
-        {/* </MuiThemeProvider> */}
+        </MuiThemeProvider>
       </BrowserRouter>
     </Provider>
   </div>,
