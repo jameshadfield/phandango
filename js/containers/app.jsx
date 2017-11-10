@@ -7,9 +7,218 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import configureStore from '../store/configureStore';
 import DevTools from '../containers/devTools';
 import { Provider, connect } from 'react-redux';
-import { MainReactElement } from './main';
+// import { MainReactElement } from './main';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+
+import { incomingFile } from '../actions/fileInput';
+import PropTypes from 'prop-types';
+import { NotificationDisplay } from '../components/notification';
+
+import Monitor from './monitor';
+
+// Pages to display
+import { CanvasContainer } from './canvases';
+import { Settings } from './settings';
+import { LandingPage } from './landingPage';
+import { ExamplesPage } from './examplesPage';
+
+// misc
+import { Header } from '../components/header';
+import { Spinner } from '../components/spinner';
+
+// Actions to be dispatched upon key presses
+import { notificationNew, notificationSeen, checkLoadedDataIsComplete } from '../actions/notifications';
+import { goToPage, toggleMetaKey, showBlocks, increaseSpinner } from '../actions/general';
+
+import C2S from '../misc/canvas2svg';
+
+
+
+/*
+Connect the containers which will be displayed here to redux store / dispatch etc
+Note that the MainReactElement doesn't itself access store/state as it itself
+displays nothing apart from child containers (which need display information)
+*/
+// the main display!
+const ConnectedCanvasContainer = connect((state)=>({
+  active: state.layout.active,
+  colPercs: state.layout.colPercs,
+  rowPercs: state.layout.rowPercs,
+  logoIsOn: state.layout.logoIsOn,
+}))(CanvasContainer);
+const ConnectedSettings = connect()(Settings);
+const ConnectedLandingPage = connect(
+  () =>({}),
+  (dispatch) => ({
+    goToPage: (name) => {dispatch(goToPage(name));},
+  })
+)(LandingPage);
+/* notifications is always displayed and it pops up when needed */
+const ConnectedNotifications = connect(
+  (state)=>({
+    title: state.notifications.active.title,
+    message: state.notifications.active.message,
+    dialog: state.notifications.active.dialog,
+    open: state.notifications.active.open,
+    counter: state.notifications.counter,
+  }),
+  (dispatch)=>({
+    notificationSeen: () => {dispatch(notificationSeen());},
+  })
+)(NotificationDisplay);
+
+const ConnectedExamples = connect()(ExamplesPage); // dispatch is used
+const ConnectedHeader = connect(
+  (state)=>({
+    pageName: state.router,
+    treeActive: state.layout.active.tree,
+    annotationActive: state.layout.active.annotation,
+  }),
+  (dispatch) => ({
+    goToPage: (name) => {dispatch(goToPage(name));},
+  })
+)(Header);
+
+/* PDF event
+https://developer.mozilla.org/en-US/docs/Web/Guide/Events/Creating_and_triggering_events
+This is a one-off thing and so it uses events rather than the flux approach
+*/
+const pdfEvent = new Event('pdf');
+
+/*
+The purposes of the MainReactElement:
+* add global listeners
+* read the current page (@props) and choose display containers accordingly
+*/
+//
+// export class MainReactElement extends React.Component {
+//   constructor(...args) {
+//     super(...args);
+//     this.displayName = 'Main_React_Element';
+//   }
+//   componentDidMount() {
+//     document.addEventListener('dragover', (e) => {e.preventDefault();}, false);
+//     document.addEventListener('drop', (e) => {
+//       e.preventDefault();
+//       this.filesDropped(e);
+//     }, false);
+//     document.addEventListener('keyup', this.keyIncoming.bind(this));
+//   }
+//   componentWillReceiveProps(nextProps) {
+//     if (this.props.spinner !== nextProps.spinner && nextProps.spinner === 0) {
+//       this.props.dispatch(checkLoadedDataIsComplete());
+//     }
+//   }
+
+
+//     case 'settings':
+//       window.ga('send', 'pageview', '/settings');
+//       injectedPage = [
+//         <ConnectedSettings key="settings"/>,
+//         <ConnectedCanvasContainer key="canvases"/>,
+//       ];
+//       break;
+//     case 'main':
+//       injectedPage = <ConnectedCanvasContainer />;
+//       break;
+
+//   }
+//
+//   keyIncoming(event) {
+//     // http://www.cambiaresearch.com/articles/15/javascript-char-codes-key-codes
+//     const key = event.keyCode || event.charCode;
+//     switch (key) {
+//     case 83: // s
+//       const p = this.props.page === 'settings' ? 'main' : 'settings';
+//       this.props.dispatch(goToPage(p));
+//       break;
+//     case 77: // m
+//       this.props.dispatch(goToPage('main'));
+//       break;
+//     case 76: // l
+//       this.props.dispatch(goToPage('landing'));
+//       break;
+//     case 69: // e
+//       this.props.dispatch(goToPage('examples'));
+//       break;
+//     case 90: // z
+//       this.props.dispatch(showBlocks('gubbins'));
+//       break;
+//     case 88: // x
+//       this.props.dispatch(showBlocks('gubbinsPerTaxa'));
+//       break;
+//     case 67: // c
+//       this.props.dispatch(showBlocks('bratNextGen'));
+//       break;
+//     case 86: // v
+//       this.props.dispatch(showBlocks('merged'));
+//       break;
+//     case 75: // k
+//       this.props.dispatch(toggleMetaKey());
+//       break;
+//     // pdf / svg triggered via 'p'
+//     case 80: // p
+//       this.produceSVG();
+//       break;
+//     // for testing only:
+//     // case 27: // esc
+//     //   this.props.dispatch({ type: 'clearAllData' });
+//     //   break;
+//     default:
+//       return;
+//     }
+//   }
+//
+//   produceSVG() {
+//     window.svgCtx = new C2S(window.innerWidth, window.innerHeight);
+//     window.dispatchEvent(pdfEvent);
+//
+//     const mySVG = window.svgCtx.getSerializedSvg(true);
+//     let myURL = undefined;
+//     const a = document.createElement('a');
+//     if (a.download !== undefined) {
+//       const blob = new Blob([ mySVG ], { type: 'text/plain;charset=utf-8' });
+//       myURL = window.URL.createObjectURL(blob);
+//       a.setAttribute('href', myURL);
+//       a.download = 'Phandango.svg';
+//     } else {
+//       const svgData = 'data:application/svg;charset=utf-8,' + encodeURIComponent(mySVG);
+//       a.setAttribute('href', svgData);
+//     }
+//
+//     // a.setAttribute('target', '_blank');
+//     document.body.appendChild(a);
+//     a.click();
+//     setTimeout(function () {
+//       if (myURL) {
+//         window.URL.revokeObjectURL(myURL);
+//       }
+//       document.body.removeChild(a);
+//     }, 100);
+//   }
+//
+//   filesDropped(e) {
+//     window.ga('send', 'pageview', '/filesDropped');
+//     // this.props.dispatch(goToPage('loading'));
+//     // this.props.dispatch(notificationNew(showHelp());
+//     this.props.dispatch(notificationNew('press \'s\' to show settings'));
+//     const files = e.dataTransfer.files;
+//     e.preventDefault();
+//     this.props.dispatch(increaseSpinner(files.length));
+//     for (let i = 0; i < files.length; i++) {
+//       this.props.dispatch(incomingFile(files[i]));
+//     }
+//   }
+// }
+//
+// MainReactElement.propTypes = {
+//   page: PropTypes.string.isRequired,
+//   dispatch: PropTypes.func.isRequired,
+//   spinner: PropTypes.number,
+//   browserMessage: PropTypes.string,
+// };
+//
 
 /*  to fix iOS's dreaded 300ms tap delay, we need this plugin
 NOTE Facebook is not planning on supporting tap events (#436) because browsers are fixing/removing
@@ -29,35 +238,35 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 const store = configureStore();
-const ConnectedMainReactElement = connect((state)=>({
-  page: state.router,
-  spinner: state.spinner,
-}))(MainReactElement);
+// const ConnectedMainReactElement = connect((state)=>({
+//   page: state.router,
+//   spinner: state.spinner,
+// }))(MainReactElement);
 
-const elements = [
-  <Provider store={store} key={'providerKey'}>
-    <BrowserRouter>
-      <MuiThemeProvider>
-        <Switch>
-          <Route path="/*" component={ConnectedMainReactElement}/>
-          {/* <ConnectedMainReactElement browserMessage={browserMessage}/> */}
-        </Switch>
-      </MuiThemeProvider>
-    </BrowserRouter>
-  </Provider>,
-];
-if (process.env.NODE_ENV !== 'production') {
-  elements.push(
-    <DevTools key={'devToolsKey'} store={store}/>
-  );
-}
-
-// if (navigator.userAgent.match(/WebKit/i)) {
-//   window.ga('send', 'pageview', '/unsupportedBrowser');
-//   elements = <UnsupportedBrowser msg="mobile devices are not yet supported"/>;
-// }
 
 render(
-  <div>{elements}</div>,
+  <div>
+    {process.env.NODE_ENV === 'production' ? null :
+      <DevTools key={'devToolsKey'} store={store}/>
+    }
+    <Provider store={store} key={'providerKey'}>
+      <BrowserRouter>
+        {/* <MuiThemeProvider> */}
+          <div>
+            {/* <Monitor/> */}
+            {/* <ConnectedHeader /> */}
+            {/* <Spinner key="spinner" active={this.props.spinner} /> */}
+            <Switch>
+              <Route exact path="/" component={ConnectedLandingPage}/>
+              <Route path="/examples" component={ConnectedExamples}/>
+              <Route path="/main" component={ConnectedCanvasContainer}/>
+              <Route path="/*" component={ConnectedLandingPage}/>
+            </Switch>
+            {/* <ConnectedNotifications /> */}
+          </div>
+        {/* </MuiThemeProvider> */}
+      </BrowserRouter>
+    </Provider>
+  </div>,
   document.getElementById('react')
 );

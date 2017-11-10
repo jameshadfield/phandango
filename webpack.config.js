@@ -10,9 +10,9 @@ module.exports = {
   ],
   debug: false,
   output: {
-    publicPath: 'dist/',
     path: path.join(__dirname, 'dist'),
     filename: 'phandango.js',
+    publicPath: '/',
   },
   plugins: [
     new webpack.DefinePlugin({ // MUST BE FIRST!
