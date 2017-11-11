@@ -3,7 +3,7 @@ import '../../css/JScandy.css';
 import '../../node_modules/flexboxgrid/css/flexboxgrid.min.css';
 import React from 'react';
 import { render } from 'react-dom';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { HashRouter, Route, Switch } from 'react-router-dom';
 import { withRouter } from 'react-router';
 import configureStore from '../store/configureStore';
 import DevTools from '../containers/devTools';
@@ -79,7 +79,7 @@ render(
       <DevTools key={'devToolsKey'} store={store}/>
     }
     <Provider store={store} key={'providerKey'}>
-      <BrowserRouter>
+      <HashRouter>
         <MuiThemeProvider>
           <div>
             <MonitorWithRouter/>
@@ -95,7 +95,7 @@ render(
             <ConnectedNotifications />
           </div>
         </MuiThemeProvider>
-      </BrowserRouter>
+      </HashRouter>
     </Provider>
   </div>,
   document.getElementById('react')
