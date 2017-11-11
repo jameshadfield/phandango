@@ -47,9 +47,6 @@ const ConnectedCanvasContainer = connect((state)=>({
 const ConnectedSettings = connect()(Settings);
 const ConnectedLandingPage = connect(
   () =>({}),
-  (dispatch) => ({
-    goToPage: (name) => {dispatch(goToPage(name));},
-  })
 )(LandingPage);
 /* notifications is always displayed and it pops up when needed */
 const ConnectedNotifications = connect(
@@ -72,9 +69,6 @@ const ConnectedHeader = connect(
     treeActive: state.layout.active.tree,
     annotationActive: state.layout.active.annotation,
   }),
-  // (dispatch) => ({
-  //   goToPage: (name) => {dispatch(goToPage(name));},
-  // })
 )(Header);
 
 /* PDF event
@@ -169,11 +163,6 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 const store = configureStore();
-// const ConnectedMainReactElement = connect((state)=>({
-//   page: state.router,
-//   spinner: state.spinner,
-// }))(MainReactElement);
-
 
 render(
   <div>

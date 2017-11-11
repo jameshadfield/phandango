@@ -3,9 +3,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import version from '../version';
 import { AnimatedLogo } from '../components/logo';
+import { Link } from 'react-router-dom';
 
 export class LandingPage extends React.Component {
-
   render() {
     let browserMessage = null;
     if (this.props.browserMessage) {
@@ -48,7 +48,9 @@ export class LandingPage extends React.Component {
         <p style={{ color: '#225ea8' }}>
           <a className="pointer" onClick={()=>window.open('https://github.com/jameshadfield/phandango/wiki', '_blank')}>About / Help (GitHub wiki)</a>
           <br/><br/>
-          <a className="pointer" onClick={()=>this.props.goToPage('examples')}>Example Datasets</a>
+          <Link to={"/main"}>
+            <a className="pointer">Example Datasets</a>
+          </Link>
           <br/><br/>
           <a className="pointer" onClick={()=>window.open('https://github.com/jameshadfield/phandango', '_blank')}>Github (source code)</a>
           <br/><br/>
@@ -62,14 +64,5 @@ export class LandingPage extends React.Component {
 }
 
 LandingPage.propTypes = {
-  goToPage: PropTypes.func.isRequired,
   browserMessage: PropTypes.string,
 };
-
-/* previous attempt to center vertially failed when the screen became smaller than the height!
-      <div id="outer">
-        <div className="center centeredVertically ">
-          ...
-        </div>
-      </div>
-*/

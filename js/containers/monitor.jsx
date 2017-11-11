@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { UnsupportedBrowser } from '../components/UnsupportedBrowser';
 import { getBrowser } from '../misc/helperFunctions';
 import { notificationNew, notificationSeen, checkLoadedDataIsComplete } from '../actions/notifications';
-import { goToPage, toggleMetaKey, showBlocks, increaseSpinner } from '../actions/general';
+import { toggleMetaKey, showBlocks, increaseSpinner } from '../actions/general';
 import { incomingFile } from '../actions/fileInput';
 
 
@@ -68,8 +68,8 @@ class Monitor extends React.Component {
   }
   filesDropped(e) {
     // window.ga('send', 'pageview', '/filesDropped');
-    // this.props.dispatch(goToPage('loading'));
-    // this.props.dispatch(notificationNew(showHelp());
+    this.context.router.history.push('/main');
+    // this.props.dispatch(notificationNew(showHelp()));
     this.props.dispatch(notificationNew('press \'s\' to show settings'));
     const files = e.dataTransfer.files;
     e.preventDefault();

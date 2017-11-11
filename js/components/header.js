@@ -12,11 +12,7 @@ const HeaderEntry = ({ name, active }) => {
   );
 };
 
-/*  Header
- * @prop goToPage {function}
- * @prop pageName {string}
-*/
-export const Header = ({ pageName, goToPage, treeActive, annotationActive }) => {
+export const Header = ({ pageName, treeActive, annotationActive }) => {
   const cssClass = 'col-xs center';
   let unavalStyle = {};
   if (!treeActive & !annotationActive) {
@@ -35,7 +31,7 @@ export const Header = ({ pageName, goToPage, treeActive, annotationActive }) => 
             <HeaderEntry name="Main" active={pageName === 'main'}/>
           </Link>
         </div>
-        <div className={cssClass} onClick={()=>goToPage('settings')} style={unavalStyle}>
+        <div className={cssClass} onClick={()=>console.log("TO DO")} style={unavalStyle}>
           <HeaderEntry name="Settings" active={pageName === 'settings'}/>
         </div>
         <div className={cssClass}>

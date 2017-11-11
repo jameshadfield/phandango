@@ -207,11 +207,15 @@ const Example = ({ name, paths, callback, caption, imgPath, citeURLs, citeCaptio
  * uses flexboxgrid classes for layout
  */
 export class ExamplesPage extends React.Component {
+  static contextTypes = {
+    router: PropTypes.object.isRequired,
+  }
   constructor(...args) {
     super(...args);
     this.loadExample = (paths) => {
       this.props.dispatch(clearAllData());
       this.props.dispatch(increaseSpinner(paths.length));
+      this.context.router.history.push('/main');
       for (const url of paths) {
         this.props.dispatch(incomingFile(url, true));
       }
