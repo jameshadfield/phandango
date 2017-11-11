@@ -13,6 +13,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 import { NotificationDisplay } from '../components/notification';
 import Spinner from '../components/spinner';
+import { notificationSeen } from '../actions/notifications';
 
 import Monitor from './monitor';
 
@@ -21,7 +22,7 @@ import { Main } from './main';
 import { LandingPage } from './landingPage';
 import { ExamplesPage } from './examplesPage';
 import Header from '../components/header';
-import { notificationSeen } from '../actions/notifications';
+import ProjectGPS from '../components/projects/gps';
 
 /*
 TODO: move these connect statements to the files themselves & use @decorator syntax
@@ -51,7 +52,6 @@ const ConnectedNotifications = connect(
 
 const HeaderWithRouter = withRouter(Header);
 const MonitorWithRouter = withRouter(Monitor);
-
 const ConnectedExamples = connect()(ExamplesPage); // dispatch is used
 
 /*  to fix iOS's dreaded 300ms tap delay, we need this plugin
@@ -89,6 +89,7 @@ render(
               <Route exact path="/" component={ConnectedLandingPage}/>
               <Route path="/examples" component={ConnectedExamples}/>
               <Route path="/main" component={ConnectedMain}/>
+              <Route path="/gps" component={ProjectGPS}/>
               <Route path="/*" component={ConnectedLandingPage}/>
             </Switch>
             <ConnectedNotifications />

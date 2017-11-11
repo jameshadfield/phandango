@@ -126,6 +126,9 @@ class Monitor extends React.Component {
     case 69: // e
       this.context.router.history.push('/examples');
       break;
+    case 71: // g
+      this.context.router.history.push('/gps');
+      break;
     case 90: // z
       this.props.dispatch(showBlocks('gubbins'));
       break;
