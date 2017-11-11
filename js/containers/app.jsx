@@ -4,13 +4,13 @@ import '../../node_modules/flexboxgrid/css/flexboxgrid.min.css';
 import React from 'react';
 import { render } from 'react-dom';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { withRouter } from 'react-router';
 import configureStore from '../store/configureStore';
 import DevTools from '../containers/devTools';
 import { Provider, connect } from 'react-redux';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
-import PropTypes from 'prop-types';
 import { NotificationDisplay } from '../components/notification';
 import Spinner from '../components/spinner';
 
@@ -18,12 +18,9 @@ import Monitor from './monitor';
 
 // Pages to display
 import { Main } from './main';
-// import { Settings } from './settings';
 import { LandingPage } from './landingPage';
 import { ExamplesPage } from './examplesPage';
-
-// misc
-import { Header } from '../components/header';
+import Header from '../components/header';
 import { notificationSeen } from '../actions/notifications';
 
 /*
@@ -35,7 +32,6 @@ const ConnectedMain = connect((state)=>({
   rowPercs: state.layout.rowPercs,
   logoIsOn: state.layout.logoIsOn,
 }))(Main);
-// const ConnectedSettings = connect()(Settings);
 const ConnectedLandingPage = connect(
   () =>({}),
 )(LandingPage);
@@ -53,32 +49,10 @@ const ConnectedNotifications = connect(
   })
 )(NotificationDisplay);
 
+const HeaderWithRouter = withRouter(Header);
+const MonitorWithRouter = withRouter(Monitor);
+
 const ConnectedExamples = connect()(ExamplesPage); // dispatch is used
-const ConnectedHeader = connect(
-  (state)=>({
-    pageName: state.router,
-    treeActive: state.layout.active.tree,
-    annotationActive: state.layout.active.annotation,
-  }),
-)(Header);
-
-/* PDF event
-https://developer.mozilla.org/en-US/docs/Web/Guide/Events/Creating_and_triggering_events
-This is a one-off thing and so it uses events rather than the flux approach
-*/
-const pdfEvent = new Event('pdf');
-
-//     case 'settings':
-//       window.ga('send', 'pageview', '/settings');
-//       injectedPage = [
-//         <ConnectedSettings key="settings"/>,
-//         <ConnectedCanvasContainer key="canvases"/>,
-//       ];
-//       break;
-//     case 'main':
-//       injectedPage = <ConnectedCanvasContainer />;
-//       break;
-
 
 /*  to fix iOS's dreaded 300ms tap delay, we need this plugin
 NOTE Facebook is not planning on supporting tap events (#436) because browsers are fixing/removing
@@ -108,8 +82,8 @@ render(
       <BrowserRouter>
         <MuiThemeProvider>
           <div>
-            <Monitor/>
-            <ConnectedHeader />
+            <MonitorWithRouter/>
+            <HeaderWithRouter/>
             <Spinner/>
             <Switch>
               <Route exact path="/" component={ConnectedLandingPage}/>

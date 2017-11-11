@@ -32,11 +32,15 @@ import Add from 'material-ui/svg-icons/content/add';
  * @props {Function} dispatch - injected by connect
 */
 
+@connect((state) => ({ showSettings: state.misc.showSettings }))
 export class Settings extends React.Component {
+  static propTypes = {
+    dispatch: PropTypes.func.isRequired,
+    showSettings: PropTypes.bool.isRequired,
+  }
   constructor(...args) {
     super(...args);
   }
-
   componentDidMount() {
     // modal-like "click to close"
     // this.node.addEventListener('click', (e) => {
@@ -49,6 +53,9 @@ export class Settings extends React.Component {
   }
 
   render() {
+    if (!this.props.showSettings) {
+      return null;
+    }
     // const panelClassName = 'settings-col';
     const panelClassName = 'col-xs-3 bgwhite border noOverflow';
     // <ConnectedLoadedComponents className={panelClassName} />
@@ -64,10 +71,6 @@ export class Settings extends React.Component {
     );
   }
 }
-
-Settings.propTypes = {
-  dispatch: PropTypes.func.isRequired,
-};
 
 /*
  * Layout container:

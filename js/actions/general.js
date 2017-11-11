@@ -5,6 +5,10 @@ export function increaseSpinner(value = 1) {
   return ({ type: 'increaseSpinner', value });
 }
 
+export function toggleSettings() {
+  return ({ type: 'toggleSettings' });
+}
+
 export function decreaseSpinner() {
   return ({ type: 'decreaseSpinner' });
 }

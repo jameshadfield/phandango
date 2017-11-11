@@ -11,6 +11,7 @@ import { Line } from '../components/lineGraph';
 import { Gwas } from '../components/gwasGraph';
 import { Cartoon } from '../components/cartoonGenome';
 import { StaticLogo } from '../components/logo';
+import { Settings } from './settings';
 
 /*
 The children of this component are top level components that
@@ -217,18 +218,21 @@ export class Main extends React.Component {
     }
 
     return (
-      <div id="canvassesDiv" ref={(c) => this.node = c} key={this.key}>
-        <div className="newline" />
-        {topRow}
-        <div className="newline" />
-        {middleRow}
-        <div className="newline" />
-        {plots}
+      <div>
+        <Settings/>
+        <div id="canvassesDiv" ref={(c) => this.node = c} key={this.key}>
+          <div className="newline" />
+          {topRow}
+          <div className="newline" />
+          {middleRow}
+          <div className="newline" />
+          {plots}
 
-        {logo}
+          {logo}
 
-        {vresizers}
-        {hresizers}
+          {vresizers}
+          {hresizers}
+        </div>
       </div>
     );
   }

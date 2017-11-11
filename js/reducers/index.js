@@ -68,7 +68,7 @@ function phylogeny(state = initialPhylogenyState, action) {
   }
 }
 
-function misc(state = { settings: false }, action) {
+function misc(state = { showSettings: false }, action) {
   switch (action.type) {
   case 'toggleSettings':
     return merge({}, state, { showSettings: !state.showSettings });

@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { UnsupportedBrowser } from '../components/UnsupportedBrowser';
 import { getBrowser } from '../misc/helperFunctions';
 import { notificationNew, notificationSeen, checkLoadedDataIsComplete } from '../actions/notifications';
-import { toggleMetaKey, showBlocks, increaseSpinner } from '../actions/general';
+import { toggleMetaKey, showBlocks, increaseSpinner, toggleSettings } from '../actions/general';
 import { incomingFile } from '../actions/fileInput';
 import C2S from '../misc/canvas2svg';
 
@@ -47,13 +47,12 @@ const pdfEvent = new Event('pdf');
   spinner: state.spinner,
 }))
 class Monitor extends React.Component {
+  static propTypes = {
+    dispatch: PropTypes.func.isRequired,
+    location: PropTypes.object.isRequired,
+  }
   constructor(props) {
     super(props);
-    console.log("Monitor online")
-    console.log(this.props)
-  }
-  static contextTypes = {
-    router: PropTypes.object.isRequired,
   }
   componentDidMount() {
     document.addEventListener('dragover', (e) => {e.preventDefault();}, false);
@@ -116,7 +115,9 @@ class Monitor extends React.Component {
     const key = event.keyCode || event.charCode;
     switch (key) {
     case 83: // s
-      this.context.router.history.push('/settings');
+      if (this.props.location.pathname.startsWith('/main')) {
+        this.props.dispatch(toggleSettings());
+      }
       break;
     case 77: // m
       this.context.router.history.push('/main');
