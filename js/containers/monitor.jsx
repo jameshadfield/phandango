@@ -51,6 +51,9 @@ class Monitor extends React.Component {
     dispatch: PropTypes.func.isRequired,
     location: PropTypes.object.isRequired,
   }
+  static contextTypes = {
+    router: PropTypes.object.isRequired,
+  }
   constructor(props) {
     super(props);
   }

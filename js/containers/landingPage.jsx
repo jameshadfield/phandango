@@ -49,7 +49,7 @@ export class LandingPage extends React.Component {
           <a className="pointer" onClick={()=>window.open('https://github.com/jameshadfield/phandango/wiki', '_blank')}>About / Help (GitHub wiki)</a>
           <br/><br/>
           <Link to={"/examples"}>
-            <a className="pointer">Example Datasets</a>
+            <span className="pointer" style={{color: 'rgb(34, 94, 168)'}}>Example Datasets</span>
           </Link>
           <br/><br/>
           <a className="pointer" onClick={()=>window.open('https://github.com/jameshadfield/phandango', '_blank')}>Github (source code)</a>
