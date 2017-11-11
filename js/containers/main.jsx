@@ -63,7 +63,7 @@ const ConnectedCartoon = connect((state)=>({
   genomeLength: state.genomeInfo.genomeLength,
 }))(Cartoon);
 
-export class CanvasContainer extends React.Component {
+export class Main extends React.Component {
   constructor(...args) {
     super(...args);
     this.displayName = 'CanvasContainer';
@@ -234,7 +234,7 @@ export class CanvasContainer extends React.Component {
   }
 }
 
-CanvasContainer.propTypes = {
+Main.propTypes = {
   active: PropTypes.object.isRequired,
   colPercs: PropTypes.arrayOf(PropTypes.number).isRequired,
   rowPercs: PropTypes.array.isRequired,

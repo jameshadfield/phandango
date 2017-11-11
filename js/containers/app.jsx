@@ -17,8 +17,8 @@ import Spinner from '../components/spinner';
 import Monitor from './monitor';
 
 // Pages to display
-import { CanvasContainer } from './canvases';
-import { Settings } from './settings';
+import { Main } from './main';
+// import { Settings } from './settings';
 import { LandingPage } from './landingPage';
 import { ExamplesPage } from './examplesPage';
 
@@ -29,13 +29,13 @@ import { notificationSeen } from '../actions/notifications';
 /*
 TODO: move these connect statements to the files themselves & use @decorator syntax
 */
-const ConnectedCanvasContainer = connect((state)=>({
+const ConnectedMain = connect((state)=>({
   active: state.layout.active,
   colPercs: state.layout.colPercs,
   rowPercs: state.layout.rowPercs,
   logoIsOn: state.layout.logoIsOn,
-}))(CanvasContainer);
-const ConnectedSettings = connect()(Settings);
+}))(Main);
+// const ConnectedSettings = connect()(Settings);
 const ConnectedLandingPage = connect(
   () =>({}),
 )(LandingPage);
@@ -114,7 +114,7 @@ render(
             <Switch>
               <Route exact path="/" component={ConnectedLandingPage}/>
               <Route path="/examples" component={ConnectedExamples}/>
-              <Route path="/main" component={ConnectedCanvasContainer}/>
+              <Route path="/main" component={ConnectedMain}/>
               <Route path="/*" component={ConnectedLandingPage}/>
             </Switch>
             <ConnectedNotifications />
