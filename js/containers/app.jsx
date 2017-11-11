@@ -7,7 +7,6 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import configureStore from '../store/configureStore';
 import DevTools from '../containers/devTools';
 import { Provider, connect } from 'react-redux';
-// import { MainReactElement } from './main';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
@@ -72,9 +71,9 @@ const ConnectedHeader = connect(
     treeActive: state.layout.active.tree,
     annotationActive: state.layout.active.annotation,
   }),
-  (dispatch) => ({
-    goToPage: (name) => {dispatch(goToPage(name));},
-  })
+  // (dispatch) => ({
+  //   goToPage: (name) => {dispatch(goToPage(name));},
+  // })
 )(Header);
 
 /* PDF event

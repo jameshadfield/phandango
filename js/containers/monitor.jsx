@@ -48,6 +48,9 @@ class Monitor extends React.Component {
     console.log("Monitor online")
     console.log(this.props)
   }
+  static contextTypes = {
+    router: PropTypes.object.isRequired,
+  }
   componentDidMount() {
     document.addEventListener('dragover', (e) => {e.preventDefault();}, false);
     document.addEventListener('drop', (e) => {
@@ -84,17 +87,16 @@ class Monitor extends React.Component {
     const key = event.keyCode || event.charCode;
     switch (key) {
     case 83: // s
-      const p = this.props.page === 'settings' ? 'main' : 'settings';
-      this.props.dispatch(goToPage(p));
+      this.context.router.history.push('/settings');
       break;
     case 77: // m
-      this.props.dispatch(goToPage('main'));
+      this.context.router.history.push('/main');
       break;
     case 76: // l
-      this.props.dispatch(goToPage('landing'));
+      this.context.router.history.push('/');
       break;
     case 69: // e
-      this.props.dispatch(goToPage('examples'));
+      this.context.router.history.push('/examples');
       break;
     case 90: // z
       this.props.dispatch(showBlocks('gubbins'));
@@ -124,6 +126,7 @@ class Monitor extends React.Component {
     }
   }
 }
+
 
 export default Monitor;
 

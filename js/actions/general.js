@@ -9,14 +9,14 @@ export function decreaseSpinner() {
   return ({ type: 'decreaseSpinner' });
 }
 
-export function goToPage(name) {
-  return function (dispatch) {
-    dispatch({ type: 'newPage', name: name });
-    if (name === 'settings') {
-      dispatch(notificationNew('press \'s\' or \'m\' to exit settings!'));
-    }
-  };
-}
+// export function goToPage(name) {
+//   return function (dispatch) {
+//     dispatch({ type: 'newPage', name: name });
+//     if (name === 'settings') {
+//       dispatch(notificationNew('press \'s\' or \'m\' to exit settings!'));
+//     }
+//   };
+// }
 
 export function layoutPercentChange(col, idx, perc) {
   const type = (col) ? 'layoutColPercentChange' : 'layoutRowPercentChange';
@@ -112,4 +112,3 @@ export function showBlocks(name) {
     dispatch(decreaseSpinner());
   };
 }
-

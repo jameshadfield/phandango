@@ -7,14 +7,12 @@ import { gwasGraph } from './gwasGraph';
 import { notifications } from './notifications';
 import { metadata } from './metadata';
 import { blocks } from './blocks';
-import { router } from './router';
 
 const initialPhylogenyState = {
   newickString: undefined,
   activeTaxa: {},
   fileName: 'not loaded',
 };
-
 
 const rootReducer = combineReducers({
   annotation,
@@ -23,8 +21,8 @@ const rootReducer = combineReducers({
   lineGraph,
   gwasGraph,
   genomeInfo,
+  misc,
   phylogeny,
-  router,
   layout,
   notifications,
   spinner,
@@ -65,6 +63,15 @@ function phylogeny(state = initialPhylogenyState, action) {
     // return merge({}, state, {
       // activeTaxa: action.activeTaxa,
     // });
+  default:
+    return state;
+  }
+}
+
+function misc(state = { settings: false }, action) {
+  switch (action.type) {
+  case 'toggleSettings':
+    return merge({}, state, { showSettings: !state.showSettings });
   default:
     return state;
   }
