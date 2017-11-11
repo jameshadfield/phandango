@@ -32,11 +32,6 @@ const pdfEvent = new Event('pdf');
 //     spinner: state.spinner,
 //   }))(MainReactElement);
 //
-//   let browserMessage = null;
-//   if ([ 'Chrome', 'Safari', 'Firefox' ].indexOf((browser.name)) === -1) {
-//     browserMessage = browser.name + ' version ' + browser.version.toString();
-//   }
-
 // if (navigator.userAgent.match(/WebKit/i)) {
 //   window.ga('send', 'pageview', '/unsupportedBrowser');
 //   elements = <UnsupportedBrowser msg="mobile devices are not yet supported"/>;

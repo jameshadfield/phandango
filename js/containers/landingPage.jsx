@@ -4,10 +4,15 @@ import PropTypes from 'prop-types';
 import version from '../version';
 import { AnimatedLogo } from '../components/logo';
 import { Link } from 'react-router-dom';
+import { getBrowser } from '../misc/helperFunctions';
 
 export class LandingPage extends React.Component {
   render() {
     let browserMessage = null;
+    const browser = getBrowser();
+    if ([ 'Chrome', 'Safari', 'Firefox' ].indexOf((browser.name)) === -1) {
+      browserMessage = browser.name + ' version ' + browser.version.toString();
+    }
     if (this.props.browserMessage) {
       browserMessage = (
         <strong>
