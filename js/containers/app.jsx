@@ -12,6 +12,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 import PropTypes from 'prop-types';
 import { NotificationDisplay } from '../components/notification';
+import Spinner from '../components/spinner';
 
 import Monitor from './monitor';
 
@@ -185,7 +186,7 @@ render(
           <div>
             <Monitor/>
             <ConnectedHeader />
-            {/* <Spinner key="spinner" active={this.props.spinner} /> */}
+            <Spinner/>
             <Switch>
               <Route exact path="/" component={ConnectedLandingPage}/>
               <Route path="/examples" component={ConnectedExamples}/>

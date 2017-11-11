@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 
 import { UnsupportedBrowser } from '../components/UnsupportedBrowser';
 import { getBrowser } from '../misc/helperFunctions';
-import { Spinner } from '../components/spinner';
 import { notificationNew, notificationSeen, checkLoadedDataIsComplete } from '../actions/notifications';
 import { goToPage, toggleMetaKey, showBlocks, increaseSpinner } from '../actions/general';
 import { incomingFile } from '../actions/fileInput';
@@ -65,9 +64,6 @@ class Monitor extends React.Component {
     }
   }
   render() {
-    if (this.props.spinner) {
-      return (<Spinner/>);
-    }
     return null;
   }
   filesDropped(e) {
