@@ -7,7 +7,12 @@ import { getBrowser } from '../misc/helperFunctions';
 import { notificationNew, notificationSeen, checkLoadedDataIsComplete } from '../actions/notifications';
 import { toggleMetaKey, showBlocks, increaseSpinner } from '../actions/general';
 import { incomingFile } from '../actions/fileInput';
+import C2S from '../misc/canvas2svg';
 
+/* PDF event
+https://developer.mozilla.org/en-US/docs/Web/Guide/Events/Creating_and_triggering_events
+This is a one-off thing and so it uses events rather than the flux approach */
+const pdfEvent = new Event('pdf');
 
 // const browser = getBrowser();
 // console.log(browser);
@@ -65,6 +70,34 @@ class Monitor extends React.Component {
   }
   render() {
     return null;
+  }
+
+  produceSVG() {
+    window.svgCtx = new C2S(window.innerWidth, window.innerHeight);
+    window.dispatchEvent(pdfEvent);
+
+    const mySVG = window.svgCtx.getSerializedSvg(true);
+    let myURL = undefined;
+    const a = document.createElement('a');
+    if (a.download !== undefined) {
+      const blob = new Blob([ mySVG ], { type: 'text/plain;charset=utf-8' });
+      myURL = window.URL.createObjectURL(blob);
+      a.setAttribute('href', myURL);
+      a.download = 'Phandango.svg';
+    } else {
+      const svgData = 'data:application/svg;charset=utf-8,' + encodeURIComponent(mySVG);
+      a.setAttribute('href', svgData);
+    }
+
+    // a.setAttribute('target', '_blank');
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () {
+      if (myURL) {
+        window.URL.revokeObjectURL(myURL);
+      }
+      document.body.removeChild(a);
+    }, 100);
   }
   filesDropped(e) {
     // window.ga('send', 'pageview', '/filesDropped');

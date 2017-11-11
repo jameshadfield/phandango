@@ -26,18 +26,9 @@ import { ExamplesPage } from './examplesPage';
 import { Header } from '../components/header';
 import { notificationSeen } from '../actions/notifications';
 
-// Actions to be dispatched upon key presses
-
-import C2S from '../misc/canvas2svg';
-
-
-
 /*
-Connect the containers which will be displayed here to redux store / dispatch etc
-Note that the MainReactElement doesn't itself access store/state as it itself
-displays nothing apart from child containers (which need display information)
+TODO: move these connect statements to the files themselves & use @decorator syntax
 */
-// the main display!
 const ConnectedCanvasContainer = connect((state)=>({
   active: state.layout.active,
   colPercs: state.layout.colPercs,
@@ -77,20 +68,6 @@ This is a one-off thing and so it uses events rather than the flux approach
 */
 const pdfEvent = new Event('pdf');
 
-/*
-The purposes of the MainReactElement:
-* add global listeners
-* read the current page (@props) and choose display containers accordingly
-*/
-//
-// export class MainReactElement extends React.Component {
-//   constructor(...args) {
-//     super(...args);
-//     this.displayName = 'Main_React_Element';
-//   }
-
-
-
 //     case 'settings':
 //       window.ga('send', 'pageview', '/settings');
 //       injectedPage = [
@@ -102,48 +79,6 @@ The purposes of the MainReactElement:
 //       injectedPage = <ConnectedCanvasContainer />;
 //       break;
 
-//   }
-//
-
-//
-//   produceSVG() {
-//     window.svgCtx = new C2S(window.innerWidth, window.innerHeight);
-//     window.dispatchEvent(pdfEvent);
-//
-//     const mySVG = window.svgCtx.getSerializedSvg(true);
-//     let myURL = undefined;
-//     const a = document.createElement('a');
-//     if (a.download !== undefined) {
-//       const blob = new Blob([ mySVG ], { type: 'text/plain;charset=utf-8' });
-//       myURL = window.URL.createObjectURL(blob);
-//       a.setAttribute('href', myURL);
-//       a.download = 'Phandango.svg';
-//     } else {
-//       const svgData = 'data:application/svg;charset=utf-8,' + encodeURIComponent(mySVG);
-//       a.setAttribute('href', svgData);
-//     }
-//
-//     // a.setAttribute('target', '_blank');
-//     document.body.appendChild(a);
-//     a.click();
-//     setTimeout(function () {
-//       if (myURL) {
-//         window.URL.revokeObjectURL(myURL);
-//       }
-//       document.body.removeChild(a);
-//     }, 100);
-//   }
-//
-
-// }
-//
-// MainReactElement.propTypes = {
-//   page: PropTypes.string.isRequired,
-//   dispatch: PropTypes.func.isRequired,
-//   spinner: PropTypes.number,
-//   browserMessage: PropTypes.string,
-// };
-//
 
 /*  to fix iOS's dreaded 300ms tap delay, we need this plugin
 NOTE Facebook is not planning on supporting tap events (#436) because browsers are fixing/removing
