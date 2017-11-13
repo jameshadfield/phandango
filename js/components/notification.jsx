@@ -2,12 +2,24 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Dialog from 'material-ui/Dialog';
 import Snackbar from 'material-ui/Snackbar';
+import { connect } from 'react-redux';
+import { notificationSeen } from '../actions/notifications';
 
 /*
 Whether or not something is displayed depends on this.state.open
 which can be mutatied by (1) redux store change (should only turn on) and
 (2) onRequestClose (which always sets it to false)
 */
+@connect((state)=>({
+  title: state.notifications.active.title,
+  message: state.notifications.active.message,
+  dialog: state.notifications.active.dialog,
+  open: state.notifications.active.open,
+  counter: state.notifications.counter,
+}),
+(dispatch)=>({
+  notificationSeen: () => {dispatch(notificationSeen());},
+}))
 export class NotificationDisplay extends React.Component {
   constructor(...args) {
     super(...args);

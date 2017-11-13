@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Mouse } from '../misc/mouse';
 import * as helper from '../misc/helperFunctions';
@@ -8,7 +9,19 @@ import { drawGraphAxis } from './graphAxis';
   The GWAS graph component
   The only state here is the point that's currently selected
 */
+@connect((state)=>({
+  visibleGenome: state.genomeInfo.visibleGenome,
+  values: state.gwasGraph.values,
+  max: state.gwasGraph.max,
+}))
 export class Gwas extends React.Component {
+  static propTypes = {
+    // do not validate values -- it's way too slow
+    max: PropTypes.number.isRequired,
+    visibleGenome: PropTypes.arrayOf(PropTypes.number).isRequired,
+    style: PropTypes.object.isRequired,
+    dispatch: PropTypes.func.isRequired,
+  };
   constructor(...args) {
     super(...args);
     this.initCanvasXY = helper.initCanvasXY;
@@ -125,11 +138,3 @@ export class Gwas extends React.Component {
     );
   }
 }
-
-Gwas.propTypes = {
-  // do not validate values -- it's way too slow
-  max: PropTypes.number.isRequired,
-  visibleGenome: PropTypes.arrayOf(PropTypes.number).isRequired,
-  style: PropTypes.object.isRequired,
-  dispatch: PropTypes.func.isRequired,
-};

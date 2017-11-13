@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 // import { initCanvasXY, clearCanvas } from '../misc/helperFunctions';
 import * as helper from '../misc/helperFunctions';
@@ -8,7 +9,14 @@ import * as helper from '../misc/helperFunctions';
   Perhaps this would be better of as a series of divs or as a SVG rather than canvas
   TO DO: don't display columns which are toggled off!
 */
+@connect((state)=>({
+  metadata: state.metadata,
+}))
 export class MetadataKey extends React.Component {
+  static propTypes = {
+    metadata: PropTypes.object.isRequired,
+    style: PropTypes.object.isRequired,
+  };
   constructor(...args) {
     super(...args);
     this.initCanvasXY = helper.initCanvasXY;
@@ -207,8 +215,3 @@ export class MetadataKey extends React.Component {
     );
   }
 }
-
-MetadataKey.propTypes = {
-  metadata: PropTypes.object.isRequired,
-  style: PropTypes.object.isRequired,
-};

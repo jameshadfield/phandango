@@ -5,8 +5,13 @@ import version from '../version';
 import { AnimatedLogo } from '../components/logo';
 import { Link } from 'react-router-dom';
 import { getBrowser } from '../misc/helperFunctions';
+import { connect } from 'react-redux';
 
+@connect()
 export class LandingPage extends React.Component {
+  static propTypes = {
+    browserMessage: PropTypes.string,
+  }
   render() {
     let browserMessage = null;
     const browser = getBrowser();
@@ -67,7 +72,3 @@ export class LandingPage extends React.Component {
     );
   }
 }
-
-LandingPage.propTypes = {
-  browserMessage: PropTypes.string,
-};

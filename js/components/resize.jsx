@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { layoutPercentChange } from '../actions/general';
 import { changePercs } from '../reducers/layout';
@@ -11,7 +12,18 @@ import { changePercs } from '../reducers/layout';
  * when handles are released, this.state.dragging -> false
  * and an action propogates which ends up changing the props
  */
+@connect((state)=>({
+  rowPercs: state.layout.rowPercs,
+  colPercs: state.layout.colPercs,
+}))
 export class Drag extends React.Component {
+  static propTypes = {
+    rowPercs: PropTypes.arrayOf(PropTypes.number).isRequired,
+    colPercs: PropTypes.arrayOf(PropTypes.number).isRequired,
+    dispatch: PropTypes.func.isRequired,
+    index: PropTypes.number.isRequired,
+    isCol: PropTypes.bool.isRequired,
+  }
   constructor(...args) {
     super(...args);
     this.state = { dragging: false };
@@ -179,11 +191,3 @@ export class Drag extends React.Component {
     );
   }
 }
-
-Drag.propTypes = {
-  rowPercs: PropTypes.arrayOf(PropTypes.number).isRequired,
-  colPercs: PropTypes.arrayOf(PropTypes.number).isRequired,
-  dispatch: PropTypes.func.isRequired,
-  index: PropTypes.number.isRequired,
-  isCol: PropTypes.bool.isRequired,
-};

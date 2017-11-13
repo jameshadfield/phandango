@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import * as helper from '../misc/helperFunctions';
 import { Mouse } from '../misc/mouse';
@@ -6,7 +7,17 @@ import { Mouse } from '../misc/mouse';
 /*
   cartoon genome
 */
+@connect((state)=>({
+  visibleGenome: state.genomeInfo.visibleGenome,
+  genomeLength: state.genomeInfo.genomeLength,
+}))
 export class Cartoon extends React.Component {
+  static propTypes = {
+    visibleGenome: PropTypes.arrayOf(PropTypes.number).isRequired,
+    genomeLength: PropTypes.number.isRequired,
+    style: PropTypes.object.isRequired,
+    dispatch: PropTypes.func.isRequired,
+  }
   constructor(...args) {
     super(...args);
 
@@ -93,10 +104,3 @@ export class Cartoon extends React.Component {
     );
   }
 }
-
-Cartoon.propTypes = {
-  visibleGenome: PropTypes.arrayOf(PropTypes.number).isRequired,
-  genomeLength: PropTypes.number.isRequired,
-  style: PropTypes.object.isRequired,
-  dispatch: PropTypes.func.isRequired,
-};

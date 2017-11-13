@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import { setYValues } from '../actions/phylocanvasBridge';
@@ -8,8 +9,17 @@ import ContextMenuPlugin from 'phylocanvas-plugin-context-menu';
 import isEqual from 'lodash/isEqual';
 PhyloCanvas.plugin(ContextMenuPlugin);
 
+@connect((state)=>({
+  newickString: state.phylogeny.newickString,
+  active: state.layout.active,
+}))
 export class Phylogeny extends React.Component {
-
+  static propTypes = {
+    newickString: PropTypes.string,
+    style: PropTypes.object,
+    dispatch: PropTypes.func.isRequired,
+    active: PropTypes.object.isRequired,
+  }
   // getInitialState: function () {
   //   return ({ shouldFitToPanel: false });
   // },
@@ -193,10 +203,3 @@ export class Phylogeny extends React.Component {
   }
 
 }
-
-Phylogeny.propTypes = {
-  newickString: PropTypes.string,
-  style: PropTypes.object,
-  dispatch: PropTypes.func.isRequired,
-  active: PropTypes.object.isRequired,
-};

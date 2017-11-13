@@ -7,71 +7,25 @@ import { HashRouter, Route, Switch } from 'react-router-dom';
 import { withRouter } from 'react-router';
 import configureStore from '../store/configureStore';
 import DevTools from '../containers/devTools';
-import { Provider, connect } from 'react-redux';
+import { Provider } from 'react-redux';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-
 import { NotificationDisplay } from '../components/notification';
 import Spinner from '../components/spinner';
-import { notificationSeen } from '../actions/notifications';
-
 import Monitor from './monitor';
-
-// Pages to display
 import { Main } from './main';
 import { LandingPage } from './landingPage';
 import { ExamplesPage } from './examplesPage';
 import Header from '../components/header';
 import ProjectGPS from '../components/projects/gps';
 
-/*
-TODO: move these connect statements to the files themselves & use @decorator syntax
-*/
-const ConnectedMain = connect((state)=>({
-  active: state.layout.active,
-  colPercs: state.layout.colPercs,
-  rowPercs: state.layout.rowPercs,
-  logoIsOn: state.layout.logoIsOn,
-}))(Main);
-const ConnectedLandingPage = connect(
-  () =>({}),
-)(LandingPage);
-/* notifications is always displayed and it pops up when needed */
-const ConnectedNotifications = connect(
-  (state)=>({
-    title: state.notifications.active.title,
-    message: state.notifications.active.message,
-    dialog: state.notifications.active.dialog,
-    open: state.notifications.active.open,
-    counter: state.notifications.counter,
-  }),
-  (dispatch)=>({
-    notificationSeen: () => {dispatch(notificationSeen());},
-  })
-)(NotificationDisplay);
-
+const store = configureStore();
 const HeaderWithRouter = withRouter(Header);
 const MonitorWithRouter = withRouter(Monitor);
-const ConnectedExamples = connect()(ExamplesPage); // dispatch is used
-
-/*  to fix iOS's dreaded 300ms tap delay, we need this plugin
-NOTE Facebook is not planning on supporting tap events (#436) because browsers are fixing/removing
-the click delay. Unfortunately it will take a lot of time before all mobile
-browsers (including iOS' UIWebView) will and can be updated.
-https://github.com/zilverline/react-tap-event-plugin
-Following https://github.com/zilverline/react-tap-event-plugin/issues/61
-we wrap this in a try-catch as hotloading triggers errors */
-try {
-  injectTapEventPlugin();
-} catch (e) {
-  // empty
-}
 
 if (process.env.NODE_ENV !== 'production') {
   window.React = React; // for react chrome extension debugger
 }
-
-const store = configureStore();
 
 render(
   <div>
@@ -86,13 +40,13 @@ render(
             <HeaderWithRouter/>
             <Spinner/>
             <Switch>
-              <Route exact path="/" component={ConnectedLandingPage}/>
-              <Route path="/examples" component={ConnectedExamples}/>
-              <Route path="/main" component={ConnectedMain}/>
+              <Route exact path="/" component={LandingPage}/>
+              <Route path="/examples" component={ExamplesPage}/>
+              <Route path="/main" component={Main}/>
               <Route path="/gps" component={ProjectGPS}/>
-              <Route path="/*" component={ConnectedLandingPage}/>
+              <Route path="/*" component={LandingPage}/>
             </Switch>
-            <ConnectedNotifications />
+            <NotificationDisplay />
           </div>
         </MuiThemeProvider>
       </HashRouter>
@@ -100,3 +54,17 @@ render(
   </div>,
   document.getElementById('react')
 );
+
+
+/*  to fix iOS's dreaded 300ms tap delay, we need this plugin
+NOTE Facebook is not planning on supporting tap events (#436) because browsers are fixing/removing
+the click delay. Unfortunately it will take a lot of time before all mobile
+browsers (including iOS' UIWebView) will and can be updated.
+https://github.com/zilverline/react-tap-event-plugin
+Following https://github.com/zilverline/react-tap-event-plugin/issues/61
+we wrap this in a try-catch as hotloading triggers errors */
+try {
+  injectTapEventPlugin();
+} catch (e) {
+  // empty
+}

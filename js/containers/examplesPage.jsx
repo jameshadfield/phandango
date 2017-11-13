@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 import React from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { AnimatedLogo } from '../components/logo';
 import { incomingFile, clearAllData } from '../actions/fileInput';
@@ -206,7 +207,11 @@ const Example = ({ name, paths, callback, caption, imgPath, citeURLs, citeCaptio
  * Then maps all the examples (defined above) to Example components
  * uses flexboxgrid classes for layout
  */
+@connect()
 export class ExamplesPage extends React.Component {
+  static propTypes = {
+    dispatch: PropTypes.func.isRequired,
+  }
   static contextTypes = {
     router: PropTypes.object.isRequired,
   }
@@ -250,7 +255,3 @@ export class ExamplesPage extends React.Component {
     );
   }
 }
-
-ExamplesPage.propTypes =  {
-  dispatch: PropTypes.func.isRequired,
-};

@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import { getMouse } from '../misc/mouse';
@@ -9,7 +10,17 @@ import { dom2svg } from '../misc/html2svg';
 /*
   The Metadata component
 */
+@connect((state)=>({
+  activeTaxa: state.phylogeny.activeTaxa,
+  metadata: state.metadata,
+}))
 export class Metadata extends React.Component {
+  static propTypes = {
+    dispatch: PropTypes.func.isRequired,
+    metadata: PropTypes.object.isRequired,
+    style: PropTypes.object.isRequired,
+    activeTaxa: PropTypes.object.isRequired,
+  }
   constructor(...args) {
     super(...args);
     this.state = {
@@ -225,13 +236,6 @@ export class Metadata extends React.Component {
     );
   }
 }
-
-Metadata.propTypes = {
-  dispatch: PropTypes.func.isRequired,
-  metadata: PropTypes.object.isRequired,
-  style: PropTypes.object.isRequired,
-  activeTaxa: PropTypes.object.isRequired,
-};
 
 /*  Headers
 stateless component

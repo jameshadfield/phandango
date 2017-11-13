@@ -3,9 +3,27 @@ import PropTypes from 'prop-types';
 import { Mouse } from '../misc/mouse';
 import * as helper from '../misc/helperFunctions';
 import { drawGraphAxis } from './graphAxis';
+import { connect } from 'react-redux';
 
-
+@connect((state)=>({
+  visibleGenome: state.genomeInfo.visibleGenome,
+  values: state.lineGraph.values,
+  lineColours: state.lineGraph.lineColours,
+  subValues: state.lineGraph.subValues,
+  max: state.lineGraph.max,
+}))
 export class Line extends React.Component {
+  static propTypes = {
+    /* props not validated due to speed:
+     * values {array of array of nums} - the main line graph
+     * subValues {array of nums | undefined}
+     */
+    max: PropTypes.number.isRequired,
+    visibleGenome: PropTypes.arrayOf(PropTypes.number).isRequired,
+    style: PropTypes.object.isRequired,
+    dispatch: PropTypes.func.isRequired,
+    lineColours: PropTypes.array.isRequired,
+  }
   constructor(...args) {
     super(...args);
     this.initCanvasXY = helper.initCanvasXY;
@@ -97,15 +115,3 @@ export class Line extends React.Component {
     );
   }
 }
-
-Line.propTypes = {
-  /* props not validated due to speed:
-   * values {array of array of nums} - the main line graph
-   * subValues {array of nums | undefined}
-   */
-  max: PropTypes.number.isRequired,
-  visibleGenome: PropTypes.arrayOf(PropTypes.number).isRequired,
-  style: PropTypes.object.isRequired,
-  dispatch: PropTypes.func.isRequired,
-  lineColours: PropTypes.array.isRequired,
-};

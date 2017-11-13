@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Mouse, getMouse } from '../misc/mouse';
 import * as helper from '../misc/helperFunctions';
@@ -10,7 +11,18 @@ import { InfoTip } from './infoTip';
     on a click - the "permanently displayed" gene is put into state
     on a mouseOver the "temporarily displayed" gene is put into state
 */
+@connect((state)=>({
+  visibleGenome: state.genomeInfo.visibleGenome,
+  data: state.annotation.data,
+}))
 export class Annotation extends React.Component {
+  static propTypes = {
+    visibleGenome: PropTypes.arrayOf(PropTypes.number).isRequired,
+    dispatch: PropTypes.func.isRequired,
+    data: PropTypes.array.isRequired,
+    style: PropTypes.object.isRequired,
+  }
+
   constructor(...args) {
     super(...args);
     this.state = { geneSelected: undefined, geneHovered: undefined, contigSelected: undefined, contigHovered: undefined };
@@ -198,13 +210,6 @@ export class Annotation extends React.Component {
     );
   }
 }
-
-Annotation.propTypes = {
-  visibleGenome: PropTypes.arrayOf(PropTypes.number).isRequired,
-  dispatch: PropTypes.func.isRequired,
-  data: PropTypes.array.isRequired,
-  style: PropTypes.object.isRequired,
-};
 
 /* return the arrow which encompases mx, my */
 function getClicked(mx, my, data, visibleGenome, canvas, isContig = false) {

@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Mouse, getMouse } from '../misc/mouse';
 import * as helper from '../misc/helperFunctions';
@@ -9,7 +10,25 @@ import { InfoTip } from './infoTip';
   The Blocks component
   Draws gubbins / roary e.t.c
 */
+@connect((state)=>({
+  visibleGenome: state.genomeInfo.visibleGenome,
+  data: state.blocks.blocks,
+  activeTaxa: state.phylogeny.activeTaxa,
+  shouldMouseOver: state.blocks.shouldMouseOver,
+  blocksArePerTaxa: state.blocks.blocksArePerTaxa,
+  blockFillAlpha: state.blocks.blockFillAlpha,
+}))
 export class Blocks extends React.Component {
+  static propTypes = {
+    visibleGenome: PropTypes.arrayOf(PropTypes.number).isRequired,
+    dispatch: PropTypes.func.isRequired,
+    data: PropTypes.oneOfType([ PropTypes.array, PropTypes.object ]).isRequired,
+    style: PropTypes.object.isRequired,
+    activeTaxa: PropTypes.object.isRequired,
+    shouldMouseOver: PropTypes.bool.isRequired,
+    blocksArePerTaxa: PropTypes.bool.isRequired,
+    blockFillAlpha: PropTypes.number.isRequired,
+  }
   constructor(...args) {
     super(...args);
     this.state = { selected: undefined, hovered: undefined };
@@ -163,17 +182,6 @@ export class Blocks extends React.Component {
     );
   }
 }
-
-Blocks.propTypes = {
-  visibleGenome: PropTypes.arrayOf(PropTypes.number).isRequired,
-  dispatch: PropTypes.func.isRequired,
-  data: PropTypes.oneOfType([ PropTypes.array, PropTypes.object ]).isRequired,
-  style: PropTypes.object.isRequired,
-  activeTaxa: PropTypes.object.isRequired,
-  shouldMouseOver: PropTypes.bool.isRequired,
-  blocksArePerTaxa: PropTypes.bool.isRequired,
-  blockFillAlpha: PropTypes.number.isRequired,
-};
 
 // function getClicked(mx, my, data, visibleGenome, canvas) {
 //   const currentArrows = getArrowsInScope(data, visibleGenome, canvas);
