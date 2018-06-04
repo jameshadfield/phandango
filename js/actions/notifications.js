@@ -37,7 +37,7 @@ export function checkLoadedDataIsComplete() {
     } else if (loaded.phylogeny && !loaded.metadata && !loaded.blocks) {
       dispatch({ ...d, title: 'HEADS UP', msg: 'A phylogeny has been loaded, but without recombination / pan genome / metadata files.' });
     } else if ((loaded.blocks || loaded.gwas) && !loaded.annotation) {
-      dispatch({ ...d, title: 'HEADS UP', msg: 'Recombination / pan-genome / GWAS data is loaded but this cannot be displayed without an annotation file!' });
+      dispatch({ ...d, title: 'HEADS UP', msg: 'Recombination / pan-genome / GWAS has been loaded without an annotation file!' });
     }
   };
 }
