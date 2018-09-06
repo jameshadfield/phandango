@@ -36,6 +36,10 @@ export const colourDB = {
     11: '#6B4E25',
     12: '#DB66D1',
     13: '#AFADAF',
+    14: '#000000',
+    15: '#ff3f3f',
+    16: '#ff7f7f',
+    17: '#ff7f7f'
   },
 };
 
@@ -95,10 +99,13 @@ export function Arrow(featurestart, featureend, direction, fill, stroke, strokeW
       const colourValue = +value.replace(/(^'|'$)/g, '');
 
       if (!isNaN(colourValue)) {
-        if (colourValue < 14 && colourValue > -1) {
+        if (colourValue < 18 && colourValue > -1) {
           this.fill = colourDB.artemis[colourValue];
           // console.log(this.ID, this.product, this.fill, colour_value);
         }
+      }
+      else {
+        this.fill = colourValue;
       }
     }
   }
