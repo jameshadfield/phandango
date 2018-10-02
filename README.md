@@ -12,4 +12,4 @@ If you use phandango in a publication please cite [Hadfield _et al._, Bioinforma
 If you would like your data to appear as one of the examples, [email me](mailto:jh22@sanger.ac.uk) and i'll add it 👍
 
 
-Designed and build by [James Hadfield](mailto:jh22@sanger.ac.uk) and [Simon Harris](mailto:sh16@sanger.ac.uk) at the [Wellcome Trust Sanger Institute](http://www.sanger.ac.uk), Cambridge, U.K.
+Designed and build by [James Hadfield](mailto:jh22@sanger.ac.uk) and [Simon Harris](mailto:sh16@sanger.ac.uk) at the [Wellcome Sanger Institute](http://www.sanger.ac.uk), Cambridge, U.K.
