@@ -1,7 +1,7 @@
 {
   "_comment": "http://browsenpm.org/package.json",
   "name": "phandango",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "scripts": {
     "build": "webpack",
     "start": "webpack-dev-server --config webpack-dev-server.config.js --progress --port 8080 --hot --colors",
