@@ -62,6 +62,7 @@ const analyseIncomingData = (fileName, fileContents) => {
   let fileType;
   switch (fileExtension) {
   case 'nex': // fallthrough
+  case 'nexus': // fallthrough
   case 'newick': // fallthrough
   case 'new': // fallthrough
   case 'nwk': // fallthrough
