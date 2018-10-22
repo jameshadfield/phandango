@@ -5,20 +5,93 @@ import { incomingFile, clearAllData } from '../../actions/fileInput';
 import { increaseSpinner } from '../../actions/general';
 import { AnimatedLogo } from '../../components/logo';
 
-const prefixes = [ 'GPSC79', 'GPSC84' ];
+const prefixes = [
+  'GPSC1',
+  'GPSC2',
+  'GPSC3',
+  'GPSC4',
+  'GPSC5',
+  'GPSC6',
+  'GPSC7',
+  'GPSC8',
+  'GPSC9',
+  'GPSC10',
+  'GPSC11',
+  'GPSC12',
+  'GPSC13',
+  'GPSC14',
+  'GPSC15',
+  'GPSC16',
+  'GPSC17',
+  'GPSC18',
+  'GPSC19',
+  'GPSC20',
+  'GPSC21',
+  'GPSC22',
+  'GPSC23',
+  'GPSC24',
+  'GPSC25',
+  'GPSC26',
+  'GPSC27',
+  'GPSC30',
+  'GPSC31',
+  'GPSC32',
+  'GPSC33',
+  'GPSC34',
+  'GPSC37',
+  'GPSC38',
+  'GPSC39',
+  'GPSC40',
+  'GPSC41',
+  'GPSC43',
+  'GPSC47',
+  'GPSC48',
+  'GPSC50',
+  'GPSC51',
+  'GPSC52',
+  'GPSC53',
+  'GPSC54',
+  'GPSC55',
+  'GPSC56',
+  'GPSC57',
+  'GPSC58',
+  'GPSC61',
+  'GPSC62',
+  'GPSC65',
+  'GPSC67',
+  'GPSC68',
+  'GPSC70',
+  'GPSC72',
+  'GPSC76',
+  'GPSC77',
+  'GPSC78',
+  'GPSC79',
+  'GPSC80',
+  'GPSC81',
+  'GPSC90',
+  'GPSC91',
+  'GPSC93',
+  'GPSC94',
+  'GPSC97',
+  'GPSC103',
+  'GPSC105',
+  'GPSC108',
+  'GPSC115',
+  'GPSC117',
+  'GPSC131',
+];
 const makePaths = (prefix, pan = false, recomb = false) => {
-  const defaultDataPrefix = 'https://cdn.rawgit.com/jameshadfield/phandangoExampleData/master/';
+  const address = `https://cdn.rawgit.com/jameshadfield/phandangoExampleData/master/GPS/${prefix}/${prefix}`;
+  /* everything has a tree and a metadata CSV */
   const paths = [
-    defaultDataPrefix + "GPS/" + prefix + '.tre',
-    defaultDataPrefix + "GPS/" + prefix + '_MR.csv',
+    `${address}.tre`,
+    `${address}_metadata.csv`,
   ];
-  if (pan || recomb) {
-    paths.push(defaultDataPrefix + "GPS/" + prefix + '_reference.gff');
-  }
   if (pan) {
-    paths.push(defaultDataPrefix + "GPS/" + prefix + '_gene_presence_absence_min.csv');
+    paths.push(`${address}_gene_presence_absence.csv`); /* roary */
   } else if (recomb) {
-    paths.push(defaultDataPrefix + "GPS/" + prefix + '_recombinations.gff');
+    paths.push(`${address}.gff`); /* genome annotation */
+    paths.push(`${address}_predictions.gff`); /* gubbins */
   }
   return paths;
 };
@@ -47,7 +120,7 @@ export default class ProjectGPS extends React.Component {
       <div className="center" style={{ paddingTop: '15vh' }}>
 
         <h2 className="light">
-          Global Pneumococcal Sequencing Project Data
+          Global Pneumococcal Sequencing Project
         </h2>
 
         <AnimatedLogo w={600} h={200} interval={2000} animate={!!navigator.userAgent.match(/WebKit/i)}/>
@@ -75,7 +148,7 @@ export default class ProjectGPS extends React.Component {
 
         <br/>
         <br/>
-        <a href="http://www.pneumogen.net/gps/" style={{ color: '#225ea8' }}>GPS homepage</a>
+        GPS homepage: <a href="http://www.pneumogen.net/gps/" style={{ color: '#225ea8' }}>pneumogen.net/gps/</a>
       </div>
     );
   }
