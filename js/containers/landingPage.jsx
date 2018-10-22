@@ -43,7 +43,7 @@ export class LandingPage extends React.Component {
           <br/>
           <br/>
           {"Want your data to appear as one of the examples? "}
-          <a href="mailto:jh22@sanger.ac.uk">email me</a>
+          <a href="mailto:jhadfiel@fredhutch.org">email me</a>
           {" and i'll add it 👍"}
         </h3>
 

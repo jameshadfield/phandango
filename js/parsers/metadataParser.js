@@ -209,7 +209,7 @@ function getHeaderInfo(line) {
         // the name should already have been processed. find the index!
         const headerIdxOfData = headerNames.indexOf(name);
         if (headerIdxOfData > -1) {
-          console.log('headerIdxOfData', headerIdxOfData);
+          // console.log('headerIdxOfData', headerIdxOfData);
           info[headerIdxOfData].userColour = i;
           info[headerIdxOfData].type = 'userColours';
           info[headerIdxOfData].inGroup = false;
@@ -281,5 +281,3 @@ function allocateUserColours(papaData, sortedValues, papaValueIdx, papaColourIdx
   }
   return ret;
 }
-
-
