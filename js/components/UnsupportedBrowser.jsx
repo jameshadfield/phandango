@@ -35,7 +35,6 @@ export const UnsupportedBrowser = ({ msg }) => {
           <p>
             <strong>Can you help?</strong> Phandango is open source and <a href="https://github.com/jameshadfield/phandango">is on GitHub</a>. If you can help out and increase browser support that would be great.
           </p>
-          <p><a href="mailto:jh22@sanger.ac.uk">Contact (email)</a></p>
           <p>version {version}</p>
         </div>
       </div>
