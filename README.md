@@ -13,3 +13,13 @@ If you would like your data to appear as one of the examples, [email me](mailto:
 
 
 Designed and build by [James Hadfield](mailto:jhadfiel@fredhutch.org) and [Simon Harris](mailto:sh16@sanger.ac.uk) at the [Wellcome Sanger Institute](http://www.sanger.ac.uk), Cambridge, U.K.
+
+
+### Developing 
+
+This repo was built using a (now ancient) version of node & npm. 
+The following conda environment works as of October 2023:
+```
+conda create --name phandango -c conda-forge nodejs=8
+```
+Hot reloading no longer works, and if you use VS-Code you need to prefix commands with `NODE_OPTIONS=""`
