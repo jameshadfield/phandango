@@ -68,6 +68,13 @@ export class LandingPage extends React.Component {
         </p>
         <br/>
         version {version}
+        <br/>
+        <a href="https://www.sanger.ac.uk/">
+          <img
+            style={{ maxWidth: '300px' }}
+            src={'./img/Wellcome_Sanger_Institute_Logo_Landscape_Digital_RGB_Full_Colour.svg'}
+          />
+        </a>
       </div>
     );
   }

@@ -12,7 +12,10 @@ If you use phandango in a publication please cite [Hadfield _et al._, Bioinforma
 If you would like your data to appear as one of the examples, [make a new issue](https://github.com/jameshadfield/phandango/issues/new) and i'll add it 👍
 
 
-Designed and build by [James Hadfield](https://github.com/jameshadfield/) and [Simon Harris](mailto:sh16@sanger.ac.uk) at the [Wellcome Sanger Institute](http://www.sanger.ac.uk), Cambridge, U.K.
+Designed and built by [James Hadfield](https://github.com/jameshadfield/) and [Simon Harris](mailto:sh16@sanger.ac.uk) at the [Wellcome Sanger Institute](https://www.sanger.ac.uk), Cambridge, U.K.
+Domain name kindly supported by the Wellcome Sanger Institute.
+
+<img width='400' src='./img/Wellcome_Sanger_Institute_Logo_Landscape_Digital_RGB_Full_Colour.svg'/>
 
 
 ### Developing 
