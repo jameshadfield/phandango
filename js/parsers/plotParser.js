@@ -13,7 +13,9 @@ export function plotParser(stringIn) {
       pVal = -1 * pVal;
     }
     if (!isNaN(pVal)) {
-      // is the plot a normal plink output or seer?
+      // seer / plink output has a coordinate of a..b
+      // See https://github.com/jameshadfield/phandango/issues/151 for recent context
+      // Seer .plot files will always have a r2 (words[4]) of "0"
       if (words[2].indexOf('..') > -1) { // seer
         const xVals = [];
         xVals.push(parseInt(words[2].split('..')[0], 10));
@@ -23,10 +25,10 @@ export function plotParser(stringIn) {
           radius = -1 * radius;
         }
         shapes.push(new Ellipse(
-          xVals[0] + radius,
-          pVal,
-          parseFloat(words[4]),
-          radius
+          xVals[0] + radius,      // featurex
+          pVal,                   // featurey
+          parseFloat(words[4]),   // val1 (fill colour)
+          radius                  // radiusX
         ));
       } else {
         shapes.push(new Ellipse(

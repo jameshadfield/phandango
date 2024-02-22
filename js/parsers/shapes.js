@@ -178,21 +178,18 @@ export function Ellipse(featurex, featurey, val1, radiusX = false) {
   this.featurey = featurey;
   this.radiusX = radiusX;
   this.rSquared = val1;
-  // R^2 -> colour (unless seer)
-  if (this.radiusX) {
-    this.fill = 'gray';
-  } else {
-    if (val1 > 0.8) {
-      this.fill = '#FF0000';
-    } else if (val1 > 0.6) {
-      this.fill = '#FFA500';
-    } else if (val1 > 0.4) {
-      this.fill = '#32CD32';
-    } else if (val1 > 0.2) {
-      this.fill = '#87CEFA';
-    } else if (val1 >= 0) {
-      this.fill = '#0000FF';
-    }
+  // R^2 -> colour. For seer output all values are zero which will result in
+  // blue dots. Versions 1.3.0 and earlier would use gray instead.
+  if (val1 > 0.8) {
+    this.fill = '#FF0000';
+  } else if (val1 > 0.6) {
+    this.fill = '#FFA500';
+  } else if (val1 > 0.4) {
+    this.fill = '#32CD32';
+  } else if (val1 > 0.2) {
+    this.fill = '#87CEFA';
+  } else if (val1 >= 0) {
+    this.fill = '#0000FF';
   }
 }
 
